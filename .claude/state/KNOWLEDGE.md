@@ -95,12 +95,17 @@ These are PUBLIC DOMAIN cultural knowledge (centuries old), safe to use:
 ## Deploy target
 - **Platform:** Cloudflare Pages <!-- verified: 2026-04-10 --> (pivoted from Vercel after operator purchased domain via Cloudflare Registrar — single-dashboard ecosystem simplifies DNS)
 - **Registrar:** Cloudflare (colorcombinations.org bought 2026-04-10)
-- **Deploy command:** `git push` to GitHub, Cloudflare Pages auto-deploys from branch
+- **Project name:** `colorcombinations` (in acevaultorg Team plan account)
+- **Pages hostname:** `colorcombinations.pages.dev`
+- **Custom domain:** `colorcombinations.org` ✓ LIVE (SSL auto-provisioned, CNAME @ → colorcombinations.pages.dev)
+- **Repo:** https://github.com/acevaultorg/colorcombinations (public)
+- **Deploy command:** `wrangler pages deploy dist --project-name=colorcombinations --branch=main` (Git integration exists on acevaultorg but CLI deploy is proven-working path for this project)
 - **Build:** `npm run build` (Astro default)
 - **Output:** `./dist/`
 - **Node version:** 20 (Cloudflare Pages default; Astro 5 requires ≥18.17)
-- **Security headers:** `public/_headers` — OWASP baseline CSP, X-Frame-Options, Permissions-Policy
+- **Security headers:** `public/_headers` — OWASP baseline CSP, X-Frame-Options, Permissions-Policy — verified at edge
 - **Redirects:** `public/_redirects` — empty for V1
+- **Trailing slash:** `always` (matches CF Pages directory serving, zero redirect hops) <!-- verified: 2026-04-10 -->
 - **Previous plan:** Vercel (locked in DECISIONS.md 2026-04-08) — pivoted because registrar colocation eliminates DNS cross-config
 
 ## Error patterns
