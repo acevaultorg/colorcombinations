@@ -24,7 +24,7 @@ const {
   title,
   description,
   canonical,
-  image = "/og-default.png",
+  image,
   type = "website",
   jsonLd,
   keywords,
@@ -34,9 +34,25 @@ const {
 const siteName = "The Dictionary of Color Combinations";
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).toString();
-const imageUrl = new URL(image, Astro.site).toString();
 
-const jsonLdArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+// Default OG image: SVG works for most modern crawlers. Human can upload a
+// 1200x630 PNG later for maximum Twitter/FB/LinkedIn compatibility.
+const ogImage = image ?? "/og-default.svg";
+const imageUrl = new URL(ogImage, Astro.site).toString();
+
+// Global Organization/WebSite schema — merged with page-specific entries.
+const siteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteName,
+  url: Astro.site?.toString() ?? "https://colorcombinations.org",
+  description:
+    "A curated archive of historically-grounded color combinations inspired by Sanzo Wada's 1933 Japanese color dictionary.",
+};
+
+const jsonLdArray = jsonLd
+  ? [siteSchema, ...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])]
+  : [siteSchema];
 ---
 
 <!doctype html>

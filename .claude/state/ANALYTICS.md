@@ -37,6 +37,9 @@ Build work: 0 tasks completed (all 16 TASKS.md tasks paused pending domain decis
 2026-04-10 13:27 | export | content-seo-site | astro5-tailwind4-ts-strict | V1 | standard | self-qualify | AUTO | 60 | success
 2026-04-10 13:30 | browse-page | content-seo-site | astro5-tailwind4-ts-strict | V1 | complex | self-designer | AUTO | 180 | success
 2026-04-10 13:31 | about-page | content-seo-site | astro5-tailwind4-ts-strict | V1 | standard | self-strategist-designer | AUTO | 90 | success
+2026-04-10 13:37 | email-capture | content-seo-site | astro5-tailwind4-ts-strict | V1 | standard | self-qualify | AUTO | 90 | success
+2026-04-10 13:38 | seo-infra | content-seo-site | astro5-tailwind4-ts-strict | V1 | standard | self-seo | AUTO | 120 | success
+2026-04-10 13:39 | errors | content-seo-site | astro5-tailwind4-ts-strict | V1 | quick | self-qualify | AUTO | 45 | success
 
 ## Gate Log
 

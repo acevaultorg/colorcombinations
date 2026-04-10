@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="'EB Garamond', Georgia, serif">
+  <rect width="1200" height="630" fill="#FAF7EF"/>
+
+  <!-- Palette stripes across the top -->
+  <rect x="0" y="0" width="200" height="120" fill="#9A2A2A"/>
+  <rect x="200" y="0" width="200" height="120" fill="#1B2A4E"/>
+  <rect x="400" y="0" width="200" height="120" fill="#F4EEE0"/>
+  <rect x="600" y="0" width="200" height="120" fill="#A7C957"/>
+  <rect x="800" y="0" width="200" height="120" fill="#7A4E8F"/>
+  <rect x="1000" y="0" width="200" height="120" fill="#DCCB7A"/>
+
+  <!-- Thin divider -->
+  <rect x="0" y="120" width="1200" height="2" fill="#D9D6CE"/>
+
+  <!-- Eyebrow -->
+  <text x="100" y="230" font-size="22" font-family="Inter, system-ui, sans-serif"
+        font-weight="600" fill="#6B6B6B" letter-spacing="3">
+    INSPIRED BY SANZO WADA, 1933
+  </text>
+
+  <!-- Title -->
+  <text x="100" y="320" font-size="72" font-weight="500" fill="#141414">
+    The Dictionary of
+  </text>
+  <text x="100" y="400" font-size="72" font-weight="500" fill="#141414">
+    Color Combinations
+  </text>
+
+  <!-- Subtitle -->
+  <text x="100" y="470" font-size="28" font-style="italic" fill="#6B6B6B">
+    Historically-grounded palettes, free for working designers.
+  </text>
+
+  <!-- URL -->
+  <text x="100" y="560" font-size="20" font-family="Inter, system-ui, sans-serif"
+        font-weight="500" fill="#9A2A2A">
+    colorcombinations.org
+  </text>
+</svg>

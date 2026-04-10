@@ -1,0 +1,168 @@
+---
+export interface Props {
+  /**
+   * Integration target:
+   * - "convertkit": replace action + ck_form_id for ConvertKit
+   * - "mailerlite": replace action for MailerLite
+   * - "custom": your own backend endpoint
+   */
+  provider?: "convertkit" | "mailerlite" | "custom";
+  /** Action URL (defaults to a placeholder until the provider is wired up) */
+  action?: string;
+  heading?: string;
+  lede?: string;
+  /** Extra class for the outer wrapper */
+  class?: string;
+}
+
+const {
+  provider = "custom",
+  action = "https://forms.example.com/subscribe",
+  heading = "One palette a week. No spam, ever.",
+  lede = "Every Sunday: one combination, one era, one short story. Unsubscribe any time.",
+  class: extraClass,
+} = Astro.props;
+
+// Method is POST for all providers; provider-specific params can be extended.
+const method = "post";
+---
+
+<section class={`email-capture ${extraClass ?? ""}`} id="newsletter">
+  <div class="container-page">
+    <div class="email-capture__inner">
+      <p class="eyebrow">Newsletter</p>
+      <h2 class="text-balance">{heading}</h2>
+      <p class="email-capture__lede">{lede}</p>
+
+      <form
+        class="email-capture__form"
+        action={action}
+        method={method}
+        data-provider={provider}
+        novalidate
+      >
+        <label class="sr-only" for="email-capture-input">Email address</label>
+        <input
+          type="email"
+          id="email-capture-input"
+          name="email"
+          required
+          autocomplete="email"
+          placeholder="your@email.com"
+        />
+        <button type="submit" class="btn btn-primary">Subscribe</button>
+      </form>
+
+      <p class="email-capture__note">Free. No credit card. Archive stays readable forever.</p>
+      <p class="email-capture__status" aria-live="polite" role="status"></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Optimistic UX: confirm success in-place so the user isn't redirected away.
+  document.querySelectorAll<HTMLFormElement>(".email-capture__form").forEach((form) => {
+    const status = form.parentElement?.querySelector<HTMLParagraphElement>(".email-capture__status");
+    const input = form.querySelector<HTMLInputElement>('input[type="email"]');
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    form.addEventListener("submit", (event) => {
+      if (!input || !input.value || !input.checkValidity()) {
+        event.preventDefault();
+        if (status) status.textContent = "Please enter a valid email.";
+        input?.focus();
+        return;
+      }
+      // Let the form submit normally (to the provider endpoint).
+      // Optionally swap to fetch+stay-on-page by uncommenting:
+      /*
+      event.preventDefault();
+      const data = new FormData(form);
+      fetch(form.action, { method: form.method, body: data })
+        .then(() => { if (status) status.textContent = "✓ Subscribed. Check your inbox."; form.reset(); })
+        .catch(() => { if (status) status.textContent = "Something went wrong. Try again in a moment."; });
+      */
+      if (button) button.disabled = true;
+      if (status) status.textContent = "Subscribing…";
+    });
+  });
+</script>
+
+<style>
+  .email-capture {
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+
+  .email-capture__inner {
+    text-align: center;
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+
+  .email-capture__inner .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .email-capture__lede {
+    color: var(--color-ink-500);
+    margin: 0.75rem auto 2rem;
+    max-width: 42ch;
+  }
+
+  .email-capture__form {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 28rem;
+    margin: 0 auto 1rem;
+  }
+
+  .email-capture__form input[type="email"] {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    font-family: var(--font-sans);
+    border: 1px solid var(--color-ink-300);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-900);
+  }
+
+  .email-capture__form input[type="email"]:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+    border-color: var(--color-accent-500);
+  }
+
+  .email-capture__note {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin: 0;
+  }
+
+  .email-capture__status {
+    min-height: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-accent-500);
+    margin: 0.75rem 0 0;
+    max-width: none;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 520px) {
+    .email-capture__form {
+      flex-direction: column;
+    }
+  }
+</style>
