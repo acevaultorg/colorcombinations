@@ -2,6 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import EmailCapture from "@components/EmailCapture.astro";
+import BundleCta from "@components/BundleCta.astro";
 import { featuredPalettes, allPalettes } from "@data/palettes";
 
 const featured = featuredPalettes();
@@ -110,6 +111,9 @@ const jsonLd = {
       </div>
     </div>
   </section>
+
+  {/* ==================== BUNDLE ==================== */}
+  <BundleCta variant="medium" />
 
   {/* ==================== NEWSLETTER ==================== */}
   <EmailCapture class="section" />

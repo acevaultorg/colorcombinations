@@ -1,0 +1,222 @@
+---
+/**
+ * FurtherReading — editorial book list with affiliate links.
+ *
+ * Used on:
+ *  - /about (full 5-book list)
+ *  - /palettes/[slug] (optional compact variant with 2-3 picks)
+ *  - /shop (curated selection as a shop section)
+ *
+ * Primary affiliate: Bookshop.org (10% commission, supports indie stores,
+ * fits the museum/editorial brand).
+ * Fallback: Amazon Associates (4% commission) shown as a secondary link.
+ *
+ * Notes on disclosure: the component renders a short affiliate notice below
+ * the list in compliance with FTC guidelines. Only rendered when at least one
+ * affiliate is live — if both IDs are placeholders, links fall back to the
+ * raw store URL and the disclosure is suppressed.
+ */
+
+import { BOOKSHOP, AMAZON, FURTHER_READING } from "@/config/monetization";
+
+export interface Props {
+  /** Title for the section — defaults to "Further reading". */
+  title?: string;
+  /** Optional intro paragraph. */
+  intro?: string;
+  /** Limit number of books shown (useful on palette pages). Defaults to all. */
+  limit?: number;
+  /** Layout variant. */
+  variant?: "full" | "compact";
+}
+
+const {
+  title = "Further reading",
+  intro,
+  limit,
+  variant = "full",
+} = Astro.props;
+
+const books = typeof limit === "number"
+  ? FURTHER_READING.slice(0, limit)
+  : FURTHER_READING;
+
+const hasAffiliate = BOOKSHOP.isLive || AMAZON.isLive;
+---
+
+<section class:list={["further-reading", `further-reading--${variant}`]}>
+  <header class="further-reading__head">
+    <p class="eyebrow">Library</p>
+    <h2 class="text-balance">{title}</h2>
+    {intro && <p class="further-reading__intro">{intro}</p>}
+  </header>
+
+  <ul class="further-reading__list" role="list">
+    {books.map((book) => (
+      <li class="further-reading__item plate">
+        <div class="further-reading__meta">
+          <p class="further-reading__by">{book.author}</p>
+          <h3 class="further-reading__title">{book.title}</h3>
+          <p class="further-reading__note">{book.note}</p>
+          <p class="further-reading__why">{book.why}</p>
+        </div>
+        <div class="further-reading__links">
+          <a
+            href={BOOKSHOP.link(book.bookshopPath)}
+            rel="noopener sponsored"
+            target="_blank"
+            class="btn btn-secondary further-reading__link"
+            data-event="bookshop_click"
+            data-book={book.title}
+          >
+            Bookshop.org <span aria-hidden="true">↗</span>
+          </a>
+          {book.amazonAsin && (
+            <a
+              href={AMAZON.link(book.amazonAsin)}
+              rel="noopener sponsored"
+              target="_blank"
+              class="further-reading__amazon"
+              data-event="amazon_click"
+              data-book={book.title}
+            >
+              or Amazon
+            </a>
+          )}
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  {hasAffiliate && (
+    <p class="further-reading__disclosure">
+      Links to Bookshop.org and Amazon earn a small commission at no cost to you.
+      Bookshop.org's share supports independent bookstores.
+    </p>
+  )}
+</section>
+
+<style>
+  .further-reading {
+    padding-block: var(--spacing-section);
+  }
+
+  .further-reading--compact {
+    padding-block: 2.5rem;
+  }
+
+  .further-reading__head {
+    max-width: 58ch;
+    margin-bottom: 2.5rem;
+  }
+
+  .further-reading__head .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .further-reading__head h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.5vw + 1rem, 2.25rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .further-reading__intro {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    line-height: 1.65;
+    margin-top: 1rem;
+  }
+
+  .further-reading__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .further-reading__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .further-reading--compact .further-reading__list {
+    gap: 1rem;
+  }
+
+  .further-reading__item {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background-color: var(--color-bg-elevated);
+  }
+
+  .further-reading__by {
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-500);
+    margin: 0 0 0.25rem;
+  }
+
+  .further-reading__title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    line-height: 1.25;
+  }
+
+  .further-reading__note {
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+    margin: 0 0 0.75rem;
+  }
+
+  .further-reading__why {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-ink-700);
+    margin: 0;
+    font-style: italic;
+  }
+
+  .further-reading__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 1rem;
+    margin-top: auto;
+  }
+
+  .further-reading__link {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.875rem;
+  }
+
+  .further-reading__amazon {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .further-reading__amazon:hover {
+    color: var(--color-accent-500);
+  }
+
+  .further-reading__disclosure {
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: var(--color-ink-400);
+    max-width: 60ch;
+    line-height: 1.5;
+    font-style: italic;
+  }
+</style>

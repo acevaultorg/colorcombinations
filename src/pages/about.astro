@@ -1,5 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import BundleCta from "@components/BundleCta.astro";
 
 const title = "About";
 const description =
@@ -140,6 +142,19 @@ const jsonLd = {
       </div>
     </div>
   </article>
+
+  {/* ============ FURTHER READING (affiliate) ============ */}
+  <div class="about-library">
+    <div class="container-wide">
+      <FurtherReading
+        title="Further reading"
+        intro="Five books that shaped this archive — Wada's original, the Albers classic, and three shelf-defining histories of color. All five are worth owning."
+      />
+    </div>
+  </div>
+
+  {/* ============ BUNDLE CTA ============ */}
+  <BundleCta variant="medium" />
 </BaseLayout>
 
 <style>
@@ -171,5 +186,10 @@ const jsonLd = {
 
   .prose .about__cta {
     margin-top: 3rem;
+  }
+
+  .about-library {
+    background-color: var(--color-paper-100);
+    border-block: 1px solid var(--color-border);
   }
 </style>

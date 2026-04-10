@@ -1,0 +1,297 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import { BUNDLE, PRINTS } from "@/config/monetization";
+
+const title = "Shop";
+const description =
+  "Support the archive. Get the bundle, the books, and the prints that built The Dictionary of Color Combinations.";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: BUNDLE.name,
+    description:
+      "All 30 curated Japanese-tradition color combinations as Figma tokens, Tailwind config, CSS variables, SVG plates, and full JSON — everything the archive is built on, in one download.",
+    brand: {
+      "@type": "Brand",
+      name: "The Dictionary of Color Combinations",
+    },
+    image: new URL("/og-default.svg", Astro.site).toString(),
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "USD",
+      price: BUNDLE.price.replace(/[^\d.]/g, ""),
+      availability: BUNDLE.isLive
+        ? "https://schema.org/InStock"
+        : "https://schema.org/PreOrder",
+      url: new URL("/shop", Astro.site).toString(),
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: new URL("/", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Shop",
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  {/* ============ HERO ============ */}
+  <section class="shop-hero">
+    <div class="container-wide shop-hero__inner">
+      <p class="eyebrow">The museum gift shop</p>
+      <h1 class="display-hero text-balance">
+        Three ways to support the archive.
+      </h1>
+      <p class="shop-hero__lede">
+        Everything in The Dictionary of Color Combinations is free to browse and
+        copy — that will never change. But if the archive earns a place in your
+        bookmarks bar, there are three quiet ways to help it stay that way.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ 1. BUNDLE ============ */}
+  <BundleCta variant="big" id="bundle" />
+  <section id="bundle-coming-soon" aria-hidden="true" />
+
+  {/* ============ 2. PRINTS ============ */}
+  <section class="prints section" id="prints">
+    <div class="container-wide prints__inner">
+      <div class="prints__body">
+        <p class="eyebrow">Prints & posters</p>
+        <h2 class="text-balance">Museum-grade poster sets.</h2>
+        <p class="prints__lede">
+          Each palette, printed as a single plate — generous margins, archival
+          matte paper, designed to sit on a studio wall the way Wada's book sat
+          on a studio shelf. Printed on demand, shipped worldwide.
+        </p>
+        <div class="prints__actions">
+          {PRINTS.isLive ? (
+            <a
+              href={PRINTS.storeUrl}
+              class="btn btn-primary"
+              target="_blank"
+              rel="noopener"
+              data-event="prints_cta_click"
+            >
+              Browse the print shop <span aria-hidden="true">↗</span>
+            </a>
+          ) : (
+            <>
+              <a
+                href="/#newsletter"
+                class="btn btn-primary"
+                data-event="prints_waitlist_click"
+              >
+                Join the waitlist
+              </a>
+              <p class="prints__note">
+                Prints launch after the first batch of early supporters — subscribers hear first.
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+      <div class="prints__aside" aria-hidden="true">
+        <div class="prints__mock plate">
+          <div class="prints__mock-swatches">
+            <span style="background:#F9D5E0" />
+            <span style="background:#A3C293" />
+            <span style="background:#F8F4E9" />
+            <span style="background:#4C5D3F" />
+          </div>
+          <p class="prints__mock-title">Sakura &amp; Wakatake</p>
+          <p class="prints__mock-meta">Heian era · Print no. 02</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ============ 3. BOOKS ============ */}
+  <div class="shop-books">
+    <div class="container-wide">
+      <FurtherReading
+        title="The library behind the archive"
+        intro="Every palette in the archive stands on the shoulders of these five books. If you want to go deeper than hex values, start here."
+      />
+    </div>
+  </div>
+
+  {/* ============ CLOSING NOTE ============ */}
+  <section class="shop-note section">
+    <div class="container-prose shop-note__inner">
+      <p class="eyebrow">A note from the archive</p>
+      <p>
+        The archive itself will always stay free — no paywall, no login, no
+        watermarks on the exports. The bundle, the prints, and the affiliate
+        links are how this stays sustainable without turning the site into an
+        ad-supported SaaS landing page.
+      </p>
+      <p>
+        If you can't support financially, just share a palette you found useful.
+        Word of mouth is the archive's oldest friend.
+      </p>
+      <p class="shop-note__sign">— The editors</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .shop-hero {
+    padding-top: clamp(3rem, 8vw, 7rem);
+    padding-bottom: clamp(2rem, 6vw, 5rem);
+  }
+
+  .shop-hero__inner {
+    max-width: 62rem;
+  }
+
+  .shop-hero .eyebrow {
+    margin-bottom: 1.5rem;
+  }
+
+  .shop-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.4vw + 0.75rem, 1.375rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    max-width: 58ch;
+    margin-top: 1.75rem;
+  }
+
+  /* ---- Prints ---- */
+  .prints {
+    padding-block: var(--spacing-section);
+  }
+
+  .prints__inner {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 960px) {
+    .prints__inner {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+
+  .prints__body .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .prints__body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 2.5vw + 1rem, 2.75rem);
+    line-height: 1.15;
+    margin: 0 0 1.25rem;
+  }
+
+  .prints__lede {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    line-height: 1.65;
+    max-width: 52ch;
+    margin-bottom: 2rem;
+  }
+
+  .prints__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .prints__note {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    max-width: 48ch;
+    margin: 0;
+  }
+
+  .prints__aside {
+    display: flex;
+    justify-content: center;
+  }
+
+  .prints__mock {
+    padding: 2rem;
+    max-width: 24rem;
+    width: 100%;
+    background-color: var(--color-paper-50);
+  }
+
+  .prints__mock-swatches {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    height: 9rem;
+    border: 1px solid var(--color-border);
+    margin-bottom: 1rem;
+  }
+
+  .prints__mock-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    margin: 0 0 0.25rem;
+  }
+
+  .prints__mock-meta {
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-500);
+    margin: 0;
+  }
+
+  /* ---- Books wrapper ---- */
+  .shop-books {
+    background-color: var(--color-paper-100);
+    border-block: 1px solid var(--color-border);
+  }
+
+  /* ---- Closing note ---- */
+  .shop-note {
+    background-color: var(--color-paper-50);
+  }
+
+  .shop-note__inner {
+    max-width: 60ch;
+    padding-block: 2rem;
+  }
+
+  .shop-note__inner p {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: var(--color-ink-700);
+    margin-bottom: 1.25rem;
+  }
+
+  .shop-note .eyebrow {
+    margin-bottom: 1rem;
+  }
+
+  .shop-note__sign {
+    font-style: italic;
+    color: var(--color-ink-500);
+    margin-top: 2rem;
+  }
+</style>

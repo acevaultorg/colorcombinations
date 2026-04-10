@@ -2,6 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import ExportPalette from "@components/ExportPalette.astro";
+import BundleCta from "@components/BundleCta.astro";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
 import { bestTextColorOn } from "@/lib/color";
 
@@ -182,6 +183,11 @@ const jsonLd = [
       </aside>
     </div>
   </section>
+
+  {/* ============ BUNDLE CTA ============ */}
+  <div class="container-wide">
+    <BundleCta variant="compact" />
+  </div>
 
   {/* ============ RELATED ============ */}
   {related.length > 0 && (

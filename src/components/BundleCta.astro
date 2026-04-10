@@ -1,0 +1,244 @@
+---
+/**
+ * BundleCta — editorial "get the bundle" block.
+ *
+ * Used on:
+ *  - /shop (primary surface, big variant)
+ *  - / (homepage, above newsletter, medium variant)
+ *  - /palettes/[slug] (end of every palette page, compact variant)
+ *  - /about (optional, compact)
+ *
+ * Accepts an explicit variant so surrounding sections keep visual hierarchy.
+ * Degrades gracefully when BUNDLE.isLive is false — copy shifts from "Get the
+ * bundle" to "Notify me" and the CTA points at a safe #coming-soon anchor on /shop.
+ */
+
+import { BUNDLE } from "@/config/monetization";
+
+export interface Props {
+  /** Size / prominence. Defaults to "medium". */
+  variant?: "big" | "medium" | "compact";
+  /** Optional section id for anchor links. */
+  id?: string;
+}
+
+const { variant = "medium", id } = Astro.props;
+const live = BUNDLE.isLive;
+const href = BUNDLE.checkoutUrl;
+const cta = live ? "Get the bundle" : "See what's inside";
+const eventName = live ? "bundle_cta_click" : "bundle_interest_click";
+// Show regular price anchor when it differs from intro price (string compare
+// via cast avoids TS literal-type narrowing on const-asserted values).
+const showAnchor = String(BUNDLE.regularPrice) !== String(BUNDLE.price);
+---
+
+<section
+  class:list={["bundle-cta", `bundle-cta--${variant}`]}
+  id={id}
+  data-event={eventName}
+>
+  <div class:list={["bundle-cta__inner", variant !== "compact" && "container-wide"]}>
+    <div class="bundle-cta__body">
+      <p class="eyebrow">From the archive</p>
+      <h2 class="bundle-cta__title text-balance">
+        {BUNDLE.name}
+        <span class="bundle-cta__sub">{BUNDLE.tagline}</span>
+      </h2>
+
+      {variant !== "compact" && (
+        <ul class="bundle-cta__list">
+          {BUNDLE.includes.map((line) => <li>{line}</li>)}
+        </ul>
+      )}
+
+      <div class="bundle-cta__actions">
+        <a
+          href={href}
+          class="btn btn-primary"
+          data-event={eventName}
+          rel={live ? "noopener" : undefined}
+          target={live ? "_blank" : undefined}
+        >
+          {cta} {live && <span class="bundle-cta__price">{BUNDLE.price}</span>}
+        </a>
+        {live && showAnchor && (
+          <p class="bundle-cta__anchor">
+            Regular {BUNDLE.regularPrice} — intro price while V1 is stabilising.
+          </p>
+        )}
+        {!live && (
+          <p class="bundle-cta__anchor">
+            Launching soon. The free archive stays free, always.
+          </p>
+        )}
+      </div>
+    </div>
+
+    {variant === "big" && (
+      <div class="bundle-cta__aside plate" aria-hidden="true">
+        <div class="bundle-cta__swatches">
+          <span style="background:#9A2A2A" />
+          <span style="background:#1B2A4E" />
+          <span style="background:#F4EEE0" />
+          <span style="background:#A3C293" />
+          <span style="background:#4C5D3F" />
+        </div>
+        <p class="bundle-cta__note">
+          Every palette, five formats — Figma, Tailwind, CSS, SVG, JSON.
+        </p>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .bundle-cta {
+    padding-block: var(--spacing-section);
+    border-block: 1px solid var(--color-border);
+    background-color: var(--color-paper-100);
+  }
+
+  .bundle-cta--compact {
+    padding-block: 2.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    margin-block: 3rem 1rem;
+  }
+
+  .bundle-cta--big {
+    background-color: var(--color-paper-50);
+  }
+
+  .bundle-cta__inner {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .bundle-cta--big .bundle-cta__inner {
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 960px) {
+    .bundle-cta--big .bundle-cta__inner {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+
+  .bundle-cta--compact .bundle-cta__inner {
+    max-width: 52rem;
+    margin-inline: auto;
+    padding-inline: 1.75rem;
+  }
+
+  .bundle-cta__body .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .bundle-cta__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 2.5vw + 1rem, 2.75rem);
+    line-height: 1.15;
+    margin: 0 0 1.25rem;
+    color: var(--color-ink-900);
+  }
+
+  .bundle-cta--compact .bundle-cta__title {
+    font-size: clamp(1.375rem, 1.5vw + 1rem, 1.875rem);
+    margin-bottom: 0.75rem;
+  }
+
+  .bundle-cta__sub {
+    display: block;
+    margin-top: 0.25rem;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 0.62em;
+    color: var(--color-ink-500);
+  }
+
+  .bundle-cta__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    display: grid;
+    gap: 0.625rem;
+    max-width: 48ch;
+  }
+
+  .bundle-cta__list li {
+    font-size: 0.9375rem;
+    color: var(--color-ink-700);
+    line-height: 1.55;
+    padding-left: 1.125rem;
+    position: relative;
+  }
+
+  .bundle-cta__list li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent-500);
+  }
+
+  .bundle-cta__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .bundle-cta__price {
+    margin-left: 0.5rem;
+    font-weight: 600;
+    opacity: 0.85;
+  }
+
+  .bundle-cta__anchor {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin: 0;
+    max-width: none;
+  }
+
+  /* Aside — the swatch card visible in the big variant */
+  .bundle-cta__aside {
+    padding: 2rem;
+    text-align: center;
+    max-width: 26rem;
+    justify-self: end;
+  }
+
+  @media (max-width: 960px) {
+    .bundle-cta__aside {
+      justify-self: start;
+      max-width: none;
+      width: 100%;
+    }
+  }
+
+  .bundle-cta__swatches {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    height: 8rem;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    margin-bottom: 1rem;
+  }
+
+  .bundle-cta__swatches span {
+    display: block;
+    height: 100%;
+  }
+
+  .bundle-cta__note {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.9375rem;
+    color: var(--color-ink-500);
+    margin: 0;
+    max-width: none;
+  }
+</style>

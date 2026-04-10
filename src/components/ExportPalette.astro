@@ -54,16 +54,16 @@ const jsonExport = JSON.stringify(
   </div>
 
   <div class="export__buttons" role="group" aria-label="Export formats">
-    <button type="button" class="export__btn" data-copy="hex">
+    <button type="button" class="export__btn" data-copy="hex" data-event="export_click" data-format="hex">
       Copy hex list
     </button>
-    <button type="button" class="export__btn" data-copy="tailwind">
+    <button type="button" class="export__btn" data-copy="tailwind" data-event="export_click" data-format="tailwind">
       Copy Tailwind config
     </button>
-    <button type="button" class="export__btn" data-copy="css">
+    <button type="button" class="export__btn" data-copy="css" data-event="export_click" data-format="css">
       Copy CSS variables
     </button>
-    <button type="button" class="export__btn" data-copy="json">
+    <button type="button" class="export__btn" data-copy="json" data-event="export_click" data-format="json">
       Download JSON
     </button>
   </div>

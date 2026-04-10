@@ -21,13 +21,37 @@
 - [x] `P2` WRITE README + deploy instructions — `README.md` [id:readme] [needs:verify-build] [score:4.0] ✓ Full stack docs, deploy steps, post-launch TODO
 - [x] `P2` WRITE GROWTH.md + GROWTH_ANALYTICS.md skeleton for post-launch tracking — `.claude/state/GROWTH*.md` [id:growth-state] [needs:verify-build] [score:4.5] ✓ Channels, funnel, KPIs, experiments seeded
 
+## Queue — Monetization V1 [objective:monetization-v1]
+
+- [ ] `P0` CREATE monetization config — centralize Gumroad URL, Bookshop.org ID, Printful URL — `src/config/monetization.ts` [id:monet-config] [score:12.5]
+- [ ] `P0` CREATE bundle generation script — package 30 palettes into Figma/Tailwind/CSS/SVG/JSON bundle for Gumroad upload — `scripts/build-bundle.mjs` [id:bundle-script] [needs:monet-config] [score:12.0]
+- [ ] `P0` CREATE BundleCta component — editorial "get the bundle" CTA used on palette-detail + homepage + shop — `src/components/BundleCta.astro` [id:bundle-cta] [needs:monet-config] [score:11.5]
+- [ ] `P0` CREATE FurtherReading component — affiliate book list (Wada, Albers, Eiseman) for About + palette pages — `src/components/FurtherReading.astro` [id:further-reading] [needs:monet-config] [score:11.0]
+- [ ] `P0` CREATE /shop landing page — museum gift shop: bundle + books + future prints — `src/pages/shop.astro` [id:shop-page] [needs:bundle-cta,further-reading] [score:10.5]
+- [ ] `P1` INTEGRATE BundleCta + FurtherReading into palette-detail pages — `src/pages/palettes/[slug].astro` [id:integ-palette] [needs:bundle-cta,further-reading] [score:10.0]
+- [ ] `P1` INTEGRATE BundleCta into homepage — above newsletter — `src/pages/index.astro` [id:integ-home] [needs:bundle-cta] [score:9.5]
+- [ ] `P1` INTEGRATE FurtherReading into about page — editorial "further reading" section — `src/pages/about.astro` [id:integ-about] [needs:further-reading] [score:9.0]
+- [ ] `P1` UPDATE footer — add "Shop" column with bundle/books/prints/newsletter links — `src/components/SiteFooter.astro` [id:footer-shop] [needs:shop-page] [score:8.5]
+- [ ] `P1` ADD Plausible analytics script + event hooks — privacy-first tracking for bundle_cta_click, bookshop_click, export_click, newsletter_signup — `src/layouts/BaseLayout.astro` [id:analytics] [score:8.0]
+- [ ] `P1` GENERATE bundle files — run bundle-script, verify wada-bundle-v1.zip exists and contains valid JSON/CSS/tokens [id:bundle-output] [needs:bundle-script] [score:7.5]
+- [ ] `P1` VERIFY build passes — `npm run build`, 0 errors/warnings, new pages included in sitemap [id:verify-monet] [needs:integ-palette,integ-home,integ-about,footer-shop,shop-page,analytics] [score:7.0]
+- [ ] `P0` DEPLOY to Cloudflare Pages — `wrangler pages deploy dist --project-name=colorcombinations --branch=main` [id:deploy-monet] [needs:verify-monet] [score:6.5]
+- [ ] `P1` VERIFY live — curl test /shop, /palettes/kurenai-kon, /about, check BundleCta renders [id:verify-live] [needs:deploy-monet] [score:6.0]
+- [ ] `P1` UPDATE state files — DECISIONS.md (monetization strategy), KNOWLEDGE.md (revenue model), GROWTH.md (post-launch funnel update), GROWTH_ANALYTICS.md (hypotheses + measurement plan) [id:state-monet] [score:5.5]
+- [ ] `P0` WRITE [👤] handoff guide — operator actions to activate revenue (Gumroad signup + upload bundle, Bookshop.org signup, Amazon Associates, Plausible signup, Printful future) [id:handoff-monet] [score:10.0]
+
 ## Human Actions (TaskAssistant)
 
 - [x] `P0` BUY domain colorcombinations.org — `platform:cloudflare-registrar` [id:buy-domain] [score:10.0] ✓ Bought via Cloudflare Registrar 2026-04-10 (pivoted from Namecheap → cleaner because registrar + hosting in same ecosystem)
-- [x] `P0` CONNECT repo to Cloudflare Pages + custom domain — `platform:cloudflare-pages` [id:deploy-cloudflare-pages] [needs:buy-domain] [score:9.5] ✓ DEPLOYED 2026-04-10 via `wrangler pages deploy dist` (web UI was glitchy, pivoted to CLI). Project: acevaultorg/colorcombinations on acevaultorg Team plan. Custom domain colorcombinations.org attached + SSL provisioned in <60s (Cloudflare Registrar + Pages colocation). 34 pages live, all routes 200, custom 404 serving, security headers applied (CSP, XFO, Permissions-Policy, Referrer-Policy). Also fixed Astro trailingSlash: "never" → "always" to eliminate 308 redirect hops on CF Pages directory serving.
+- [x] `P0` CONNECT repo to Cloudflare Pages + custom domain — `platform:cloudflare-pages` [id:deploy-cloudflare-pages] [needs:buy-domain] [score:9.5] ✓ DEPLOYED 2026-04-10 via `wrangler pages deploy dist` — 34 pages live, all routes 200, custom 404 serving, security headers applied. Also fixed trailing-slash redirect hop.
+- [👤] `P0` SIGN UP for Gumroad (or Lemonsqueezy) seller account + upload `bundle-source/wada-bundle-v1.zip` as $9 product — `platform:gumroad` [id:gumroad-setup] [score:12.0] 👤 REVENUE-CRITICAL
+- [👤] `P0` SIGN UP for Bookshop.org affiliate (instant, free) + get affiliate ID — `platform:bookshop.org` [id:bookshop-setup] [score:11.5] 👤 REVENUE-CRITICAL
+- [👤] `P1` PASTE Gumroad product URL + Bookshop.org affiliate ID into `src/config/monetization.ts` + redeploy — `file:monetization.ts` [id:monet-wire] [needs:gumroad-setup,bookshop-setup] [score:11.0] 👤
+- [👤] `P1` SIGN UP for Plausible (9/mo) or self-host Umami free + paste script domain — `platform:plausible` [id:plausible-setup] [score:9.0] 👤 measurement rail — can't optimize what you don't measure
+- [👤] `P2` SIGN UP for Amazon Associates + get tag + paste into monetization config (backup for books not on Bookshop) — `platform:amazon-associates` [id:amazon-setup] [score:6.0] 👤
+- [👤] `P2` SET UP Printful store when first Gumroad sale hits (validates demand) — `platform:printful` [id:printful-setup] [score:5.0] 👤
 - [👤] `P1` WIRE real email provider to newsletter form — `platform:convertkit|mailerlite` [id:wire-email] [score:7.0] 👤 Replace placeholder action URL in EmailCapture.astro with real endpoint
 - [👤] `P2` GENERATE 1200x630 og-default.png — `tool:figma|canva` [id:og-png] [score:5.0] 👤 SVG works for most crawlers but PNG is safer for Twitter/FB/LinkedIn previews
-- [👤] `P2` SET UP Plausible analytics (or similar) — `platform:plausible` [id:analytics] [score:5.5] 👤 Add script tag in BaseLayout.astro head; track RPU, export clicks, newsletter signups
 
 ## Blocked
 
@@ -36,8 +60,8 @@
 ## Deferred to V2
 
 - Full Sanzo Wada 348 dataset import (requires verified source)
-- Live Stripe checkout for Pro tier (V1 uses placeholder link)
-- Printful/Gelato print-on-demand API integration (V1 uses affiliate links)
+- Live Stripe Pro tier subscription (V1 uses Gumroad one-time bundle instead — simpler, no accounts)
+- Printful/Gelato POD API integration (V1 uses external store link)
 - Blog content — 3 pillar articles on color theory, Wada history, palette usage
 - Custom OG image generation per palette (V1 uses static default)
 - Advanced filters (color distance search, accessibility ratio)

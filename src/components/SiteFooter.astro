@@ -25,6 +25,15 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="site-footer__col">
+      <p class="eyebrow">Shop</p>
+      <ul>
+        <li><a href="/shop">Gift shop</a></li>
+        <li><a href="/shop#bundle">Palette bundle</a></li>
+        <li><a href="/shop#prints">Prints &amp; posters</a></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
       <p class="eyebrow">Connect</p>
       <ul>
         <li><a href="/#newsletter">Newsletter</a></li>
@@ -50,9 +59,16 @@ const year = new Date().getFullYear();
 
   .site-footer__inner {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
     gap: 3rem;
     padding-block: 3rem;
+  }
+
+  @media (max-width: 900px) {
+    .site-footer__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
   }
 
   @media (max-width: 640px) {
