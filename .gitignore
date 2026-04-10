@@ -7,3 +7,11 @@ out/
 .vercel/
 .DS_Store
 *.log
+
+# Astro
+dist/
+.astro/
+
+# Editor
+.vscode/
+.idea/
