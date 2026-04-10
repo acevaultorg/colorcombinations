@@ -1,0 +1,175 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "About";
+const description =
+  "Why this archive exists, who Sanzo Wada was, and how to use the dictionary in real design work.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: title,
+  description,
+  url: new URL("/about", Astro.site).toString(),
+  isPartOf: {
+    "@type": "WebSite",
+    name: "The Dictionary of Color Combinations",
+    url: Astro.site?.toString(),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="about section">
+    <div class="container-prose about__inner">
+      <header class="about__header">
+        <p class="eyebrow">About</p>
+        <h1 class="text-balance">A modern dictionary for a 90-year-old idea.</h1>
+      </header>
+
+      <div class="prose">
+        <p class="about__lede">
+          In 1933, a Japanese painter named Sanzo Wada published a six-volume
+          book cataloging 348 color combinations drawn from traditional Japanese
+          dyes, textiles, and cultural practice. It became an underground
+          reference for designers, fashion editors, and color-theory nerds for
+          the next ninety years — precisely because it was
+          <em>curated</em>, not generated.
+        </p>
+
+        <p>
+          This site is an attempt to bring that curatorial spirit to the web.
+          Not a palette generator. Not a library of infinite randomized swatches.
+          A dictionary. With entries. With sources. With stories.
+        </p>
+
+        <h2>Who was Sanzo Wada?</h2>
+
+        <p>
+          Sanzo Wada (和田 三造, 1883–1967) was a painter, costume designer, and
+          color researcher. He was trained in Western oil painting at the Tokyo
+          School of Fine Arts, lived and studied in Europe, then returned to
+          Japan where he spent decades documenting traditional color names and
+          combinations from weaving, dyeing, printmaking, and costume. In 1953
+          he won the first Academy Award for Best Costume Design for the film
+          <em>Gate of Hell</em>.
+        </p>
+
+        <p>
+          His <em>Dictionary of Color Combinations</em> (
+          <span lang="ja">配色事典</span>) was a reference book, not a coffee-table
+          object — each plate paired two or three colors and gave them context.
+          It's out of print in the original, though Seigensha has republished
+          portions of it.
+        </p>
+
+        <h2>Why not just copy the book?</h2>
+
+        <p>
+          Because that's not how copyright works, and it's not how good reference
+          works either. Color values — the hex tuples themselves — are facts. They
+          can't be owned. Traditional Japanese color names and the cultural knowledge
+          around them have been in the public domain for centuries. But Wada's specific
+          curatorial decisions, the sequence of plates, the editorial layout, and the
+          Seigensha republication all have their own rights.
+        </p>
+
+        <p>
+          So this archive is <em>inspired by</em>, not copied from. The combinations
+          here draw on the same tradition Wada did — traditional shikisai (色彩) names,
+          historical eras, and the underlying cultural context — but they are assembled
+          independently. Over time, with proper sourcing, the full Wada catalog may find
+          its way here too. For now: thirty carefully-chosen combinations, each rooted in
+          the same tradition that inspired Wada, each documented and exportable.
+        </p>
+
+        <h2>How to use it</h2>
+
+        <ul>
+          <li>
+            <strong>Designers:</strong> browse by mood or era, copy the hex list, and
+            use as a starting point. Every palette has a documented historical context
+            you can defend in a client review.
+          </li>
+          <li>
+            <strong>Developers:</strong> hit the Tailwind config and CSS variables export.
+            The hex values work in any framework, any language.
+          </li>
+          <li>
+            <strong>Artists:</strong> the traditional Japanese names (with kanji and
+            romaji) map to real pigments and dyes. Search the names to find historical
+            references.
+          </li>
+          <li>
+            <strong>Writers + historians:</strong> each palette includes a description
+            of when, where, and why these colors were used together.
+          </li>
+        </ul>
+
+        <h2>What about the rest of the 348?</h2>
+
+        <p>
+          This is V1. The archive will grow. If you want to be notified when new
+          palettes are added, sign up for the once-a-week newsletter on the
+          <a href="/#newsletter">home page</a>. No spam. Just one palette, one era, one story.
+        </p>
+
+        <h2>Credits & ethics</h2>
+
+        <p>
+          The traditional Japanese color names used here are part of the cultural commons
+          and have been in use for centuries. Historical context, descriptions, and
+          curatorial decisions are original work. No images or text from Wada's book or
+          its modern republications are reproduced here.
+        </p>
+
+        <p>
+          If you're the rights holder of something you believe is reproduced here in error,
+          please get in touch:
+          <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>.
+        </p>
+
+        <blockquote>
+          &ldquo;Color is a power which directly influences the soul.&rdquo;<br />
+          <span class="about__attribution">— Wassily Kandinsky, 1911</span>
+        </blockquote>
+
+        <p class="about__cta">
+          <a href="/browse" class="btn btn-primary">Browse the archive →</a>
+        </p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-top: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .about__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .about__header .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .about__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.2vw + 0.75rem, 1.25rem);
+    line-height: 1.65;
+    color: var(--color-ink-900);
+    margin-bottom: 2rem;
+  }
+
+  .about__attribution {
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+    font-style: normal;
+  }
+
+  .prose .about__cta {
+    margin-top: 3rem;
+  }
+</style>

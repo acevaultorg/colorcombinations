@@ -1,0 +1,341 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PaletteCard from "@components/PaletteCard.astro";
+import { allPalettes } from "@data/palettes";
+
+const palettes = allPalettes();
+const total = palettes.length;
+
+// Collect unique filter values from the actual data.
+const eras = Array.from(new Set(palettes.map((p) => p.era))).sort();
+const hues = Array.from(new Set(palettes.map((p) => p.dominantHue))).sort();
+const moods = Array.from(new Set(palettes.flatMap((p) => p.moods))).sort();
+
+const title = "Browse all palettes";
+const description = `Filter and explore all ${total} historically-grounded color combinations by era, dominant hue, or mood.`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: title,
+  description,
+  url: new URL("/browse", Astro.site).toString(),
+  numberOfItems: total,
+  isPartOf: {
+    "@type": "WebSite",
+    name: "The Dictionary of Color Combinations",
+    url: Astro.site?.toString(),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <section class="browse-hero">
+    <div class="container-wide browse-hero__inner">
+      <p class="eyebrow">All combinations</p>
+      <h1 class="text-balance">
+        Browse {total} palettes.
+      </h1>
+      <p class="browse-hero__lede">
+        Filter by historical era, dominant hue, or mood. Click any palette to see its story, copy the hex values, or download as JSON.
+      </p>
+    </div>
+  </section>
+
+  <section class="browse-tools">
+    <div class="container-wide">
+      <form class="browse-form" role="search" aria-label="Filter palettes">
+        <label class="browse-field">
+          <span class="browse-field__label">Search</span>
+          <input
+            type="search"
+            id="search"
+            name="q"
+            placeholder="Title, color name, mood…"
+            autocomplete="off"
+            data-browse-filter="q"
+          />
+        </label>
+
+        <label class="browse-field">
+          <span class="browse-field__label">Era</span>
+          <select data-browse-filter="era">
+            <option value="">All eras</option>
+            {eras.map((e) => (
+              <option value={e}>{e.charAt(0).toUpperCase() + e.slice(1)}</option>
+            ))}
+          </select>
+        </label>
+
+        <label class="browse-field">
+          <span class="browse-field__label">Hue</span>
+          <select data-browse-filter="hue">
+            <option value="">All hues</option>
+            {hues.map((h) => (
+              <option value={h}>{h.charAt(0).toUpperCase() + h.slice(1)}</option>
+            ))}
+          </select>
+        </label>
+
+        <label class="browse-field">
+          <span class="browse-field__label">Mood</span>
+          <select data-browse-filter="mood">
+            <option value="">All moods</option>
+            {moods.map((m) => (
+              <option value={m}>{m.charAt(0).toUpperCase() + m.slice(1)}</option>
+            ))}
+          </select>
+        </label>
+
+        <button type="reset" class="browse-form__reset" data-browse-reset>
+          Reset
+        </button>
+      </form>
+
+      <p class="browse-count" aria-live="polite" role="status">
+        Showing <span data-browse-count>{total}</span> of {total} palettes
+      </p>
+    </div>
+  </section>
+
+  <section class="browse-grid-section">
+    <div class="container-wide">
+      <div class="palette-grid" role="list" data-browse-grid>
+        {palettes.map((palette) => (
+          <div
+            role="listitem"
+            data-palette-item
+            data-era={palette.era}
+            data-hue={palette.dominantHue}
+            data-moods={palette.moods.join(",")}
+            data-search={`${palette.title} ${palette.titleJa ?? ""} ${palette.summary} ${palette.colors.map((c) => `${c.nameRomaji ?? ""} ${c.nameJa ?? ""}`).join(" ")} ${(palette.tags ?? []).join(" ")}`.toLowerCase()}
+          >
+            <PaletteCard palette={palette} headingLevel="h3" />
+          </div>
+        ))}
+      </div>
+
+      <p class="browse-empty" data-browse-empty hidden>
+        No palettes match these filters. <button type="button" data-browse-reset class="browse-empty__reset">Clear filters</button>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Client-side filter — pure DOM, no framework, no rebuild.
+  const grid = document.querySelector<HTMLElement>("[data-browse-grid]");
+  const countEl = document.querySelector<HTMLElement>("[data-browse-count]");
+  const emptyEl = document.querySelector<HTMLElement>("[data-browse-empty]");
+  if (!grid || !countEl || !emptyEl) {
+    // nothing to wire — exit gracefully
+  } else {
+    const items = Array.from(grid.querySelectorAll<HTMLElement>("[data-palette-item]"));
+    const state = { q: "", era: "", hue: "", mood: "" };
+
+    const applyFilters = (): void => {
+      let visible = 0;
+      const q = state.q.trim().toLowerCase();
+      items.forEach((item) => {
+        const matchesEra = !state.era || item.dataset.era === state.era;
+        const matchesHue = !state.hue || item.dataset.hue === state.hue;
+        const matchesMood =
+          !state.mood ||
+          (item.dataset.moods ?? "").split(",").includes(state.mood);
+        const matchesQ = !q || (item.dataset.search ?? "").includes(q);
+        const show = matchesEra && matchesHue && matchesMood && matchesQ;
+        item.hidden = !show;
+        if (show) visible += 1;
+      });
+      countEl.textContent = String(visible);
+      emptyEl.hidden = visible !== 0;
+    };
+
+    document
+      .querySelectorAll<HTMLInputElement | HTMLSelectElement>("[data-browse-filter]")
+      .forEach((input) => {
+        const handler = (): void => {
+          const k = input.dataset.browseFilter as keyof typeof state;
+          if (k) state[k] = input.value;
+          applyFilters();
+        };
+        input.addEventListener("input", handler);
+        input.addEventListener("change", handler);
+      });
+
+    document.querySelectorAll<HTMLButtonElement>("[data-browse-reset]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        (document.querySelectorAll<HTMLInputElement | HTMLSelectElement>("[data-browse-filter]")).forEach((el) => {
+          el.value = "";
+        });
+        state.q = "";
+        state.era = "";
+        state.hue = "";
+        state.mood = "";
+        applyFilters();
+      });
+    });
+  }
+</script>
+
+<style>
+  .browse-hero {
+    padding-top: clamp(2rem, 6vw, 4rem);
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .browse-hero__inner {
+    max-width: 58rem;
+  }
+
+  .browse-hero h1 {
+    margin-block: 0.5rem 1rem;
+  }
+
+  .browse-hero__lede {
+    color: var(--color-ink-700);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    max-width: 58ch;
+  }
+
+  .browse-tools {
+    background-color: var(--color-paper-100);
+    border-block: 1px solid var(--color-border);
+    padding-block: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .browse-form {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  @media (max-width: 880px) {
+    .browse-form {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .browse-form {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .browse-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .browse-field__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-500);
+  }
+
+  .browse-field input,
+  .browse-field select {
+    padding: 0.625rem 0.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    border: 1px solid var(--color-ink-300);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-900);
+    appearance: none;
+    min-height: 2.75rem;
+  }
+
+  .browse-field select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4 L6 8 L10 4' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+  }
+
+  .browse-field input:focus-visible,
+  .browse-field select:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+    border-color: var(--color-accent-500);
+  }
+
+  .browse-form__reset {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    padding: 0.625rem 1rem;
+    border: 1px solid var(--color-ink-300);
+    background: transparent;
+    color: var(--color-ink-700);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    min-height: 2.75rem;
+  }
+
+  .browse-form__reset:hover {
+    border-color: var(--color-ink-900);
+    color: var(--color-ink-900);
+  }
+
+  .browse-count {
+    margin: 1rem 0 0;
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+  }
+
+  .browse-count [data-browse-count] {
+    font-weight: 600;
+    color: var(--color-ink-900);
+  }
+
+  .palette-grid {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(1, 1fr);
+    padding-bottom: 4rem;
+  }
+
+  @media (min-width: 640px) {
+    .palette-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .palette-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .palette-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .browse-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--color-ink-500);
+    font-size: 1.0625rem;
+    margin: 0;
+    max-width: none;
+  }
+
+  .browse-empty__reset {
+    background: none;
+    border: none;
+    color: var(--color-accent-500);
+    cursor: pointer;
+    font-size: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 0;
+  }
+</style>
