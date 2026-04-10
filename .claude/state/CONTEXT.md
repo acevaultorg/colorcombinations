@@ -26,13 +26,39 @@
 - Zero circuit breaker opens, zero mistake loop entries
 - Domain recommendation REVISED: colorcombinations.org ALONE is the right pick (not bundle) — see session summary reasoning
 
-### Next Actions (when user resumes)
+### DONE this session (all `[👤]` deploy tasks complete)
 
-**Domain purchased:** `colorcombinations.org` — bought via Cloudflare Registrar 2026-04-10. ✓
+1. ✓ Domain `colorcombinations.org` purchased via Cloudflare Registrar (€6.36/yr)
+2. ✓ Repo pushed to `acevaultorg/colorcombinations` (public, Team plan)
+3. ✓ Cloudflare Workers and Pages GitHub App installed on acevaultorg (scoped to colorcombinations only)
+4. ✓ Cloudflare Pages project `colorcombinations` created
+5. ✓ First deploy via `wrangler pages deploy dist` — 41 files, 3 sec upload (web UI glitchy, pivoted to CLI)
+6. ✓ Trailing-slash fix (Astro `never` → `always`) — eliminated 308 redirect hops
+7. ✓ Custom domain `colorcombinations.org` attached + SSL auto-provisioned (<60s, registrar + hosting colocated)
+8. ✓ Full smoke test: 11 routes all 200, custom 404 working, all security headers at edge
+9. ✓ Final commits pushed to main
 
-**Repo pushed:** https://github.com/acevaultorg/colorcombinations (public, main branch, on the Team plan org). ✓
+### Next Actions (remaining `[👤]` items, priority order)
 
-**Deploy target:** Cloudflare Pages (pivoted from Vercel — same ecosystem as registrar)
+1. `[👤] P1 wire-email` — Replace `https://forms.example.com/subscribe` in `src/components/EmailCapture.astro` with real ConvertKit/MailerLite endpoint
+2. `[👤] P2 analytics` — Add Plausible `<script>` tag to `src/layouts/BaseLayout.astro` `<head>`
+3. `[👤] P2 og-png` — Generate 1200×630 PNG version of OG image for Twitter/FB/LinkedIn
+4. **Post-launch promotion**: Show HN, r/web_design, Twitter launch thread (growth playbook in `.claude/state/GROWTH.md`)
+5. **SEO**: Submit `https://colorcombinations.org/sitemap-index.xml` to Google Search Console + Bing Webmaster Tools
+
+### How to redeploy after code changes
+
+```sh
+cd "path/to/ColorCombinations"
+npm run build
+wrangler pages deploy dist --project-name=colorcombinations --branch=main
+```
+
+Each deploy auto-promotes to `colorcombinations.pages.dev` + `colorcombinations.org`.
+
+### LEGACY — original plan (superseded)
+
+The section below describes the pre-deployment click-through guide. Kept for historical reference only — everything in it is DONE.
 
 **Human action required (click-through in Cloudflare dashboard — can't be automated):**
 
