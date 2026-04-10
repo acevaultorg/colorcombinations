@@ -1,0 +1,129 @@
+---
+import "@/styles/global.css";
+import SiteHeader from "@components/SiteHeader.astro";
+import SiteFooter from "@components/SiteFooter.astro";
+
+export interface Props {
+  title: string;
+  description: string;
+  /** Optional canonical path override. Defaults to the current URL. */
+  canonical?: string;
+  /** Open Graph / Twitter image URL (defaults to site default) */
+  image?: string;
+  /** OG type — default "website", use "article" on palette pages */
+  type?: "website" | "article";
+  /** Optional JSON-LD structured data payload */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** Keywords array for meta keywords (optional — Google ignores, but useful for other engines) */
+  keywords?: string[];
+  /** Suppress indexing (used on 404) */
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  image = "/og-default.png",
+  type = "website",
+  jsonLd,
+  keywords,
+  noIndex = false,
+} = Astro.props;
+
+const siteName = "The Dictionary of Color Combinations";
+const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
+const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).toString();
+const imageUrl = new URL(image, Astro.site).toString();
+
+const jsonLdArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {keywords && keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Icons & manifest -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <!-- Sitemap discovery -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Preload editorial fonts via Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    {jsonLdArray.map((entry) => (
+      <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify(entry)}
+      />
+    ))}
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <SiteHeader />
+    <main id="main" class="site-main">
+      <slot />
+    </main>
+    <SiteFooter />
+
+    <style>
+      .skip-link {
+        position: absolute;
+        left: -10000px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+      .skip-link:focus {
+        position: static;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        background: var(--color-ink-900);
+        color: var(--color-paper-50);
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius-md);
+        margin: 0.5rem;
+        display: inline-block;
+      }
+
+      .site-main {
+        min-height: calc(100dvh - 200px);
+      }
+    </style>
+  </body>
+</html>

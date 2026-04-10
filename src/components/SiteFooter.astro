@@ -1,0 +1,133 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container-wide site-footer__inner">
+    <div class="site-footer__col site-footer__about">
+      <p class="site-footer__mark">
+        <span class="title-ja">色の辞典</span>
+        The Dictionary of Color Combinations
+      </p>
+      <p class="site-footer__tagline">
+        Historically-grounded color palettes inspired by the tradition of
+        Sanzo Wada's 1933 dictionary.
+      </p>
+    </div>
+
+    <div class="site-footer__col">
+      <p class="eyebrow">Explore</p>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/browse">Browse palettes</a></li>
+        <li><a href="/about">About the project</a></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <p class="eyebrow">Connect</p>
+      <ul>
+        <li><a href="/#newsletter">Newsletter</a></li>
+        <li><a href="mailto:hello@colorcombinations.org">Email</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="site-footer__meta">
+    <div class="container-wide site-footer__meta-inner">
+      <p>&copy; {year} The Dictionary of Color Combinations. Inspired by Sanzo Wada's 1933 tradition.</p>
+      <p>Color names and historical references are public-domain cultural knowledge.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--spacing-section);
+    background-color: var(--color-paper-100);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+    padding-block: 3rem;
+  }
+
+  @media (max-width: 640px) {
+    .site-footer__inner {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .site-footer__col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.75rem 0 0;
+  }
+
+  .site-footer__col li {
+    margin-bottom: 0.5rem;
+  }
+
+  .site-footer__col a {
+    color: var(--color-ink-700);
+    text-decoration: none;
+    font-size: 0.9375rem;
+  }
+
+  .site-footer__col a:hover {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .site-footer__mark {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin-bottom: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .site-footer__mark .title-ja {
+    font-size: 0.8em;
+  }
+
+  .site-footer__tagline {
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+    max-width: 40ch;
+  }
+
+  .site-footer__meta {
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-paper-200);
+    padding-block: 1.25rem;
+  }
+
+  .site-footer__meta-inner {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+  }
+
+  .site-footer__meta-inner p {
+    margin: 0;
+    max-width: none;
+  }
+
+  @media (max-width: 640px) {
+    .site-footer__meta-inner {
+      flex-direction: column;
+    }
+  }
+</style>

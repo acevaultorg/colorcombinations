@@ -1,0 +1,131 @@
+---
+const { pathname } = Astro.url;
+const isActive = (href: string): boolean => {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+};
+
+const links = [
+  { href: "/browse", label: "Browse" },
+  { href: "/about", label: "About" },
+] as const;
+---
+
+<header class="site-header">
+  <div class="container-wide site-header__inner">
+    <a href="/" class="site-header__brand" aria-label="The Dictionary of Color Combinations — home">
+      <span class="site-header__mark" aria-hidden="true">
+        <span class="site-header__dot" style="background-color: #9A2A2A;"></span>
+        <span class="site-header__dot" style="background-color: #1B2A4E;"></span>
+        <span class="site-header__dot" style="background-color: #F4EEE0;"></span>
+      </span>
+      <span class="site-header__wordmark">The Dictionary of<br />Color Combinations</span>
+    </a>
+
+    <nav class="site-header__nav" aria-label="Primary">
+      <ul>
+        {links.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              class={`site-header__link ${isActive(href) ? "is-active" : ""}`}
+              aria-current={isActive(href) ? "page" : undefined}
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-paper-50);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    backdrop-filter: saturate(120%) blur(8px);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1rem;
+  }
+
+  .site-header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-ink-900);
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.15;
+    text-decoration: none;
+    letter-spacing: -0.005em;
+  }
+
+  .site-header__brand:hover {
+    color: var(--color-ink-900);
+  }
+
+  .site-header__mark {
+    display: inline-flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .site-header__dot {
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 1px;
+    border: 1px solid rgba(20, 20, 20, 0.08);
+  }
+
+  .site-header__wordmark {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 400px) {
+    .site-header__wordmark {
+      display: none;
+    }
+  }
+
+  .site-header__nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+  }
+
+  .site-header__link {
+    color: var(--color-ink-700);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding-block: 0.25rem;
+    border-bottom: 1px solid transparent;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+
+  .site-header__link:hover {
+    color: var(--color-ink-900);
+    border-bottom-color: var(--color-ink-900);
+  }
+
+  .site-header__link.is-active {
+    color: var(--color-ink-900);
+    border-bottom-color: var(--color-accent-500);
+  }
+</style>
