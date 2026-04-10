@@ -1,0 +1,434 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PaletteCard from "@components/PaletteCard.astro";
+import ExportPalette from "@components/ExportPalette.astro";
+import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
+import { bestTextColorOn } from "@/lib/color";
+
+export async function getStaticPaths() {
+  return allPalettes().map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const palette = paletteBySlug(slug ?? "");
+
+if (!palette) {
+  return Astro.redirect("/404");
+}
+
+const related = relatedPalettes(palette, 3);
+
+const title = palette.title + (palette.titleJa ? ` (${palette.titleJa})` : "");
+const description = palette.summary;
+
+const keywords = [
+  palette.title,
+  `${palette.era} era`,
+  `${palette.dominantHue} palette`,
+  "color combination",
+  "Japanese color",
+  "Sanzo Wada",
+  ...(palette.tags ?? []),
+  ...palette.colors.flatMap((c) => [c.nameRomaji, c.nameJa].filter(Boolean) as string[]),
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: palette.title,
+    alternateName: palette.titleJa,
+    description: palette.summary,
+    url: new URL(`/palettes/${palette.slug}`, Astro.site).toString(),
+    abstract: palette.description,
+    keywords: keywords.join(", "),
+    about: palette.colors.map((c) => ({
+      "@type": "Thing",
+      name: c.nameRomaji ?? c.hex,
+      description: c.meaning,
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: new URL("/", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Browse",
+        item: new URL("/browse", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: palette.title,
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  type="article"
+  jsonLd={jsonLd}
+>
+  {/* ============ BREADCRUMB ============ */}
+  <nav class="breadcrumb container-wide" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li aria-hidden="true">›</li>
+      <li><a href="/browse">Browse</a></li>
+      <li aria-hidden="true">›</li>
+      <li aria-current="page">{palette.title}</li>
+    </ol>
+  </nav>
+
+  {/* ============ HERO ============ */}
+  <section class="palette-hero">
+    <div class="container-wide palette-hero__inner">
+      <div class="palette-hero__meta">
+        <p class="eyebrow">
+          {palette.era.charAt(0).toUpperCase() + palette.era.slice(1)} era
+          · {palette.moods.join(" · ")}
+        </p>
+        <h1 class="display-hero text-balance">
+          {palette.title}
+          {palette.titleJa && (
+            <span class="palette-hero__ja title-ja">{palette.titleJa}</span>
+          )}
+        </h1>
+        <p class="palette-hero__summary">{palette.summary}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ============ SWATCHES ============ */}
+  <section class="swatch-section">
+    <div class="container-wide">
+      <div class="swatch-row" style={`--swatch-count: ${palette.colors.length};`}>
+        {palette.colors.map((color) => {
+          const textTone = bestTextColorOn(color.hex);
+          return (
+            <div
+              class={`swatch-block swatch-block--${textTone}`}
+              style={`background-color: ${color.hex};`}
+            >
+              <div class="swatch-block__inner">
+                {color.nameJa && <p class="swatch-block__ja">{color.nameJa}</p>}
+                {color.nameRomaji && <p class="swatch-block__romaji">{color.nameRomaji}</p>}
+                <p class="swatch-block__hex">
+                  <code>{color.hex}</code>
+                </p>
+                {color.meaning && <p class="swatch-block__meaning">{color.meaning}</p>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  {/* ============ BODY + EXPORT ============ */}
+  <section class="section">
+    <div class="container-wide palette-body">
+      <article class="palette-body__prose prose">
+        <h2>About this combination</h2>
+        <p>{palette.description}</p>
+
+        {palette.usage && palette.usage.length > 0 && (
+          <>
+            <h2>Where it works</h2>
+            <ul>
+              {palette.usage.map((u) => <li>{u}</li>)}
+            </ul>
+          </>
+        )}
+
+        <h2>Historical context</h2>
+        <p>
+          This palette is inspired by the tradition of Sanzo Wada's 1933
+          <em> Dictionary of Color Combinations</em>, which cataloged combinations
+          drawn from centuries of Japanese cultural life. The specific colors
+          here use traditional shikisai names that have been in the public
+          domain for generations.
+        </p>
+      </article>
+
+      <aside class="palette-body__aside" aria-label="Export and metadata">
+        <ExportPalette palette={palette} />
+
+        <div class="palette-meta plate">
+          <h3>Details</h3>
+          <dl>
+            <dt>Era</dt>
+            <dd>{palette.era.charAt(0).toUpperCase() + palette.era.slice(1)}</dd>
+            <dt>Dominant hue</dt>
+            <dd>{palette.dominantHue}</dd>
+            <dt>Moods</dt>
+            <dd>{palette.moods.join(", ")}</dd>
+            <dt>Colors</dt>
+            <dd>{palette.colors.length}</dd>
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  {/* ============ RELATED ============ */}
+  {related.length > 0 && (
+    <section class="section related">
+      <div class="container-wide">
+        <header class="section-head">
+          <p class="eyebrow">Related combinations</p>
+          <h2>Three palettes with a similar feel.</h2>
+        </header>
+        <div class="palette-grid" role="list">
+          {related.map((p) => (
+            <div role="listitem">
+              <PaletteCard palette={p} headingLevel="h3" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .breadcrumb {
+    padding-top: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+  }
+
+  .breadcrumb a {
+    color: var(--color-ink-500);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .breadcrumb li[aria-current="page"] {
+    color: var(--color-ink-900);
+  }
+
+  .palette-hero {
+    padding-top: 2rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .palette-hero__inner {
+    max-width: 62rem;
+  }
+
+  .palette-hero__ja {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.55em;
+    letter-spacing: 0.04em;
+  }
+
+  .palette-hero__summary {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.2vw + 0.75rem, 1.3125rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin-top: 1.5rem;
+    max-width: 58ch;
+  }
+
+  .palette-hero .eyebrow {
+    margin-bottom: 1rem;
+  }
+
+  /* SWATCH ROW — big display blocks */
+  .swatch-section {
+    margin-bottom: 3rem;
+  }
+
+  .swatch-row {
+    display: grid;
+    grid-template-columns: repeat(var(--swatch-count), 1fr);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-plate);
+    min-height: clamp(16rem, 30vh, 22rem);
+  }
+
+  @media (max-width: 720px) {
+    .swatch-row {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+  }
+
+  .swatch-block {
+    position: relative;
+    padding: 2rem 1.5rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    transition: transform 300ms ease;
+    min-height: 16rem;
+  }
+
+  .swatch-block--dark .swatch-block__inner {
+    color: var(--color-ink-900);
+  }
+
+  .swatch-block--light .swatch-block__inner {
+    color: #ffffff;
+  }
+
+  .swatch-block__ja {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0 0 0.125rem;
+    letter-spacing: 0.05em;
+  }
+
+  .swatch-block__romaji {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    font-style: italic;
+    margin: 0 0 0.5rem;
+    opacity: 0.85;
+    max-width: none;
+  }
+
+  .swatch-block__hex {
+    margin: 0 0 0.5rem;
+    max-width: none;
+  }
+
+  .swatch-block__hex code {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.05em;
+    padding: 0.125rem 0.375rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+  }
+
+  .swatch-block--dark .swatch-block__hex code {
+    background-color: rgba(20, 20, 20, 0.1);
+  }
+
+  .swatch-block__meaning {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    margin: 0;
+    opacity: 0.85;
+    max-width: 20ch;
+  }
+
+  /* BODY + ASIDE */
+  .palette-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  @media (min-width: 960px) {
+    .palette-body {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      gap: 4rem;
+    }
+  }
+
+  .palette-body__prose h2:first-child {
+    margin-top: 0;
+  }
+
+  .palette-body__aside {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 6rem;
+    align-self: start;
+  }
+
+  @media (max-width: 960px) {
+    .palette-body__aside {
+      position: static;
+    }
+  }
+
+  .palette-meta {
+    padding: 1.5rem;
+  }
+
+  .palette-meta h3 {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    margin: 0 0 1rem;
+  }
+
+  .palette-meta dl {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0.5rem 1rem;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .palette-meta dt {
+    color: var(--color-ink-500);
+    font-weight: 500;
+  }
+
+  .palette-meta dd {
+    margin: 0;
+    color: var(--color-ink-900);
+    text-transform: capitalize;
+  }
+
+  /* RELATED */
+  .related {
+    background-color: var(--color-paper-100);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .palette-grid {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .palette-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .palette-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

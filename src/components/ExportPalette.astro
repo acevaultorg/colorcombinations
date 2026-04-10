@@ -1,0 +1,209 @@
+---
+import type { Palette } from "@/types/palette";
+
+export interface Props {
+  palette: Palette;
+}
+
+const { palette } = Astro.props;
+
+// Pre-compute the export strings at build time so the client script is small.
+const hexList = palette.colors.map((c) => c.hex).join("\n");
+const tailwindTokens = JSON.stringify(
+  {
+    theme: {
+      extend: {
+        colors: Object.fromEntries(
+          palette.colors.map((c, i) => [
+            c.nameRomaji?.toLowerCase().replace(/\s+/g, "-") ??
+              `${palette.slug}-${i + 1}`,
+            c.hex,
+          ]),
+        ),
+      },
+    },
+  },
+  null,
+  2,
+);
+const cssVars = palette.colors
+  .map(
+    (c, i) =>
+      `  --${palette.slug}-${(c.nameRomaji ?? `${i + 1}`).toLowerCase().replace(/\s+/g, "-")}: ${c.hex};`,
+  )
+  .join("\n");
+const cssVarsBlock = `:root {\n${cssVars}\n}`;
+const jsonExport = JSON.stringify(
+  {
+    slug: palette.slug,
+    title: palette.title,
+    titleJa: palette.titleJa,
+    era: palette.era,
+    moods: palette.moods,
+    colors: palette.colors,
+  },
+  null,
+  2,
+);
+---
+
+<div class="export plate" data-export-palette>
+  <div class="export__head">
+    <h3>Export</h3>
+    <p>One click — no signup, no watermark.</p>
+  </div>
+
+  <div class="export__buttons" role="group" aria-label="Export formats">
+    <button type="button" class="export__btn" data-copy="hex">
+      Copy hex list
+    </button>
+    <button type="button" class="export__btn" data-copy="tailwind">
+      Copy Tailwind config
+    </button>
+    <button type="button" class="export__btn" data-copy="css">
+      Copy CSS variables
+    </button>
+    <button type="button" class="export__btn" data-copy="json">
+      Download JSON
+    </button>
+  </div>
+
+  <p class="export__status" aria-live="polite" role="status"></p>
+
+  {/* Hidden payloads — read by the client script */}
+  <script type="application/json" data-payload="hex" set:html={JSON.stringify(hexList)} />
+  <script type="application/json" data-payload="tailwind" set:html={JSON.stringify(tailwindTokens)} />
+  <script type="application/json" data-payload="css" set:html={JSON.stringify(cssVarsBlock)} />
+  <script type="application/json" data-payload="json" set:html={JSON.stringify(jsonExport)} />
+  <script type="application/json" data-payload="slug" set:html={JSON.stringify(palette.slug)} />
+</div>
+
+<script>
+  // Client-side export handler — scoped per component instance.
+  document.querySelectorAll<HTMLElement>("[data-export-palette]").forEach((root) => {
+    const status = root.querySelector<HTMLParagraphElement>(".export__status");
+    const payload = (key: string): string => {
+      const el = root.querySelector<HTMLScriptElement>(`[data-payload="${key}"]`);
+      if (!el || !el.textContent) return "";
+      return JSON.parse(el.textContent) as string;
+    };
+
+    const setStatus = (msg: string): void => {
+      if (!status) return;
+      status.textContent = msg;
+      window.setTimeout(() => {
+        if (status.textContent === msg) status.textContent = "";
+      }, 2200);
+    };
+
+    const copy = async (text: string, label: string): Promise<void> => {
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus(`✓ Copied ${label}`);
+      } catch {
+        // Fallback: textarea select + execCommand
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          setStatus(`✓ Copied ${label}`);
+        } catch {
+          setStatus("Copy failed — select the text manually");
+        }
+        document.body.removeChild(ta);
+      }
+    };
+
+    const download = (text: string, filename: string): void => {
+      const blob = new Blob([text], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setStatus(`✓ Downloaded ${filename}`);
+    };
+
+    root.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.copy ?? "";
+        if (key === "json") {
+          download(payload("json"), `${payload("slug")}.json`);
+        } else if (key === "hex") {
+          void copy(payload("hex"), "hex list");
+        } else if (key === "tailwind") {
+          void copy(payload("tailwind"), "Tailwind config");
+        } else if (key === "css") {
+          void copy(payload("css"), "CSS variables");
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .export {
+    padding: 1.5rem;
+  }
+
+  .export__head h3 {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    margin: 0 0 0.25rem;
+  }
+
+  .export__head p {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin: 0 0 1.25rem;
+    max-width: none;
+  }
+
+  .export__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .export__btn {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--color-ink-300);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-900);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: left;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease;
+  }
+
+  .export__btn:hover {
+    border-color: var(--color-ink-900);
+    background-color: var(--color-paper-100);
+  }
+
+  .export__btn:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+  }
+
+  .export__status {
+    min-height: 1.25rem;
+    font-size: 0.8125rem;
+    color: var(--color-accent-500);
+    margin: 0.75rem 0 0;
+    max-width: none;
+    font-weight: 500;
+  }
+</style>
