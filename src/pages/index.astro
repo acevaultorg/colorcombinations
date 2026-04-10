@@ -1,13 +1,336 @@
 ---
-// Temporary placeholder — replaced by homepage task
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PaletteCard from "@components/PaletteCard.astro";
+import { featuredPalettes, allPalettes } from "@data/palettes";
+
+const featured = featuredPalettes();
+const totalCount = allPalettes().length;
+
+const title = "The Dictionary of Color Combinations";
+const description =
+  "A curated archive of historically-grounded color combinations inspired by Sanzo Wada's 1933 Japanese color dictionary. Free to browse, copy, and use.";
+
+const keywords = [
+  "color combinations",
+  "color palettes",
+  "Sanzo Wada",
+  "Japanese colors",
+  "design reference",
+  "traditional colors",
+  "Wada color dictionary",
+  "historical palettes",
+  "design inspiration",
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: title,
+  url: Astro.site?.toString() ?? "https://colorcombinations.org",
+  description,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${Astro.site}browse?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>ColorCombinations</title>
-  </head>
-  <body>
-    <h1>ColorCombinations — scaffolding in progress</h1>
-  </body>
-</html>
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd}>
+  {/* ==================== HERO ==================== */}
+  <section class="hero section">
+    <div class="container-wide hero__inner">
+      <p class="eyebrow">Inspired by Sanzo Wada, 1933</p>
+      <h1 class="display-hero text-balance">
+        Historically grounded <em>color combinations</em>, free for working designers.
+      </h1>
+      <p class="hero__lede">
+        A curated reference of {totalCount} palettes drawn from traditional Japanese color names and the editorial sensibility of early 20th century color theorists. Every palette is documented, dated, and exportable.
+      </p>
+      <div class="hero__cta">
+        <a href="/browse" class="btn btn-primary">Browse all {totalCount} palettes</a>
+        <a href="#featured" class="btn btn-secondary">See featured</a>
+      </div>
+    </div>
+  </section>
+
+  {/* ==================== FEATURED ==================== */}
+  <section class="featured section" id="featured">
+    <div class="container-wide">
+      <header class="section-head">
+        <p class="eyebrow">Featured combinations</p>
+        <h2 class="text-balance">Eight palettes to start with.</h2>
+        <p class="section-lede">
+          A cross-section of the archive — from Heian court crimson to Edo merchant indigo — chosen because they work in real design projects today, not just as historical curiosity.
+        </p>
+      </header>
+
+      <div class="palette-grid" role="list">
+        {featured.map((palette) => (
+          <div role="listitem">
+            <PaletteCard palette={palette} headingLevel="h3" />
+          </div>
+        ))}
+      </div>
+
+      <div class="featured__footer">
+        <a href="/browse" class="btn btn-secondary">See all {totalCount} palettes →</a>
+      </div>
+    </div>
+  </section>
+
+  {/* ==================== HOW IT WORKS ==================== */}
+  <section class="how section">
+    <div class="container-wide">
+      <header class="section-head">
+        <p class="eyebrow">How to use this</p>
+        <h2 class="text-balance">Built for the way designers actually work.</h2>
+      </header>
+
+      <div class="how__grid">
+        <div class="how__item">
+          <p class="how__number">01</p>
+          <h3>Browse by era or hue</h3>
+          <p>Filter thirty combinations by historical era — Heian through Edo — or by dominant color. Every palette tells you where it came from.</p>
+        </div>
+        <div class="how__item">
+          <p class="how__number">02</p>
+          <h3>Copy the format you need</h3>
+          <p>Hex codes, Tailwind config, CSS variables, or raw JSON. One click, no signup.</p>
+        </div>
+        <div class="how__item">
+          <p class="how__number">03</p>
+          <h3>Learn the story</h3>
+          <p>Each palette carries the traditional Japanese names, meanings, and context — so you can defend your choices to clients.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ==================== NEWSLETTER ==================== */}
+  <section class="newsletter section" id="newsletter">
+    <div class="container-page">
+      <div class="newsletter__inner">
+        <p class="eyebrow">Newsletter</p>
+        <h2 class="text-balance">One palette a week. No spam, ever.</h2>
+        <p class="newsletter__lede">
+          Every Sunday: one combination, one era, one short story. Unsubscribe any time.
+        </p>
+        <form class="newsletter__form" action="https://forms.example.com/subscribe" method="post" novalidate>
+          <label class="sr-only" for="email">Email address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="your@email.com"
+          />
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+        <p class="newsletter__note">Free. No credit card. Archive stays readable forever.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ========== HERO ========== */
+  .hero {
+    padding-top: clamp(3rem, 8vw, 7rem);
+    padding-bottom: clamp(2rem, 6vw, 5rem);
+  }
+
+  .hero__inner {
+    max-width: 62rem;
+  }
+
+  .hero .eyebrow {
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--color-accent-500);
+  }
+
+  .hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.4vw + 0.75rem, 1.375rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    max-width: 58ch;
+    margin-top: 1.75rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ========== SECTION HEADERS ========== */
+  .section-head {
+    max-width: 58ch;
+    margin-bottom: 3rem;
+  }
+
+  .section-head .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .section-head h2 {
+    margin-bottom: 1rem;
+  }
+
+  .section-lede {
+    color: var(--color-ink-500);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    max-width: 52ch;
+  }
+
+  /* ========== PALETTE GRID ========== */
+  .palette-grid {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .palette-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .palette-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .palette-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .featured__footer {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  /* ========== HOW IT WORKS ========== */
+  .how {
+    background-color: var(--color-paper-100);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .how__grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (min-width: 720px) {
+    .how__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+  }
+
+  .how__item h3 {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    font-weight: 500;
+    margin: 0.75rem 0 0.75rem;
+  }
+
+  .how__item p {
+    color: var(--color-ink-700);
+    font-size: 1rem;
+    line-height: 1.65;
+    max-width: 34ch;
+  }
+
+  .how__number {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.1em;
+    color: var(--color-accent-500);
+    margin: 0;
+  }
+
+  /* ========== NEWSLETTER ========== */
+  .newsletter {
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+
+  .newsletter__inner {
+    text-align: center;
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+
+  .newsletter__inner .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .newsletter__lede {
+    color: var(--color-ink-500);
+    margin: 0.75rem auto 2rem;
+    max-width: 42ch;
+  }
+
+  .newsletter__form {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 28rem;
+    margin: 0 auto 1rem;
+  }
+
+  .newsletter__form input[type="email"] {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    font-family: var(--font-sans);
+    border: 1px solid var(--color-ink-300);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-900);
+  }
+
+  .newsletter__form input[type="email"]:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+    border-color: var(--color-accent-500);
+  }
+
+  .newsletter__note {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin: 0;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 520px) {
+    .newsletter__form {
+      flex-direction: column;
+    }
+  }
+</style>
