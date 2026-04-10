@@ -5,7 +5,7 @@
 ## Queue
 
 - [x] `P0` INIT Astro 5 project with Tailwind v4 + TypeScript strict — `package.json`, `astro.config.mjs`, `tsconfig.json` [id:astro-init] [score:13.0] ✓ Astro 5.18.1 + Tailwind 4
-- [ ] `P0` DEFINE palette data schema (TypeScript type + Astro content collection) — `src/content/config.ts` [id:palette-schema] [needs:astro-init] [score:12.0]
+- [x] `P0` DEFINE palette data schema (TypeScript type) — `src/types/palette.ts` [id:palette-schema] [needs:astro-init] [score:12.0] ✓ Pure TS types (simpler than content collections for V1)
 - [ ] `P0` SEED ~30 Wada-tradition palettes as structured data — `src/data/palettes.ts` [id:palette-seed] [needs:palette-schema] [score:11.5]
 - [ ] `P0` BUILD brand system — typography, colors, spacing tokens — `src/styles/global.css`, `tailwind.config.mjs` [id:brand-system] [needs:astro-init] [score:11.0]
 - [ ] `P0` BUILD base layout — header, footer, nav — `src/layouts/BaseLayout.astro` [id:base-layout] [needs:brand-system] [score:10.5]
