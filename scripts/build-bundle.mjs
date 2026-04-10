@@ -31,29 +31,37 @@ const OUT_DIR = join(ROOT, "bundle-source", BUNDLE_NAME);
 // -----------------------------------------------------------------------------
 
 async function loadPalettes() {
-  const src = await readFile(
-    join(ROOT, "src/data/palettes.ts"),
-    "utf8",
-  );
+  // Load both source files:
+  //   - curatedPalettes  from src/data/palettes.ts
+  //   - wadaPalettes     from src/data/wada-palettes.ts
+  // Both are declared as const array literals, so we can extract the literal
+  // with a regex and eval it — no TypeScript runtime required.
+  const extract = async (path, exportName) => {
+    const src = await readFile(path, "utf8");
+    const re = new RegExp(
+      `export const ${exportName}:\\s*Palette\\[\\]\\s*=\\s*(\\[[\\s\\S]*?\\n\\]);`,
+    );
+    const match = src.match(re);
+    if (!match) {
+      throw new Error(`Could not find ${exportName} in ${path}`);
+    }
+    // eslint-disable-next-line no-new-func
+    const arr = new Function(`return (${match[1]});`)();
+    if (!Array.isArray(arr)) {
+      throw new Error(`${exportName} is not an array`);
+    }
+    return arr;
+  };
 
-  // The file exports `export const palettes: Palette[] = [ ... ]`. Extract the
-  // array literal and eval it as JSON-ish. We use a tolerant approach:
-  //  - Strip the TypeScript type annotation
-  //  - Wrap the array in parentheses
-  //  - Use `new Function` to evaluate (Node's JSON.parse is too strict for JS)
-  const match = src.match(
-    /export const palettes:\s*Palette\[\]\s*=\s*(\[[\s\S]*?\n\]);/,
+  const curated = await extract(
+    join(ROOT, "src/data/palettes.ts"),
+    "curatedPalettes",
   );
-  if (!match) {
-    throw new Error("Could not find palettes array in src/data/palettes.ts");
-  }
-  const arrayLiteral = match[1];
-  // eslint-disable-next-line no-new-func
-  const palettes = new Function(`return (${arrayLiteral});`)();
-  if (!Array.isArray(palettes)) {
-    throw new Error("Parsed palettes is not an array");
-  }
-  return palettes;
+  const wada = await extract(
+    join(ROOT, "src/data/wada-palettes.ts"),
+    "wadaPalettes",
+  );
+  return [...curated, ...wada];
 }
 
 // -----------------------------------------------------------------------------

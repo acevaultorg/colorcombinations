@@ -18,24 +18,25 @@
 /** Bundle product — the primary revenue surface. */
 export const BUNDLE = {
   /** Public-facing product name. */
-  name: "The Wada Palette Bundle",
+  name: "The Complete Wada Bundle",
 
   /** One-liner used on CTAs. */
-  tagline: "All 30 palettes, five formats, one download.",
+  tagline: "All 348 historical combinations, five formats, one download.",
 
   /** Price as a display string (keep intro and full price tidy). */
-  price: "$9",
+  price: "$12",
 
   /** Regular price for anchoring. */
-  regularPrice: "$19",
+  regularPrice: "$29",
 
   /** Short "what's inside" bullets (used on /shop and BundleCta). */
   includes: [
+    "All 348 historical combinations from Wada's 1933 dictionary",
     "Figma design tokens (W3C-spec JSON, drag into any file)",
     "Tailwind v4 config — drop straight into tailwind.config.js",
-    "CSS custom properties — all 30 palettes, one stylesheet",
+    "CSS custom properties — every plate, one stylesheet",
     "SVG plates — museum-style swatch sheets, print-ready at any size",
-    "Full JSON — colors, kanji, romaji, meanings, eras, moods",
+    "Full JSON — colors, names, eras, moods, dominant hues",
   ],
 
   /**

@@ -3,14 +3,14 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import EmailCapture from "@components/EmailCapture.astro";
 import BundleCta from "@components/BundleCta.astro";
-import { featuredPalettes, allPalettes } from "@data/palettes";
+import { featuredPalettes, allPalettes, wadaCatalog } from "@data/palettes";
 
 const featured = featuredPalettes();
 const totalCount = allPalettes().length;
+const wadaCount = wadaCatalog().length;
 
 const title = "The Dictionary of Color Combinations";
-const description =
-  "A curated archive of historically-grounded color combinations inspired by Sanzo Wada's 1933 Japanese color dictionary. Free to browse, copy, and use.";
+const description = `All ${wadaCount} combinations from Sanzo Wada's 1933 Dictionary of Color Combinations, free to browse, copy, and use. Plus ${totalCount - wadaCount} editorial deep-dives into the Japanese shikisai tradition.`;
 
 const keywords = [
   "color combinations",
@@ -45,16 +45,16 @@ const jsonLd = {
   {/* ==================== HERO ==================== */}
   <section class="hero section">
     <div class="container-wide hero__inner">
-      <p class="eyebrow">Inspired by Sanzo Wada, 1933</p>
+      <p class="eyebrow">Sanzo Wada, 1933 — the complete dictionary</p>
       <h1 class="display-hero text-balance">
-        Historically grounded <em>color combinations</em>, free for working designers.
+        All <em>{wadaCount}</em> historical color combinations, free for working designers.
       </h1>
       <p class="hero__lede">
-        A curated reference of {totalCount} palettes drawn from traditional Japanese color names and the editorial sensibility of early 20th century color theorists. Every palette is documented, dated, and exportable.
+        The complete catalog of Sanzo Wada's 1933 <em>Dictionary of Color Combinations</em> — every plate, every hex value, every pairing — plus {totalCount - wadaCount} editorial deep-dives rooted in traditional Japanese shikisai. Free to browse, copy, and export.
       </p>
       <div class="hero__cta">
-        <a href="/browse" class="btn btn-primary">Browse all {totalCount} palettes</a>
-        <a href="#featured" class="btn btn-secondary">See featured</a>
+        <a href="/browse" class="btn btn-primary">Browse all {totalCount} combinations</a>
+        <a href="#featured" class="btn btn-secondary">See editorial picks</a>
       </div>
     </div>
   </section>
@@ -63,10 +63,10 @@ const jsonLd = {
   <section class="featured section" id="featured">
     <div class="container-wide">
       <header class="section-head">
-        <p class="eyebrow">Featured combinations</p>
+        <p class="eyebrow">Editorial picks</p>
         <h2 class="text-balance">Eight palettes to start with.</h2>
         <p class="section-lede">
-          A cross-section of the archive — from Heian court crimson to Edo merchant indigo — chosen because they work in real design projects today, not just as historical curiosity.
+          A cross-section of the editorial set — from Heian court crimson to Edo merchant indigo — chosen because they work in real design projects today. The full {wadaCount}-plate Wada catalog waits behind the browse button.
         </p>
       </header>
 
@@ -79,7 +79,7 @@ const jsonLd = {
       </div>
 
       <div class="featured__footer">
-        <a href="/browse" class="btn btn-secondary">See all {totalCount} palettes →</a>
+        <a href="/browse" class="btn btn-secondary">See all {totalCount} combinations →</a>
       </div>
     </div>
   </section>
@@ -95,8 +95,8 @@ const jsonLd = {
       <div class="how__grid">
         <div class="how__item">
           <p class="how__number">01</p>
-          <h3>Browse by era or hue</h3>
-          <p>Filter thirty combinations by historical era — Heian through Edo — or by dominant color. Every palette tells you where it came from.</p>
+          <h3>Browse the full catalog</h3>
+          <p>Every plate from Wada's 1933 dictionary, plus editorial picks. Filter by era, hue, or mood — no login, no rate limit.</p>
         </div>
         <div class="how__item">
           <p class="how__number">02</p>
@@ -105,8 +105,8 @@ const jsonLd = {
         </div>
         <div class="how__item">
           <p class="how__number">03</p>
-          <h3>Learn the story</h3>
-          <p>Each palette carries the traditional Japanese names, meanings, and context — so you can defend your choices to clients.</p>
+          <h3>Build with history</h3>
+          <p>Every combination documented, numbered, and traceable back to its place in the original six-volume work.</p>
         </div>
       </div>
     </div>

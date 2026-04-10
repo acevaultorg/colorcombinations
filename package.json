@@ -9,6 +9,7 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "bundle": "node scripts/build-bundle.mjs",
+    "generate:wada": "node scripts/generate-wada-palettes.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

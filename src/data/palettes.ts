@@ -1,14 +1,27 @@
 import type { Palette } from "@/types/palette";
+import { wadaPalettes } from "./wada-palettes";
 
 /**
- * V1 seed palettes — 30 historically-grounded combinations inspired by the
- * tradition of Sanzo Wada's 1933 Dictionary of Color Combinations. Each palette
- * draws on traditional Japanese color names (shikisai) that have been in the
- * cultural commons for centuries.
+ * The archive has two collections that share the same schema:
  *
- * This is inspired-by, not direct-copy. See DECISIONS.md 2026-04-08.
+ *   1. `curatedPalettes` — 30 editorial deep-dives, hand-written, each tied
+ *      to a traditional Japanese shikisai name with full historical context,
+ *      usage notes, and era tag. These are the "museum plates" featured on
+ *      the homepage.
+ *
+ *   2. `wadaPalettes` — ALL 348 combinations from Sanzo Wada's 1933
+ *      "A Dictionary of Color Combinations" (six-volume work), imported from
+ *      the community-reconstructed mattdesl/dictionary-of-colour-combinations
+ *      dataset and regenerated via `npm run generate:wada`. This is the
+ *      complete historical catalog — what the site's name promises.
+ *
+ * Total: 378 palettes. The homepage, browse, and export surfaces show both.
+ * `featured` is still reserved for the 8 editorial picks from the curated set.
+ *
+ * See DECISIONS.md 2026-04-08 (original "inspired-by" positioning) and
+ * DECISIONS.md 2026-04-10 (full Wada catalog import decision).
  */
-export const palettes: Palette[] = [
+export const curatedPalettes: Palette[] = [
   {
     slug: "kurenai-kon",
     title: "Crimson & Navy",
@@ -720,12 +733,26 @@ export const palettes: Palette[] = [
   },
 ];
 
+// ---------- merged archive ----------
+
+/**
+ * The full public archive — 30 curated editorial picks followed by all 348
+ * Wada historical plates. This is what every page on the site iterates.
+ */
+export const palettes: Palette[] = [...curatedPalettes, ...wadaPalettes];
+
 // ---------- helpers ----------
 
 export const featuredPalettes = (): Palette[] =>
   palettes.filter((p) => p.featured).sort(byOrder);
 
 export const allPalettes = (): Palette[] => [...palettes].sort(byOrder);
+
+/** Only the 30 editorial picks — used for "Editorial" sections. */
+export const editorialPalettes = (): Palette[] => [...curatedPalettes].sort(byOrder);
+
+/** Only the 348 historical Wada plates. */
+export const wadaCatalog = (): Palette[] => [...wadaPalettes].sort(byOrder);
 
 export const paletteBySlug = (slug: string): Palette | undefined =>
   palettes.find((p) => p.slug === slug);
