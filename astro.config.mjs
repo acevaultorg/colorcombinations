@@ -13,5 +13,5 @@ export default defineConfig({
   build: {
     inlineStylesheets: "auto",
   },
-  trailingSlash: "never",
+  trailingSlash: "always",
 });
