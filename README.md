@@ -94,15 +94,27 @@ Open `src/data/palettes.ts` and append an entry to the `palettes` array:
 
 Rebuild — the `/palettes/your-slug` page is generated automatically.
 
-## Deploy to Vercel
+## Deploy to Cloudflare Pages
 
-1. **Push to GitHub** (feature branch currently: `acepilot/color-combinations-v1`)
-2. **Connect repo to Vercel** — the dashboard auto-detects Astro
-3. **Configure** — build command `npm run build`, output directory `dist`
-4. **Environment variables** — none required for V1
-5. **Domain** — once `colorcombinations.org` is purchased, add it in Vercel's Domains tab and update the `site` field in `astro.config.mjs`
+The domain `colorcombinations.org` is registered with **Cloudflare Registrar**, so deployment uses **Cloudflare Pages** (single ecosystem, no cross-platform DNS).
 
-The site also deploys to **Netlify, Cloudflare Pages, GitHub Pages**, or any static host — it's pure HTML + CSS + minimal inline JS.
+1. **Push to GitHub** — repo at `pmdevries-rgb/colorcombinations` (created by AcePilot)
+2. **Open Cloudflare Dashboard** → Workers & Pages → Create → Pages → Connect to Git
+3. **Select the repo** `pmdevries-rgb/colorcombinations`
+4. **Configure build:**
+   - Framework preset: **Astro**
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Root directory: `/`
+   - Node version: `20`
+   - Environment variables: none required for V1
+5. **Custom domain** → Set up → `colorcombinations.org` → auto-wired (registrar is Cloudflare, no DNS surgery)
+6. First deploy happens automatically on connect; subsequent deploys happen on every push to `main`
+
+The `public/_headers` file sets OWASP-baseline security headers at the edge.
+The `public/_redirects` file is currently empty; add entries here for any V2 alias or marketing redirects.
+
+Alternate hosts (same build output, deploy to any of them): **Vercel, Netlify, GitHub Pages** — all just need the repo connected and `npm run build` as the build command.
 
 ## Post-launch TODO
 

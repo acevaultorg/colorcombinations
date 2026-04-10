@@ -93,10 +93,15 @@ These are PUBLIC DOMAIN cultural knowledge (centuries old), safe to use:
 - **Showa** (1926-1989) — Wada's era (1933 book)
 
 ## Deploy target
-- **Platform:** Vercel (detected from project init) <!-- verified: 2026-04-08 -->
-- **Deploy command:** `vercel deploy` or `git push` with Vercel GitHub integration
+- **Platform:** Cloudflare Pages <!-- verified: 2026-04-10 --> (pivoted from Vercel after operator purchased domain via Cloudflare Registrar — single-dashboard ecosystem simplifies DNS)
+- **Registrar:** Cloudflare (colorcombinations.org bought 2026-04-10)
+- **Deploy command:** `git push` to GitHub, Cloudflare Pages auto-deploys from branch
 - **Build:** `npm run build` (Astro default)
 - **Output:** `./dist/`
+- **Node version:** 20 (Cloudflare Pages default; Astro 5 requires ≥18.17)
+- **Security headers:** `public/_headers` — OWASP baseline CSP, X-Frame-Options, Permissions-Policy
+- **Redirects:** `public/_redirects` — empty for V1
+- **Previous plan:** Vercel (locked in DECISIONS.md 2026-04-08) — pivoted because registrar colocation eliminates DNS cross-config
 
 ## Error patterns
 <!-- Empty — new project -->
