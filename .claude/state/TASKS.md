@@ -18,8 +18,16 @@
 - [x] `P1` ADD SEO infrastructure — sitemap, robots.txt, JSON-LD, OG meta per page — `@astrojs/sitemap`, `public/robots.txt`, BaseLayout meta [id:seo-infra] [needs:palette-detail] [score:8.0] ✓ 33-URL sitemap, global WebSite JSON-LD, per-page meta, favicon.svg, og-default.svg
 - [x] `P1` BUILD 404 + root redirect handling — `src/pages/404.astro` [id:errors] [needs:base-layout] [score:5.0] ✓ 404 with 3 suggested palettes, noIndex meta
 - [x] `P1` VERIFY build passes — `npm run build`, fix any errors, check dist/ output [id:verify-build] [needs:homepage,palette-detail,browse-page,about-page,seo-infra] [score:9.0] ✓ 34 pages, 796K dist, 757ms, 0 errors/warnings/hints
-- [ ] `P2` WRITE README + deploy instructions — `README.md` [id:readme] [needs:verify-build] [score:4.0]
-- [ ] `P2` WRITE GROWTH.md + GROWTH_ANALYTICS.md skeleton for post-launch tracking — `.claude/state/GROWTH*.md` [id:growth-state] [needs:verify-build] [score:4.5]
+- [x] `P2` WRITE README + deploy instructions — `README.md` [id:readme] [needs:verify-build] [score:4.0] ✓ Full stack docs, deploy steps, post-launch TODO
+- [x] `P2` WRITE GROWTH.md + GROWTH_ANALYTICS.md skeleton for post-launch tracking — `.claude/state/GROWTH*.md` [id:growth-state] [needs:verify-build] [score:4.5] ✓ Channels, funnel, KPIs, experiments seeded
+
+## Human Actions (TaskAssistant)
+
+- [👤] `P0` BUY domain colorcombinations.org — `platform:namecheap` [id:buy-domain] [score:10.0] 👤 Revised recommendation: buy colorcombinations.org alone (€6.36/yr). Skip sumitome.com unless you want a brandable hedge. See GOD MODE session 2026-04-10 summary for full reasoning.
+- [👤] `P0` CONNECT domain to Vercel deployment — `platform:vercel` [id:deploy-vercel] [needs:buy-domain] [score:9.5] 👤 After purchase: create Vercel project from GitHub repo, add custom domain, update astro.config.mjs `site` field
+- [👤] `P1` WIRE real email provider to newsletter form — `platform:convertkit|mailerlite` [id:wire-email] [score:7.0] 👤 Replace placeholder action URL in EmailCapture.astro with real endpoint
+- [👤] `P2` GENERATE 1200x630 og-default.png — `tool:figma|canva` [id:og-png] [score:5.0] 👤 SVG works for most crawlers but PNG is safer for Twitter/FB/LinkedIn previews
+- [👤] `P2` SET UP Plausible analytics (or similar) — `platform:plausible` [id:analytics] [score:5.5] 👤 Add script tag in BaseLayout.astro head; track RPU, export clicks, newsletter signups
 
 ## Blocked
 
