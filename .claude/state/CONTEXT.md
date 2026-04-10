@@ -26,17 +26,32 @@
 
 ### Next Actions (when user resumes)
 
-**Prerequisite: buy `colorcombinations.org` (€6.36/yr at Namecheap/Porkbun)**
+**Domain purchased:** `colorcombinations.org` — bought via Cloudflare Registrar 2026-04-10. ✓
 
-After the purchase, one `/acepilot go` session can finish the launch:
+**Repo pushed:** https://github.com/acevaultorg/colorcombinations (public, main branch, on the Team plan org). ✓
 
-1. Connect Vercel to the GitHub repo (import the `acepilot/color-combinations-v1` branch or merge to main first)
-2. Add `colorcombinations.org` as custom domain in Vercel
-3. Update `astro.config.mjs` `site` field if different from current `https://colorcombinations.org`
-4. First `git push origin main` triggers auto-deploy
-5. Verify: live URL → 200, all 34 pages resolve, sitemap accessible, no CSP/asset 404s
-6. Submit sitemap to Google Search Console + Bing Webmaster
-7. Merge `acepilot/color-combinations-v1` → `main` and delete branch after confirming PR
+**Deploy target:** Cloudflare Pages (pivoted from Vercel — same ecosystem as registrar)
+
+**Human action required (click-through in Cloudflare dashboard — can't be automated):**
+
+1. Open https://dash.cloudflare.com → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
+2. Authorize the GitHub integration to access `acevaultorg` (first-time setup)
+3. Select repo `acevaultorg/colorcombinations`
+4. Build configuration:
+   - Project name: `colorcombinations`
+   - Production branch: `main`
+   - Framework preset: **Astro**
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Root directory: `/` (leave empty)
+   - Environment variable: `NODE_VERSION` = `20`
+5. Click **Save and Deploy** — first build runs, live URL is `colorcombinations.pages.dev`
+6. After first deploy succeeds: project Settings → **Custom domains** → **Set up a custom domain** → type `colorcombinations.org` → confirm. DNS is auto-wired because the registrar is Cloudflare.
+7. Verify the custom domain shows SSL active (usually < 2 min)
+8. Smoke test: curl https://colorcombinations.org → 200, /browse → 200, /palettes/kurenai-kon → 200, /sitemap-index.xml → 200
+9. Submit sitemap to Google Search Console + Bing Webmaster Tools
+
+Once deployed, the `[👤] deploy-cloudflare-pages` task can be marked complete and the remaining TaskAssistant items (email provider, analytics, OG PNG) become the next priorities.
 
 ### Human actions pending (from /acepilot tasks)
 

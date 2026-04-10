@@ -98,9 +98,9 @@ Rebuild — the `/palettes/your-slug` page is generated automatically.
 
 The domain `colorcombinations.org` is registered with **Cloudflare Registrar**, so deployment uses **Cloudflare Pages** (single ecosystem, no cross-platform DNS).
 
-1. **Push to GitHub** — repo at `pmdevries-rgb/colorcombinations` (created by AcePilot)
+1. **Push to GitHub** — repo at [`acevaultorg/colorcombinations`](https://github.com/acevaultorg/colorcombinations)
 2. **Open Cloudflare Dashboard** → Workers & Pages → Create → Pages → Connect to Git
-3. **Select the repo** `pmdevries-rgb/colorcombinations`
+3. **Select the repo** `acevaultorg/colorcombinations` (you may need to grant Cloudflare access to the `acevaultorg` org if it's the first Pages deploy from there)
 4. **Configure build:**
    - Framework preset: **Astro**
    - Build command: `npm run build`

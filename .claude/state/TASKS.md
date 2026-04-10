@@ -23,8 +23,8 @@
 
 ## Human Actions (TaskAssistant)
 
-- [👤] `P0` BUY domain colorcombinations.org — `platform:namecheap` [id:buy-domain] [score:10.0] 👤 Revised recommendation: buy colorcombinations.org alone (€6.36/yr). Skip sumitome.com unless you want a brandable hedge. See GOD MODE session 2026-04-10 summary for full reasoning.
-- [👤] `P0` CONNECT domain to Vercel deployment — `platform:vercel` [id:deploy-vercel] [needs:buy-domain] [score:9.5] 👤 After purchase: create Vercel project from GitHub repo, add custom domain, update astro.config.mjs `site` field
+- [x] `P0` BUY domain colorcombinations.org — `platform:cloudflare-registrar` [id:buy-domain] [score:10.0] ✓ Bought via Cloudflare Registrar 2026-04-10 (pivoted from Namecheap → cleaner because registrar + hosting in same ecosystem)
+- [👤] `P0` CONNECT repo to Cloudflare Pages + custom domain — `platform:cloudflare-pages` [id:deploy-cloudflare-pages] [needs:buy-domain] [score:9.5] 👤 Repo live at https://github.com/acevaultorg/colorcombinations. Dashboard: dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → select acevaultorg/colorcombinations. Framework: Astro. Build: `npm run build`. Output: `dist`. Node: 20. Then Custom Domains → colorcombinations.org (DNS auto-wires since registrar is Cloudflare). See CONTEXT.md §Next Actions for full step-by-step.
 - [👤] `P1` WIRE real email provider to newsletter form — `platform:convertkit|mailerlite` [id:wire-email] [score:7.0] 👤 Replace placeholder action URL in EmailCapture.astro with real endpoint
 - [👤] `P2` GENERATE 1200x630 og-default.png — `tool:figma|canva` [id:og-png] [score:5.0] 👤 SVG works for most crawlers but PNG is safer for Twitter/FB/LinkedIn previews
 - [👤] `P2` SET UP Plausible analytics (or similar) — `platform:plausible` [id:analytics] [score:5.5] 👤 Add script tag in BaseLayout.astro head; track RPU, export clicks, newsletter signups
