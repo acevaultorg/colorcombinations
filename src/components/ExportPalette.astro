@@ -71,11 +71,11 @@ const jsonExport = JSON.stringify(
   <p class="export__status" aria-live="polite" role="status"></p>
 
   {/* Hidden payloads — read by the client script */}
-  <script type="application/json" data-payload="hex" set:html={JSON.stringify(hexList)} />
-  <script type="application/json" data-payload="tailwind" set:html={JSON.stringify(tailwindTokens)} />
-  <script type="application/json" data-payload="css" set:html={JSON.stringify(cssVarsBlock)} />
-  <script type="application/json" data-payload="json" set:html={JSON.stringify(jsonExport)} />
-  <script type="application/json" data-payload="slug" set:html={JSON.stringify(palette.slug)} />
+  <script is:inline type="application/json" data-payload="hex" set:html={JSON.stringify(hexList)} />
+  <script is:inline type="application/json" data-payload="tailwind" set:html={JSON.stringify(tailwindTokens)} />
+  <script is:inline type="application/json" data-payload="css" set:html={JSON.stringify(cssVarsBlock)} />
+  <script is:inline type="application/json" data-payload="json" set:html={JSON.stringify(jsonExport)} />
+  <script is:inline type="application/json" data-payload="slug" set:html={JSON.stringify(palette.slug)} />
 </div>
 
 <script>
@@ -101,20 +101,7 @@ const jsonExport = JSON.stringify(
         await navigator.clipboard.writeText(text);
         setStatus(`✓ Copied ${label}`);
       } catch {
-        // Fallback: textarea select + execCommand
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.select();
-        try {
-          document.execCommand("copy");
-          setStatus(`✓ Copied ${label}`);
-        } catch {
-          setStatus("Copy failed — select the text manually");
-        }
-        document.body.removeChild(ta);
+        setStatus("Copy failed — your browser blocked clipboard access");
       }
     };
 
