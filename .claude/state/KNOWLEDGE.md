@@ -29,12 +29,21 @@ Based on 2026-04-11 honest-math pass (see DECISIONS.md):
 ## Site structure
 - **/** homepage — hero ("All 348 historical color combinations"), 8 featured editorial picks, how-it-works, BundleCta medium, EmailCapture. <!-- verified: 2026-04-10 -->
 - **/browse** — client-side filter over all 378 palettes with color-count pill filter (2/3/4 colors). <!-- verified: 2026-04-11 -->
-- **/palettes/[slug]** — 378 static detail pages. Sidebar order: ExportPalette → Details → ContrastMatrix (WCAG pairs) → ShareBar (copy/Twitter/Pinterest) → FurtherReading sidebar (rotating book). Body: hero → swatch grid → prose → BundleCta compact → related. Each page has a per-palette OG image at `/og/[slug].svg`. <!-- verified: 2026-04-11 -->
+- **/collections** — index of 8 themed collection cards (websites, branding, autumn, spring, minimalist, indigo, bold, heian). Each card shows 4 palette previews + count + tagline. <!-- verified: 2026-04-11 -->
+- **/collections/[slug]** — 8 detail pages. Each has: breadcrumb → accent-square hero → long-form description → full palette grid (up to 24 palettes) → "Other collections" cross-link section → BundleCta medium. Full JSON-LD CollectionPage + BreadcrumbList. <!-- verified: 2026-04-11 -->
+- **/palettes/[slug]** — 378 static detail pages. Sidebar order: ExportPalette → Details → ContrastMatrix (WCAG pairs) → ShareBar (copy/Twitter/Pinterest) → FurtherReading sidebar (rotating book). Body: hero → swatch grid → prose → "Featured in" collection chips → BundleCta compact → related. Each page has a per-palette OG image at `/og/[slug].svg`. <!-- verified: 2026-04-11 -->
 - **/about** — mission, Wada biography, "What's actually here", FurtherReading library, BundleCta medium. <!-- verified: 2026-04-11 -->
 - **/shop** — museum gift shop: hero → FurtherReading (books, covers) → DesignTools → Prints rail → BundleCta big → closing note. <!-- verified: 2026-04-11 -->
 - **/og/[slug].svg** — 378 static OG images, one per palette, generated via Astro endpoint at build time. Modern platforms (Twitter, LinkedIn, Discord, Slack, Mastodon, Bluesky) render SVG OG; FB is the holdout. Cache-Control: immutable. <!-- verified: 2026-04-11 -->
 - **/404** — noIndex error page with 3 suggested palettes. <!-- verified: 2026-04-10 -->
-- **Build output:** 383 HTML pages + 378 OG SVGs, ~11M dist, ~2.3s build time. <!-- verified: 2026-04-11 -->
+- **Build output:** 392 HTML pages + 378 OG SVGs, ~11M dist, ~2.34s build time. <!-- verified: 2026-04-11 -->
+
+## Collections taxonomy (`src/data/collections.ts`)
+
+- **Eight collections** shipped 2026-04-11: websites, branding, autumn, spring, minimalist, indigo, bold, heian.
+- **Resolution pattern:** `paletteSetForCollection(collection)` returns curatedSlugs first (editorial order), then appends matched plates from the full archive via `collection.match()`. Deduped against curatedSlugs. Capped at `limit` (default 24).
+- **Reverse lookup:** `collectionsForPalette(palette)` returns all collections that include a given palette. Used by the palette detail page to render the "Featured in" chip row.
+- **Counts:** Websites 24, Branding 24, Autumn 24, Spring 7, Minimalist 24, Indigo 23, Bold 24, Heian 9. Narrow-filter collections (Spring, Heian) intentionally don't hit the 24-cap — those are high-quality curated shortlists. <!-- verified: 2026-04-11 -->
 
 ## Key competitors
 - **Coolors.co** — palette generator, Pro tier ~$5/mo, large user base, generic <!-- verified: 2026-04-08 -->

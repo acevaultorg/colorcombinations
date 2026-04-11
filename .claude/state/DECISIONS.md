@@ -55,6 +55,89 @@ V2 task: source and import the full Wada 348 dataset with proper attribution.
 
 ---
 
+## 2026-04-11 — Collections: 8 themed landing pages with cross-linked palettes
+
+**Decision:** Add a Collections feature — 8 curated thematic landing pages
+grouping palettes by practical use case instead of era/hue/mood. Wire the
+collections into every palette detail page via a "Featured in" chip row.
+
+**The 8 collections:**
+1. Websites — 24 palettes (capped at limit)
+2. Branding — 24
+3. Autumn — 24
+4. Spring — 7 (narrow filter)
+5. Minimalist — 24
+6. Indigo — 23
+7. Bold — 24
+8. Heian — 9 (narrow era filter)
+
+**Why collections (four reasons):**
+
+1. **Commercial-intent SEO landing pages.** Queries like "color palettes
+   for websites," "branding color palettes," "autumn color palettes,"
+   "minimalist color palettes" have real search volume. The era/hue
+   browse filters don't capture any of those queries. Each collection
+   page is a high-quality, internally-linked landing page targeting
+   exactly the phrases designers actually type.
+
+2. **Internal link graph density.** Each collection links to up to 24
+   palettes. Each palette links back to the 1-4 collections it
+   appears in. Each collection detail page cross-links to 4 other
+   collections at the bottom. The resulting link graph is dense enough
+   to help Google understand the site's topical breadth.
+
+3. **Practical browse path.** Real designers think in terms of "I need
+   colors for a restaurant website," not "I need Heian-era palettes."
+   The era/hue/mood filters on /browse are powerful for exploration
+   but require the user to already know the vocabulary. Collections
+   meet visitors where their actual project brief lives.
+
+4. **No new dependencies, no new surface area.** Pure Astro static
+   generation — `getStaticPaths` + collection data file + two templates.
+   Adds 9 pages to the build (1 index + 8 details) and one reverse
+   lookup helper on the palette side.
+
+**Resolution strategy — curated + matched:**
+
+Each collection has two sources:
+- `curatedSlugs`: hand-picked priority order. These render first and
+  carry the editorial judgment of the collection.
+- `match(palette)`: predicate that pulls additional matching plates
+  from the full 378-palette archive. Dedup'd against curatedSlugs.
+
+This gives each collection editorial credibility (curated slugs set the
+tone) AND automatic scale (Wada plates fill out the list). A collection
+like "Indigo" gets 23 palettes — 8 hand-picked + 15 Wada matches — that
+would take weeks to curate manually but zero maintenance to ship.
+
+**Implementation notes:**
+- `src/data/collections.ts` — 8 collection definitions + resolver
+  helpers (`paletteSetForCollection`, `collectionsForPalette`,
+  `collectionBySlug`, `allCollectionSlugs`).
+- `src/pages/collections/index.astro` — grid of cards, each with
+  4-palette preview swatches + title + tagline + count.
+- `src/pages/collections/[slug].astro` — detail page with breadcrumb,
+  accent-square hero, long-form description, full palette grid,
+  cross-link section to other collections, BundleCta.
+- Palette detail pages gain "Featured in" chip row just before the
+  BundleCta — up to 4 chips per palette, deterministic ordering.
+- Header nav: "Collections" added between Browse and About.
+- Footer: "Collections" added to the Explore column.
+- JSON-LD: CollectionPage schema with `hasPart` array of member
+  palettes + BreadcrumbList on each detail page.
+
+**Verified live:**
+- 10 routes all 200 (/collections/, 8 detail pages, palette pages)
+- /collections/websites → 24 listitems
+- /collections/indigo → 23 listitems
+- /collections/heian → 9 listitems (narrow)
+- /collections/spring → 7 listitems (narrow)
+- kurenai-kon featured in 4 collections
+- wada-001 featured in 3 collections
+- 391 URLs in sitemap (up from 382 — +9 collection pages)
+
+---
+
 ## 2026-04-11 — Palette page enrichment: contrast matrix + share + per-palette OG
 
 **Decision:** Add three durable additions to every palette detail page:
