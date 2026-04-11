@@ -4,6 +4,8 @@ import PaletteCard from "@components/PaletteCard.astro";
 import ExportPalette from "@components/ExportPalette.astro";
 import BundleCta from "@components/BundleCta.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import ContrastMatrix from "@components/ContrastMatrix.astro";
+import ShareBar from "@components/ShareBar.astro";
 import { FURTHER_READING } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
 import { bestTextColorOn } from "@/lib/color";
@@ -31,6 +33,8 @@ const bookOffset =
 
 const title = palette.title + (palette.titleJa ? ` (${palette.titleJa})` : "");
 const description = palette.summary;
+const pageUrl = new URL(`/palettes/${palette.slug}`, Astro.site).toString();
+const ogImage = `/og/${palette.slug}.svg`;
 
 const keywords = [
   palette.title,
@@ -89,6 +93,7 @@ const jsonLd = [
   title={title}
   description={description}
   keywords={keywords}
+  image={ogImage}
   type="article"
   jsonLd={jsonLd}
 >
@@ -190,6 +195,10 @@ const jsonLd = [
             <dd>{palette.colors.length}</dd>
           </dl>
         </div>
+
+        <ContrastMatrix palette={palette} />
+
+        <ShareBar palette={palette} url={pageUrl} />
 
         <div class="palette-library plate">
           <FurtherReading
