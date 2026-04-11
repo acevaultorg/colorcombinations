@@ -55,6 +55,54 @@ V2 task: source and import the full Wada 348 dataset with proper attribution.
 
 ---
 
+## 2026-04-10 — Monetization V1: digital bundle + affiliate books + Plausible
+
+**Decision:** Revenue rails are a layered stack, no display ads.
+
+1. **Primary** — digital product: "The Complete Wada Bundle" sold on Gumroad at $12 (regular $29 anchor). One-time purchase, no account creation, no recurring billing complexity. Contains Figma tokens, Tailwind v4/v3, CSS vars, SVG plates, full JSON — all 378 palettes (curated + Wada) in one 50K zip.
+2. **Secondary** — Bookshop.org affiliate (10% commission) + Amazon Associates (4% fallback). Five curated books (Wada reprint, Albers, St. Clair, Finlay, Paul) on /about and /shop with FTC disclosure.
+3. **Tertiary** — Print-on-demand rail stubbed on /shop behind a "join waitlist" CTA. Activated post-first-sale to validate demand before committing to Printful setup.
+4. **Measurement** — Plausible analytics (9/mo, privacy-first, no cookies). Tagged-events script loads only when configured. Events: `bundle_cta_click`, `bookshop_click`, `amazon_click`, `export_click`, `newsletter_signup`, `prints_cta_click`.
+
+**Rationale:**
+- **No ads.** IDENTITY.md forbids display ads (museum identity). Per-visitor value of a $12 digital product at 1% conversion is ~24× AdSense RPM at the same traffic, without compromising brand.
+- **Digital over subscription.** V1 doesn't need Stripe complexity. Gumroad ships a product in minutes; Stripe Checkout is a V1.1 decision once volume justifies the 3% processor overhead.
+- **Bookshop before Amazon.** Aligns with museum/editorial voice. Amazon only as fallback where Bookshop doesn't carry a title.
+- **Prints deferred.** Validates demand before committing to POD integration. A stub waitlist converts intent to list subscribers.
+- **Plausible over Umami/GA.** GDPR-compliant by default, no banner required, privacy-first matches the brand's "free forever" ethos. Umami self-hosting is free but adds ops cost.
+
+Revenue-first filter PASS: every task passed "generates or captures revenue within 30 days" or "unblocks revenue work."
+
+Handoff: all URLs/IDs live behind `isLive` getters in `src/config/monetization.ts`. Operator pastes real values, redeploys, and revenue is live.
+
+---
+
+## 2026-04-10 — Full Wada 348 catalog import (strategic reversal)
+
+**Decision:** Import ALL 348 combinations from Sanzo Wada's 1933 Dictionary of Color Combinations. Supersedes the 2026-04-08 "V1 ships 30 inspired-by, full Wada 348 deferred to V2" decision.
+
+**Rationale (operator-directed, strategic):**
+- Brand promise: the site is called "The Dictionary of Color Combinations." 30 palettes is a sample, not a dictionary. Completeness is the identity.
+- Bundle economics: same $12 price, 12× more palettes — conversion math changes from "why would I pay for 30" to "this is the reference."
+- SEO footprint: 348 new indexable URLs targeting long-tail queries ("sanzo wada plate 47", "english red cerulian blue", etc.) that nothing else on the web fully serves.
+- Legal: individual hex values and color names are public-domain facts (Feist v Rural). Traditional Japanese color names are cultural commons. Wada's specific combinations as numbered plates are the gray area, but the community reconstruction approach (sanzo-wada.dmbk.io, mattdesl/dictionary-of-colour-combinations, jmaasch/sanzo R package) has been running unchallenged for years. We link to the source dataset on the about page and explicitly frame the archive as a reference to — not a substitute for — the Seigensha republication.
+
+**Source data:** `mattdesl/dictionary-of-colour-combinations` (MIT) — 159 unique colors, 348 combinations, perceptual CMYK→RGB via SWOP v2.icc.
+
+**Implementation:**
+- `scripts/wada-source/colors.json` committed (60K, 159 color entries with combinations arrays)
+- `scripts/generate-wada-palettes.mjs` auto-derives Palette schema from combination groups — dominantHue from HSL, moods from lightness+hue, tags per plate number. Deterministic, regeneratable.
+- `src/data/wada-palettes.ts` — 348 generated Palette objects, slug `wada-NNN-firstname-secondname`.
+- `src/data/palettes.ts` split into `curatedPalettes` (30 editorial) + imports `wadaPalettes` (348). Total 378.
+- Hero copy leads with "All 348 historical color combinations." Featured section reframed as "Editorial picks."
+- Bundle renamed "The Complete Wada Bundle," tagline updated, price upgraded $9 → $12.
+
+**Risks accepted:** Seigensha theoretical takedown request. Mitigation: content is clearly framed as reference-not-substitute, source dataset linked, Seigensha edition recommended for purchase on about page. If a takedown arrives, we respond by removing plates on demand, not preemptively.
+
+**Next:** re-enrich Wada plates with cross-referenced Japanese shikisai names over time (V1.1+). Currently they use Wada's English trade names; the 30 curated set keeps the kanji overlays.
+
+---
+
 ## 2026-04-08 — Ship scope: V1 is launch-ready foundation
 
 **V1 (this session) includes:**

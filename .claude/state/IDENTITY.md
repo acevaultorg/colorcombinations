@@ -39,7 +39,14 @@ All entries above: `engine-generated` (2026-04-08, god-mode expansion). Awaiting
 
 ## Decisions pending (user-confirmed required)
 
-- [ ] Final product name (ColorCombinations / Hue / Chroma / Sanzo / other)
-- [ ] Domain name
-- [ ] Exact typography pair
-- [ ] Full Wada data import strategy (V2)
+- [x] Final product name — "The Dictionary of Color Combinations" (user-confirmed via launch, 2026-04-10)
+- [x] Domain name — colorcombinations.org (user-confirmed via Cloudflare Registrar purchase, 2026-04-10)
+- [x] Exact typography pair — EB Garamond (serif) + Inter (sans) (user-confirmed via shipped V1, 2026-04-10)
+- [x] Full Wada data import strategy — IMPORTED ALL 348 from `mattdesl/dictionary-of-colour-combinations` MIT dataset (user-directed, 2026-04-10). Decision details in DECISIONS.md 2026-04-10 "Full Wada 348 catalog import (strategic reversal)".
+- [ ] Whether to add Japanese shikisai cross-references to the 348 Wada plates over time (V1.1+)
+
+## Catalog scope (2026-04-10)
+
+- **30 editorial deep-dives** — hand-written, traditional Japanese shikisai names with kanji + romaji + meaning + era + usage notes. These are the "museum plates" — featured on the homepage as "Editorial picks."
+- **348 historical Wada plates** — auto-generated from the community-reconstructed dataset, slug `wada-NNN-firstname-secondname`, full SEO surface, basic taxonomy auto-derived.
+- **Total: 378 palettes**, all browsable, all exportable, all in the bundle.

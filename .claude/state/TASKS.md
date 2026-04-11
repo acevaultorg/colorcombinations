@@ -23,21 +23,37 @@
 
 ## Queue — Monetization V1 [objective:monetization-v1]
 
-- [ ] `P0` CREATE monetization config — centralize Gumroad URL, Bookshop.org ID, Printful URL — `src/config/monetization.ts` [id:monet-config] [score:12.5]
-- [ ] `P0` CREATE bundle generation script — package 30 palettes into Figma/Tailwind/CSS/SVG/JSON bundle for Gumroad upload — `scripts/build-bundle.mjs` [id:bundle-script] [needs:monet-config] [score:12.0]
-- [ ] `P0` CREATE BundleCta component — editorial "get the bundle" CTA used on palette-detail + homepage + shop — `src/components/BundleCta.astro` [id:bundle-cta] [needs:monet-config] [score:11.5]
-- [ ] `P0` CREATE FurtherReading component — affiliate book list (Wada, Albers, Eiseman) for About + palette pages — `src/components/FurtherReading.astro` [id:further-reading] [needs:monet-config] [score:11.0]
-- [ ] `P0` CREATE /shop landing page — museum gift shop: bundle + books + future prints — `src/pages/shop.astro` [id:shop-page] [needs:bundle-cta,further-reading] [score:10.5]
-- [ ] `P1` INTEGRATE BundleCta + FurtherReading into palette-detail pages — `src/pages/palettes/[slug].astro` [id:integ-palette] [needs:bundle-cta,further-reading] [score:10.0]
-- [ ] `P1` INTEGRATE BundleCta into homepage — above newsletter — `src/pages/index.astro` [id:integ-home] [needs:bundle-cta] [score:9.5]
-- [ ] `P1` INTEGRATE FurtherReading into about page — editorial "further reading" section — `src/pages/about.astro` [id:integ-about] [needs:further-reading] [score:9.0]
-- [ ] `P1` UPDATE footer — add "Shop" column with bundle/books/prints/newsletter links — `src/components/SiteFooter.astro` [id:footer-shop] [needs:shop-page] [score:8.5]
-- [ ] `P1` ADD Plausible analytics script + event hooks — privacy-first tracking for bundle_cta_click, bookshop_click, export_click, newsletter_signup — `src/layouts/BaseLayout.astro` [id:analytics] [score:8.0]
-- [ ] `P1` GENERATE bundle files — run bundle-script, verify wada-bundle-v1.zip exists and contains valid JSON/CSS/tokens [id:bundle-output] [needs:bundle-script] [score:7.5]
-- [ ] `P1` VERIFY build passes — `npm run build`, 0 errors/warnings, new pages included in sitemap [id:verify-monet] [needs:integ-palette,integ-home,integ-about,footer-shop,shop-page,analytics] [score:7.0]
-- [ ] `P0` DEPLOY to Cloudflare Pages — `wrangler pages deploy dist --project-name=colorcombinations --branch=main` [id:deploy-monet] [needs:verify-monet] [score:6.5]
-- [ ] `P1` VERIFY live — curl test /shop, /palettes/kurenai-kon, /about, check BundleCta renders [id:verify-live] [needs:deploy-monet] [score:6.0]
-- [ ] `P1` UPDATE state files — DECISIONS.md (monetization strategy), KNOWLEDGE.md (revenue model), GROWTH.md (post-launch funnel update), GROWTH_ANALYTICS.md (hypotheses + measurement plan) [id:state-monet] [score:5.5]
+- [x] `P0` CREATE monetization config — centralize Gumroad URL, Bookshop.org ID, Printful URL — `src/config/monetization.ts` [id:monet-config] [score:12.5] ✓
+- [x] `P0` CREATE bundle generation script — package palettes into Figma/Tailwind/CSS/SVG/JSON bundle for Gumroad upload — `scripts/build-bundle.mjs` [id:bundle-script] [needs:monet-config] [score:12.0] ✓
+- [x] `P0` CREATE BundleCta component — editorial "get the bundle" CTA — `src/components/BundleCta.astro` [id:bundle-cta] [needs:monet-config] [score:11.5] ✓
+- [x] `P0` CREATE FurtherReading component — affiliate book list — `src/components/FurtherReading.astro` [id:further-reading] [needs:monet-config] [score:11.0] ✓
+- [x] `P0` CREATE /shop landing page — `src/pages/shop.astro` [id:shop-page] [needs:bundle-cta,further-reading] [score:10.5] ✓
+- [x] `P1` INTEGRATE BundleCta + FurtherReading into palette-detail pages [id:integ-palette] [score:10.0] ✓
+- [x] `P1` INTEGRATE BundleCta into homepage [id:integ-home] [score:9.5] ✓
+- [x] `P1` INTEGRATE FurtherReading into about page [id:integ-about] [score:9.0] ✓
+- [x] `P1` UPDATE footer — add "Shop" column [id:footer-shop] [score:8.5] ✓
+- [x] `P1` ADD Plausible analytics script + event hooks — conditional on config [id:analytics] [score:8.0] ✓
+- [x] `P1` GENERATE bundle files — 384-file zip verified [id:bundle-output] [score:7.5] ✓
+- [x] `P1` VERIFY monetization build passes [id:verify-monet] [score:7.0] ✓
+- [x] `P0` DEPLOY monetization V1 to Cloudflare Pages [id:deploy-monet] [score:6.5] ✓
+- [x] `P1` VERIFY live [id:verify-live] [score:6.0] ✓
+
+## Queue — Wada 348 Full Import [objective:wada-348]
+
+- [x] `P0` FETCH authoritative 348-combination dataset — `scripts/wada-source/colors.json` from mattdesl/dictionary-of-colour-combinations (MIT) [id:wada-fetch] [score:12.5] ✓ 60K, 159 colors × 348 combinations
+- [x] `P0` WRITE generate-wada-palettes.mjs — transforms dataset to Palette schema with auto-derived taxonomy [id:wada-gen-script] [needs:wada-fetch] [score:12.0] ✓
+- [x] `P0` GENERATE src/data/wada-palettes.ts — 348 Palette entries [id:wada-data] [needs:wada-gen-script] [score:11.5] ✓
+- [x] `P0` MERGE curated + wada in palettes.ts — split into curatedPalettes (30) + wadaPalettes (348), re-export as palettes (378) [id:wada-merge] [needs:wada-data] [score:11.0] ✓
+- [x] `P0` UPDATE bundle script to concatenate both source arrays [id:bundle-update] [needs:wada-merge] [score:10.5] ✓
+- [x] `P0` UPDATE hero copy + about copy + bundle name — reframe around "complete dictionary" [id:wada-copy] [needs:wada-merge] [score:10.0] ✓
+- [x] `P0` REGENERATE bundle with 378 palettes (384 files, 50K zip) [id:bundle-regen] [needs:wada-copy] [score:9.5] ✓
+- [x] `P0` REBUILD astro — 383 pages in 1.88s, 0 errors [id:wada-rebuild] [needs:wada-copy] [score:9.0] ✓
+- [x] `P0` REDEPLOY — 390 files uploaded to Cloudflare Pages [id:wada-redeploy] [needs:wada-rebuild] [score:8.5] ✓
+- [x] `P0` VERIFY live — plate 1, plate 174, plate 348 all 200, homepage shows "All 348 historical" [id:wada-verify] [needs:wada-redeploy] [score:8.0] ✓
+
+## Queue — State + Handoff [objective:monetization-v1]
+
+- [x] `P1` UPDATE state files — DECISIONS.md (two new entries), KNOWLEDGE.md (revenue model + catalog), GROWTH.md (ship log), GROWTH_ANALYTICS.md (ship impact hypotheses), IDENTITY.md (catalog scope), CONTEXT.md (handoff) [id:state-monet] [score:5.5] ✓
 - [ ] `P0` WRITE [👤] handoff guide — operator actions to activate revenue (Gumroad signup + upload bundle, Bookshop.org signup, Amazon Associates, Plausible signup, Printful future) [id:handoff-monet] [score:10.0]
 
 ## Human Actions (TaskAssistant)

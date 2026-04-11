@@ -1,9 +1,25 @@
 # KNOWLEDGE — ColorCombinations
 
 ## Project type
-- **Archetype:** Content SEO + commerce-lite (print affiliate + Pro subscription) <!-- verified: 2026-04-08 -->
-- **Stack:** Astro 5, Tailwind CSS v4, TypeScript (strict), MDX, Vercel <!-- verified: 2026-04-08 -->
-- **Data source:** Curated Wada-tradition palettes (V1), full Wada 348 dataset (V2) <!-- verified: 2026-04-08 -->
+- **Archetype:** Content SEO + digital product (Wada bundle) + book affiliate <!-- verified: 2026-04-10 -->
+- **Stack:** Astro 5, Tailwind CSS v4, TypeScript (strict), MDX, Cloudflare Pages <!-- verified: 2026-04-10 -->
+- **Data source:** 378 palettes total — 30 hand-written editorial (`curatedPalettes`) + 348 Wada historical plates (`wadaPalettes`, auto-generated from `mattdesl/dictionary-of-colour-combinations`) <!-- verified: 2026-04-10 -->
+
+## Monetization stack (V1 live, awaiting operator activation)
+- **Primary:** `BUNDLE` in `src/config/monetization.ts` — Gumroad digital product "The Complete Wada Bundle" at $12 (regular $29). Bundle built via `npm run bundle` → `bundle-source/wada-bundle-v1.zip` (50K, 384 files: 5 format files + 378 SVG plates + README + figma-tokens.json + palettes.json). <!-- verified: 2026-04-10 -->
+- **Secondary:** `BOOKSHOP` (10% affiliate) + `AMAZON` (4% fallback) in monetization config. Five curated books rendered via `FurtherReading.astro` on /about and /shop with FTC disclosure. <!-- verified: 2026-04-10 -->
+- **Tertiary:** `PRINTS` stub on /shop — waitlist CTA until operator sets up Printful post-first-Gumroad-sale. <!-- verified: 2026-04-10 -->
+- **Analytics:** `ANALYTICS.plausibleDomain` in config. Plausible tagged-events script loads conditionally in BaseLayout. Event hooks already wired on: `.btn[data-event]`, `[data-copy]` (export buttons), `.further-reading__link`, `.further-reading__amazon`. <!-- verified: 2026-04-10 -->
+- **Activation:** all live-gated behind `isLive` getters — production safe even when placeholders are in place. Operator pastes real values, redeploys, revenue active. <!-- verified: 2026-04-10 -->
+
+## Site structure
+- **/** homepage — hero ("All 348 historical color combinations"), 8 featured editorial picks, how-it-works, BundleCta medium, EmailCapture. <!-- verified: 2026-04-10 -->
+- **/browse** — client-side filter over all 378 palettes. <!-- verified: 2026-04-10 -->
+- **/palettes/[slug]** — 378 static detail pages (30 curated + 348 `wada-NNN-*`). Each has: breadcrumb → hero → swatch grid → body prose → ExportPalette → details plate → BundleCta compact → related palettes. <!-- verified: 2026-04-10 -->
+- **/about** — mission, Wada biography, "What's actually here" (explaining both collections), FurtherReading library, BundleCta medium. <!-- verified: 2026-04-10 -->
+- **/shop** — museum gift shop: shop hero → BundleCta big → Prints rail → FurtherReading → closing note. <!-- verified: 2026-04-10 -->
+- **/404** — noIndex error page with 3 suggested palettes. <!-- verified: 2026-04-10 -->
+- **Build output:** 383 pages, ~10M dist, ~1.9s build time. <!-- verified: 2026-04-10 -->
 
 ## Key competitors
 - **Coolors.co** — palette generator, Pro tier ~$5/mo, large user base, generic <!-- verified: 2026-04-08 -->

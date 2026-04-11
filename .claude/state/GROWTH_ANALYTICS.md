@@ -34,6 +34,12 @@ task-homepage     | 2026-04-10 | pending post-deploy | hero_view_to_featured_scr
 task-palette-detail | 2026-04-10 | pending post-deploy | detail_view_to_export | TBD | hypothesis: >15%
 task-browse-page  | 2026-04-10 | pending post-deploy | browse_to_detail | TBD | hypothesis: >30%
 task-email-capture | 2026-04-10 | pending post-deploy | newsletter_signup_rate | TBD | hypothesis: >3%
+task-monet-config | 2026-04-10 | pre-deploy (gated) | n/a | n/a | foundation
+task-bundle-cta | 2026-04-10 | pending Gumroad live | bundle_cta_click_rate | TBD | hypothesis: >2% on palette pages, >1% on home, >5% on /shop
+task-shop-page | 2026-04-10 | pending Gumroad live | shop_view_to_bundle_click | TBD | hypothesis: >8% (high-intent landing page)
+task-further-reading | 2026-04-10 | pending Bookshop live | bookshop_click_rate | TBD | hypothesis: >0.8% on /about, >0.3% on detail pages
+task-export-tracking | 2026-04-10 | pending Plausible live | export_click_rate | TBD | baseline metric — establishes the conversion funnel denominator
+task-wada-348 | 2026-04-10 | pending post-deploy | sessions_per_palette | TBD | hypothesis: 12× lift in long-tail organic over 90 days vs 30-palette baseline
 
 ## Corrections
 

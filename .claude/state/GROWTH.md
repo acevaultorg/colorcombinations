@@ -6,8 +6,8 @@ State file for the Growth Engine. Read on creation directives and `god --launch`
 
 **Product:** The Dictionary of Color Combinations
 **Target users:** Designers (primary), developers, artists, brand agencies
-**Wedge:** Heritage + curation + story — not a random palette generator
-**Cost to use:** Free
+**Wedge:** The complete Wada 1933 catalog (348 plates) + 30 editorial deep-dives — historically grounded, free to browse, exportable in five formats. The other tribute sites stop at displaying the catalog; we add the editorial layer + the export rails + the bundle.
+**Cost to use:** Free (browse, copy, export). Optional $12 bundle for the "I want it all in one download" workflow.
 
 ## Channels
 
@@ -84,3 +84,6 @@ Full revenue projections in DECISIONS.md 2026-04-08 (Y1 €4.5k-€15k, Y3 MRR �
 _Growth-relevant ships from this session:_
 
 - 2026-04-10: V1 static site built. 30 palettes, 34 pages, clean build. Deploy pending domain purchase.
+- 2026-04-10: V1 SHIPPED to colorcombinations.org via Cloudflare Pages. All 11 routes 200, security headers applied at edge.
+- 2026-04-10: Monetization V1 — `/shop` landing, BundleCta integrated on home/palette/about, FurtherReading affiliate on /about, Plausible event hooks wired, footer + header Shop link added. All revenue surfaces production-safe behind `isLive` getters until operator pastes real Gumroad/Bookshop/Plausible IDs.
+- 2026-04-10: **WADA 348 IMPORTED.** Full Sanzo Wada 1933 catalog (348 historical combinations) now lives at /palettes/wada-NNN-*. Total archive: 378 palettes (30 editorial + 348 historical). Hero copy reframed around "complete dictionary." Bundle upgraded to "The Complete Wada Bundle" at $12 (was $9 for 30). Build: 383 pages, 1.88s, 10M dist. Source: mattdesl/dictionary-of-colour-combinations (MIT).

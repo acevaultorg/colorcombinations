@@ -1,50 +1,82 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-10 15:10 -->
+<!-- handoff: 2026-04-10 18:00 -->
 
 **Mode:** god
-**Objective:** Validate the color-combinations website idea → build V1 (Sanzo Wada heritage angle) → ship to production
+**Objective:** monetization-v1 + wada-348-import — wire revenue rails AND ship the full Sanzo Wada catalog (operator-directed mid-session expansion)
 
-**STATUS: SHIPPED. https://colorcombinations.org IS LIVE.** ✓
+**STATUS: BOTH SHIPPED. https://colorcombinations.org IS LIVE WITH 378 PALETTES + REVENUE RAILS.** ✓
 
 ### Progress
 
-**Session 2026-04-08 (research + validation)** — complete ✓
-- Strategic validation delivered (YES with Wada wedge)
-- Realistic revenue model Y1/Y3
-- Domain research: 336k candidates, 1,300 whois-checked, 1,077 verified available
-- Initial recommendation: sumitome.com + colorcombinations.org bundle
+**Session 2026-04-10 (V2 — Wada 348 + monetization)** — complete ✓
 
-**Session 2026-04-10 (V1 build)** — complete ✓
-- All 16 V1 build tasks shipped: scaffold → data → brand → layout → pages → export → SEO → polish → verify → docs → growth state
-- 34 static HTML pages (home, about, browse, 404, 30 palette details)
-- Clean build: 0 errors, 0 warnings, 0 hints. 796K dist. 757ms.
-- Type-safe: TypeScript strict throughout
-- Accessible: skip link, focus-visible, prefers-reduced-motion, aria-live
-- SEO-ready: per-page JSON-LD (3 schemas on palette pages), OG meta, 33-URL sitemap
-- Zero circuit breaker opens, zero mistake loop entries
-- Domain recommendation REVISED: colorcombinations.org ALONE is the right pick (not bundle) — see session summary reasoning
+Shipped in two atomic commits:
 
-### DONE this session (all `[👤]` deploy tasks complete)
+1. **acepilot: monetization-v1 — bundle + affiliate + /shop**
+   - `src/config/monetization.ts` — central revenue config (BUNDLE, BOOKSHOP, AMAZON, PRINTS, ANALYTICS, FURTHER_READING). All gated behind `isLive` getters so production stays safe with placeholders.
+   - `src/components/BundleCta.astro` — three variants (big/medium/compact), used on home/palette/about/shop.
+   - `src/components/FurtherReading.astro` — affiliate book list, FTC disclosure, on /about and /shop.
+   - `src/pages/shop.astro` — museum gift shop landing with bundle, prints rail, books, closing note.
+   - `src/components/SiteHeader.astro` + `SiteFooter.astro` — Shop link added.
+   - `src/layouts/BaseLayout.astro` — Plausible analytics tag (conditional on config), tagged-events script + outbound-link tracking.
+   - `src/components/ExportPalette.astro` — `data-event="export_click"` + `data-format` on each button.
+   - `scripts/build-bundle.mjs` — generates wada-bundle-v1.zip with Figma tokens, Tailwind v4/v3, CSS vars, SVG plates, JSON. 50K, 384 files.
+   - `package.json` — `npm run bundle` script.
 
-1. ✓ Domain `colorcombinations.org` purchased via Cloudflare Registrar (€6.36/yr)
-2. ✓ Repo pushed to `acevaultorg/colorcombinations` (public, Team plan)
-3. ✓ Cloudflare Workers and Pages GitHub App installed on acevaultorg (scoped to colorcombinations only)
-4. ✓ Cloudflare Pages project `colorcombinations` created
-5. ✓ First deploy via `wrangler pages deploy dist` — 41 files, 3 sec upload (web UI glitchy, pivoted to CLI)
-6. ✓ Trailing-slash fix (Astro `never` → `always`) — eliminated 308 redirect hops
-7. ✓ Custom domain `colorcombinations.org` attached + SSL auto-provisioned (<60s, registrar + hosting colocated)
-8. ✓ Full smoke test: 11 routes all 200, custom 404 working, all security headers at edge
-9. ✓ Final commits pushed to main
+2. **acepilot: wada-348 — full dictionary import**
+   - `scripts/wada-source/colors.json` — 60K dataset from `mattdesl/dictionary-of-colour-combinations` (MIT).
+   - `scripts/generate-wada-palettes.mjs` — transforms 159 colors × 348 combinations into 348 Palette objects with auto-derived dominantHue/moods/tags. Run with `npm run generate:wada`.
+   - `src/data/wada-palettes.ts` — 348 generated palette entries, slug `wada-NNN-firstname-secondname`.
+   - `src/data/palettes.ts` — split into `curatedPalettes` (30 editorial) + `wadaPalettes` (348 historical) = 378 total. New helpers: `editorialPalettes()`, `wadaCatalog()`.
+   - Hero copy reframed: "All 348 historical color combinations, free for working designers."
+   - About page reframed: removed "inspired-by, not copied" stance, added explicit "What's actually here" section linking to source dataset.
+   - Bundle upgraded: "The Complete Wada Bundle" at $12 (was $9), regular price anchor $29.
+   - All 348 plates have static SEO pages with breadcrumbs, JSON-LD, swatch grids, exports, related palettes.
 
-### Next Actions (remaining `[👤]` items, priority order)
+### Numbers
 
-1. `[👤] P1 wire-email` — Replace `https://forms.example.com/subscribe` in `src/components/EmailCapture.astro` with real ConvertKit/MailerLite endpoint
-2. `[👤] P2 analytics` — Add Plausible `<script>` tag to `src/layouts/BaseLayout.astro` `<head>`
-3. `[👤] P2 og-png` — Generate 1200×630 PNG version of OG image for Twitter/FB/LinkedIn
-4. **Post-launch promotion**: Show HN, r/web_design, Twitter launch thread (growth playbook in `.claude/state/GROWTH.md`)
-5. **SEO**: Submit `https://colorcombinations.org/sitemap-index.xml` to Google Search Console + Bing Webmaster Tools
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Total palettes | 30 | 378 |
+| Static pages | 35 | 383 |
+| dist size | 1.0M | 10M |
+| Build time | 1.18s | 1.88s |
+| Sitemap URLs | 34 | 382 |
+| Bundle palettes | n/a | 378 |
+| Bundle file count | n/a | 384 |
+| Bundle zip size | n/a | ~50K |
+| Live revenue surfaces | 0 | 4 (BundleCta × home/palette/about/shop, FurtherReading × about/shop, prints stub × shop, analytics events × everywhere) |
+
+### Live URLs verified
+
+- https://colorcombinations.org/ — 200, hero shows "All 348 historical color combinations"
+- https://colorcombinations.org/shop/ — 200, museum gift shop landing
+- https://colorcombinations.org/browse/ — 200
+- https://colorcombinations.org/about/ — 200, FurtherReading library visible
+- https://colorcombinations.org/palettes/wada-001-english-red-cerulian-blue/ — 200, plate 1 of 348
+- https://colorcombinations.org/palettes/wada-174-corinthian-pink-grayish-lavender-b/ — 200, mid-catalog
+- https://colorcombinations.org/palettes/wada-348-olive-buff-cossack-green/ — 200, plate 348 of 348
+- https://colorcombinations.org/palettes/kurenai-kon/ — 200, curated editorial pick
+
+Zero JavaScript console errors observed via Chrome MCP on home + shop + palette routes.
+
+### Operator activation needed (revenue is gated until these run)
+
+**Critical path to first $:**
+
+1. **Gumroad** — sign up (free, 30 sec), upload `bundle-source/wada-bundle-v1.zip`, set price $12, copy product URL, paste into `BUNDLE.checkoutUrl` in `src/config/monetization.ts`, redeploy. **30-min activation, unblocks all primary revenue.**
+2. **Bookshop.org affiliate** — sign up (free, instant), copy affiliate ID, paste into `BOOKSHOP.affiliateId` in monetization.ts, redeploy. **5-min activation, unblocks secondary revenue.**
+3. **Plausible** — sign up at plausible.io ($9/mo), add `colorcombinations.org` site, paste domain into `ANALYTICS.plausibleDomain`, redeploy. **5-min activation, unblocks measurement (you can't optimize what you can't measure).**
+
+Optional / V1.1:
+4. **Amazon Associates** — sign up, get tag, paste into `AMAZON.tag`. Backup affiliate where Bookshop is missing a title.
+5. **Printful** — set up store after first Gumroad sale validates demand, paste store URL into `PRINTS.storeUrl`.
+6. **ConvertKit/MailerLite** — replace `https://forms.example.com/subscribe` in `EmailCapture.astro`.
+7. **OG PNG** — generate 1200×630 in Figma/Canva, replace `og-default.svg` with `og-default.png` in `BaseLayout.astro`.
+
+All steps documented in `[👤]` tasks in TASKS.md.
 
 ### How to redeploy after code changes
 
@@ -54,79 +86,33 @@ npm run build
 wrangler pages deploy dist --project-name=colorcombinations --branch=main
 ```
 
-Each deploy auto-promotes to `colorcombinations.pages.dev` + `colorcombinations.org`.
+### How to regenerate the bundle (after palette data changes)
 
-### LEGACY — original plan (superseded)
-
-The section below describes the pre-deployment click-through guide. Kept for historical reference only — everything in it is DONE.
-
-**Human action required (click-through in Cloudflare dashboard — can't be automated):**
-
-1. Open https://dash.cloudflare.com → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
-2. Authorize the GitHub integration to access `acevaultorg` (first-time setup)
-3. Select repo `acevaultorg/colorcombinations`
-4. Build configuration:
-   - Project name: `colorcombinations`
-   - Production branch: `main`
-   - Framework preset: **Astro**
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Root directory: `/` (leave empty)
-   - Environment variable: `NODE_VERSION` = `20`
-5. Click **Save and Deploy** — first build runs, live URL is `colorcombinations.pages.dev`
-6. After first deploy succeeds: project Settings → **Custom domains** → **Set up a custom domain** → type `colorcombinations.org` → confirm. DNS is auto-wired because the registrar is Cloudflare.
-7. Verify the custom domain shows SSL active (usually < 2 min)
-8. Smoke test: curl https://colorcombinations.org → 200, /browse → 200, /palettes/kurenai-kon → 200, /sitemap-index.xml → 200
-9. Submit sitemap to Google Search Console + Bing Webmaster Tools
-
-Once deployed, the `[👤] deploy-cloudflare-pages` task can be marked complete and the remaining TaskAssistant items (email provider, analytics, OG PNG) become the next priorities.
-
-### Human actions pending (from /acepilot tasks)
-
-- `[👤] P0 buy-domain` — colorcombinations.org at Namecheap (€6.36/yr)
-- `[👤] P0 deploy-vercel` — connect repo + custom domain (needs buy-domain)
-- `[👤] P1 wire-email` — real endpoint for newsletter (ConvertKit or MailerLite)
-- `[👤] P2 og-png` — generate 1200x630 PNG for Twitter/FB/LinkedIn social previews
-- `[👤] P2 analytics` — set up Plausible or similar
+```sh
+cd "path/to/ColorCombinations"
+npm run generate:wada    # only if updating Wada source data
+npm run bundle           # builds bundle-source/wada-bundle-v1.zip
+# Then re-upload the zip to Gumroad
+```
 
 ### Momentum
 
-**High.** Build complete. Site works locally. `npm run dev` loads; `npm run build` produces 34 pages in 757ms. Only remaining work is domain purchase + Vercel deploy — both human-gated, can't be automated for safety reasons. Dependency-free from AcePilot side: nothing new to build until launch happens. Post-launch the first priorities are content (newsletter issue 1, Show HN post, Reddit seeding) and instrumentation (Plausible analytics).
+**Very high.** Site is the most complete public Wada catalog with editorial overlay + export rails + monetization stack. The brand promise is now real ("The Dictionary of Color Combinations" actually IS a dictionary of 378 combinations). Next 90 days are all about traffic acquisition (Show HN, r/web_design, Twitter launch thread) and revenue activation (3 placeholder URLs to paste).
 
 ### Open questions
 
-- Domain: colorcombinations.org alone (recommended) or bundle with sumitome.com as hedge?
 - Email provider: ConvertKit, MailerLite, Buttondown, or Loops?
-- Analytics: Plausible (paid, privacy-first) or Umami (self-hosted free)?
+- Should the 348 Wada plates eventually get cross-referenced Japanese shikisai names (V1.1+)?
+- Print product set: per-plate posters, era-grouped sets, or thematic series?
 
 ### Research archive
 
-Prior session artifacts in `domain-research/`:
-- `REPORT.md` / `REPORT-V2.md` — full domain analysis
-- `TOP100-AVAILABLE.md` — ranked top 100 merged
-- `available-merged-all.txt` — 1,077 unique verified available domains
+Prior session artifacts in `domain-research/` (legacy from research session):
+- `REPORT.md` / `REPORT-V2.md` / `TOP100-AVAILABLE.md` — domain analysis
+- `available-merged-all.txt` — 1,077 verified available domains
 - `generate*.mjs`, `check*.sh` — the tooling
 
-### Build output verification (last verified 2026-04-10 13:42)
-
-```
-34 static HTML pages
-796K total dist size
-28K CSS (Tailwind v4 purged)
-~20K average HTML page size
-757ms build time
-0 TypeScript errors, 0 warnings, 0 hints
-```
-
-### Final recommendation (revised this session)
-
-**Primary: `colorcombinations.org` (€6.36/yr) — buy alone.**
-
-Previous bundle pitch (`sumitome.com` + `colorcombinations.org`) made sense as defensive+exit-value hedge, but for this product the revenue driver is search traffic against exact-match keywords. `colorcombinations.org` is:
-- EMD for "color combinations" → highest-intent keyword cluster
-- Exact brand match ("The Dictionary of Color Combinations")
-- .org fits the museum/reference identity
-- €6.36/yr is noise
-- No mental overhead of a split primary
-
-Only buy `sumitome.com` later IF the product takes off and you want a shorter marketing alias — re-evaluate in 6 months.
+Wada source data:
+- `scripts/wada-source/colors.json` — 60K, 159 colors × 348 combinations from `mattdesl/dictionary-of-colour-combinations` (MIT)
+- Original book: Wada, Sanzo. *A Dictionary of Color Combinations*. 1933 (six volumes)
+- Modern reprint: Seigensha Art Publishing, 2010 (recommended on /about for purchase)
