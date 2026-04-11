@@ -8,6 +8,7 @@ import ContrastMatrix from "@components/ContrastMatrix.astro";
 import ShareBar from "@components/ShareBar.astro";
 import { FURTHER_READING } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
+import { collectionsForPalette } from "@data/collections";
 import { bestTextColorOn } from "@/lib/color";
 
 export async function getStaticPaths() {
@@ -22,6 +23,7 @@ if (!palette) {
 }
 
 const related = relatedPalettes(palette, 3);
+const paletteCollections = collectionsForPalette(palette).slice(0, 4);
 
 // Deterministic book rotation — different palette pages show different books
 // so impressions are distributed across the full FurtherReading inventory.
@@ -211,6 +213,29 @@ const jsonLd = [
       </aside>
     </div>
   </section>
+
+  {/* ============ FEATURED IN COLLECTIONS ============ */}
+  {paletteCollections.length > 0 && (
+    <section class="featured-in">
+      <div class="container-wide">
+        <p class="eyebrow">Featured in</p>
+        <ul class="featured-in__list" role="list">
+          {paletteCollections.map((c) => (
+            <li>
+              <a href={`/collections/${c.slug}`} class="featured-in__chip">
+                <span
+                  class="featured-in__dot"
+                  style={`background-color:${c.accentHex}`}
+                  aria-hidden="true"
+                ></span>
+                <span>{c.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 
   {/* ============ BUNDLE CTA ============ */}
   <div class="container-wide">
@@ -444,6 +469,56 @@ const jsonLd = [
 
   .palette-library {
     padding: 1.25rem;
+  }
+
+  /* ============ FEATURED IN COLLECTIONS ============ */
+
+  .featured-in {
+    padding: 2.5rem 0 1rem;
+  }
+
+  .featured-in .eyebrow {
+    margin-bottom: 1rem;
+  }
+
+  .featured-in__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  .featured-in__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.875rem 0.5rem 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    text-decoration: none;
+    transition:
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .featured-in__chip:hover {
+    border-color: var(--color-ink-900);
+    color: var(--color-accent-500);
+  }
+
+  .featured-in__dot {
+    display: inline-block;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.08);
   }
 
   /* RELATED */
