@@ -55,6 +55,74 @@ V2 task: source and import the full Wada 348 dataset with proper attribution.
 
 ---
 
+## 2026-04-11 — Monetization V1.1: reality check + reordered rails
+
+**Decision:** Reframe the monetization stack after honest math on what this
+audience actually pays for. Replace the "$12 product" positioning with
+reality-based rails in priority order: affiliate (books + tools) → prints
+waitlist → tip-jar bundle → Carbon Ads (traffic-gated, V1.5 only).
+
+**Rationale — the honest math:**
+
+| Traffic | AdSense | Carbon | Mediavine | Current $12 bundle (0.2% conv) | Affiliate (1% × $1 EPC) |
+|---|---|---|---|---|---|
+| 5k pv/mo | ~$10 | n/a | n/a | ~$12 | ~$5 |
+| 20k pv/mo | ~$40 | ~$50-150 | n/a | ~$48 | ~$20 |
+| 50k pv/mo | ~$100 | ~$150-300 | ~$1000-2000 | ~$120 | ~$50 |
+| 250k pv/mo | ~$500 | ~$500-800 | ~$5000-12000 | ~$600 | ~$250 |
+
+Below 20k pv/mo NO rail makes real money. The first 90 days are traffic
+investment, not monetization tuning. Real compounding begins at 50k+.
+
+Ad network note: Mediavine/Raptive make the most money at scale but destroy
+the museum identity (4-8 slots, video autoplay, sticky banners). Carbon Ads
+is the only network compatible with the brand — one tasteful slot, designer
+audience, no tracking, no video. Used by Smashing, CodePen, JetBrains docs.
+~20k monthly visits required for approval. Do not apply until qualified —
+premature applications get rejected and are hard to re-appeal.
+
+**The bundle problem:** Pretending a $12 bundle is a product when the same
+data is free on the site AND free on GitHub under MIT is not credible. The
+"$29 regular" anchor is not believable. Conversion math: 0.05-0.2% of visitors
+at best. Even at 5k pv/mo that's ~$50-60/mo gross.
+
+**The fix:** reposition as a PWYW tip jar with the bundle attached as a
+thank-you deliverable. $3 minimum, $5 suggested. Copy shifts from "Get the
+bundle" to "Support the archive." Subtext explicitly says "the archive
+itself stays free, always." Stops overselling the free data on the site.
+
+**What actually works for this audience:**
+
+1. **Affiliate with book covers** — biggest single CTR lift available
+   (research: cover images convert 3-5× over text-only). Extend from /about
+   only to /about + /shop + 378 palette detail pages with deterministic
+   rotation. 378 pages × unique-book-per-page = maximum impression spread.
+2. **Higher-commission affiliate inventory** — books cap at ~$1 commission.
+   Design tools (Framer $25 recurring, Figma plugins, courses) pay $5-$80.
+   New `DesignTools` component on /shop with Framer affiliate slot.
+3. **Prints via waitlist first** — validates demand before POD setup.
+   Society6/Printful activation gated on "someone actually joined waitlist."
+4. **Tip jar bundle** — honest framing converts better than fake product.
+5. **Carbon Ads (V1.5 only)** — defer until 20k pv/mo. Config stubbed.
+
+**Browse page UX — color-count filter:**
+Added 2/3/4 colors pill filter to the browse page because that's exactly
+how Wada's original book organizes plates (2-color, 3-color, 4-color
+groupings). Counts: 120 × 2-color, 120 × 3-color, 108 × 4-color +
+30 curated = 378. Pill buttons above the existing dropdowns. Pure DOM
+filter — zero build cost, zero JS framework.
+
+**Implementation notes:**
+- Open Library covers API for book images — free CDN, graceful fallback.
+- `?default=false` param forces 404 on miss instead of 1x1 placeholder,
+  so `onerror` handler actually fires.
+- Direct `olCoverId` preferred over ISBN when ISBN lookups fail
+  (Chromaphilia's ISBN 0714873934 isn't indexed; using cover id 12410845).
+- Deterministic book rotation via slug hash → `offset` param on palette
+  pages. No random, stable per-URL (important for caching + analytics).
+
+---
+
 ## 2026-04-10 — Monetization V1: digital bundle + affiliate books + Plausible
 
 **Decision:** Revenue rails are a layered stack, no display ads.

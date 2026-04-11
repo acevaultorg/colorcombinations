@@ -5,12 +5,26 @@
 - **Stack:** Astro 5, Tailwind CSS v4, TypeScript (strict), MDX, Cloudflare Pages <!-- verified: 2026-04-10 -->
 - **Data source:** 378 palettes total — 30 hand-written editorial (`curatedPalettes`) + 348 Wada historical plates (`wadaPalettes`, auto-generated from `mattdesl/dictionary-of-colour-combinations`) <!-- verified: 2026-04-10 -->
 
-## Monetization stack (V1 live, awaiting operator activation)
-- **Primary:** `BUNDLE` in `src/config/monetization.ts` — Gumroad digital product "The Complete Wada Bundle" at $12 (regular $29). Bundle built via `npm run bundle` → `bundle-source/wada-bundle-v1.zip` (50K, 384 files: 5 format files + 378 SVG plates + README + figma-tokens.json + palettes.json). <!-- verified: 2026-04-10 -->
-- **Secondary:** `BOOKSHOP` (10% affiliate) + `AMAZON` (4% fallback) in monetization config. Five curated books rendered via `FurtherReading.astro` on /about and /shop with FTC disclosure. <!-- verified: 2026-04-10 -->
-- **Tertiary:** `PRINTS` stub on /shop — waitlist CTA until operator sets up Printful post-first-Gumroad-sale. <!-- verified: 2026-04-10 -->
-- **Analytics:** `ANALYTICS.plausibleDomain` in config. Plausible tagged-events script loads conditionally in BaseLayout. Event hooks already wired on: `.btn[data-event]`, `[data-copy]` (export buttons), `.further-reading__link`, `.further-reading__amazon`. <!-- verified: 2026-04-10 -->
-- **Activation:** all live-gated behind `isLive` getters — production safe even when placeholders are in place. Operator pastes real values, redeploys, revenue active. <!-- verified: 2026-04-10 -->
+## Monetization stack (V1.1 — reality-check rails, live gated)
+**Priority reordered 2026-04-11 after honest-math pass. See DECISIONS.md 2026-04-11.**
+
+- **Primary:** `BOOKSHOP` (10% affiliate, 30-day cookie) + `AMAZON` (4% fallback) in `src/config/monetization.ts`. Five curated books rendered via `FurtherReading.astro` with **book cover images** from Open Library CDN (ISBN or `olCoverId` lookup, `?default=false` to force 404 on miss). Appears on: /about (full list), /shop (library section, hero position), /palettes/[slug] (sidebar with deterministic rotation via slug-hash offset → 378 pages × unique book per page). <!-- verified: 2026-04-11 -->
+- **Secondary:** `DESIGN_TOOLS` in monetization config — `DesignTools.astro` on /shop. Framer affiliate slot (~$25 recurring), Figma (no affiliate), Coolors (no affiliate). Higher commission ceiling than books. <!-- verified: 2026-04-11 -->
+- **Tertiary (waitlist):** `PRINTS` stub on /shop — join-waitlist CTA until Society6/Printful activation. Validates demand before POD commitment. <!-- verified: 2026-04-11 -->
+- **Support (tip jar):** `BUNDLE` repositioned from "product" to PWYW tip jar. Gumroad, $3 min, $5 suggested. "Support the archive" copy. Bundle still built via `npm run bundle` → 384 files, 50K zip. Reframed as thank-you deliverable, not primary revenue. <!-- verified: 2026-04-11 -->
+- **V1.5 (traffic-gated, not active):** `CARBON_ADS` config stub. Requires ~20k monthly visits to qualify. Do NOT apply until traffic threshold met. Only ad network compatible with museum identity. <!-- verified: 2026-04-11 -->
+- **Analytics:** `ANALYTICS.plausibleDomain` — Plausible tagged-events script in BaseLayout, conditional. Event hooks: `bookshop_click`, `amazon_click`, `tool_affiliate_click`, `tool_click`, `bundle_cta_click`, `export_click`, `prints_cta_click`, `prints_waitlist_click`. <!-- verified: 2026-04-11 -->
+- **Activation:** all live-gated behind `isLive` getters — production safe with placeholders. Operator pastes real values, redeploys, revenue active. <!-- verified: 2026-04-11 -->
+
+## Realistic revenue ceiling (by traffic)
+
+Based on 2026-04-11 honest-math pass (see DECISIONS.md):
+- **5k pv/mo (V1 launch):** $10-30/mo total — NO rail makes real money. Focus on traffic, not tuning.
+- **20k pv/mo (3-month target):** $50-150/mo — affiliate rails start paying; Carbon Ads qualifies.
+- **50k pv/mo (stretch):** $300-700/mo — affiliate + Carbon compound; prints launch feasible.
+- **250k pv/mo (big success):** $2k-5k/mo — Mediavine tier but destroys brand; keep Carbon.
+
+**First 90 days = growth investment, not monetization tuning.** <!-- verified: 2026-04-11 -->
 
 ## Site structure
 - **/** homepage — hero ("All 348 historical color combinations"), 8 featured editorial picks, how-it-works, BundleCta medium, EmailCapture. <!-- verified: 2026-04-10 -->

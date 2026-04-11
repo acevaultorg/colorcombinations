@@ -80,7 +80,9 @@ const hasAffiliate = BOOKSHOP.isLive || AMAZON.isLive;
                 alt={`${book.title} by ${book.author} — book cover`}
                 loading="lazy"
                 decoding="async"
+                data-cover-img
                 onerror="this.classList.add('is-missing')"
+                onload="if (this.naturalWidth < 10) this.classList.add('is-missing')"
               />
             ) : (
               <span class="further-reading__cover-fallback" aria-hidden="true">

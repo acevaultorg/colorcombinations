@@ -210,10 +210,16 @@ export interface CuratedBook {
   amazonAsin?: string;
   /**
    * ISBN-10 or ISBN-13 for cover image lookup. If omitted, falls back to
-   * amazonAsin. If both missing, no cover renders and we show a serif
-   * fallback tile.
+   * amazonAsin. If both missing, we try `olCoverId` next.
    */
   isbn?: string;
+  /**
+   * Open Library cover ID (e.g. from `openlibrary.org/search.json`'s
+   * `cover_i` field). Used when an ISBN isn't indexed in the covers API.
+   * Format: numeric ID. URL pattern:
+   *   https://covers.openlibrary.org/b/id/{id}-{size}.jpg
+   */
+  olCoverId?: number;
   /** Pull-quote reason for inclusion — shown inline on listings. */
   why: string;
 }
@@ -267,21 +273,29 @@ export const FURTHER_READING: CuratedBook[] = [
       "/p/books/chromaphilia-the-story-of-color-in-art-stella-paul/6944849",
     amazonAsin: "0714873934",
     isbn: "0714873934",
+    olCoverId: 12410845,
     why: "240 artworks organized by color. A visual counterpart to Wada's dictionary.",
   },
 ] as const;
 
 /**
- * Build an Open Library cover URL from an ISBN. Open Library's covers API
- * is free, CDN-backed, and graceful on misses (returns a transparent 1x1
- * PNG instead of 404, which our CSS treats as invisible).
+ * Build an Open Library cover URL for a book. Prefers `olCoverId` (direct
+ * internal ID — most reliable) over ISBN lookups, which can return a 1x1
+ * transparent placeholder when the cover isn't indexed.
+ *
+ * The `default=false` query param tells Open Library to return a 404 on
+ * miss instead of the 1x1 PNG, so the `onerror` handler in FurtherReading
+ * fires correctly and the fallback tile renders.
  *
  * Sizes: S (small, ~150px), M (medium, ~400px), L (large, ~800px).
  */
 export function bookCover(book: CuratedBook, size: "S" | "M" | "L" = "M"): string {
+  if (typeof book.olCoverId === "number") {
+    return `https://covers.openlibrary.org/b/id/${book.olCoverId}-${size}.jpg?default=false`;
+  }
   const id = book.isbn ?? book.amazonAsin ?? "";
   if (!id) return "";
-  return `https://covers.openlibrary.org/b/isbn/${id}-${size}.jpg`;
+  return `https://covers.openlibrary.org/b/isbn/${id}-${size}.jpg?default=false`;
 }
 
 // ============================================================================

@@ -1,7 +1,32 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-10 18:00 -->
+<!-- handoff: 2026-04-11 11:00 -->
+
+**Mode:** god
+**Objective:** monetization-v1.1 reality check — reposition revenue rails around what this audience actually pays for, add book covers, color-count filter, honest bundle framing
+
+**STATUS: SHIPPED. https://colorcombinations.org IS LIVE WITH REALITY-CHECKED MONETIZATION STACK.** ✓
+
+### V1.1 changes (this session)
+
+1. **Bundle repositioned** from "$12 product" to PWYW tip jar ($3 min, $5 suggested). Dropped $29 anchor (not credible). Copy: "Support the archive" not "Get the bundle". "The archive itself stays free, always."
+2. **Book covers** via Open Library CDN — 5 books on /shop and /about with real cover images. `?default=false` param forces 404 on miss instead of 1×1 placeholder so `onerror` fires. Direct `olCoverId` preferred over ISBN when ISBN not indexed (Chromaphilia uses cover id 12410845).
+3. **FurtherReading sidebar on all 378 palette pages** — deterministic rotation by slug hash so every page shows a different book. Maximum impression spread across inventory.
+4. **DesignTools component** (new) on /shop — Framer affiliate (~$25 recurring), Figma (no affiliate), Coolors (no affiliate). Higher commission ceiling than books.
+5. **Shop page reordered**: library (visual books) → tools → prints → support bundle. Visual-first converts better. New hero: "The library, the toolbox, and a thank-you."
+6. **Browse color-count filter**: 2/3/4 colors pill buttons above existing dropdowns. Matches how Wada's original book organized plates. Counts confirmed live: 120 × 2-color, 144 × 3-color (incl. 24 curated), 114 × 4-color (incl. 6 curated), 378 total.
+7. **Carbon Ads config stub** — traffic-gated, requires 20k pv/mo to qualify. Documented in config, not active at launch.
+
+### Honest math pass (from DECISIONS.md 2026-04-11)
+
+Below 20k pv/mo NO monetization rail makes real money. First 90 days = traffic investment. Real compounding starts at 50k+ pv/mo where affiliate + Carbon + prints start paying. Bundle reframed as tip jar because pretending a $12 bundle is a product when the data is free on the site AND free on GitHub is not credible — honest framing converts better.
+
+Historical context preserved — see prior handoff below.
+
+---
+
+## Previous Handoff (2026-04-10 18:00)
 
 **Mode:** god
 **Objective:** monetization-v1 + wada-348-import — wire revenue rails AND ship the full Sanzo Wada catalog (operator-directed mid-session expansion)
