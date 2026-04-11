@@ -28,12 +28,13 @@ Based on 2026-04-11 honest-math pass (see DECISIONS.md):
 
 ## Site structure
 - **/** homepage — hero ("All 348 historical color combinations"), 8 featured editorial picks, how-it-works, BundleCta medium, EmailCapture. <!-- verified: 2026-04-10 -->
-- **/browse** — client-side filter over all 378 palettes. <!-- verified: 2026-04-10 -->
-- **/palettes/[slug]** — 378 static detail pages (30 curated + 348 `wada-NNN-*`). Each has: breadcrumb → hero → swatch grid → body prose → ExportPalette → details plate → BundleCta compact → related palettes. <!-- verified: 2026-04-10 -->
-- **/about** — mission, Wada biography, "What's actually here" (explaining both collections), FurtherReading library, BundleCta medium. <!-- verified: 2026-04-10 -->
-- **/shop** — museum gift shop: shop hero → BundleCta big → Prints rail → FurtherReading → closing note. <!-- verified: 2026-04-10 -->
+- **/browse** — client-side filter over all 378 palettes with color-count pill filter (2/3/4 colors). <!-- verified: 2026-04-11 -->
+- **/palettes/[slug]** — 378 static detail pages. Sidebar order: ExportPalette → Details → ContrastMatrix (WCAG pairs) → ShareBar (copy/Twitter/Pinterest) → FurtherReading sidebar (rotating book). Body: hero → swatch grid → prose → BundleCta compact → related. Each page has a per-palette OG image at `/og/[slug].svg`. <!-- verified: 2026-04-11 -->
+- **/about** — mission, Wada biography, "What's actually here", FurtherReading library, BundleCta medium. <!-- verified: 2026-04-11 -->
+- **/shop** — museum gift shop: hero → FurtherReading (books, covers) → DesignTools → Prints rail → BundleCta big → closing note. <!-- verified: 2026-04-11 -->
+- **/og/[slug].svg** — 378 static OG images, one per palette, generated via Astro endpoint at build time. Modern platforms (Twitter, LinkedIn, Discord, Slack, Mastodon, Bluesky) render SVG OG; FB is the holdout. Cache-Control: immutable. <!-- verified: 2026-04-11 -->
 - **/404** — noIndex error page with 3 suggested palettes. <!-- verified: 2026-04-10 -->
-- **Build output:** 383 pages, ~10M dist, ~1.9s build time. <!-- verified: 2026-04-10 -->
+- **Build output:** 383 HTML pages + 378 OG SVGs, ~11M dist, ~2.3s build time. <!-- verified: 2026-04-11 -->
 
 ## Key competitors
 - **Coolors.co** — palette generator, Pro tier ~$5/mo, large user base, generic <!-- verified: 2026-04-08 -->

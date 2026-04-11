@@ -55,6 +55,53 @@ V2 task: source and import the full Wada 348 dataset with proper attribution.
 
 ---
 
+## 2026-04-11 — Palette page enrichment: contrast matrix + share + per-palette OG
+
+**Decision:** Add three durable additions to every palette detail page:
+WCAG contrast matrix, share bar with viral-loop primitives, and per-palette
+OG SVG images at build time.
+
+**Why each one:**
+
+1. **Contrast matrix.** The auto-generated 348 Wada pages share the same
+   template structure, which Google can flag as "thin content" at scale.
+   The contrast matrix differentiates every page with unique, factually-
+   derived data (not fluff). It's also a real designer value-add —
+   accessibility reviews are a mandatory step in every design handoff, and
+   baking the check into every palette page turns this archive from "look
+   up hex values" into "I can defend this palette in a design review."
+   Uses the existing `contrastRatio()` in `src/lib/color.ts`. Zero new deps.
+
+2. **Share bar.** Viral loop primitive — three actions: copy link,
+   Twitter/X, Pinterest. Per-palette Pinterest intent includes the new
+   per-palette OG image as `media`, so pinning auto-shows the palette.
+   Plausible events wired: `share_copy`, `share_twitter`, `share_pinterest`.
+
+3. **Per-palette OG images.** Critical viral loop amplifier. Before this
+   change, every shared palette URL showed the generic site OG image on
+   Twitter/LinkedIn/Discord/Slack. Now each of the 378 palettes has its
+   own 1200x630 SVG with the actual colors, title, and site mark. Shared
+   links become visual ambassadors for the archive instead of lookalike
+   blobs. Built via Astro endpoint (`src/pages/og/[slug].svg.ts`) as
+   static SVG at build time — 378 files, ~2KB each, ~750KB total.
+
+**Format choice — SVG not PNG:**
+- Modern platforms (Twitter, LinkedIn, Discord, Slack, Mastodon, Bluesky)
+  all render SVG OG images.
+- Facebook is the main holdout — for FB-specific traffic, add PNG
+  fallback later via Sharp/Satori.
+- SVG is ~10x smaller than equivalent PNG (~2KB vs ~20KB), and scales
+  crisply at any viewport.
+- Zero new deps for build-time generation (Astro endpoint pattern).
+
+**Why this now (god mode priority):**
+First 90 days are traffic investment. Everything that makes each page
+more shareable / harder to flag as thin / more likely to rank on long-
+tail queries compounds over months. These are three small changes that
+ship forever-value improvements across 378 pages in one deploy.
+
+---
+
 ## 2026-04-11 — Monetization V1.1: reality check + reordered rails
 
 **Decision:** Reframe the monetization stack after honest math on what this
