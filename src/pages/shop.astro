@@ -2,11 +2,15 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import BundleCta from "@components/BundleCta.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import DesignTools from "@components/DesignTools.astro";
 import { BUNDLE, PRINTS } from "@/config/monetization";
 
 const title = "Shop";
 const description =
   "Support the archive. Get the bundle, the books, and the prints that built The Dictionary of Color Combinations.";
+
+const bundlePrice = BUNDLE.price.replace(/[^\d.]/g, "");
+const bundleMinPrice = BUNDLE.minPrice.replace(/[^\d.]/g, "");
 
 const jsonLd = [
   {
@@ -14,7 +18,7 @@ const jsonLd = [
     "@type": "Product",
     name: BUNDLE.name,
     description:
-      "All 30 curated Japanese-tradition color combinations as Figma tokens, Tailwind config, CSS variables, SVG plates, and full JSON — everything the archive is built on, in one download.",
+      "All 378 historically-grounded color combinations (348 Sanzo Wada plates + 30 editorial) as Figma tokens, Tailwind config, CSS variables, SVG plates, and full JSON — the complete archive in one download. Pay what you want, minimum $3, suggested $5.",
     brand: {
       "@type": "Brand",
       name: "The Dictionary of Color Combinations",
@@ -23,7 +27,13 @@ const jsonLd = [
     offers: {
       "@type": "Offer",
       priceCurrency: "USD",
-      price: BUNDLE.price.replace(/[^\d.]/g, ""),
+      price: bundleMinPrice,
+      priceSpecification: {
+        "@type": "PriceSpecification",
+        price: bundlePrice,
+        priceCurrency: "USD",
+        minPrice: bundleMinPrice,
+      },
       availability: BUNDLE.isLive
         ? "https://schema.org/InStock"
         : "https://schema.org/PreOrder",
@@ -56,25 +66,39 @@ const jsonLd = [
     <div class="container-wide shop-hero__inner">
       <p class="eyebrow">The museum gift shop</p>
       <h1 class="display-hero text-balance">
-        Three ways to support the archive.
+        The library, the toolbox, and a thank-you.
       </h1>
       <p class="shop-hero__lede">
-        Everything in The Dictionary of Color Combinations is free to browse and
-        copy — that will never change. But if the archive earns a place in your
-        bookmarks bar, there are three quiet ways to help it stay that way.
+        Everything at The Dictionary of Color Combinations is free to browse and
+        copy — that will never change. This page is what to reach for next. Five
+        books that taught us the material. A short list of tools that pair with
+        the archive. And a tip jar with the full bundle attached as a thank-you.
       </p>
     </div>
   </section>
 
-  {/* ============ 1. BUNDLE ============ */}
-  <BundleCta variant="big" id="bundle" />
-  <section id="bundle-coming-soon" aria-hidden="true" />
+  {/* ============ 1. BOOKS (primary affiliate rail — visual, high conversion) ============ */}
+  <div class="shop-books" id="library">
+    <div class="container-wide">
+      <FurtherReading
+        title="The library behind the archive"
+        intro="Every palette in this archive stands on the shoulders of these five books. Real criticism, real history, real judgment. If you want to go deeper than hex values, start here."
+      />
+    </div>
+  </div>
 
-  {/* ============ 2. PRINTS ============ */}
+  {/* ============ 2. DESIGN TOOLS (secondary affiliate — higher commission) ============ */}
+  <div class="shop-tools" id="tools">
+    <div class="container-wide">
+      <DesignTools />
+    </div>
+  </div>
+
+  {/* ============ 3. PRINTS (waitlist until demand validated) ============ */}
   <section class="prints section" id="prints">
     <div class="container-wide prints__inner">
       <div class="prints__body">
-        <p class="eyebrow">Prints & posters</p>
+        <p class="eyebrow">Prints &amp; posters</p>
         <h2 class="text-balance">Museum-grade poster sets.</h2>
         <p class="prints__lede">
           Each palette, printed as a single plate — generous margins, archival
@@ -123,15 +147,9 @@ const jsonLd = [
     </div>
   </section>
 
-  {/* ============ 3. BOOKS ============ */}
-  <div class="shop-books">
-    <div class="container-wide">
-      <FurtherReading
-        title="The library behind the archive"
-        intro="Every palette in the archive stands on the shoulders of these five books. If you want to go deeper than hex values, start here."
-      />
-    </div>
-  </div>
+  {/* ============ 4. SUPPORT / BUNDLE (honest tip jar) ============ */}
+  <BundleCta variant="big" id="bundle" />
+  <section id="bundle-coming-soon" aria-hidden="true" />
 
   {/* ============ CLOSING NOTE ============ */}
   <section class="shop-note section">
@@ -139,9 +157,10 @@ const jsonLd = [
       <p class="eyebrow">A note from the archive</p>
       <p>
         The archive itself will always stay free — no paywall, no login, no
-        watermarks on the exports. The bundle, the prints, and the affiliate
-        links are how this stays sustainable without turning the site into an
-        ad-supported SaaS landing page.
+        watermarks on the exports. The affiliate links above earn a small
+        commission, the bundle is a tip jar for folks who want to support the
+        work directly, and the prints will be a real product once demand is
+        proven.
       </p>
       <p>
         If you can't support financially, just share a palette you found useful.
@@ -265,6 +284,12 @@ const jsonLd = [
   .shop-books {
     background-color: var(--color-paper-100);
     border-block: 1px solid var(--color-border);
+  }
+
+  /* ---- Tools wrapper ---- */
+  .shop-tools {
+    background-color: var(--color-paper-50);
+    border-bottom: 1px solid var(--color-border);
   }
 
   /* ---- Closing note ---- */

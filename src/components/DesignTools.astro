@@ -1,0 +1,171 @@
+---
+/**
+ * DesignTools — affiliate-friendly inventory of design tools beyond books.
+ *
+ * Books cap out at ~$1 commission per sale. Design tools (Framer, Figma
+ * plugins, courses) pay $5–$80 per signup. This component expands the
+ * affiliate ceiling significantly without cluttering the museum brand.
+ *
+ * Used on /shop. Falls back gracefully when affiliate links are placeholders.
+ */
+
+import { DESIGN_TOOLS } from "@/config/monetization";
+
+export interface Props {
+  title?: string;
+  intro?: string;
+}
+
+const {
+  title = "Tools I recommend",
+  intro = "A short list of design tools that pair well with the archive. The ones marked with a note earn a small commission — they're here because they're worth using, not because they pay.",
+} = Astro.props;
+---
+
+<section class="design-tools">
+  <header class="design-tools__head">
+    <p class="eyebrow">Toolbox</p>
+    <h2 class="text-balance">{title}</h2>
+    <p class="design-tools__intro">{intro}</p>
+  </header>
+
+  <ul class="design-tools__list" role="list">
+    {DESIGN_TOOLS.map((tool) => (
+      <li class="design-tools__item">
+        <p class="design-tools__category">{tool.category}</p>
+        <h3 class="design-tools__name">
+          <a
+            href={tool.url}
+            target="_blank"
+            rel={tool.affiliate ? "noopener sponsored" : "noopener"}
+            data-event={tool.affiliate ? "tool_affiliate_click" : "tool_click"}
+            data-tool={tool.name}
+          >
+            {tool.name}
+            <span class="design-tools__arrow" aria-hidden="true">↗</span>
+          </a>
+        </h3>
+        <p class="design-tools__desc">{tool.description}</p>
+        <p class="design-tools__why">{tool.why}</p>
+        {tool.affiliate && (
+          <p class="design-tools__affiliate-note">
+            <span aria-hidden="true">→</span> affiliate link — commission at no cost to you
+          </p>
+        )}
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .design-tools {
+    padding-block: var(--spacing-section);
+  }
+
+  .design-tools__head {
+    max-width: 58ch;
+    margin-bottom: 2.5rem;
+  }
+
+  .design-tools__head .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .design-tools__head h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.5vw + 1rem, 2.25rem);
+    line-height: 1.15;
+    margin: 0 0 1rem;
+  }
+
+  .design-tools__intro {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    line-height: 1.65;
+  }
+
+  .design-tools__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .design-tools__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .design-tools__item {
+    padding: 1.5rem;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-plate);
+  }
+
+  .design-tools__category {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent-500);
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+  }
+
+  .design-tools__name {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    font-weight: 500;
+    margin: 0 0 0.75rem;
+    line-height: 1.2;
+  }
+
+  .design-tools__name a {
+    color: var(--color-ink-900);
+    text-decoration: none;
+  }
+
+  .design-tools__name a:hover {
+    color: var(--color-accent-500);
+  }
+
+  .design-tools__arrow {
+    display: inline-block;
+    margin-left: 0.25rem;
+    font-size: 0.75em;
+    opacity: 0.5;
+  }
+
+  .design-tools__desc {
+    font-size: 0.9375rem;
+    color: var(--color-ink-700);
+    line-height: 1.55;
+    margin: 0 0 0.75rem;
+  }
+
+  .design-tools__why {
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-ink-500);
+    margin: 0 0 1rem;
+    font-style: italic;
+  }
+
+  .design-tools__affiliate-note {
+    font-size: 0.6875rem;
+    color: var(--color-ink-400);
+    margin: 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .design-tools__affiliate-note span {
+    color: var(--color-accent-500);
+  }
+</style>

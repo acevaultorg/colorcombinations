@@ -11,6 +11,14 @@ const eras = Array.from(new Set(palettes.map((p) => p.era))).sort();
 const hues = Array.from(new Set(palettes.map((p) => p.dominantHue))).sort();
 const moods = Array.from(new Set(palettes.flatMap((p) => p.moods))).sort();
 
+// Color-count bucketing — Wada's original book is organized this way.
+// 2-color, 3-color, 4-color are the three historical groupings.
+const colorCounts = [2, 3, 4] as const;
+const colorCountTotals = colorCounts.reduce<Record<number, number>>((acc, n) => {
+  acc[n] = palettes.filter((p) => p.colors.length === n).length;
+  return acc;
+}, {});
+
 const title = "Browse all palettes";
 const description = `Filter and explore all ${total} historically-grounded color combinations by era, dominant hue, or mood.`;
 
@@ -44,6 +52,32 @@ const jsonLd = {
 
   <section class="browse-tools">
     <div class="container-wide">
+      <div class="browse-colorcount" role="group" aria-label="Filter by number of colors">
+        <span class="browse-field__label">Colors per palette</span>
+        <div class="browse-colorcount__buttons">
+          <button
+            type="button"
+            class="browse-pill is-active"
+            data-colorcount-btn=""
+            aria-pressed="true"
+          >
+            All
+            <span class="browse-pill__count">{total}</span>
+          </button>
+          {colorCounts.map((n) => (
+            <button
+              type="button"
+              class="browse-pill"
+              data-colorcount-btn={String(n)}
+              aria-pressed="false"
+            >
+              {n} colors
+              <span class="browse-pill__count">{colorCountTotals[n]}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <form class="browse-form" role="search" aria-label="Filter palettes">
         <label class="browse-field">
           <span class="browse-field__label">Search</span>
@@ -108,6 +142,7 @@ const jsonLd = {
             data-era={palette.era}
             data-hue={palette.dominantHue}
             data-moods={palette.moods.join(",")}
+            data-count={String(palette.colors.length)}
             data-search={`${palette.title} ${palette.titleJa ?? ""} ${palette.summary} ${palette.colors.map((c) => `${c.nameRomaji ?? ""} ${c.nameJa ?? ""}`).join(" ")} ${(palette.tags ?? []).join(" ")}`.toLowerCase()}
           >
             <PaletteCard palette={palette} headingLevel="h3" />
@@ -131,7 +166,7 @@ const jsonLd = {
     // nothing to wire — exit gracefully
   } else {
     const items = Array.from(grid.querySelectorAll<HTMLElement>("[data-palette-item]"));
-    const state = { q: "", era: "", hue: "", mood: "" };
+    const state = { q: "", era: "", hue: "", mood: "", count: "" };
 
     const applyFilters = (): void => {
       let visible = 0;
@@ -142,8 +177,10 @@ const jsonLd = {
         const matchesMood =
           !state.mood ||
           (item.dataset.moods ?? "").split(",").includes(state.mood);
+        const matchesCount = !state.count || item.dataset.count === state.count;
         const matchesQ = !q || (item.dataset.search ?? "").includes(q);
-        const show = matchesEra && matchesHue && matchesMood && matchesQ;
+        const show =
+          matchesEra && matchesHue && matchesMood && matchesCount && matchesQ;
         item.hidden = !show;
         if (show) visible += 1;
       });
@@ -163,6 +200,23 @@ const jsonLd = {
         input.addEventListener("change", handler);
       });
 
+    // Color-count pill buttons (2/3/4 colors, or All)
+    const countButtons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("[data-colorcount-btn]"),
+    );
+    countButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const value = btn.dataset.colorcountBtn ?? "";
+        state.count = value;
+        countButtons.forEach((b) => {
+          const active = b === btn;
+          b.classList.toggle("is-active", active);
+          b.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        applyFilters();
+      });
+    });
+
     document.querySelectorAll<HTMLButtonElement>("[data-browse-reset]").forEach((btn) => {
       btn.addEventListener("click", () => {
         (document.querySelectorAll<HTMLInputElement | HTMLSelectElement>("[data-browse-filter]")).forEach((el) => {
@@ -172,6 +226,13 @@ const jsonLd = {
         state.era = "";
         state.hue = "";
         state.mood = "";
+        state.count = "";
+        // Reset pill buttons — activate "All"
+        countButtons.forEach((b) => {
+          const isAll = (b.dataset.colorcountBtn ?? "") === "";
+          b.classList.toggle("is-active", isAll);
+          b.setAttribute("aria-pressed", isAll ? "true" : "false");
+        });
         applyFilters();
       });
     });
@@ -204,6 +265,67 @@ const jsonLd = {
     border-block: 1px solid var(--color-border);
     padding-block: 1.5rem;
     margin-bottom: 3rem;
+  }
+
+  /* ============ COLOR-COUNT PILLS ============ */
+
+  .browse-colorcount {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .browse-colorcount__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .browse-pill {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-ink-300);
+    border-radius: 999px;
+    color: var(--color-ink-700);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .browse-pill:hover {
+    border-color: var(--color-ink-900);
+    color: var(--color-ink-900);
+  }
+
+  .browse-pill.is-active {
+    background: var(--color-ink-900);
+    border-color: var(--color-ink-900);
+    color: var(--color-paper-50);
+  }
+
+  .browse-pill__count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .browse-pill.is-active .browse-pill__count {
+    opacity: 0.7;
+  }
+
+  .browse-pill:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
   }
 
   .browse-form {

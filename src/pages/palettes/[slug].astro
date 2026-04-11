@@ -3,6 +3,8 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import ExportPalette from "@components/ExportPalette.astro";
 import BundleCta from "@components/BundleCta.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import { FURTHER_READING } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
 import { bestTextColorOn } from "@/lib/color";
 
@@ -18,6 +20,14 @@ if (!palette) {
 }
 
 const related = relatedPalettes(palette, 3);
+
+// Deterministic book rotation — different palette pages show different books
+// so impressions are distributed across the full FurtherReading inventory.
+// Hash the slug to a stable offset into the book list.
+const bookOffset =
+  palette.slug
+    .split("")
+    .reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % FURTHER_READING.length;
 
 const title = palette.title + (palette.titleJa ? ` (${palette.titleJa})` : "");
 const description = palette.summary;
@@ -179,6 +189,15 @@ const jsonLd = [
             <dt>Colors</dt>
             <dd>{palette.colors.length}</dd>
           </dl>
+        </div>
+
+        <div class="palette-library plate">
+          <FurtherReading
+            title="From the library"
+            limit={1}
+            offset={bookOffset}
+            variant="sidebar"
+          />
         </div>
       </aside>
     </div>
@@ -412,6 +431,10 @@ const jsonLd = [
     margin: 0;
     color: var(--color-ink-900);
     text-transform: capitalize;
+  }
+
+  .palette-library {
+    padding: 1.25rem;
   }
 
   /* RELATED */

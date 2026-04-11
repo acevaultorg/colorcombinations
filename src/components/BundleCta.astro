@@ -1,6 +1,8 @@
 ---
 /**
- * BundleCta — editorial "get the bundle" block.
+ * BundleCta — "support the archive" tip-jar block with the bundle attached
+ * as a thank-you gift. Honest framing: the data is free on the site, so this
+ * is genuinely a support CTA, not a product pitch.
  *
  * Used on:
  *  - /shop (primary surface, big variant)
@@ -8,9 +10,8 @@
  *  - /palettes/[slug] (end of every palette page, compact variant)
  *  - /about (optional, compact)
  *
- * Accepts an explicit variant so surrounding sections keep visual hierarchy.
- * Degrades gracefully when BUNDLE.isLive is false — copy shifts from "Get the
- * bundle" to "Notify me" and the CTA points at a safe #coming-soon anchor on /shop.
+ * Degrades gracefully when BUNDLE.isLive is false — copy shifts to "coming
+ * soon" and the CTA anchors to the bundle section on /shop.
  */
 
 import { BUNDLE } from "@/config/monetization";
@@ -25,11 +26,8 @@ export interface Props {
 const { variant = "medium", id } = Astro.props;
 const live = BUNDLE.isLive;
 const href = BUNDLE.checkoutUrl;
-const cta = live ? "Get the bundle" : "See what's inside";
+const cta = live ? "Support the archive" : "See what's inside";
 const eventName = live ? "bundle_cta_click" : "bundle_interest_click";
-// Show regular price anchor when it differs from intro price (string compare
-// via cast avoids TS literal-type narrowing on const-asserted values).
-const showAnchor = String(BUNDLE.regularPrice) !== String(BUNDLE.price);
 ---
 
 <section
@@ -59,11 +57,11 @@ const showAnchor = String(BUNDLE.regularPrice) !== String(BUNDLE.price);
           rel={live ? "noopener" : undefined}
           target={live ? "_blank" : undefined}
         >
-          {cta} {live && <span class="bundle-cta__price">{BUNDLE.price}</span>}
+          {cta} {live && <span class="bundle-cta__price">from {BUNDLE.minPrice}</span>}
         </a>
-        {live && showAnchor && (
+        {live && (
           <p class="bundle-cta__anchor">
-            Regular {BUNDLE.regularPrice} — intro price while V1 is stabilising.
+            Pay what you want — suggested {BUNDLE.price}, minimum {BUNDLE.minPrice}. The archive itself stays free, always.
           </p>
         )}
         {!live && (
