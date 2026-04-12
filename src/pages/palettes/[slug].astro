@@ -135,6 +135,10 @@ const jsonLd = [
       <div class="swatch-row" style={`--swatch-count: ${palette.colors.length};`}>
         {palette.colors.map((color) => {
           const textTone = bestTextColorOn(color.hex);
+          const colorSlug = (color.nameRomaji ?? color.hex)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
           return (
             <div
               class={`swatch-block swatch-block--${textTone}`}
@@ -142,7 +146,11 @@ const jsonLd = [
             >
               <div class="swatch-block__inner">
                 {color.nameJa && <p class="swatch-block__ja">{color.nameJa}</p>}
-                {color.nameRomaji && <p class="swatch-block__romaji">{color.nameRomaji}</p>}
+                {color.nameRomaji && (
+                  <p class="swatch-block__romaji">
+                    <a href={`/colors/${colorSlug}/`} class={`swatch-link swatch-link--${textTone}`}>{color.nameRomaji}</a>
+                  </p>
+                )}
                 <p class="swatch-block__hex">
                   <code>{color.hex}</code>
                 </p>
@@ -377,6 +385,17 @@ const jsonLd = [
     margin: 0 0 0.5rem;
     opacity: 0.85;
     max-width: none;
+  }
+
+  .swatch-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 150ms ease;
+  }
+
+  .swatch-link:hover {
+    border-bottom-color: currentColor;
   }
 
   .swatch-block__hex {
