@@ -8,7 +8,7 @@ Everything on the site is live, shipped, and production-safe. The monetization s
 
 ## The plan in one paragraph
 
-You'll sign up for Gumroad (sells the bundle), Bookshop.org (affiliate books), and Plausible (analytics). You'll paste three URLs into `src/config/monetization.ts`. You'll redeploy. After that, every visitor to the site is a potential customer for a $12 bundle, a potential affiliate-click, and a tracked session in a privacy-first dashboard.
+You'll sign up for Gumroad (tip-jar bundle), Bookshop.org (affiliate books), and Plausible (analytics). You'll paste three URLs into `src/config/monetization.ts`. You'll redeploy. After that, every visitor to the site is a potential supporter ($3-$5 PWYW bundle), a potential affiliate-click, and a tracked session in a privacy-first dashboard.
 
 ---
 
@@ -31,8 +31,8 @@ You'll sign up for Gumroad (sells the bundle), Bookshop.org (affiliate books), a
 3. Click **+ New product** → **Digital product**.
 4. Upload the file at `bundle-source/wada-bundle-v1.zip` (it's about 50 KB and contains 384 files: format files + 378 SVG plates + README).
 5. Set the fields:
-   - **Name:** `The Complete Wada Bundle`
-   - **Price:** `$12` (you can also offer "pay what you want" with a $12 minimum — conversion data is mixed on this, start with fixed $12)
+   - **Name:** `Support the archive — The Complete Wada Bundle`
+   - **Price:** Pay what you want, **$3 minimum, $5 suggested**. The site frames this as a tip jar, not a product — the data is free on the site and on GitHub.
    - **Description:** copy from below ↓
    - **Permalink:** `wada-bundle` (the URL will be `https://gumroad.com/l/wada-bundle`)
 6. Click **Publish**.
@@ -49,7 +49,7 @@ You'll sign up for Gumroad (sells the bundle), Bookshop.org (affiliate books), a
    ```sh
    npm run build && npx wrangler pages deploy dist --project-name=colorcombinations --branch=main
    ```
-10. Visit https://colorcombinations.org/shop/ — the "Get the bundle $12" button now opens the Gumroad checkout in a new tab. Verify by hovering.
+10. Visit https://colorcombinations.org/shop/ — the "Support the archive" button now opens the Gumroad checkout in a new tab. Verify by hovering.
 
 ### Description to paste into Gumroad
 
@@ -197,7 +197,7 @@ In Plausible → **Goals**, add each of the above as a custom goal to see conver
 | Export click rate | 15% on /palettes/* | Export is the primary free value — funnel top |
 | Email signup rate | 3% of visitors | Baseline |
 
-With 5,000 MV/mo at the targets above: $75-$100/mo from bundles + $10-$30/mo from Bookshop affiliate = ~$100/mo at the low end of V1. Scales linearly with SEO traffic.
+With 5,000 MV/mo at the targets above: $15-$40/mo from PWYW bundles + $10-$30/mo from Bookshop affiliate = ~$30-$70/mo. Scales with SEO traffic. Real money starts at 20k+ pv/mo (see KNOWLEDGE.md revenue ceiling table).
 
 ---
 

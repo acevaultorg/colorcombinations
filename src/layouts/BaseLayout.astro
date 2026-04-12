@@ -129,6 +129,25 @@ const jsonLdArray = jsonLd
     <slot name="head" />
   </head>
   <body>
+    {/* Event tracking — connects data-event attributes to Plausible custom events.
+        Works even before Plausible loads (queues via the polyfill above). */}
+    <script is:inline>
+    (function(){
+      document.addEventListener('click', function(e) {
+        var el = e.target.closest('[data-event]');
+        if (!el) return;
+        var name = el.getAttribute('data-event');
+        if (!name) return;
+        var props = {};
+        if (el.dataset.format) props.format = el.dataset.format;
+        if (el.dataset.book) props.book = el.dataset.book;
+        if (el.dataset.tool) props.tool = el.dataset.tool;
+        if (el.dataset.variant) props.variant = el.dataset.variant;
+        if (el.href) props.url = el.href;
+        window.plausible(name, {props: props});
+      });
+    })();
+    </script>
     <a href="#main" class="skip-link">Skip to content</a>
     <SiteHeader />
     <main id="main" class="site-main">
