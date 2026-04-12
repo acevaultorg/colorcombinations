@@ -1,12 +1,49 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-11 11:00 -->
+<!-- handoff: 2026-04-12 10:10 -->
 
 **Mode:** god
-**Objective:** monetization-v1.1 reality check — reposition revenue rails around what this audience actually pays for, add book covers, color-count filter, honest bundle framing
+**Objective:** color dictionary + RSS feed — 211 new SEO pages for long-tail search, content distribution channel
 
-**STATUS: SHIPPED. https://colorcombinations.org IS LIVE WITH REALITY-CHECKED MONETIZATION STACK.** ✓
+**STATUS: SHIPPED. https://colorcombinations.org NOW HAS 603 PAGES LIVE.** ✓
+
+### V3 changes (this session — 2026-04-12)
+
+1. **Color data module** (`src/data/colors.ts`) — extracts 211 unique named colors from all 378 palettes. Hue classification, reverse palette lookup, sorted by frequency.
+2. **Color dictionary index** (`/colors/`) — browsable grid of all 211 colors with hue-family pill filters (red/orange/yellow/brown/pink/green/blue/purple/neutral). Square swatch tiles with hex overlay, name, nameJa, palette count.
+3. **Color detail pages** (`/colors/[slug]`) — 159+ individual pages. Hero swatch with hex/RGB/WCAG contrast specs, quick-copy buttons (hex/RGB/CSS var), palette grid showing every palette that uses the color, FurtherReading sidebar with rotating book, JSON-LD CreativeWork + BreadcrumbList.
+4. **RSS feed** (`/feed.xml`) — RSS 2.0 with 30 editorial palettes, content:encoded swatch HTML, auto-discovery link in `<head>`.
+5. **Palette swatch links** — color names on palette detail pages now link to their color dictionary entry, creating deep internal linking across 378 palette pages × 211 color pages.
+6. **Navigation** — "Colors" added to header nav (between Browse and Collections) and footer Explore column.
+
+### Numbers
+
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Total pages | 392 | 603 |
+| Color pages | 0 | 211 (1 index + 159+ detail) |
+| RSS feed | none | /feed.xml (30 items) |
+| Internal links added | 0 | ~1,000+ (swatch→color cross-links) |
+| Build time | 2.34s | 2.73s |
+| Dist size | 11M | 23M |
+| Sitemap URLs | 382 | 602 |
+
+### Live URLs verified
+
+- https://colorcombinations.org/colors/ — 200, color dictionary index
+- https://colorcombinations.org/colors/hermosa-pink/ — 200, color detail
+- https://colorcombinations.org/colors/cerulian-blue/ — 200, color detail
+- https://colorcombinations.org/feed.xml — 200, RSS feed
+
+---
+
+## Previous Handoff (2026-04-11 11:00)
+
+**Mode:** god
+**Objective:** monetization-v1.1 reality check
+
+**STATUS: SHIPPED.**
 
 ### V1.1 changes (this session)
 

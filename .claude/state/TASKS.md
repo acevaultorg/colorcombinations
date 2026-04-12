@@ -73,6 +73,16 @@
 
 <!-- Empty -->
 
+## Queue — Color Dictionary + RSS [objective:color-dictionary-v1]
+
+- [x] `P0` CREATE color data module — extract 211 unique named colors from 378 palettes, hue classification, reverse palette lookup — `src/data/colors.ts` [id:color-data] [score:12.0] ✓
+- [x] `P0` CREATE color detail pages — 159+ static pages at /colors/[slug] with hex specs, WCAG contrast ratios, quick-copy buttons, palette cross-links, FurtherReading sidebar — `src/pages/colors/[slug].astro` [id:color-detail] [needs:color-data] [score:11.5] ✓
+- [x] `P0` CREATE color index page — browsable dictionary at /colors/ with hue-family pill filters, swatch grid — `src/pages/colors/index.astro` [id:color-index] [needs:color-data] [score:11.0] ✓
+- [x] `P1` CREATE RSS feed — 30 editorial palettes at /feed.xml with content:encoded, swatch preview, auto-discovery link — `src/pages/feed.xml.ts` [id:rss-feed] [score:10.5] ✓
+- [x] `P1` ADD color links in palette swatches — nameRomaji on palette detail pages now links to /colors/[slug] — `src/pages/palettes/[slug].astro` [id:swatch-links] [needs:color-detail] [score:10.0] ✓
+- [x] `P1` ADD Colors to nav + footer + RSS discovery link in BaseLayout — `SiteHeader.astro`, `SiteFooter.astro`, `BaseLayout.astro` [id:color-nav] [needs:color-index] [score:9.5] ✓
+- [x] `P0` BUILD + VERIFY + DEPLOY — 603 pages, 2.73s, 0 errors, all live at colorcombinations.org [id:color-deploy] [needs:color-nav,rss-feed,swatch-links] [score:9.0] ✓
+
 ## Deferred to V2
 
 - Full Sanzo Wada 348 dataset import (requires verified source)

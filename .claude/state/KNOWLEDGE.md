@@ -28,6 +28,9 @@ Based on 2026-04-11 honest-math pass (see DECISIONS.md):
 
 ## Site structure
 - **/** homepage — hero ("All 348 historical color combinations"), 8 featured editorial picks, how-it-works, BundleCta medium, EmailCapture. <!-- verified: 2026-04-10 -->
+- **/colors** — color dictionary index with hue-family pill filters (red, orange, yellow, brown, pink, green, blue, purple, neutral). 211 unique named colors from 378 palettes. Swatch grid with square tiles, name, nameJa, hex, palette count. <!-- verified: 2026-04-12 -->
+- **/colors/[slug]** — 159+ individual color detail pages. Hero swatch + hex + nameJa + meaning. Sidebar: hex/RGB/hue specs, WCAG contrast on white/black, quick-copy buttons (hex/RGB/CSS var). Main: palette grid of all palettes containing this color + FurtherReading sidebar (rotating book). JSON-LD CreativeWork + BreadcrumbList. <!-- verified: 2026-04-12 -->
+- **/feed.xml** — RSS 2.0 feed with 30 editorial palettes. Atom self-link, content:encoded with swatch HTML previews. Auto-discovery `<link>` in BaseLayout `<head>`. <!-- verified: 2026-04-12 -->
 - **/browse** — client-side filter over all 378 palettes with color-count pill filter (2/3/4 colors). <!-- verified: 2026-04-11 -->
 - **/collections** — index of 8 themed collection cards (websites, branding, autumn, spring, minimalist, indigo, bold, heian). Each card shows 4 palette previews + count + tagline. <!-- verified: 2026-04-11 -->
 - **/collections/[slug]** — 8 detail pages. Each has: breadcrumb → accent-square hero → long-form description → full palette grid (up to 24 palettes) → "Other collections" cross-link section → BundleCta medium. Full JSON-LD CollectionPage + BreadcrumbList. <!-- verified: 2026-04-11 -->
@@ -36,7 +39,7 @@ Based on 2026-04-11 honest-math pass (see DECISIONS.md):
 - **/shop** — museum gift shop: hero → FurtherReading (books, covers) → DesignTools → Prints rail → BundleCta big → closing note. <!-- verified: 2026-04-11 -->
 - **/og/[slug].svg** — 378 static OG images, one per palette, generated via Astro endpoint at build time. Modern platforms (Twitter, LinkedIn, Discord, Slack, Mastodon, Bluesky) render SVG OG; FB is the holdout. Cache-Control: immutable. <!-- verified: 2026-04-11 -->
 - **/404** — noIndex error page with 3 suggested palettes. <!-- verified: 2026-04-10 -->
-- **Build output:** 392 HTML pages + 378 OG SVGs, ~11M dist, ~2.34s build time. <!-- verified: 2026-04-11 -->
+- **Build output:** 603 HTML pages + 378 OG SVGs, ~23M dist, ~2.73s build time. <!-- verified: 2026-04-12 -->
 
 ## Collections taxonomy (`src/data/collections.ts`)
 
