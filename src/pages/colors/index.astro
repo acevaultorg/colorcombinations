@@ -107,6 +107,33 @@ const jsonLd = [
       </div>
     </div>
   </section>
+
+  {/* ==================== HUE FAMILY LINKS ==================== */}
+  <nav class="hue-families section" aria-label="Browse by hue family">
+    <div class="container-wide">
+      <header class="section-head">
+        <p class="eyebrow">Browse by hue family</p>
+        <h2 class="text-balance">Explore the full spectrum.</h2>
+        <p class="section-lede">Each hue family page shows every named color and palette combination in that color range.</p>
+      </header>
+      <ul class="hue-family-grid" role="list">
+        {hueOrder.map((hue) => {
+          const group = grouped.get(hue);
+          if (!group || group.length === 0) return null;
+          const sampleColor = group[0];
+          return (
+            <li>
+              <a href={`/colors/${hue}/`} class="hue-family-card">
+                <span class="hue-family-card__dot" style={`background:${sampleColor.hex}`} aria-hidden="true"></span>
+                <span class="hue-family-card__label">{hue.charAt(0).toUpperCase() + hue.slice(1)}</span>
+                <span class="hue-family-card__count">{group.length} colors</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </nav>
 </BaseLayout>
 
 <script>
@@ -284,5 +311,45 @@ const jsonLd = [
     color: var(--color-ink-400);
     letter-spacing: 0.05em;
     margin-top: 0.25rem;
+  }
+
+  /* ==================== HUE FAMILIES ==================== */
+  .hue-family-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-sm);
+  }
+  .hue-family-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .hue-family-card:hover {
+    border-color: var(--color-accent, #5a5a5a);
+    background: var(--color-surface);
+  }
+  .hue-family-card__dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .hue-family-card__label {
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+  .hue-family-card__count {
+    font-size: 0.7rem;
+    color: var(--color-muted);
+    margin-left: auto;
   }
 </style>
