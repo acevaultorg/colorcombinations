@@ -1,0 +1,174 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Journal";
+const description =
+  "Editorial notes on color, curation, and how to use the 348-plate Wada archive in real design work.";
+
+type Post = CollectionEntry<"blog">;
+
+const posts: Post[] = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime(),
+);
+
+const fmtDate = (iso: string): string =>
+  new Date(iso).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  name: "The Dictionary of Color Combinations — Journal",
+  description,
+  url: new URL("/blog", Astro.site).toString(),
+  blogPost: posts.map((p) => ({
+    "@type": "BlogPosting",
+    headline: p.data.title,
+    description: p.data.description,
+    datePublished: p.data.pubDate,
+    url: new URL(`/blog/${p.slug}/`, Astro.site).toString(),
+  })),
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <section class="blog-index section">
+    <div class="container-prose">
+      <header class="blog-index__header">
+        <p class="eyebrow">Journal</p>
+        <h1 class="text-balance">Notes on color, curation, and how to use the archive.</h1>
+        <p class="blog-index__lede">
+          Long-form editorial from the dictionary — how to pick palettes
+          without a generator, what Wada actually did, and what the
+          tradition of Japanese shikisai ({
+            <span lang="ja">色彩</span>
+          }) offers to contemporary design work.
+        </p>
+      </header>
+
+      {posts.length === 0 && (
+        <p class="blog-index__empty">The first post is on its way.</p>
+      )}
+
+      <ol class="blog-index__list" role="list">
+        {posts.map((post) => (
+          <li class="blog-index__item">
+            <article>
+              <a href={`/blog/${post.slug}/`} class="blog-index__link">
+                {post.data.eyebrow && (
+                  <p class="blog-index__eyebrow">{post.data.eyebrow}</p>
+                )}
+                <h2 class="blog-index__title">{post.data.title}</h2>
+                <p class="blog-index__desc">{post.data.description}</p>
+                <p class="blog-index__meta">
+                  <time datetime={post.data.pubDate}>{fmtDate(post.data.pubDate)}</time>
+                </p>
+              </a>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .blog-index {
+    padding-top: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .blog-index__header {
+    margin-bottom: 3rem;
+  }
+
+  .blog-index__header .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .blog-index__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.0625rem, 1vw + 0.75rem, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-700);
+    max-width: 60ch;
+    margin-top: 1.5rem;
+  }
+
+  .blog-index__empty {
+    color: var(--color-ink-500);
+    font-style: italic;
+  }
+
+  .blog-index__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .blog-index__item {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .blog-index__item:last-child {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .blog-index__link {
+    display: block;
+    padding-block: 2rem;
+    text-decoration: none;
+    color: var(--color-ink-900);
+    transition: background-color 150ms ease;
+  }
+
+  .blog-index__link:hover {
+    background-color: var(--color-paper-100);
+  }
+
+  .blog-index__eyebrow {
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-accent-500);
+    margin: 0 0 0.5rem;
+  }
+
+  .blog-index__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.5vw + 1rem, 2rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.75rem;
+    color: var(--color-ink-900);
+  }
+
+  .blog-index__link:hover .blog-index__title {
+    color: var(--color-accent-500);
+  }
+
+  .blog-index__desc {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin: 0 0 0.75rem;
+    max-width: 65ch;
+  }
+
+  .blog-index__meta {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+    margin: 0;
+  }
+</style>

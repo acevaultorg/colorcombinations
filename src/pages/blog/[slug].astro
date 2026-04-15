@@ -1,0 +1,316 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import BundleCta from "@components/BundleCta.astro";
+import { palettes } from "@data/palettes";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const fmtDate = (iso: string): string =>
+  new Date(iso).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+const heroPalette =
+  post.data.palette !== undefined
+    ? palettes.find((p) => p.slug === post.data.palette)
+    : undefined;
+
+const heroSwatches = heroPalette?.colors.slice(0, 3) ?? [];
+
+const relatedPalettes = post.data.relatedPalettes
+  .map((slug) => palettes.find((p) => p.slug === slug))
+  .filter((p): p is NonNullable<typeof p> => p !== undefined)
+  .slice(0, 4);
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.data.title,
+    description: post.data.description,
+    datePublished: post.data.pubDate,
+    dateModified: post.data.updatedDate ?? post.data.pubDate,
+    url: new URL(`/blog/${post.slug}/`, Astro.site).toString(),
+    isPartOf: {
+      "@type": "Blog",
+      name: "The Dictionary of Color Combinations — Journal",
+      url: new URL("/blog", Astro.site).toString(),
+    },
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: Astro.site?.toString(),
+    },
+    keywords: post.data.keywords.join(", "),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: Astro.site?.toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Journal",
+        item: new URL("/blog", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.data.title,
+        item: new URL(`/blog/${post.slug}/`, Astro.site).toString(),
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+  jsonLd={jsonLd}
+  keywords={post.data.keywords}
+>
+  <article class="post section">
+    <div class="container-prose">
+      <nav class="post__breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">→</span>
+        <a href="/blog/">Journal</a>
+        <span aria-hidden="true">→</span>
+        <span class="post__breadcrumbs-current">{post.data.title}</span>
+      </nav>
+
+      <header class="post__header">
+        {post.data.eyebrow && <p class="eyebrow">{post.data.eyebrow}</p>}
+        <h1 class="post__title text-balance">{post.data.title}</h1>
+        <p class="post__meta">
+          <time datetime={post.data.pubDate}>{fmtDate(post.data.pubDate)}</time>
+          {post.data.updatedDate && post.data.updatedDate !== post.data.pubDate && (
+            <> · Updated <time datetime={post.data.updatedDate}>{fmtDate(post.data.updatedDate)}</time></>
+          )}
+        </p>
+
+        {heroSwatches.length > 0 && (
+          <div class="post__hero" aria-hidden="true">
+            {heroSwatches.map((c) => (
+              <span class="post__swatch" style={`background-color: ${c.hex};`}></span>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <div class="prose post__body">
+        <Content />
+      </div>
+
+      {relatedPalettes.length > 0 && (
+        <aside class="post__related">
+          <h2 class="post__related-heading">Palettes referenced in this post</h2>
+          <ul class="post__related-grid" role="list">
+            {relatedPalettes.map((p) => (
+              <li>
+                <a href={`/palettes/${p.slug}/`} class="post__related-card">
+                  <span class="post__related-swatches" aria-hidden="true">
+                    {p.colors.slice(0, 4).map((c) => (
+                      <span style={`background-color: ${c.hex};`}></span>
+                    ))}
+                  </span>
+                  <span class="post__related-name">
+                    {p.title}
+                    {p.titleJa && <span class="post__related-ja" lang="ja">{p.titleJa}</span>}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
+    </div>
+  </article>
+
+  <div class="post-library">
+    <div class="container-wide">
+      <FurtherReading
+        title="Books cited in this archive"
+        intro="The color references that shaped this archive — Wada's own, the Albers classic, and three shelf-defining histories. Affiliate links; buying through them supports the project."
+      />
+    </div>
+  </div>
+
+  <BundleCta variant="medium" />
+</BaseLayout>
+
+<style>
+  .post {
+    padding-top: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .post__breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+    margin-bottom: 2rem;
+  }
+
+  .post__breadcrumbs a {
+    color: var(--color-ink-500);
+    text-decoration: none;
+  }
+
+  .post__breadcrumbs a:hover {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .post__breadcrumbs-current {
+    color: var(--color-ink-900);
+  }
+
+  .post__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .post__header .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .post__title {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 2.5vw + 1rem, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0 0 1rem;
+    color: var(--color-ink-900);
+  }
+
+  .post__meta {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    color: var(--color-ink-500);
+    margin: 0 0 1.75rem;
+  }
+
+  .post__hero {
+    display: flex;
+    gap: 4px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 4px);
+    overflow: hidden;
+    padding: 4px;
+    background-color: var(--color-paper-100);
+  }
+
+  .post__swatch {
+    display: block;
+    flex: 1;
+    aspect-ratio: 6 / 1;
+    border-radius: 2px;
+  }
+
+  .post__body {
+    margin-bottom: 3rem;
+  }
+
+  .post__related {
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .post__related-heading {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-500);
+    margin: 0 0 1.5rem;
+  }
+
+  .post__related-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .post__related-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--color-ink-900);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 4px);
+    padding: 0.75rem;
+    background-color: var(--color-bg-elevated, #fff);
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+
+  .post__related-card:hover {
+    border-color: var(--color-accent-500);
+    transform: translateY(-1px);
+  }
+
+  .post__related-swatches {
+    display: flex;
+    gap: 2px;
+    aspect-ratio: 4 / 1;
+  }
+
+  .post__related-swatches span {
+    display: block;
+    flex: 1;
+    border-radius: 2px;
+  }
+
+  .post__related-name {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    line-height: 1.3;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .post__related-ja {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+  }
+
+  .post-library {
+    background-color: var(--color-paper-100);
+    border-block: 1px solid var(--color-border);
+  }
+</style>
