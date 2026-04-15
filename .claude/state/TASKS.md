@@ -80,6 +80,15 @@
 
 <!-- Empty -->
 
+## Queue — Developer API + Embed Widget V1 [objective:distribution-and-developer-credibility]
+
+- [x] `P0` CREATE /api/palettes.json endpoint — full catalog as JSON, immutable cache — `src/pages/api/palettes.json.ts` [id:api-catalog] [score:11.5] [oracle:$0.25/wk:infrastructure] ✓ CORS open, license + schema metadata embedded
+- [x] `P0` CREATE /api/palettes/[slug].json endpoint — per-palette payload with full editorial description + usage — `src/pages/api/palettes/[slug].json.ts` [id:api-per-palette] [needs:api-catalog] [score:11.0] ✓ 378 per-palette JSON files generated
+- [x] `P0` CREATE /embed/[slug] route — iframe-safe minimal palette card for third-party embedding — `src/pages/embed/[slug].astro` + `src/layouts/EmbedLayout.astro` [id:embed-widget] [score:12.0] [oracle:$1.50/wk:viral-loop-per-GROWTH.md] ✓ 378 embed pages, dark-mode aware, Japanese-name support
+- [x] `P1` OVERRIDE _headers for /embed/* and /api/* — CSP frame-ancestors * for embeds, CORS * for JSON — `public/_headers` [id:embed-headers] [needs:embed-widget,api-catalog] [score:10.5] ✓ Path-scoped overrides; global CSP unchanged for other routes
+- [x] `P0` BUILD /api docs page — endpoint reference + live examples + license + good-citizenship notes — `src/pages/api/index.astro` [id:api-docs] [needs:api-per-palette,embed-widget] [score:11.0] ✓ Added to footer nav
+- [x] `P0` DEPLOY + VERIFY — 993 pages, all 4 new routes live 200 [id:api-deploy] [needs:api-docs,embed-headers] [score:10.0] ✓ Cloudflare propagation ~5s
+
 ## Queue — Analytics + Launch Ammunition [objective:first-100-eur]
 
 - [x] `P0` WIRE GA4 + Microsoft Clarity into monetization config — `src/config/monetization.ts` [id:analytics-config] [score:12.0] [oracle:analytics_wiring_x0.10_pre-revenue] ✓ Per-rail isLive getters, paulomdevries@gmail.com rule documented in-file

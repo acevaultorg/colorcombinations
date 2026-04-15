@@ -50,6 +50,9 @@ Format: `timestamp | task-id | archetype | projected_$/wk | confidence_0_to_1 | 
 2026-04-15 16:52 | linkedin-launch-copy | distribution_asset | 0.80 | 0.4 | LinkedIn hits design-director / brand-lead audience absent from HN / Reddit. Single post can reach decision-makers who control agency budgets.
 2026-04-15 16:53 | indiehackers-launch-copy | distribution_asset | 0.30 | 0.4 | IH audience is pre-revenue founders — medium-high resonance, but modest direct revenue contribution. Useful for peer feedback + long-tail discovery.
 2026-04-15 16:54 | content-calendar-7d | distribution_asset | 0.50 | 0.5 | 7 ready-to-post drip items remove the "what do I post today?" friction during launch week. Sustains organic reach past the launch-day peak.
+2026-04-15 19:50 | json-api-catalog | infrastructure | 0.25 | 0.4 | Developer-facing JSON endpoints for /api/palettes.json + /api/palettes/[slug].json. Value is indirect: developer tools consuming the API produce backlinks + organic discovery among designers-who-also-code. Hard to measure directly; bet on HN/IH + long-tail GitHub dep-graphs.
+2026-04-15 19:52 | embed-widget | distribution_asset | 1.50 | 0.5 | /embed/[slug] renders a self-contained iframe-safe palette card. Every external blog or Notion doc that embeds a plate = a backlink + a viewer who didn't know the archive existed. GROWTH.md names this explicitly as a viral loop. Value scales with adoption.
+2026-04-15 19:53 | api-docs-page | infrastructure | 0.10 | 0.4 | /api documentation page makes the endpoints discoverable. Without it, the JSON routes would exist but nobody would find them. Required complement to the API itself.
 
 ## Calibration
 

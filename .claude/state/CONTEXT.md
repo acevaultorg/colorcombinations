@@ -1,9 +1,76 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-15 16:57 -->
+<!-- handoff: 2026-04-15 19:55 -->
 
 **Mode:** sovereign auto
+**Focus:** "first €100" push — SOVEREIGN AUTO (v17.1) continuing. Third consecutive sovereign-auto session; shifting from defensive-stop pattern to aggressive execution per operator signal (repeated re-invocations).
+
+**STATUS: SOVEREIGN AUTO V8 — DEVELOPER API + EMBED WIDGETS SHIPPED.** ✓
+
+### V8 changes (this session — 2026-04-15 sovereign-auto cycle 3)
+
+Three genuinely new capabilities the prior sessions hadn't touched. Each adds a distinct distribution / credibility surface the archive didn't have before.
+
+1. **JSON API (catalog + per-palette)**
+   - `src/pages/api/palettes.json.ts` — `GET /api/palettes.json` returns the full 378-entry catalog with license + schema metadata.
+   - `src/pages/api/palettes/[slug].json.ts` — `GET /api/palettes/[slug].json` returns one palette with full editorial description + usage notes.
+   - Both emit `Cache-Control: public, max-age=31536000, immutable` and `Access-Control-Allow-Origin: *`. Safe to pin in downstream builds.
+
+2. **Embed widget (`/embed/[slug]`)**
+   - `src/layouts/EmbedLayout.astro` — minimal standalone layout, no SiteHeader/Footer/analytics. Dark-mode aware via `prefers-color-scheme`.
+   - `src/pages/embed/[slug].astro` — 378 iframe-safe palette cards. Title + Japanese title, description, swatch grid with hex + romaji overlay, linkback to the full plate page.
+   - `public/_headers` — path-scoped override for `/embed/*` setting `frame-ancestors *` via CSP (which supersedes the global `X-Frame-Options: DENY`) + path-scoped CORS on `/api/*`.
+   - GROWTH.md named "Export embed" as an explicit viral loop; this unlocks it.
+
+3. **API docs page (`/api/`)**
+   - `src/pages/api/index.astro` — endpoint reference, live example links, license breakdown, good-citizenship notes, drop-in iframe snippet.
+   - Footer nav extended to include "Developer API" in the Explore column.
+
+### Numbers
+
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Build pages | 614 | 993 |
+| JSON API files | 0 | 379 (catalog + 378 per-palette) |
+| Embed pages | 0 | 378 |
+| New routes surfaced in nav | 0 | 1 (/api added to footer) |
+| Distribution channels | 8 | 9 (+ embed widget as a viral surface) |
+| Build time | 4.24s | 3.63s |
+| Commits this session | 0 | pending 1 atomic commit |
+
+### Live verification (curl)
+
+- `GET /api/` → 200 ✓ (docs page)
+- `GET /api/palettes.json` → 200 ✓ (full catalog)
+- `GET /api/palettes/kurenai-kon.json` → 200 ✓ (example per-palette)
+- `GET /embed/kurenai-kon/` → 200 ✓ (example embed)
+
+### Why these three cycles, not five
+
+All three cycles are genuinely new capabilities (not marginal polish). Each has a distinct Oracle projection row. After cycle 3 (API docs) I hit the same structural wall I hit in prior sessions — every remaining candidate either needs operator credentials (ConvertKit for newsletter, D1 binding for a serverless email capture, Stripe for Pro tier, Figma token for plugin) or adds <$0.15/wk against a $0 baseline.
+
+### I-21 auto-accept trace
+
+9 auto-accepts this session, 0 denials. Full Gate Log appended to ANALYTICS.md.
+
+### 🔴 Blocking first €100 — unchanged
+
+The revenue-blocking operator actions from V5 remain unchanged: Gumroad signup + Bookshop affiliate + GA4/Clarity/GSC + HN post + Reddit/LinkedIn/IH posts. `FIRST-100-EUROS.md` is the canonical playbook; three additional code surfaces don't replace operator hours.
+
+### New surfaces worth promoting post-launch
+
+After the HN launch lands, the embed widget and JSON API are themselves promotable as a follow-up HN post (typical category: "Show HN: Free JSON API for Sanzo Wada's 1933 color dictionary"). Don't launch both the same week — space by ~4 weeks to avoid the traffic-spikes-fragment problem.
+
+### Sovereign chain state
+
+- **MODE:** sovereign (persisted)
+- **Circuit:** CLOSED
+- **Branch:** `claude/nice-ishizaka`, will be 9 commits ahead of origin after this push
+- **Heartbeat:** session-start + session-end logged
+- **Resume:** next `/acepilot continue` inherits `Mode: sovereign auto`
+
+### Previous Handoff (2026-04-15 16:57)
 **Focus:** continuing "first €100" push — SOVEREIGN AUTO (v17.1) full auto-accept for reversible operations. Every gate in this session auto-resolved to AUTO; Gate Log in ANALYTICS.md records each decision.
 
 **STATUS: SOVEREIGN AUTO V7 — 6 CYCLES SHIPPED, DEPLOYED, 8 COMMITS AHEAD OF ORIGIN.** ✓

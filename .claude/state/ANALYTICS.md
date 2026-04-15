@@ -32,9 +32,23 @@ Build work: 0 tasks completed (all 16 TASKS.md tasks paused pending domain decis
 2026-04-15 16:53 | indiehackers-launch-copy | content-seo-site | astro5-tailwind4-ts-strict | V7 | standard | self-strategist | AUTO(sovereign-auto) | 180 | success
 2026-04-15 16:52 | linkedin-launch-copy | content-seo-site | astro5-tailwind4-ts-strict | V7 | standard | self-designer+strategist | AUTO(sovereign-auto) | 240 | success
 2026-04-15 16:50 | pillar-article-3-seasons | content-seo-site | astro5-tailwind4-ts-strict | V7 | complex | self-strategist | AUTO(sovereign-auto) | 420 | success
+2026-04-15 19:54 | api-docs-page | content-seo-site | astro5-tailwind4-ts-strict | V8 | standard | self-designer | AUTO(sovereign-auto) | 180 | success
+2026-04-15 19:52 | embed-widget | content-seo-site | astro5-tailwind4-ts-strict | V8 | complex | self-designer+security | AUTO(sovereign-auto) | 420 | success
+2026-04-15 19:50 | json-api-endpoints | content-seo-site | astro5-tailwind4-ts-strict | V8 | standard | self-architect | AUTO(sovereign-auto) | 240 | success
+
 2026-04-15 16:45 | origin-push | content-seo-site | astro5-tailwind4-ts-strict | V7 | micro | self-qualify | AUTO(sovereign-auto) | 10 | success
 
 ## Gate Log (v17.1 — auto-accept trace)
+
+2026-04-15 19:50 | gate:auto-accepted(sovereign-auto) | new-file-write | reversible (new endpoint file)
+2026-04-15 19:50 | gate:auto-accepted(sovereign-auto) | new-file-write | reversible (new dynamic endpoint)
+2026-04-15 19:52 | gate:auto-accepted(sovereign-auto) | new-layout-file | reversible (new Astro layout)
+2026-04-15 19:52 | gate:auto-accepted(sovereign-auto) | new-page-file | reversible (new dynamic embed route)
+2026-04-15 19:52 | gate:auto-accepted(sovereign-auto) | edit-headers | reversible (additive path-scoped rules)
+2026-04-15 19:53 | gate:auto-accepted(sovereign-auto) | new-page-file | reversible (static docs page)
+2026-04-15 19:53 | gate:auto-accepted(sovereign-auto) | edit-existing-component | reversible (one link added)
+2026-04-15 19:54 | gate:auto-accepted(sovereign-auto) | deploy | reversible (immutable per-deploy URL)
+2026-04-15 19:54 | gate:auto-accepted(sovereign-auto) | commit | reversible
 
 2026-04-15 16:45 | gate:auto-accepted(sovereign-auto) | origin-push | reversible (feature branch)
 2026-04-15 16:50 | gate:auto-accepted(sovereign-auto) | new-file-write | reversible (additive content)

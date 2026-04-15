@@ -1,0 +1,67 @@
+---
+/**
+ * Minimal layout for embeddable palette widgets. No SiteHeader, no
+ * SiteFooter, no analytics. Everything inlined so the iframe stays
+ * self-contained with zero external dependencies beyond Google Fonts
+ * (which is already preloaded across the site).
+ *
+ * Iframes served from /embed/[slug] — must be allowed on third-party
+ * origins via a dedicated _headers override (frame-ancestors *).
+ */
+export interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — colorcombinations.org</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).toString()} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Inter:wght@500&display=swap"
+    />
+    <style is:global>
+      :root {
+        --bg: #faf7ef;
+        --ink: #141414;
+        --muted: #6b6b6b;
+        --accent: #9a2a2a;
+        --border: #bcbcbe;
+        --paper: #f4eee0;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
