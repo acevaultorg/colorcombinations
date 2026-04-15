@@ -1,0 +1,186 @@
+---
+/**
+ * Cookie-consent banner for GA4 + Microsoft Clarity.
+ *
+ * Plausible is cookieless and never requires consent — it always runs when
+ * configured. This banner only appears when at least one of GA or Clarity is
+ * live (i.e. `ANALYTICS.needsConsent === true`).
+ *
+ * Consent model: explicit opt-in (GDPR). On first visit we store nothing.
+ * After user choice we store `cc-consent` in localStorage ("granted" or
+ * "denied"). The `window.ccConsent()` helper returns the current state;
+ * the GA and Clarity bootstrappers in BaseLayout wait for it to be
+ * "granted" before loading their scripts.
+ *
+ * No banner, no recording — simple, auditable, GDPR-defensible.
+ */
+---
+
+<div id="cc-banner" class="cc" role="region" aria-label="Analytics consent" hidden>
+  <div class="cc__inner">
+    <div class="cc__text">
+      <p class="cc__title">Help us improve the archive</p>
+      <p class="cc__desc">
+        We use two privacy-respecting tools — Google Analytics and Microsoft
+        Clarity — to see which palettes get read and which pages break. No ad
+        targeting, ever. <a href="/about/#privacy">More on how we use data</a>.
+      </p>
+    </div>
+    <div class="cc__actions">
+      <button type="button" class="cc__btn cc__btn--ghost" data-cc="decline">
+        Decline
+      </button>
+      <button type="button" class="cc__btn cc__btn--accept" data-cc="accept">
+        Accept
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = "cc-consent";
+    var banner = document.getElementById("cc-banner");
+    if (!banner) return;
+
+    function read() {
+      try {
+        return localStorage.getItem(KEY);
+      } catch (_) {
+        return null;
+      }
+    }
+    function write(v) {
+      try {
+        localStorage.setItem(KEY, v);
+      } catch (_) {
+        /* storage disabled — banner will show every visit, acceptable */
+      }
+    }
+
+    window.ccConsent = read;
+
+    var state = read();
+    if (state !== "granted" && state !== "denied") {
+      banner.hidden = false;
+    }
+
+    banner.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-cc]");
+      if (!btn) return;
+      var action = btn.getAttribute("data-cc");
+      if (action === "accept") {
+        write("granted");
+        banner.hidden = true;
+        /* Trigger lazy-loaders without a full reload so the current page
+           starts being tracked immediately. */
+        window.dispatchEvent(new Event("cc-consent-granted"));
+      } else if (action === "decline") {
+        write("denied");
+        banner.hidden = true;
+      }
+    });
+  })();
+</script>
+
+<style>
+  .cc {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 100;
+    background-color: var(--color-ink-900);
+    color: var(--color-paper-50);
+    border-radius: 6px;
+    box-shadow: 0 8px 32px rgba(20, 20, 20, 0.25);
+    max-width: 56rem;
+    margin-inline: auto;
+    font-family: var(--font-sans);
+  }
+
+  .cc[hidden] {
+    display: none;
+  }
+
+  .cc__inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.25rem;
+    padding: 1rem 1.25rem;
+    align-items: center;
+  }
+
+  @media (max-width: 640px) {
+    .cc__inner {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  .cc__title {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    color: var(--color-paper-50);
+  }
+
+  .cc__desc {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-300);
+    margin: 0;
+  }
+
+  .cc__desc a {
+    color: var(--color-paper-50);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .cc__actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 640px) {
+    .cc__actions {
+      justify-content: flex-end;
+    }
+  }
+
+  .cc__btn {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease;
+  }
+
+  .cc__btn--ghost {
+    background-color: transparent;
+    color: var(--color-paper-50);
+    border-color: var(--color-ink-700);
+  }
+
+  .cc__btn--ghost:hover {
+    border-color: var(--color-paper-50);
+  }
+
+  .cc__btn--accept {
+    background-color: var(--color-paper-50);
+    color: var(--color-ink-900);
+    border-color: var(--color-paper-50);
+  }
+
+  .cc__btn--accept:hover {
+    background-color: #fff;
+  }
+</style>

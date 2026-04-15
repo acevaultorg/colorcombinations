@@ -153,19 +153,81 @@ export const PRINTS = {
 } as const;
 
 // ============================================================================
-// ANALYTICS — Plausible (privacy-first, no cookie banner needed)
+// ANALYTICS — Plausible (cookieless) + GA4 + Microsoft Clarity
 // ============================================================================
 
 /**
- * Plausible — privacy-first, GDPR-compliant, no cookies.
- * $9/mo for 10k pageviews. When paused, script tag is omitted entirely.
- * https://plausible.io/colorcombinations.org
+ * Three-rail analytics stack (per cluster commercial-strategy rule):
+ *
+ *  1. PLAUSIBLE — cookieless, GDPR-safe, always-on when configured.
+ *     Our canonical pageview + custom-event rail. $9/mo for 10k pageviews.
+ *     https://plausible.io
+ *
+ *  2. GOOGLE ANALYTICS 4 — free, the industry-standard "what page ranks and
+ *     converts." Demographics, search-term attribution, audience segments.
+ *     Requires cookie consent (see CookieConsent component in BaseLayout).
+ *     Set up at: https://analytics.google.com with paulomdevries@gmail.com
+ *
+ *  3. MICROSOFT CLARITY — free, heatmaps + session recordings + rage clicks +
+ *     dead clicks. The "what actually breaks" rail. No pageview cap.
+ *     Requires cookie consent.
+ *     Set up at: https://clarity.microsoft.com with paulomdevries@gmail.com
+ *
+ * ACCOUNT RULE (cluster feedback_analytics_account.md): ALL analytics MUST
+ * be configured under `paulomdevries@gmail.com`. NEVER the Mediahuis account.
+ * Mixing employer + personal breaks ownership; treat it as a hard rule.
+ *
+ * GOOGLE SEARCH CONSOLE is also part of the stack but is set up once, not
+ * wired via the site — add colorcombinations.org as a Domain property in
+ * GSC and paste the domain-name TXT record in Cloudflare DNS.
+ *
+ * Each rail is independently gated behind an `isLive` getter so dead
+ * placeholders never ship script tags to production.
  */
 export const ANALYTICS = {
+  // --- Plausible -----------------------------------------------------------
+  /** Domain exactly as entered in Plausible ("colorcombinations.org"). */
   plausibleDomain: "PLACEHOLDER_PLAUSIBLE_DOMAIN",
 
-  get isLive(): boolean {
+  // --- Google Analytics 4 --------------------------------------------------
+  /**
+   * GA4 measurement ID. Looks like `G-XXXXXXXXXX`. Create a property at
+   * analytics.google.com → Admin → Create property → Web, with
+   * paulomdevries@gmail.com. NOT a UA-prefixed ID (Universal Analytics is dead).
+   */
+  gaMeasurementId: "PLACEHOLDER_GA_MEASUREMENT_ID",
+
+  // --- Microsoft Clarity ---------------------------------------------------
+  /**
+   * Clarity project ID. A short alphanumeric string like `abc123xyz0`.
+   * Create a project at clarity.microsoft.com → New project with
+   * paulomdevries@gmail.com. The ID is the value in the auto-generated
+   * script: `clarity.ms/tag/{clarityProjectId}`.
+   */
+  clarityProjectId: "PLACEHOLDER_CLARITY_PROJECT_ID",
+
+  // --- Live flags ----------------------------------------------------------
+  get isPlausibleLive(): boolean {
     return !this.plausibleDomain.startsWith("PLACEHOLDER");
+  },
+  get isGaLive(): boolean {
+    return !this.gaMeasurementId.startsWith("PLACEHOLDER");
+  },
+  get isClarityLive(): boolean {
+    return !this.clarityProjectId.startsWith("PLACEHOLDER");
+  },
+
+  /** True if ANY of the three rails is live. Drives the script block guard. */
+  get isLive(): boolean {
+    return this.isPlausibleLive || this.isGaLive || this.isClarityLive;
+  },
+
+  /**
+   * True if at least one cookie-requiring rail (GA or Clarity) is live.
+   * Drives whether the CookieConsent banner renders.
+   */
+  get needsConsent(): boolean {
+    return this.isGaLive || this.isClarityLive;
   },
 } as const;
 
