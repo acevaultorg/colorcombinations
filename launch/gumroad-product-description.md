@@ -130,8 +130,8 @@ Yes. See License above.
 > this email — I read everything.
 >
 > If the bundle saves you time, the single most useful thing you can do
-> for the project is share one palette you used from it on Twitter or
-> a blog. That's how more people find the archive.
+> for the project is share one palette you used from it on Bluesky,
+> Mastodon, or your blog. That's how more people find the archive.
 >
 > — Paulo
 

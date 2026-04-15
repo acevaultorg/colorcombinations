@@ -8,7 +8,9 @@
  *
  *  1. PRIMARY REALISTIC RAIL — Affiliate. Book covers + in-context embeds
  *     on palette pages + design-tool affiliate (higher commission than books).
- *     Bookshop.org wins on 30-day cookie vs Amazon's 24h.
+ *     Bookshop.org historically wins on cookie-window length and
+ *     per-sale commission over Amazon — confirm current terms before
+ *     leaning on specific numbers.
  *  2. SECONDARY — "Support the archive" tip jar via Gumroad. Pay-what-you-want,
  *     $3 minimum, suggests $5. Reframed from "product" to "thank-you with a
  *     bundle attached" — stops overselling the free data on the site.
@@ -76,14 +78,14 @@ export const BUNDLE = {
 } as const;
 
 // ============================================================================
-// BOOKSHOP.ORG — primary affiliate (10% commission, 30-day cookie)
+// BOOKSHOP.ORG — primary affiliate (indie bookstore network)
 // ============================================================================
 
 /**
- * Bookshop.org affiliate — indie bookstore network, 10% commission,
- * 30-day cookie window (vs Amazon's 24h), fits the museum-plate brand better
- * than Amazon. Instant signup at:
- *   https://bookshop.org/pages/affiliate-program
+ * Bookshop.org affiliate — indie bookstore network. Generous commission
+ * and long cookie window (check current terms at
+ * https://bookshop.org/pages/affiliate-program). Fits the museum-plate
+ * brand better than Amazon. Instant signup.
  */
 export const BOOKSHOP = {
   /** Your affiliate ID, e.g. "color-combinations" (shown after signup). */
@@ -106,13 +108,15 @@ export const BOOKSHOP = {
 } as const;
 
 // ============================================================================
-// AMAZON ASSOCIATES — fallback affiliate (4% commission, 24h cookie)
+// AMAZON ASSOCIATES — fallback affiliate for books not on Bookshop.org
 // ============================================================================
 
 /**
  * Amazon Associates — fallback affiliate for books not on Bookshop.org.
- * 4% commission on books, 24-hour cookie. Requires 3 sales in 180 days
- * to stay in the program. Only use when Bookshop is missing a title.
+ * Commission rates and cookie window change frequently — check current
+ * terms at https://affiliate-program.amazon.com. Historically Bookshop
+ * pays more per sale with a longer window; only use Amazon when Bookshop
+ * is missing a specific title.
  */
 export const AMAZON = {
   /** Your associate tag, e.g. "colorcombo-20". */
@@ -160,7 +164,8 @@ export const PRINTS = {
  * Three-rail analytics stack (per cluster commercial-strategy rule):
  *
  *  1. PLAUSIBLE — cookieless, GDPR-safe, always-on when configured.
- *     Our canonical pageview + custom-event rail. $9/mo for 10k pageviews.
+ *     Our canonical pageview + custom-event rail. Paid; check
+ *     plausible.io/#pricing for current tiers.
  *     https://plausible.io
  *
  *  2. GOOGLE ANALYTICS 4 — free, the industry-standard "what page ranks and

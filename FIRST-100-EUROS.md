@@ -69,7 +69,8 @@ is a one-time failure.
    Replace with your ID.
 4. Redeploy (same command as above).
 
-Bookshop pays 10% on book sales; cookie window is 30 days. Every
+Bookshop pays a generous affiliate commission with a long cookie window
+(check bookshop.org/pages/affiliate-program for current terms). Every
 FurtherReading widget on the site now earns — `/about`, `/shop`, and
 every one of the 378 palette pages (deterministic book rotation).
 
@@ -81,9 +82,9 @@ every one of the 378 palette pages (deterministic book rotation).
 
 ### 3a. Plausible (if you're paying) OR skip
 
-$9/mo, cookieless, GDPR-safe. If you're bootstrapping, skip this step and
-rely on GA + Clarity, which are free. Revisit Plausible once revenue
-exists.
+Paid, cookieless, GDPR-safe. Pricing tiers change — check
+plausible.io/#pricing. If you're bootstrapping, skip this step and rely
+on GA + Clarity, which are free. Revisit Plausible once revenue exists.
 
 If you're keeping Plausible:
 1. Sign up at https://plausible.io with `paulomdevries@gmail.com`.
@@ -155,18 +156,18 @@ path to crossing €100.
 
 ---
 
-## Step 5 — Twitter thread (15 min, same day as HN)
+## Step 5 — Social thread (15 min, same day as HN)
 
-1. Open [`launch/twitter-thread.md`](./launch/twitter-thread.md).
+1. Open [`launch/social-thread.md`](./launch/social-thread.md).
 2. Screenshot or download the OG images for the palettes referenced in
-   tweets 5 and 6 (`wada-001` and `kurenai-kon`).
-3. Post tweet 1 with image.
-4. Reply to tweet 1 with tweet 2. Continue threading.
+   posts 5 and 6 (`wada-001` and `kurenai-kon`).
+3. Post to Bluesky first (strongest design community in 2026). Post 1
+   with image, reply with posts 2–10.
+4. Wait 30–60 min, repost to Mastodon, then Threads, then optionally X.
 5. Include the HN link in one reply once the HN thread has traction.
 
-Mirror the same thread on Mastodon, Bluesky, and Threads (each with 30-
-minute spacing between platforms). Drop the 🧵 marker on non-Twitter
-platforms.
+X (formerly Twitter) is optional — organic reach there without paid
+boost is poor. Only post if you have an existing X audience.
 
 ---
 
@@ -215,7 +216,7 @@ Launch PH exactly at 12:01 AM Pacific on a Tuesday or Wednesday.
 - [ ] GSC has the sitemap submitted and at least one page indexed
 - [ ] Cookie-consent banner appears on first visit and disappears after click
 - [ ] HN post submitted
-- [ ] Twitter thread posted with images
+- [ ] Social thread posted on Bluesky / Mastodon / Threads with images
 - [ ] At least one Reddit post submitted
 - [ ] First three cold emails sent
 

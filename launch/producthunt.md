@@ -103,8 +103,9 @@ maximize:
 2. **Reply to every comment within 15 minutes for the first 4 hours.**
    Engagement begets engagement.
 3. **Don't ask for upvotes directly.** PH detects upvote-begging and
-   ghost-bans. But DO share on Twitter ("I'm launching on Product Hunt
-   today — would love your feedback") and let natural support roll in.
+   ghost-bans. But DO share on Bluesky / Mastodon / Threads ("I'm
+   launching on Product Hunt today — would love your feedback") and
+   let natural support roll in.
 4. **Cross-pollinate with HN if you're launching both.** But don't
    launch HN and PH the same day — the traffic spikes don't
    compound; they fragment. Space them a week apart.

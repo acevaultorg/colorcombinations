@@ -4,19 +4,21 @@
 
 | Outlet | Contact | Type | Cadence | Notes |
 |---|---|---|---|---|
-| Sidebar.io | Sacha Greif (founder) | daily design links | daily | Submit at https://sidebar.io/submit |
-| CSS Weekly | Zoran Jambor | weekly newsletter | weekly | https://css-weekly.com/submit |
-| Smashing Magazine | editors@smashingmagazine.com | magazine + newsletter | multiple/week | Formal pitch process |
-| Web Designer Depot | contact form | blog | daily | https://www.webdesignerdepot.com/contact/ |
-| CSS-Tricks | pitch@css-tricks.com | blog | weekly | Less active post-DO acquisition; still a win |
-| Kottke.org | jason@kottke.org | personal blog | daily | High-quality audience, hit-or-miss response |
-| The Browser | contact@thebrowser.com | paid newsletter | daily | Long shot but huge audience |
-| Pixels of the Week | @MelPedd on Twitter / form | weekly newsletter | weekly | Design-specific, easier inclusion |
-| Awwwards | submit link | curated site gallery | rolling | Worth the submission even if a long shot |
-| Designer News | post directly | HN-for-designers | rolling | news.layervault.com |
+| Outlet | Type | How to reach | Notes |
+|---|---|---|---|
+| Sidebar.io | daily design links | https://sidebar.io/submit | Submit form, fastest to decision |
+| CSS Weekly | weekly newsletter | https://css-weekly.com/submit | Engaged dev-design audience |
+| Smashing Magazine | magazine + newsletter | contact form at smashingmagazine.com | Check current pitch page before emailing |
+| Kottke.org | personal blog | kottke.org/about contact | High-quality audience, hit-or-miss response |
+| Pixels of the Week | weekly newsletter | pixelsoftheweek.com submit form | Design-specific, easy inclusion |
+| Awwwards | curated site gallery | awwwards.com submit | Long shot but worth 2 minutes |
+| Designer News | HN-for-designers | post directly on news.layervault.com | Community-driven, no pitch needed |
+| Hacker Newsletter | weekly curated HN | hackernewsletter.com submit | Long shot; best chance if HN post itself did well |
 
-Sidebar.io and CSS Weekly are the easiest wins and the highest
-ROI-per-minute. Start there.
+Each outlet's current editor and submission process changes over time —
+always check the outlet's live site before copy-pasting contacts from
+any list, including this one. Sidebar.io and CSS Weekly are historically
+the easiest wins and highest ROI-per-minute. Start there.
 
 ---
 
@@ -26,7 +28,7 @@ ROI-per-minute. Start there.
 
 **Body:**
 
-> Hi [name],
+> Hi [editor — check the outlet's current masthead before sending],
 >
 > Built something you might like for [Outlet]: a reconstruction of
 > Sanzo Wada's 1933 *Dictionary of Color Combinations* as a static
@@ -46,7 +48,7 @@ ROI-per-minute. Start there.
 
 ---
 
-## Template — longer form (Smashing / CSS-Tricks / Kottke)
+## Template — longer form (Smashing / Kottke / larger editorial outlets)
 
 **Subject:** Submission: Sanzo Wada's 1933 color dictionary, as a modern web archive
 
@@ -89,7 +91,7 @@ ROI-per-minute. Start there.
 > Thanks for your time,
 > Paulo
 > [email]
-> [Twitter / Mastodon / LinkedIn]
+> [Bluesky / Mastodon / LinkedIn handle]
 
 ---
 

@@ -16,7 +16,7 @@ State file for the Growth Engine. Read on creation directives and `god --launch`
 | Organic SEO (EMD + per-palette pages) | 🟢 ready | 30 indexable landing pages, JSON-LD, sitemap | [automated] |
 | Hacker News (Show HN) | 🔴 pending | Heritage angle + free tool — strong HN fit | [👤 human] |
 | Designer communities (r/Design, r/web_design) | 🔴 pending | Visual content + niche reference | [👤 human] |
-| Twitter / Threads / Mastodon | 🔴 pending | Palette-per-day content loop | [👤 human] |
+| Bluesky / Mastodon / Threads / X | 🔴 pending | Palette-per-day content loop; prioritize Bluesky + Mastodon (X organic reach is poor in 2026) | [👤 human] |
 | Newsletter (weekly palette) | 🔴 not wired | EmailCapture component ready, needs provider | [👤 human] |
 | Print-on-demand affiliate | 🔴 deferred V2 | Printful/Gelato for palette posters | [deferred] |
 | Pinterest | 🔴 deferred V2 | Each palette is a pinnable image | [deferred] |

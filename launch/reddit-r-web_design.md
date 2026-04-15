@@ -1,14 +1,14 @@
 # Reddit — r/web_design post
 
 **Subreddit:** https://www.reddit.com/r/web_design/
-**Size:** ~900k members, active designer + developer audience.
-**Rules to check:** `sidebar → Submission Guidelines`. As of writing,
-r/web_design permits self-promo but flags it if the account is young. If
-your account is < 30 days old or < 100 comment karma, spend a week
-commenting on other threads before posting.
+**Audience:** large active designer + developer community.
+**Rules to check:** open the sub's current rules before posting — they
+change. Self-promo is typically permitted but penalized for young
+accounts. If your account is under 30 days old or has low comment karma,
+spend a week commenting on other threads before posting.
 **Best day/time:** Tuesday or Wednesday, 8–11am Eastern.
-**Flair:** use `RESOURCE` or `SHOWCASE` (pick `RESOURCE` — it's what search
-traffic actually clicks).
+**Flair:** check the sub's current flair options when posting. Pick the
+one that matches "resource" or "showcase" semantics.
 
 Do NOT cross-post identical text to r/design, r/graphic_design, and
 r/web_design on the same day. Reddit's spam filter de-ranks all three.
@@ -111,9 +111,9 @@ This title works because it leads with the WORK, not the self-promo.)
 ## Posting checklist
 
 - [ ] Post is > 200 characters (Reddit boosts substantive posts)
-- [ ] Account has > 100 comment karma, > 30 days old
+- [ ] Account has meaningful comment karma, > 30 days old
 - [ ] Posted Tue/Wed/Thu 8–11am ET
-- [ ] Flair set to `RESOURCE`
+- [ ] Flair set to the current sub's "resource" / "showcase" equivalent
 - [ ] No image attached (r/web_design favors text posts with links)
 - [ ] Site is live, no console errors, /shop link works
 - [ ] Reply to the first 5 comments within an hour

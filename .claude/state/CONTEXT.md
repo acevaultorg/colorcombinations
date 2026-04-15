@@ -18,7 +18,7 @@ AcePilot (as code) cannot push a button that earns €100 — revenue is gated b
 3. **BaseLayout.astro** rewired — `ANALYTICS.isLive` replaced with per-rail flags. Plausible block unchanged in behavior. GA4 + Clarity bootstrapped via inline IIFE with consent gate. `anonymize_ip: true` on GA4.
 4. **`launch/` directory** — 8 files of ready-to-paste operator copy:
    - `hacker-news.md` — title + URL + first comment + pre-written replies to 5 most-likely questions. Best-time guidance, account-age warnings, re-submit policy.
-   - `twitter-thread.md` — 10-tweet thread with image anchors pointing to existing `/og` SVGs. Cross-post guidance for Mastodon / Bluesky / Threads.
+   - `social-thread.md` — 10-post thread prioritized for Bluesky → Mastodon → Threads → X (Twitter no longer exists; rebranded July 2023 and organic reach on X is poor in 2026). Image anchors point to existing `/og` SVGs.
    - `reddit-r-web_design.md`, `reddit-r-design.md`, `reddit-r-graphic_design.md` — three sub-specific posts with different framings (utility / visual / print-aware).
    - `producthunt.md` — tagline, description, maker comment, first-24-hour playbook.
    - `cold-email-design-blogs.md` — short + long templates, 10 outlets ranked by ROI per minute.
@@ -49,7 +49,7 @@ In exact priority order — this is the critical path:
 2. **Sign up Bookshop affiliate** (5 min) — secondary revenue rail, instant approval.
 3. **Sign up GA4 + Clarity + GSC** (20 min, all paulomdevries@gmail.com) — without measurement, every launch post is a blind shot.
 4. **Post to Hacker News** (10 min + 4h of reply duty) — single highest-probability traffic event, ~20k-50k visitors if it ranks. At 0.3% conversion × $5 average = €30-€75 from HN alone.
-5. **Twitter thread** (15 min, same day as HN) — amplifies HN spike.
+5. **Social thread — Bluesky / Mastodon / Threads** (15 min, same day as HN) — amplifies HN spike. X is optional, organic reach there is poor without an existing audience.
 6. **Reddit posts** (30 min total, spaced 3 days) — compound long-tail traffic.
 
 ### Immediate next action

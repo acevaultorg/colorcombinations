@@ -9,12 +9,12 @@ highest-leverage actions.
 | File | Platform | Time to post | Traffic potential |
 |---|---|---|---|
 | [`hacker-news.md`](./hacker-news.md) | Show HN | 10 min | 10k–50k in 24h if it ranks top-10 |
-| [`twitter-thread.md`](./twitter-thread.md) | X / Twitter / Threads / Mastodon | 15 min | Depends on account; reusable |
-| [`reddit-r-web_design.md`](./reddit-r-web_design.md) | r/web_design (900k) | 10 min | 2k–10k |
-| [`reddit-r-design.md`](./reddit-r-design.md) | r/design (2.5M) | 10 min | 2k–15k |
-| [`reddit-r-graphic_design.md`](./reddit-r-graphic_design.md) | r/graphic_design (850k) | 10 min | 1k–5k |
+| [`social-thread.md`](./social-thread.md) | Bluesky · Mastodon · Threads · X | 15 min | Depends on account; reusable across platforms |
+| [`reddit-r-web_design.md`](./reddit-r-web_design.md) | r/web_design (large dev-design sub) | 10 min | 2k–10k |
+| [`reddit-r-design.md`](./reddit-r-design.md) | r/design (very large general-design sub) | 10 min | 2k–15k |
+| [`reddit-r-graphic_design.md`](./reddit-r-graphic_design.md) | r/graphic_design (working designers) | 10 min | 1k–5k |
 | [`producthunt.md`](./producthunt.md) | Product Hunt | 30 min | 1k–3k, converts well |
-| [`cold-email-design-blogs.md`](./cold-email-design-blogs.md) | Smashing / CSS-Tricks / CSS Weekly / SidebarIO | 5 min / outlet | Long-tail backlinks |
+| [`cold-email-design-blogs.md`](./cold-email-design-blogs.md) | Smashing / Sidebar.io / CSS Weekly / others | 5 min / outlet | Long-tail backlinks |
 | [`gumroad-product-description.md`](./gumroad-product-description.md) | Gumroad product page | 5 min | Conversion, not traffic |
 
 ## The revenue flywheel (how €100 happens)
@@ -27,8 +27,10 @@ highest-leverage actions.
    rate × €5 average = €30–€75 from HN alone. This is the single most
    probable path to the first €100. Post on a Tuesday-Thursday morning
    Pacific time; re-post once if it doesn't rank.
-3. **Twitter thread + r/web_design (same day as HN).** These amplify and
-   keep the flywheel turning after HN drops off the front page.
+3. **Social thread (Bluesky / Mastodon / Threads) + r/web_design (same
+   day as HN).** These amplify and keep the flywheel turning after HN
+   drops off the front page. X is optional — organic reach without paid
+   boost is poor in 2026.
 4. **Bookshop affiliate + Clarity + GA setup.** Don't block the launch on
    these — they're measurement + tail-revenue. Do them before the launch
    if you have 30 extra minutes; otherwise same-week.

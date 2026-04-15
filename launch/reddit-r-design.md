@@ -1,11 +1,13 @@
 # Reddit — r/design post
 
 **Subreddit:** https://www.reddit.com/r/design/
-**Size:** ~2.5M members. Mostly consumers of design, not designers.
+**Audience:** very large, mostly consumers of design rather than working
+designers.
 **Tone:** image-first. Stories beat tech specs.
-**Best day/time:** Tuesday or Wednesday, 7–9am Eastern. r/design peaks
+**Best day/time:** Tuesday or Wednesday, 7–9am Eastern. The sub peaks
 early because weekend-lurkers check in.
-**Flair:** `article` or `project` — check current sub rules on posting.
+**Flair:** check current sub rules on posting — pick the flair closest
+to "project" or "article".
 
 r/design hits the Reddit front page occasionally. Posts that do are always
 visual-first — a striking image with a one-line story. Lead with the hero,
@@ -84,5 +86,5 @@ variant title is:
 
 > Japanese color combinations from 1933 — 348 historical palettes, free to browse
 
-Keep the body the same. This sub is smaller (~70k) but much more engaged
-around color specifically; even a 100-upvote post sends meaningful traffic.
+Keep the body the same. That sub is smaller but much more engaged around
+color specifically; even a modest-upvote post sends meaningful traffic.

@@ -1,11 +1,12 @@
 # Reddit — r/graphic_design post
 
 **Subreddit:** https://www.reddit.com/r/graphic_design/
-**Size:** ~850k members. Working graphic designers. More practical focus
-than r/design, more print-aware than r/web_design.
+**Audience:** working graphic designers. More practical focus than
+r/design, more print-aware than r/web_design.
 **Tone:** utility-first. They want to know if it helps them do their job.
 **Best day/time:** Wednesday or Thursday, 10am–12pm Eastern.
-**Flair:** check current rules; typically `RESOURCES` or `DISCUSSION`.
+**Flair:** check current sub rules; pick the flair closest to "resource"
+or "discussion".
 
 This sub has strict anti-self-promo rules. If the title reads like an
 ad, it gets removed. Lead with the tool's utility, not the rebuild
