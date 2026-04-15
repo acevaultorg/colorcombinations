@@ -1,0 +1,145 @@
+---
+title: "The Neutrals of Wada: Kinari, Gofun, and the Paper-Tones That Hold Everything Together"
+description: "Why the 'background' colors in a palette are the actual structure — a tour of Japanese neutrals and a practical rule for picking the right off-white for web work."
+pubDate: "2026-04-15"
+eyebrow: "Part two — on neutrals"
+palette: "kariyasu-rikyu"
+relatedPalettes:
+  - "kariyasu-rikyu"
+  - "kurenai-kon"
+  - "gunjo-gofun"
+  - "asagi-shu"
+keywords:
+  - "japanese neutrals"
+  - "kinari"
+  - "gofun"
+  - "nezumi grey"
+  - "off-white web design"
+  - "background colors"
+  - "color theory"
+---
+
+Most conversations about color are about the *colored* part. The red,
+the blue, the accent. The hex value that matters.
+
+But open almost any plate in Wada's dictionary and the thing that
+actually holds the image together is the neutral. The un-colored color.
+The paper. The chalk. The ink.
+
+This post is about why those neutrals are the real structure of the
+palette and a practical rule for picking the right one when you're
+trying to build something on a screen.
+
+## The neutrals Wada actually uses
+
+English has more-or-less three words for a neutral: *white*, *grey*,
+*black*. Japanese shikisai has dozens. Wada reaches for at least six
+with regularity:
+
+- <span lang="ja">生成</span> *kinari* (roughly `#F4EEE0`) — raw silk,
+  unbleached. Warmest off-white in the tradition. Almost yellow.
+- <span lang="ja">胡粉</span> *gofun* (roughly `#F8F4EA`) — chalk white
+  made from ground shell, used by Edo-era painters to prime silk and
+  paper. Cooler than kinari.
+- <span lang="ja">鼠</span> *nezumi* (roughly `#949494`) — mouse grey.
+  Not a cool slate; not a warm taupe. A specific, faintly green-brown
+  grey that only makes sense once you've seen it.
+- <span lang="ja">利休</span> *rikyū* (roughly `#8B8B78`) — Rikyū grey,
+  named after the 16th-century tea master. Dusty sage. The signature
+  neutral of the tea ceremony aesthetic.
+- <span lang="ja">銀</span> *gin* (roughly `#CFD0C9`) — silver. Cooler
+  than nezumi, lighter.
+- <span lang="ja">墨</span> *sumi* (roughly `#111111`) — ink black. Not
+  #000; warmer, with a trace of dark brown.
+
+When a Wada plate reads "works", it is often because the third color —
+the one designated as the background — is holding a specific tension
+against the two foreground colors. *Kurenai* and *kon* (safflower
+crimson and deep indigo) on `#F4EEE0` kinari is an old imperial combo.
+The same crimson and navy on pure `#FFFFFF` looks like a flag. The
+neutral is doing the work.
+
+## Three rules of thumb
+
+Three heuristics, pulled from staring at ~378 Wada plates for too long:
+
+### Rule 1 — Warmer neutrals forgive more
+
+`#F4EEE0` kinari against a saturated color tolerates a wider range of
+secondary accents than `#FFFFFF` does. Pure white is merciless — every
+accent has to earn its place. Kinari gives you half a step of slack on
+saturation, a full step on temperature. Most editorial sites that
+"feel right" use a warm off-white for exactly this reason.
+
+### Rule 2 — The neutral should be on a plate you already like
+
+Pick a plate whose foreground colors you'd use for a brand. Note the
+third color. Use that. This is faster than color-theory reasoning and
+it works because the plates are already balanced.
+
+You can be explicit about this. On an editorial site, pick `kurenai-kon`
+and the neutral is kinari `#F4EEE0`. On a sans-serif brand site, pick
+`asagi-shu` (pale blue-green + vermillion) and the neutral is gofun
+`#F8F4EA`. The plate does the picking for you.
+
+### Rule 3 — Neutrals scale inversely to type size
+
+The smaller your body text, the closer your neutral should be to pure
+paper. `#F4EEE0` is lovely at display sizes and becomes a mud bath at
+8px. Most of the hexes in Wada's neutral column were meant for paper,
+ink, and silk — all of which render type at much higher contrast than
+a backlit LCD does.
+
+Practical corollary: set your display-type neutral warm, your body-
+type neutral cool or near-white. The site in front of you right now
+uses `#FAF7EF` (slightly warmed kinari) as the global background and
+`#FFFFFF` as the elevated-surface color. Text contrast ratios were
+tuned to WCAG AA against the warmer background, which is the harder
+case.
+
+## The common failure mode
+
+The pattern I see over and over in portfolios, landing pages, and
+client decks: a designer picks three saturated colors, drops them on
+`#FFFFFF`, and wonders why the composition feels chilly or unreal.
+
+The problem isn't the three colors. The problem is that `#FFFFFF` is
+not a color the human visual system encounters naturally — it's only
+ever backlit paper, screens, or freshly-bleached laundry. It carries
+no cultural weight. It tastes like nothing.
+
+The fix is almost always the same: shift the background 5–10 points
+toward one of the four Japanese neutral-temperature anchors (warm-red
+kinari, warm-green rikyū, neutral gin, cool grey nezumi). The
+composition settles instantly because the background now has a
+temperature and the foreground can play against it.
+
+## Where to look next
+
+If you want to study this specifically, the neutrals themselves are
+worth browsing as colors:
+
+- [Kinari](/colors/kinari/) — the archive entries that use this
+  off-white
+- [Gofun](/colors/gofun/) — the chalk-white set
+- [Nezumi](/colors/nezumi/) — the grey column
+- Rikyū grey — browse via the [Kariyasu & Rikyū plate](/palettes/kariyasu-rikyu/)
+  for a specific tea-ceremony example
+
+Or pull a complete plate and look at what the neutral is doing:
+
+- [Kurenai & Kon](/palettes/kurenai-kon/) — crimson and navy on
+  kinari
+- [Gunjō & Gofun](/palettes/gunjo-gofun/) — ultramarine on chalk
+- [Kariyasu & Rikyū](/palettes/kariyasu-rikyu/) — grass yellow and
+  tea-grey
+
+The common thread: the neutral is not a blank canvas. It is part of
+the composition. When it changes, the composition changes.
+
+---
+
+*Part three of this loose series, whenever it ships, will be on the
+seasonal palettes — why the autumn combinations read as autumn even
+when you strip the color names, and why that's the opposite of
+mood-board cosplay.*

@@ -94,6 +94,21 @@ const jsonLd = [
   jsonLd={jsonLd}
   keywords={post.data.keywords}
 >
+  {/* Pinterest Rich Pins (Article type) + Open Graph article-specific
+      meta. Pinterest, LinkedIn, Slack, and Mastodon all use these fields
+      for richer previews of article-type URLs. */}
+  <Fragment slot="head">
+    <meta property="article:published_time" content={new Date(post.data.pubDate).toISOString()} />
+    {post.data.updatedDate && (
+      <meta property="article:modified_time" content={new Date(post.data.updatedDate).toISOString()} />
+    )}
+    <meta property="article:author" content="The Dictionary of Color Combinations" />
+    <meta property="article:section" content="Color & Design" />
+    {post.data.keywords.map((k) => (
+      <meta property="article:tag" content={k} />
+    ))}
+  </Fragment>
+
   <article class="post section">
     <div class="container-prose">
       <nav class="post__breadcrumbs" aria-label="Breadcrumb">

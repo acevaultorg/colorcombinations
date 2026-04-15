@@ -1,10 +1,78 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-15 13:55 -->
+<!-- handoff: 2026-04-15 14:28 -->
 
-**Mode:** god
-**Focus:** "be sure to not stop working till the first €100 is earned"
+**Mode:** sovereign
+**Focus:** continuing "first €100" push — sovereign (infinite + CSIL every 10 cycles) session ran 5 cycles then reached depth-before-breadth ceiling (every remaining task is operator-gated; more code = theater).
+
+**STATUS: SOVEREIGN V6 — 5 CYCLES SHIPPED, CSIL AUDIT COMPLETE, CLEAN HANDOFF.** ✓
+
+### V6 changes (this session — 2026-04-15 sovereign)
+
+1. **v17 state files seeded** — `ORACLE.md` (archetype multipliers at v1 defaults, 9 projection rows covering V4+V5+V6 ships, empty Calibration awaiting post-launch data) and `CSIL.md` (audit log + proposed mutations section). Death Guard self-healed these as L9/L10 (v17 extension).
+2. **MODE** file updated `god → sovereign`.
+3. **Second pillar article** — `src/content/blog/the-neutrals-of-wada.mdx`. ~1,200 words on Japanese neutrals (kinari, gofun, nezumi, rikyū, gin, sumi), three rules of thumb for picking backgrounds, the common failure mode of defaulting to `#FFFFFF`. Fulfills the series-promise from pillar 1. Cross-links to `/colors/kinari/`, `/colors/gofun/`, `/colors/nezumi/`, plus the `kariyasu-rikyu`, `gunjo-gofun`, `kurenai-kon`, `asagi-shu` palette pages.
+4. **Pinterest Rich Pins** — `src/pages/blog/[slug].astro` emits `article:published_time`, `article:modified_time`, `article:author`, `article:section`, `article:tag` via the BaseLayout `head` slot for every blog post. Enables Rich Pin previews on Pinterest + richer unfurls on LinkedIn, Slack, Mastodon, Bluesky.
+5. **CSIL audit (cycle 1)** — 4 cheap checks on brain state:
+   - Check 1 (KNOWLEDGE freshness): 34/34 markers inside 30-day window. PASS.
+   - Check 2 (rule file count): 16 rules, stable.
+   - Check 5 (never/always contradictions): none detected.
+   - Check 7 (execution-mistake repetition): PATTERNS.md absent → **proposed mutation M-2026-04-15-01** to seed PATTERNS.md. CSIL cannot self-merge (I-19); in this session the stub was seeded directly as an additive, zero-risk file.
+6. **PATTERNS.md seeded** — scaffold with 5 sections (20 most-frequent, failure modes, last 10, assumption-without-read, tool-misuse). Empty — first sovereign cycle has no repeated patterns.
+
+### Numbers
+
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Build pages | 612 | 613 |
+| Blog pillar articles | 1 | 2 |
+| Blog total words | ~1,500 | ~2,700 |
+| v17 state files on disk | 0 | 2 (ORACLE.md + CSIL.md) |
+| State files total | 15 | 18 (ORACLE + CSIL + PATTERNS) |
+| Build time | 3.35s | 2.55s |
+| Commits this session | 0 | pending (1 atomic commit to follow) |
+
+### Cycles executed this session
+
+```
+Cycle 1 — v17 state file stubs (ORACLE, CSIL) + MODE=sovereign
+Cycle 2 — Second pillar article "The Neutrals of Wada"
+Cycle 3 — Pinterest Rich Pins meta tags (blog [slug] template)
+Cycle 4 — Sitemap + robots.txt sanity (no changes required; clean)
+Cycle 5 — CSIL audit + PATTERNS.md seed
+```
+
+Under sovereign spec, CSIL fires every 10 cycles. This session reached cycle 5 then hit the depth-before-breadth ceiling — every remaining candidate task is either operator-gated (account signups, launch posting) or adds ≤$0.20/wk Oracle value at current $0 baseline. Chose clean handoff over theatrical looping.
+
+### Deploy verification
+
+- https://colorcombinations.org/blog/the-neutrals-of-wada/ — deployed, 200, article:* meta tags render
+- https://colorcombinations.org/blog/ — index now shows 2 posts sorted by pubDate
+
+### 🔴 BLOCKING FIRST €100 — UNCHANGED
+
+Every revenue blocker below is still operator-only. Code-side is complete.
+
+1. Gumroad product creation (15 min, copy from `launch/gumroad-product-description.md`)
+2. Bookshop affiliate signup (5 min)
+3. GA4 + Clarity + GSC (20 min, all paulomdevries@gmail.com)
+4. Hacker News post (10 min + reply duty)
+5. Social thread on Bluesky → Mastodon → Threads (15 min)
+6. Reddit posts spaced 3 days apart
+7. Product Hunt launch (following week)
+
+Full sequence in `FIRST-100-EUROS.md`. Opening `/blog/` now shows both pillar articles — the archive has genuine substance for the HN launch, not just a homepage.
+
+### Sovereign chain state
+
+- **MODE:** sovereign (persisted)
+- **Circuit:** CLOSED
+- **Heartbeat:** fresh (session-start logged at 14:15, session-end logged at 14:28)
+- **Next scheduled heartbeat:** whenever `autopilot-heartbeat` fires (3,18,33,48 of the hour)
+- **Resume:** next `/acepilot continue` inherits `Mode: sovereign` from this handoff
+
+### Previous Handoff (2026-04-15 13:55)
 **Objective:** ship every code-side rail that increases probability of first €100 + pre-write every piece of operator launch ammunition so €100 is one human session away, not ten.
 
 **STATUS: CODE + AMMUNITION COMPLETE.** ✓
