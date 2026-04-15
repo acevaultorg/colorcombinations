@@ -60,7 +60,14 @@
 
 - [x] `P0` BUY domain colorcombinations.org — `platform:cloudflare-registrar` [id:buy-domain] [score:10.0] ✓ Bought via Cloudflare Registrar 2026-04-10 (pivoted from Namecheap → cleaner because registrar + hosting in same ecosystem)
 - [x] `P0` CONNECT repo to Cloudflare Pages + custom domain — `platform:cloudflare-pages` [id:deploy-cloudflare-pages] [needs:buy-domain] [score:9.5] ✓ DEPLOYED 2026-04-10 via `wrangler pages deploy dist` — 34 pages live, all routes 200, custom 404 serving, security headers applied. Also fixed trailing-slash redirect hop.
-- [👤] `P0` SIGN UP for Gumroad (or Lemonsqueezy) seller account + upload `bundle-source/wada-bundle-v1.zip` as $9 product — `platform:gumroad` [id:gumroad-setup] [score:12.0] 👤 REVENUE-CRITICAL
+- [👤] `P0` EXECUTE FIRST-100-EUROS.md step 1 — create Gumroad product using `launch/gumroad-product-description.md` (15 min) — `platform:gumroad` [id:gumroad-setup] [score:13.0] 👤 REVENUE-CRITICAL — single biggest blocker
+- [👤] `P0` EXECUTE FIRST-100-EUROS.md step 3b — create GA4 property at analytics.google.com (5 min, paulomdevries@gmail.com) — `platform:google-analytics` [id:ga4-setup] [score:11.5] 👤 Paste ID into `ANALYTICS.gaMeasurementId`, redeploy
+- [👤] `P0` EXECUTE FIRST-100-EUROS.md step 3c — create Clarity project at clarity.microsoft.com (5 min, paulomdevries@gmail.com) — `platform:microsoft-clarity` [id:clarity-setup] [score:11.5] 👤 Paste ID into `ANALYTICS.clarityProjectId`, redeploy
+- [👤] `P0` EXECUTE FIRST-100-EUROS.md step 3d — Google Search Console domain property + sitemap submission (5 min) — `platform:gsc` [id:gsc-setup] [score:11.0] 👤 Cluster rule: full absolute URL for sitemap, not relative
+- [👤] `P0` EXECUTE FIRST-100-EUROS.md step 4 — post to HN from `launch/hacker-news.md` (Tue/Wed/Thu 8-10am PT) — `platform:hacker-news` [id:hn-launch] [score:13.0] 👤 Single highest-probability traffic event
+- [👤] `P0` EXECUTE FIRST-100-EUROS.md step 5 — Twitter thread from `launch/twitter-thread.md` (same day as HN) — `platform:twitter` [id:twitter-launch] [score:10.0] 👤
+- [👤] `P0` EXECUTE FIRST-100-EUROS.md step 6 — Reddit posts from `launch/reddit-*.md` (3-day spacing) — `platform:reddit` [id:reddit-launch] [score:9.5] 👤
+- [👤] `P0` SIGN UP for Gumroad (or Lemonsqueezy) seller account + upload `bundle-source/wada-bundle-v1.zip` as $9 product — `platform:gumroad` [id:gumroad-setup-original] [score:12.0] 👤 REVENUE-CRITICAL — superseded by `gumroad-setup` above
 - [👤] `P0` SIGN UP for Bookshop.org affiliate (instant, free) + get affiliate ID — `platform:bookshop.org` [id:bookshop-setup] [score:11.5] 👤 REVENUE-CRITICAL
 - [👤] `P1` PASTE Gumroad product URL + Bookshop.org affiliate ID into `src/config/monetization.ts` + redeploy — `file:monetization.ts` [id:monet-wire] [needs:gumroad-setup,bookshop-setup] [score:11.0] 👤
 - [👤] `P1` SIGN UP for Plausible (9/mo) or self-host Umami free + paste script domain — `platform:plausible` [id:plausible-setup] [score:9.0] 👤 measurement rail — can't optimize what you don't measure
@@ -72,6 +79,19 @@
 ## Blocked
 
 <!-- Empty -->
+
+## Queue — Analytics + Launch Ammunition [objective:first-100-eur]
+
+- [x] `P0` WIRE GA4 + Microsoft Clarity into monetization config — `src/config/monetization.ts` [id:analytics-config] [score:12.0] [oracle:analytics_wiring_x0.10_pre-revenue] ✓ Per-rail isLive getters, paulomdevries@gmail.com rule documented in-file
+- [x] `P0` BUILD CookieConsent component — GDPR-compliant, localStorage-backed, explicit opt-in — `src/components/CookieConsent.astro` [id:cookie-consent] [needs:analytics-config] [score:11.5] ✓ Fires cc-consent-granted event for lazy-load of GA + Clarity
+- [x] `P0` REWIRE BaseLayout analytics — per-rail flags, consent-gated GA + Clarity, Plausible unchanged — `src/layouts/BaseLayout.astro` [id:baselayout-analytics] [needs:cookie-consent] [score:11.0] ✓ 612 pages, 3.35s, 0 errors, deployed
+- [x] `P0` WRITE HN launch ammunition — title, URL, first-comment body, pre-written replies — `launch/hacker-news.md` [id:hn-ammo] [score:12.5] [oracle:single-highest-probability-traffic-event] ✓ Copy-paste ready for submit window
+- [x] `P0` WRITE Twitter/X/Mastodon/Bluesky thread — 10 tweets with OG-image anchors — `launch/twitter-thread.md` [id:twitter-ammo] [score:11.0] ✓
+- [x] `P0` WRITE Reddit posts (×3) — r/web_design (utility), r/design (visual), r/graphic_design (print-aware) — `launch/reddit-*.md` [id:reddit-ammo] [score:10.5] ✓ Sub-specific framings, 3-day spacing guidance
+- [x] `P1` WRITE Product Hunt launch kit — tagline, description, maker comment, first-24h playbook — `launch/producthunt.md` [id:ph-ammo] [score:9.0] ✓
+- [x] `P1` WRITE cold-email templates — short + long forms, 10 outlets ranked — `launch/cold-email-design-blogs.md` [id:email-ammo] [score:8.5] ✓
+- [x] `P0` WRITE Gumroad product description — field-by-field, ready-to-paste — `launch/gumroad-product-description.md` [id:gumroad-ammo] [score:12.5] [oracle:unblocks-primary-conversion-surface] ✓ Includes the code diff to wire the resulting URL
+- [x] `P0` WRITE FIRST-100-EUROS.md — 8-step 2-hour operator playbook [id:100eur-playbook] [score:13.0] ✓ Sequenced from site-live → first €100, each step points at the exact launch/ file it needs
 
 ## Queue — Blog / Journal V1 [objective:content-marketing-v1]
 
