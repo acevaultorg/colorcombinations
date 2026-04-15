@@ -46,6 +46,10 @@ Format: `timestamp | task-id | archetype | projected_$/wk | confidence_0_to_1 | 
 2026-04-15 14:20 | pillar-article-2-neutrals | SEO_page_addition | 0.15 | 0.4 | Second pillar keeps the series promise from article 1 and adds a second HN/Reddit anchor. Compounds with article 1, not additive — think of it as risk-diversification on launch content.
 2026-04-15 14:22 | pinterest-rich-pins | infrastructure | 0.10 | 0.3 | Pinterest Rich Pin meta tags on article-type URLs unlock visible-preview distribution on Pinterest, LinkedIn, Slack, Mastodon. Value bounded by whether operator ever pins anything; cheap to add.
 2026-04-15 14:25 | csil-audit-1 | specialist_review | 0.00 | 0.5 | First CSIL audit on this project. Finding: PATTERNS.md was missing; seeded via proposed mutation M-2026-04-15-01.
+2026-04-15 16:50 | pillar-article-3-seasons | SEO_page_addition | 0.15 | 0.4 | Closes the three-pillar series. Each article reinforces the others via cross-links; traffic compounds across them more than standalone posts would. Real value ties to HN launch performance.
+2026-04-15 16:52 | linkedin-launch-copy | distribution_asset | 0.80 | 0.4 | LinkedIn hits design-director / brand-lead audience absent from HN / Reddit. Single post can reach decision-makers who control agency budgets.
+2026-04-15 16:53 | indiehackers-launch-copy | distribution_asset | 0.30 | 0.4 | IH audience is pre-revenue founders — medium-high resonance, but modest direct revenue contribution. Useful for peer feedback + long-tail discovery.
+2026-04-15 16:54 | content-calendar-7d | distribution_asset | 0.50 | 0.5 | 7 ready-to-post drip items remove the "what do I post today?" friction during launch week. Sustains organic reach past the launch-day peak.
 
 ## Calibration
 

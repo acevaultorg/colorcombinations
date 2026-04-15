@@ -14,8 +14,11 @@ highest-leverage actions.
 | [`reddit-r-design.md`](./reddit-r-design.md) | r/design (very large general-design sub) | 10 min | 2k–15k |
 | [`reddit-r-graphic_design.md`](./reddit-r-graphic_design.md) | r/graphic_design (working designers) | 10 min | 1k–5k |
 | [`producthunt.md`](./producthunt.md) | Product Hunt | 30 min | 1k–3k, converts well |
+| [`linkedin.md`](./linkedin.md) | LinkedIn native post | 15 min | Brand / agency audience; different from HN |
+| [`indiehackers.md`](./indiehackers.md) | Indie Hackers Show IH | 15 min | Maker community; values transparency |
 | [`cold-email-design-blogs.md`](./cold-email-design-blogs.md) | Smashing / Sidebar.io / CSS Weekly / others | 5 min / outlet | Long-tail backlinks |
 | [`gumroad-product-description.md`](./gumroad-product-description.md) | Gumroad product page | 5 min | Conversion, not traffic |
+| [`content-calendar-7d.md`](./content-calendar-7d.md) | Bluesky / Mastodon / Threads drip | 5 min/day | Keeps flywheel turning after launch-day peak |
 
 ## The revenue flywheel (how €100 happens)
 

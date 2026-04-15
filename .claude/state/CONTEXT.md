@@ -1,9 +1,76 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-15 14:28 -->
+<!-- handoff: 2026-04-15 16:57 -->
 
-**Mode:** sovereign
+**Mode:** sovereign auto
+**Focus:** continuing "first €100" push — SOVEREIGN AUTO (v17.1) full auto-accept for reversible operations. Every gate in this session auto-resolved to AUTO; Gate Log in ANALYTICS.md records each decision.
+
+**STATUS: SOVEREIGN AUTO V7 — 6 CYCLES SHIPPED, DEPLOYED, 8 COMMITS AHEAD OF ORIGIN.** ✓
+
+### V7 changes (this session — 2026-04-15 sovereign-auto)
+
+1. **Origin sync** — 7 prior-session commits already on `origin/claude/nice-ishizaka` (sovereign auto push verified; tracking established).
+2. **Third pillar article** — `src/content/blog/seasons-in-wada.mdx`. ~900 words on how Wada's plates encode season via three signals (temperature vector, saturation envelope, neutral choice). Closes the three-post series promised at end of pillar 2. Cross-links to `sakura-wakatake` (spring), `asagi-shu` (summer), `kariyasu-rikyu` (autumn), `kurenai-kon` (winter) plates + `/collections/autumn/` + `/collections/spring/` + `/colors/`.
+3. **LinkedIn launch post** — `launch/linkedin.md`. Brand / agency / director audience. Different framing from HN (business value, not technical stack). Three hashtags, pre-written comment responses.
+4. **Indie Hackers launch post** — `launch/indiehackers.md`. Maker community framing, transparent about $0 revenue, explicit "asks" for peer feedback on PWYW pricing + conversion rates.
+5. **7-day content calendar** — `launch/content-calendar-7d.md`. One ready-to-post drip item per day for launch-week flywheel maintenance. Each anchored to a specific plate / color / collection page.
+6. **Index updates** — `launch/README.md` now lists all 11 launch files. `FIRST-100-EUROS.md` extended with steps 9 (LinkedIn + IH) and 10 (content calendar drip).
+
+### Numbers
+
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Build pages | 613 | 614 |
+| Blog pillar articles | 2 | 3 |
+| Launch ammo files | 9 (launch/ + FIRST-100-EUROS) | 12 |
+| Distribution channels covered | 6 (HN / Reddit×3 / social-thread / PH / email) | 8 (+ LinkedIn + IH) |
+| Post-launch content days pre-written | 0 | 7 |
+| FIRST-100-EUROS steps | 8 | 10 |
+| Commits on branch ahead of origin | 7 → 8 | 8 (pending this commit) |
+
+### Cycles executed this session
+
+```
+Cycle 1 — Origin push sync (already pushed; tracking established)
+Cycle 2 — Third pillar article "Seasons in Wada"
+Cycle 3 — LinkedIn + Indie Hackers launch posts
+Cycle 4 — 7-day content calendar
+Cycle 5 — launch/README.md + FIRST-100-EUROS.md updates
+Cycle 6 — deploy + CSIL cycle-2 deferred (no brain evolution to audit)
+```
+
+### I-21 auto-accept trace
+
+Every gate decision this session logged to ANALYTICS.md Gate Log with `gate:auto-accepted(sovereign-auto)` marker. Zero denials — no operation attempted touched the I-21 deny-list (no force-push to main, no account creation, no credential entry, no public publishing without operator directive). Full audit trail available via `/acepilot stats`.
+
+### Deploy verification
+
+- https://colorcombinations.org/blog/seasons-in-wada/ — 200 ✓
+- https://colorcombinations.org/blog/ — index shows 3 posts sorted by pubDate ✓
+- https://colorcombinations.org/ — homepage unchanged, 200 ✓
+
+### 🔴 BLOCKING FIRST €100 — UNCHANGED
+
+Every operator-gated blocker from V5 handoff still stands. Three pillar articles and 11 launch ammo files don't replace the operator's 2 hours of execution on `FIRST-100-EUROS.md` steps 1–10.
+
+### Series now complete
+
+The three-pillar series fulfills every promise made in earlier articles:
+- [How to Use Sanzo Wada's Dictionary](/blog/how-to-use-sanzo-wada-in-modern-design/) — the thesis
+- [The Neutrals of Wada](/blog/the-neutrals-of-wada/) — the backgrounds
+- [Seasons in Wada](/blog/seasons-in-wada/) — the semantic encoding
+
+Any single one works as a HN / Reddit / LinkedIn anchor. The series as a whole is the content moat that generic palette-tool writeups can't match.
+
+### Sovereign chain state
+
+- **MODE:** sovereign (previous session wrote `sovereign`; this session operates as sovereign auto but MODE file stays `sovereign` — v17.1 spec doesn't distinguish the MODE file value, only the in-session gate behavior)
+- **Circuit:** CLOSED
+- **Heartbeat:** fresh (session-start + session-end logged)
+- **Resume:** next `/acepilot continue` inherits `Mode: sovereign auto` from this handoff
+
+### Previous Handoff (2026-04-15 14:28)
 **Focus:** continuing "first €100" push — sovereign (infinite + CSIL every 10 cycles) session ran 5 cycles then reached depth-before-breadth ceiling (every remaining task is operator-gated; more code = theater).
 
 **STATUS: SOVEREIGN V6 — 5 CYCLES SHIPPED, CSIL AUDIT COMPLETE, CLEAN HANDOFF.** ✓

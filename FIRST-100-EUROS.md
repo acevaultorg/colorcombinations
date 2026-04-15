@@ -206,6 +206,23 @@ See [`launch/producthunt.md`](./launch/producthunt.md). Do NOT launch on
 PH the same week as HN — traffic spikes fragment instead of compound.
 Launch PH exactly at 12:01 AM Pacific on a Tuesday or Wednesday.
 
+## Step 9 — LinkedIn + Indie Hackers (30 min each, launch week)
+
+These hit audiences HN and Reddit don't.
+
+1. **LinkedIn** — paste from [`launch/linkedin.md`](./launch/linkedin.md).
+   Brand / agency / director audience. Post Tue or Wed 9–11am.
+2. **Indie Hackers** — paste from [`launch/indiehackers.md`](./launch/indiehackers.md).
+   Maker community; values transparency. Post the $0-revenue reality
+   directly — IH rewards honesty.
+
+## Step 10 — Keep the flywheel turning (7 days, ~5 min/day)
+
+After the launch-day peak, run the 7-day drip from
+[`launch/content-calendar-7d.md`](./launch/content-calendar-7d.md) —
+one ready-to-post item per day, rotating across Bluesky / Mastodon /
+Threads. Presence without saturation.
+
 ---
 
 ## What "done" looks like

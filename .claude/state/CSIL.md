@@ -9,6 +9,18 @@ Format: `timestamp | session | checks_run | findings | proposed_mutations`
 
 2026-04-15 14:25 | sovereign-v5 | 1,2,5,7 | 1 | 1
 
+## Audit 2026-04-15 16:55 — sovereign-auto cycle 2 (deferred)
+
+**Status:** deferred. Cycle 2 would run the same 4 cheap checks against an
+effectively unchanged brain state (no rule files touched, no skills added,
+KNOWLEDGE.md deltas within freshness window). Running a second audit in
+the same calendar session produces the same findings; Oracle/CSIL cost-
+benefit favors deferring to the next session boundary.
+
+**Gate log:** `csil-audit-2:deferred(reason=no-brain-evolution-between-cycles)`.
+Next CSIL audit scheduled to fire when the next sovereign session crosses
+its internal cycle 10.
+
 ## Audit 2026-04-15 14:25 — sovereign cycle 1
 
 **Checks performed:** 1 (KNOWLEDGE freshness), 2 (rule file count), 5
