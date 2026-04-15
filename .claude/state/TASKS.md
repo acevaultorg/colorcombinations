@@ -73,6 +73,15 @@
 
 <!-- Empty -->
 
+## Queue — Blog / Journal V1 [objective:content-marketing-v1]
+
+- [x] `P0` CREATE Astro content collection schema for blog — `src/content/config.ts` [id:blog-schema] [score:11.0] [oracle:cold-pre-revenue-channel-enabler] ✓ Typed blog collection (title, pubDate, palette, relatedPalettes, keywords, draft)
+- [x] `P0` WRITE first pillar article — 1,500-word "How to Use Sanzo Wada's 1933 Color Dictionary in Modern Design" — `src/content/blog/how-to-use-sanzo-wada-in-modern-design.mdx` [id:pillar-1] [needs:blog-schema] [score:11.5] ✓ Three modes of use, worked example with gunjo-gofun, cross-links to /colors, /collections, /browse
+- [x] `P0` BUILD blog index page — list view with Blog + BlogPosting JSON-LD — `src/pages/blog/index.astro` [id:blog-index] [needs:pillar-1] [score:10.0] ✓
+- [x] `P0` BUILD blog detail template — breadcrumbs + hero swatches + referenced-palette grid + FurtherReading + BundleCta — `src/pages/blog/[slug].astro` [id:blog-detail] [needs:pillar-1] [score:10.5] ✓ BlogPosting JSON-LD + BreadcrumbList
+- [x] `P1` ADD Journal to nav + footer — `SiteHeader.astro`, `SiteFooter.astro` [id:blog-nav] [needs:blog-index] [score:8.0] ✓
+- [x] `P0` BUILD + VERIFY + DEPLOY — 612 pages, 2.61s, 0 errors, live at colorcombinations.org/blog [id:blog-deploy] [needs:blog-nav,blog-detail] [score:9.5] ✓
+
 ## Queue — Color Dictionary + RSS [objective:color-dictionary-v1]
 
 - [x] `P0` CREATE color data module — extract 211 unique named colors from 378 palettes, hue classification, reverse palette lookup — `src/data/colors.ts` [id:color-data] [score:12.0] ✓

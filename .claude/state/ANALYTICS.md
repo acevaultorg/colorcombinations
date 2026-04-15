@@ -27,6 +27,13 @@ Build work: 0 tasks completed (all 16 TASKS.md tasks paused pending domain decis
 
 ## Behavior Log
 
+2026-04-15 13:33 | blog-deploy | content-seo-site | astro5-tailwind4-ts-strict | V4 | quick | self-qualify | AUTO | 30 | success
+2026-04-15 13:32 | blog-nav | content-seo-site | astro5-tailwind4-ts-strict | V4 | micro | self-qualify | AUTO | 10 | success
+2026-04-15 13:30 | blog-detail-template | content-seo-site | astro5-tailwind4-ts-strict | V4 | standard | self-designer+strategist | AUTO | 180 | success
+2026-04-15 13:25 | blog-index-page | content-seo-site | astro5-tailwind4-ts-strict | V4 | standard | self-designer | AUTO | 90 | success
+2026-04-15 13:20 | pillar-article-1 | content-seo-site | astro5-tailwind4-ts-strict | V4 | complex | self-strategist | AUTO | 600 | success
+2026-04-15 13:10 | blog-schema | content-seo-site | astro5-tailwind4-ts-strict | V4 | micro | self-qualify | AUTO | 15 | success
+
 2026-04-12 18:20 | handoff-update | content-seo-site | astro5-tailwind4-ts-strict | V3.1 | quick | self-qualify | AUTO | 30 | success
 2026-04-12 18:19 | robots-optimize | content-seo-site | astro5-tailwind4-ts-strict | V3.1 | micro | self-qualify | AUTO | 5 | success
 2026-04-12 18:18 | event-tracking | content-seo-site | astro5-tailwind4-ts-strict | V3.1 | standard | self-qualify | AUTO | 60 | success

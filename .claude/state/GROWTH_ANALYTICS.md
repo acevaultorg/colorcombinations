@@ -40,6 +40,8 @@ task-shop-page | 2026-04-10 | pending Gumroad live | shop_view_to_bundle_click |
 task-further-reading | 2026-04-10 | pending Bookshop live | bookshop_click_rate | TBD | hypothesis: >0.8% on /about, >0.3% on detail pages
 task-export-tracking | 2026-04-10 | pending Plausible live | export_click_rate | TBD | baseline metric — establishes the conversion funnel denominator
 task-wada-348 | 2026-04-10 | pending post-deploy | sessions_per_palette | TBD | hypothesis: 12× lift in long-tail organic over 90 days vs 30-palette baseline
+task-pillar-1 | 2026-04-15 | pending post-HN-launch | organic_sessions_to_blog | TBD | hypothesis: a single 1,500-word pillar post ranks in top-10 for "sanzo wada color palettes" + long-tail "how to use historical color combinations" within 90 days; serves as the canonical HN/Reddit/Twitter anchor URL that converts at ≥ average content-referral rate (3-5% homepage bounce-forward)
+task-blog-infra | 2026-04-15 | baseline (measurement begins with post-2) | n/a | n/a | foundation — future posts now cost operator <10 min of AcePilot time to draft and publish
 
 ## Corrections
 

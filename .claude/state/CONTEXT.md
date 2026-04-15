@@ -1,7 +1,64 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-12 10:10 -->
+<!-- handoff: 2026-04-15 13:33 -->
+
+**Mode:** god
+**Objective:** ship /blog infrastructure + first pillar article — open the content-marketing channel named as the primary growth lever in GROWTH.md; give the operator concrete HN/Reddit/Twitter launch ammunition.
+
+**STATUS: SHIPPED. /blog live at colorcombinations.org — first pillar article ("How to Use Sanzo Wada's 1933 Color Dictionary in Modern Design", 1,500 words) is now the single best thing to point at when launching.** ✓
+
+### V4 changes (this session — 2026-04-15)
+
+1. **Astro content collection** (`src/content/config.ts`) — typed blog schema. Posts drop in as single `.mdx` files with frontmatter (title, description, pubDate, eyebrow, palette, relatedPalettes, keywords, draft).
+2. **First pillar article** (`src/content/blog/how-to-use-sanzo-wada-in-modern-design.mdx`) — 1,500-word essay: the generator paradox, what Wada actually did, three modes of use (reference / bounded exploration / vocabulary), a worked example using the gunjo-gofun plate, what to ignore, where to start. Cross-links to /colors, /collections, /browse. Flagged `kurenai-kon` as hero palette + four related palette slugs.
+3. **Blog index** (`/blog/`) — list page with JSON-LD Blog + BlogPosting schema, editorial card layout, auto-sorted by pubDate.
+4. **Blog detail template** (`/blog/[slug]/`) — breadcrumbs → eyebrow → headline → date → hero swatch strip (from primary palette) → MDX body → referenced-palette grid → FurtherReading affiliate rail → BundleCta. Article JSON-LD + BreadcrumbList.
+5. **Navigation** — "Journal" link added to primary header nav (between Collections and About) and to the footer Explore column.
+
+### Numbers
+
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Total pages | 603 | 612 |
+| Blog pages | 0 | 2 (index + 1 post) |
+| Blog word count | 0 | ~1,500 |
+| Build time | 2.73s | 2.61s |
+| Internal-link destinations | /palettes, /colors, /collections, /browse, /about | + /blog |
+
+### Live URLs verified (curl, 200)
+
+- https://colorcombinations.org/blog/
+- https://colorcombinations.org/blog/how-to-use-sanzo-wada-in-modern-design/
+
+### Why this was the right bot task at this moment
+
+Every production-side queue entry was already `[x]` and the only remaining `[👤]` tasks are operator-only account signups (Gumroad / Bookshop / Plausible). Once revenue is code-complete, the marginal dollar comes from **traffic**, not more code. GROWTH.md names "Organic SEO", "Hacker News (Show HN)", and "Designer communities" as the primary channels — and none of those channels work without content to point at. One well-written pillar post is the single most expensive thing to produce with the operator's time and the single cheapest thing to produce with an AcePilot session. It is now the natural URL to hand to HN/Reddit/Twitter when the operator launches.
+
+### What still blocks revenue
+
+🔴 BLOCKING — revenue code is complete; operator activation is not:
+- Gumroad seller account + upload `bundle-source/wada-bundle-v1.zip` → paste product URL into `src/config/monetization.ts`
+- Bookshop.org affiliate signup → paste affiliate ID into monetization.ts
+- Plausible signup ($9/mo) → paste domain into `ANALYTICS.plausibleDomain`
+
+🟡 AT RISK — nothing new this session; all pre-existing.
+
+🟢 SHIPPED — /blog + 1 pillar article.
+
+### Immediate operator next actions
+
+1. **Read** `/blog/how-to-use-sanzo-wada-in-modern-design/` and flag anything that should be rewritten. It is meant to be defensible as an operator-signed piece.
+2. **Post it to Hacker News** as the "Show HN: The Dictionary of Color Combinations" anchor, linking the homepage and this article together.
+3. **Complete the 3 activations** above — each one takes ~5 minutes.
+
+### How to add another blog post
+
+Drop an `.mdx` file in `src/content/blog/` with the schema-valid frontmatter. It will appear in the index automatically. Set `draft: true` to suppress it from the public index while still generating a preview route.
+
+---
+
+## Previous Handoff (2026-04-12 10:10)
 
 **Mode:** god
 **Objective:** color dictionary + RSS feed — 211 new SEO pages for long-tail search, content distribution channel
