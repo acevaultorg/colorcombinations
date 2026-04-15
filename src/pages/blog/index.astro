@@ -36,6 +36,9 @@ const jsonLd = {
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <Fragment slot="head">
+    <link rel="alternate" type="application/rss+xml" title="The Dictionary of Color Combinations — Journal" href="/blog/rss.xml" />
+  </Fragment>
   <section class="blog-index section">
     <div class="container-prose">
       <header class="blog-index__header">

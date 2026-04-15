@@ -1,0 +1,214 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Terms";
+const description =
+  "Terms for using the site, the archive data, and the optional bundle.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: title,
+  description,
+  url: new URL("/terms/", Astro.site).toString(),
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="page section">
+    <div class="container-prose">
+      <header class="page__header">
+        <p class="eyebrow">Legal — please review</p>
+        <h1 class="text-balance">Terms</h1>
+        <p class="page__meta">Last updated: 2026-04-15</p>
+      </header>
+
+      <div class="prose">
+        <p class="page__lede">
+          Short version: the archive is free to browse, copy, and use in
+          real work. The optional bundle is pay-what-you-want. Don't do
+          anything reprehensible with the site and we won't either.
+        </p>
+
+        <h2>1. Using the site</h2>
+        <p>
+          By accessing colorcombinations.org you agree to these terms.
+          If you don't, stop browsing — there is no signup, no account,
+          nothing else to do.
+        </p>
+
+        <h2>2. The archive content</h2>
+        <ul>
+          <li>
+            <strong>Hex color values</strong> are facts and are not
+            subject to copyright. Use them anywhere, for anything,
+            without attribution.
+          </li>
+          <li>
+            <strong>Traditional Japanese color names</strong> (紅 kurenai,
+            藍 ai, and the rest) are part of the cultural commons and
+            have been in continuous use for centuries. Nobody owns them.
+          </li>
+          <li>
+            <strong>The underlying dataset</strong> for the 348 Wada
+            plates comes from the MIT-licensed community project
+            <a href="https://github.com/mattdesl/dictionary-of-colour-combinations" target="_blank" rel="noopener">mattdesl/dictionary-of-colour-combinations</a>.
+            Use per MIT.
+          </li>
+          <li>
+            <strong>Editorial descriptions, usage notes, curated
+            groupings, blog posts, and the site design</strong> are ©
+            The Dictionary of Color Combinations. You may quote them
+            in design documents, client presentations, and blog posts
+            with attribution. Wholesale republication of the editorial
+            corpus is not permitted. A linkback to
+            colorcombinations.org is appreciated but not required for
+            short quotes.
+          </li>
+        </ul>
+
+        <h2>3. Exports, the API, and embeds</h2>
+        <p>
+          The export buttons, the
+          <a href="/api/">JSON API</a>, and the
+          <code>/embed/[slug]</code> widgets are free to use in any
+          project, commercial or personal, without attribution. If you
+          build something cool on top of them,
+          <a href="mailto:hello@colorcombinations.org">tell me</a> —
+          it's the best feedback loop.
+        </p>
+
+        <h2>4. The support bundle</h2>
+        <p>
+          The <a href="/shop/">optional bundle</a> is sold through
+          Gumroad as a pay-what-you-want item. The bundle is framed as
+          a "support the archive" tip jar, not a product — the data
+          inside is already on this site and is already on GitHub for
+          free. You are buying convenience and supporting the archive
+          staying maintained.
+        </p>
+        <p>
+          Gumroad handles payment, fulfilment, refunds, and receipts.
+          Gumroad's own terms and refund policy apply to the
+          transaction. If a download link fails or a file is broken,
+          email
+          <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>
+          and we'll fix it.
+        </p>
+        <p>
+          The bundle files (Figma tokens, Tailwind configs, CSS vars,
+          SVG plates, JSON) are MIT-licensed — use in any project,
+          commercial or personal, no attribution required.
+        </p>
+
+        <h2>5. Affiliate links</h2>
+        <p>
+          Book recommendations on /about, /shop, and in the palette
+          sidebar may link through Bookshop.org (primary) or Amazon
+          (fallback) with an affiliate tag. When you buy a book through
+          these links, we receive a commission at no extra cost to you.
+          Affiliate status is disclosed inline wherever a link is
+          shown.
+        </p>
+        <p>
+          Design-tool recommendations (Figma, Framer, Coolors) may also
+          include affiliate tags where the tool runs a public program.
+          Inclusion is based on editorial merit, not commission rate —
+          several recommended tools have no affiliate programme and are
+          linked at full price.
+        </p>
+
+        <h2>6. No warranty</h2>
+        <p>
+          The archive is provided "as is". Hex values are best-effort
+          reconstructions of 1933 pigments; they are not authoritative
+          for critical print work. Contrast ratios are calculated per
+          WCAG 2.2 formulas but should be verified in your final
+          rendering context. Use your judgement.
+        </p>
+
+        <h2>7. Acceptable use</h2>
+        <p>
+          Don't scrape the site at rates that burden the host
+          (CloudFlare may rate-limit abusers). Don't claim authorship
+          of the editorial content. Don't use the site as part of a
+          service that rebrands it as your own tool without
+          substantial added value. Otherwise, do what you like with it.
+        </p>
+
+        <h2>8. Changes</h2>
+        <p>
+          If these terms change materially, the "Last updated" date
+          changes with them. Check back whenever you want; material
+          changes are not retroactive.
+        </p>
+
+        <h2>9. Governing law</h2>
+        <p>
+          These terms are governed by the laws of the Netherlands,
+          without regard to conflict-of-laws principles. Disputes are
+          resolved through the competent courts of the jurisdiction
+          where the operator resides.
+        </p>
+
+        <h2>10. Contact</h2>
+        <p>
+          <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>.
+          Response within a reasonable time, usually a few days.
+        </p>
+
+        <hr />
+
+        <p class="page__note">
+          <strong>Operator note:</strong> this is a starting template
+          reflecting the site's actual commercial structure. Legal review
+          by qualified counsel is recommended before launching paid
+          rails. Section 9 assumes EU / NL jurisdiction — adjust if
+          your legal entity is elsewhere.
+        </p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .page__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .page__header .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .page__meta {
+    color: var(--color-ink-500);
+    font-size: 0.875rem;
+    margin: 0.5rem 0 0;
+  }
+
+  .page__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.0625rem, 1vw + 0.75rem, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-900);
+    margin-bottom: 2rem;
+  }
+
+  .page__note {
+    background-color: var(--color-paper-100);
+    border-left: 3px solid var(--color-accent-500);
+    padding: 1rem 1.25rem;
+    font-size: 0.9375rem;
+    margin-top: 2.5rem;
+  }
+
+  .prose hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin-block: 3rem;
+  }
+</style>

@@ -49,7 +49,10 @@ const year = new Date().getFullYear();
   <div class="site-footer__meta">
     <div class="container-wide site-footer__meta-inner">
       <p>&copy; {year} The Dictionary of Color Combinations. Inspired by Sanzo Wada's 1933 tradition.</p>
-      <p>Color names and historical references are public-domain cultural knowledge.</p>
+      <p class="site-footer__legal">
+        <a href="/privacy/">Privacy</a> ·
+        <a href="/terms/">Terms</a>
+      </p>
     </div>
   </div>
 </footer>
@@ -143,6 +146,17 @@ const year = new Date().getFullYear();
   .site-footer__meta-inner p {
     margin: 0;
     max-width: none;
+  }
+
+  .site-footer__legal a {
+    color: var(--color-ink-500);
+    text-decoration: none;
+  }
+
+  .site-footer__legal a:hover {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   @media (max-width: 640px) {

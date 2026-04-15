@@ -1,0 +1,262 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PaletteCard from "@components/PaletteCard.astro";
+import BundleCta from "@components/BundleCta.astro";
+import { eras, eraBySlug } from "@data/eras";
+import { palettes } from "@data/palettes";
+
+export function getStaticPaths() {
+  return eras.map((e) => ({ params: { slug: e.slug }, props: { era: e } }));
+}
+
+const { era } = Astro.props;
+if (!era) return Astro.redirect("/404");
+
+const matches = palettes.filter((p) => p.era === era.slug);
+const total = matches.length;
+
+const title = `${era.name} color palettes — ${era.years}`;
+const description = `${total} historical palettes from Japan's ${era.name} era (${era.years}). ${era.lede}`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: new URL(`/era/${era.slug}/`, Astro.site).toString(),
+    numberOfItems: total,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: new URL("/", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Browse",
+        item: new URL("/browse/", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${era.name} era`,
+      },
+    ],
+  },
+];
+
+const prev = era.prev ? eraBySlug(era.prev) : undefined;
+const next = era.next ? eraBySlug(era.next) : undefined;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={era.keywords}
+  jsonLd={jsonLd}
+>
+  <section class="era section">
+    <div class="container-prose era__intro">
+      <nav class="era__breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">→</span>
+        <a href="/browse/">Browse</a>
+        <span aria-hidden="true">→</span>
+        <span class="era__breadcrumbs-current">{era.name} era</span>
+      </nav>
+
+      <header class="era__header">
+        <p class="eyebrow">Historical era · {era.years}</p>
+        <h1 class="era__title text-balance">
+          {era.name}
+          <span class="era__title-ja" lang="ja">{era.nameJa}</span>
+        </h1>
+        <p class="era__lede">{era.lede}</p>
+      </header>
+
+      <div class="prose era__desc">
+        <p>{era.description}</p>
+      </div>
+    </div>
+
+    <div class="era__grid-wrap container-wide">
+      <p class="era__count">
+        {total === 0
+          ? "No palettes tagged with this era yet."
+          : `${total} palette${total === 1 ? "" : "s"} from the ${era.name} era:`}
+      </p>
+
+      <ul class="era__grid" role="list">
+        {matches.map((p) => (
+          <li>
+            <PaletteCard palette={p} />
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <nav class="era__adjacent container-prose" aria-label="Adjacent eras">
+      {prev && (
+        <a href={`/era/${prev.slug}/`} class="era__adjacent-link era__adjacent-prev">
+          <span class="era__adjacent-label">Previous era</span>
+          <span class="era__adjacent-name">← {prev.name} <span lang="ja">{prev.nameJa}</span></span>
+        </a>
+      )}
+      {next && (
+        <a href={`/era/${next.slug}/`} class="era__adjacent-link era__adjacent-next">
+          <span class="era__adjacent-label">Next era</span>
+          <span class="era__adjacent-name">{next.name} <span lang="ja">{next.nameJa}</span> →</span>
+        </a>
+      )}
+    </nav>
+  </section>
+
+  <BundleCta variant="medium" />
+</BaseLayout>
+
+<style>
+  .era {
+    padding-top: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .era__breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .era__breadcrumbs a {
+    color: var(--color-ink-500);
+    text-decoration: none;
+  }
+
+  .era__breadcrumbs a:hover {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .era__breadcrumbs-current {
+    color: var(--color-ink-900);
+  }
+
+  .era__intro {
+    margin-bottom: 2.5rem;
+  }
+
+  .era__header {
+    margin-bottom: 1.5rem;
+  }
+
+  .era__title {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 2.5vw + 1rem, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0.5rem 0 0.75rem;
+    color: var(--color-ink-900);
+  }
+
+  .era__title-ja {
+    color: var(--color-ink-500);
+    font-size: 0.75em;
+    margin-left: 0.5rem;
+  }
+
+  .era__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.0625rem, 1vw + 0.75rem, 1.1875rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin: 0 0 1.25rem;
+  }
+
+  .era__desc p {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    max-width: 70ch;
+  }
+
+  .era__grid-wrap {
+    margin-top: 2.5rem;
+  }
+
+  .era__count {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 1.25rem;
+  }
+
+  .era__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .era__adjacent {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .era__adjacent-link {
+    text-decoration: none;
+    color: var(--color-ink-900);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 4px);
+    padding: 0.75rem 1rem;
+    background-color: var(--color-bg-elevated, #fff);
+    transition: border-color 150ms ease, transform 150ms ease;
+    min-width: 14rem;
+  }
+
+  .era__adjacent-link:hover {
+    border-color: var(--color-accent-500);
+    transform: translateY(-1px);
+  }
+
+  .era__adjacent-next {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .era__adjacent-label {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--color-ink-500);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .era__adjacent-name {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    color: var(--color-ink-900);
+  }
+</style>

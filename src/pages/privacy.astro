@@ -1,0 +1,244 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { ANALYTICS } from "@/config/monetization";
+
+const title = "Privacy";
+const description =
+  "What colorcombinations.org collects, what it doesn't, and how long any of it is kept.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: title,
+  description,
+  url: new URL("/privacy/", Astro.site).toString(),
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="page section">
+    <div class="container-prose">
+      <header class="page__header">
+        <p class="eyebrow">Legal — please review</p>
+        <h1 class="text-balance">Privacy policy</h1>
+        <p class="page__meta">Last updated: 2026-04-15</p>
+      </header>
+
+      <div class="prose">
+        <p class="page__lede">
+          This site collects the minimum it needs to keep working and to
+          improve what's on offer. It does not sell, share, or broker your
+          data. The full details are below.
+        </p>
+
+        <h2>Who this applies to</h2>
+        <p>
+          This policy applies to everyone who visits
+          <a href="https://colorcombinations.org">colorcombinations.org</a>
+          and its subdomains. The operator is an individual based in the
+          European Union; the site is hosted on Cloudflare Pages.
+        </p>
+
+        <h2>What we collect</h2>
+
+        <h3>Analytics (only if you consent)</h3>
+        <p>
+          When either Google Analytics 4 or Microsoft Clarity is active
+          and you have clicked <strong>Accept</strong> on the consent
+          banner, we collect:
+        </p>
+        <ul>
+          <li>Page views, referrer URL, and time on page</li>
+          <li>Coarse device type and browser (no fingerprinting)</li>
+          <li>Approximate country (IP anonymised before storage on GA4)</li>
+          <li>
+            Session recordings and heatmaps (Clarity only), which record
+            mouse movements, clicks, and scrolls on the page — but not
+            keystrokes on form inputs
+          </li>
+        </ul>
+        <p>
+          If you click <strong>Decline</strong>, none of this is collected.
+          The analytics scripts do not load.
+        </p>
+        <p>
+          Plausible Analytics, if enabled on this site, is cookieless and
+          runs without consent because it collects no personal data and
+          no cross-site identifiers. See
+          <a href="https://plausible.io/privacy-focused-web-analytics" target="_blank" rel="noopener">Plausible's privacy model</a>
+          for details.
+        </p>
+
+        <h3>Newsletter</h3>
+        <p>
+          If you enter your email in the newsletter form, we store that
+          email for the purpose of sending you a once-a-week email about
+          new palettes. You can unsubscribe at any time using the
+          one-click link in every email. We do not share the list.
+        </p>
+
+        <h3>Affiliate and checkout clicks</h3>
+        <p>
+          When you click an affiliate link (Bookshop.org, Amazon
+          Associates) or a checkout link (Gumroad), you are redirected to
+          that third party's site. From that moment, their privacy
+          policies apply. We receive a commission from qualifying
+          purchases but never see your card details, shipping address,
+          or account information. The commission attribution works via a
+          cookie set by the third party, not by us.
+        </p>
+
+        <h3>What we do NOT collect</h3>
+        <ul>
+          <li>Credit card numbers or any payment details</li>
+          <li>Social-security, tax, or government ID numbers</li>
+          <li>Health or medical data</li>
+          <li>Precise location data (no GPS, no Wi-Fi triangulation)</li>
+          <li>Contents of form inputs other than your email if you
+            choose to enter it</li>
+          <li>Cross-site browsing history</li>
+        </ul>
+
+        <h2>How we use the data</h2>
+        <p>
+          Aggregated analytics data informs editorial decisions — which
+          palettes and articles resonate, which pages are broken, which
+          search terms lead here. Session recordings (Clarity) are used
+          only to debug user-interface problems. We do not use data for
+          advertising targeting, lookalike modeling, or behavioural
+          profiling.
+        </p>
+
+        <h2>Who else sees your data</h2>
+        <ul>
+          <li><strong>Cloudflare</strong> — our host. Their network
+            receives every request. See
+            <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Cloudflare's privacy policy</a>.
+          </li>
+          <li><strong>Google (if GA4 is enabled)</strong> —
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policy</a>.
+            IP anonymisation is enabled on GA4 by default on this site.
+          </li>
+          <li><strong>Microsoft (if Clarity is enabled)</strong> —
+            <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener">Microsoft's privacy statement</a>.
+          </li>
+          <li><strong>Plausible (if enabled)</strong> —
+            <a href="https://plausible.io/data-policy" target="_blank" rel="noopener">Plausible's data policy</a>.
+          </li>
+          <li><strong>Gumroad / Bookshop.org / Amazon</strong> — only
+            after you click a link and leave this site. We do not
+            receive their data back.</li>
+        </ul>
+
+        <h2>Your rights under GDPR</h2>
+        <p>
+          If you are in the EU/EEA/UK, you have the right to request:
+        </p>
+        <ul>
+          <li>A copy of any data we hold about you</li>
+          <li>Correction of inaccurate data</li>
+          <li>Deletion of your data ("right to be forgotten")</li>
+          <li>Withdrawal of consent (delete the
+            <code>cc-consent</code> localStorage entry in your browser —
+            the banner reappears and analytics stop firing for future
+            visits)</li>
+          <li>Portability of your data in a machine-readable format</li>
+          <li>To lodge a complaint with your local data protection
+            authority</li>
+        </ul>
+        <p>
+          To exercise any of these rights, email
+          <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>.
+          We respond within 30 days.
+        </p>
+
+        <h2>How long we keep data</h2>
+        <ul>
+          <li>Plausible: 24 months rolling, then auto-deleted</li>
+          <li>Google Analytics 4: 14 months (minimum GA4 allows)</li>
+          <li>Microsoft Clarity: 12 months per Microsoft's default</li>
+          <li>Newsletter subscribers: until you unsubscribe</li>
+          <li>Affiliate attribution cookies: controlled by the
+            third-party (Bookshop 30-day default; Amazon 24-hour
+            default; exact terms vary)</li>
+        </ul>
+
+        <h2>Children</h2>
+        <p>
+          This site is a design reference and not directed at children
+          under 16. We do not knowingly collect data from anyone under 16.
+          If you believe we have, email
+          <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>
+          and we will delete immediately.
+        </p>
+
+        <h2>Changes to this policy</h2>
+        <p>
+          When anything substantive changes, the "Last updated" date at
+          the top of this page changes with it. Check back whenever you
+          want; material changes are not retroactive.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Data controller: the operator of colorcombinations.org.
+          Contact:
+          <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>.
+        </p>
+
+        <hr />
+
+        <p class="page__note">
+          <strong>Operator note:</strong> this page is a starting-template
+          written with the site's actual privacy posture in mind, but
+          legal review by a qualified EU privacy lawyer is recommended
+          before launching paid analytics rails in a regulated
+          jurisdiction. Replace this paragraph and ensure the "operator
+          name" section reflects your legal entity.
+        </p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .page__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .page__header .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .page__meta {
+    color: var(--color-ink-500);
+    font-size: 0.875rem;
+    margin: 0.5rem 0 0;
+  }
+
+  .page__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.0625rem, 1vw + 0.75rem, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-900);
+    margin-bottom: 2rem;
+  }
+
+  .page__note {
+    background-color: var(--color-paper-100);
+    border-left: 3px solid var(--color-accent-500);
+    padding: 1rem 1.25rem;
+    font-size: 0.9375rem;
+    margin-top: 2.5rem;
+  }
+
+  .prose hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin-block: 3rem;
+  }
+</style>

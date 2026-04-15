@@ -53,6 +53,10 @@ Format: `timestamp | task-id | archetype | projected_$/wk | confidence_0_to_1 | 
 2026-04-15 19:50 | json-api-catalog | infrastructure | 0.25 | 0.4 | Developer-facing JSON endpoints for /api/palettes.json + /api/palettes/[slug].json. Value is indirect: developer tools consuming the API produce backlinks + organic discovery among designers-who-also-code. Hard to measure directly; bet on HN/IH + long-tail GitHub dep-graphs.
 2026-04-15 19:52 | embed-widget | distribution_asset | 1.50 | 0.5 | /embed/[slug] renders a self-contained iframe-safe palette card. Every external blog or Notion doc that embeds a plate = a backlink + a viewer who didn't know the archive existed. GROWTH.md names this explicitly as a viral loop. Value scales with adoption.
 2026-04-15 19:53 | api-docs-page | infrastructure | 0.10 | 0.4 | /api documentation page makes the endpoints discoverable. Without it, the JSON routes would exist but nobody would find them. Required complement to the API itself.
+2026-04-15 20:35 | privacy-terms | bug_fix_blocking_revenue | 2.50 | 0.6 | Without /privacy and /terms, the GA/Clarity stack is GDPR-non-compliant the moment operator activates. Unblocks legitimate measurement activation — the highest-value single task this session since it removes a legal blocker, not just marginal polish.
+2026-04-15 20:38 | era-landing-pages | SEO_page_addition | 0.45 | 0.4 | 7 new indexable pages at /era/[slug] targeting "heian color palette" class queries. Each carries editorial description + 2-era cross-links + palette grid. Compounds with existing collection SEO surface.
+2026-04-15 20:41 | mood-landing-pages | SEO_page_addition | 0.50 | 0.4 | 9 new indexable pages at /mood/[slug]. Covers queries that collections don't (serene, austere, playful, solemn) — moods map to client-brief language better than eras do.
+2026-04-15 20:42 | blog-rss-feed | infrastructure | 0.15 | 0.4 | Dedicated /blog/rss.xml (separate from existing palette /feed.xml). Auto-discovery link in blog index head. Feedly + Inoreader + newsletter-auto-syndication pick this up.
 
 ## Calibration
 
