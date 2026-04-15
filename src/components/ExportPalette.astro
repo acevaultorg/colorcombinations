@@ -9,32 +9,35 @@ const { palette } = Astro.props;
 
 // Pre-compute the export strings at build time so the client script is small.
 const hexList = palette.colors.map((c) => c.hex).join("\n");
-const tailwindTokens = JSON.stringify(
-  {
-    theme: {
-      extend: {
-        colors: Object.fromEntries(
-          palette.colors.map((c, i) => [
-            c.nameRomaji?.toLowerCase().replace(/\s+/g, "-") ??
-              `${palette.slug}-${i + 1}`,
-            c.hex,
-          ]),
-        ),
+const tailwindTokens =
+  `// colorcombinations.org/palettes/${palette.slug}\n` +
+  JSON.stringify(
+    {
+      theme: {
+        extend: {
+          colors: Object.fromEntries(
+            palette.colors.map((c, i) => [
+              c.nameRomaji?.toLowerCase().replace(/\s+/g, "-") ??
+                `${palette.slug}-${i + 1}`,
+              c.hex,
+            ]),
+          ),
+        },
       },
     },
-  },
-  null,
-  2,
-);
+    null,
+    2,
+  );
 const cssVars = palette.colors
   .map(
     (c, i) =>
       `  --${palette.slug}-${(c.nameRomaji ?? `${i + 1}`).toLowerCase().replace(/\s+/g, "-")}: ${c.hex};`,
   )
   .join("\n");
-const cssVarsBlock = `:root {\n${cssVars}\n}`;
+const cssVarsBlock = `/* colorcombinations.org/palettes/${palette.slug} */\n:root {\n${cssVars}\n}`;
 const jsonExport = JSON.stringify(
   {
+    source: `https://colorcombinations.org/palettes/${palette.slug}/`,
     slug: palette.slug,
     title: palette.title,
     titleJa: palette.titleJa,

@@ -289,6 +289,121 @@ export const collections: Collection[] = [
     match: (p) => p.era === "heian",
     accentHex: "#C9A2C8",
   },
+
+  // =========================================================================
+  // 9. Warm color palettes — high-volume SEO, commercial intent
+  // =========================================================================
+  {
+    slug: "warm",
+    title: "Warm Color Palettes",
+    tagline: "Reds, oranges, golds, and amber — the heat range of the Japanese palette.",
+    description:
+      "Warm colors dominate the Wada catalog in a way that surprises designers expecting the cool restraint of wabi-sabi. Crimson lacquerware, saffron-dyed cloth, persimmon-glazed ceramics, and festival banners in red-gold combinations — warmth was not accent but foundation. These 24 palettes run from the near-neutral ochres suitable for minimalist brand identities to the full vermillion-and-gold combinations of shrine architecture.",
+    keywords: [
+      "warm color palette",
+      "warm color combinations",
+      "red orange color scheme",
+      "autumn warm colors",
+      "earth tone warm palette",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "akane-tokiwa",
+      "shu-kuro-kin",
+      "daidai-kon",
+      "enji-matsuba",
+    ],
+    match: (p) => p.moods.includes("warm"),
+    limit: 24,
+    accentHex: "#C14928",
+  },
+
+  // =========================================================================
+  // 10. Dark color palettes — high-volume SEO
+  // =========================================================================
+  {
+    slug: "dark",
+    title: "Dark Color Palettes",
+    tagline: "Deep ink tones, midnight navy, and the quiet weight of Japanese shadow.",
+    description:
+      "Dark palettes in the Wada tradition are rarely pure black — they're layered: sumi ink, deep kon indigo, kachi dark purple-navy, charcoal grey. The contrast is achieved not by darkness alone but by pairing the deep tones with one accent — a flash of coral, a sliver of gold, a pale gofun white. These combinations are directly usable for dark-mode UI, luxury branding, high-contrast editorial layouts, and any identity that needs authority without aggression.",
+    keywords: [
+      "dark color palette",
+      "dark color combinations",
+      "deep color schemes",
+      "dark mode colors",
+      "moody color palette",
+    ],
+    curatedSlugs: [
+      "entan-sumi",
+      "shu-kuro-kin",
+      "kurenai-kon",
+      "moegi-sumi",
+      "kon-kinari",
+    ],
+    match: (p) =>
+      p.moods.includes("solemn") ||
+      (p.moods.includes("austere") && (p.dominantHue === "neutral" || p.dominantHue === "blue")),
+    limit: 24,
+    accentHex: "#1B2A4E",
+  },
+
+  // =========================================================================
+  // 11. Pastel color palettes — high-volume SEO
+  // =========================================================================
+  {
+    slug: "pastel",
+    title: "Pastel Color Palettes",
+    tagline: "The soft register of Japanese color — sakura, haze, and spring mist.",
+    description:
+      "Japanese pastel is not the saccharine variety of greeting-card pink — it is the muted, often grey-shifted softness of seasonal pigments: sakura (cherry blossom), kasumi (spring haze), mizu (water blue), usumomo (pale peach). The light comes from the white paper showing through diluted mineral pigments, not from saturation. These palettes work for beauty, wellness, lifestyle brands, and any digital interface that needs to breathe.",
+    keywords: [
+      "pastel color palette",
+      "soft color combinations",
+      "pastel color scheme",
+      "light color palette",
+      "pale color combinations",
+    ],
+    curatedSlugs: [
+      "sakura-wakatake",
+      "nadeshiko-mizu",
+      "fuji-ai",
+      "murasaki-gin",
+      "hanada-gin",
+    ],
+    match: (p) =>
+      p.moods.includes("serene") &&
+      (p.dominantHue === "pink" || p.dominantHue === "purple" || p.dominantHue === "blue"),
+    limit: 24,
+    accentHex: "#F9D5E0",
+  },
+
+  // =========================================================================
+  // 12. Earth tone palettes — high-volume SEO, on-brand
+  // =========================================================================
+  {
+    slug: "earth-tones",
+    title: "Earth Tone Color Palettes",
+    tagline: "Ochre, clay, moss, and bark — the natural pigments of Japanese craft.",
+    description:
+      "Earth tones run through the full range of Japanese material culture: the iron-oxide browns of ceramics, the umber of aged lacquer, the mossy greens of forest paths, the warm greys of stone lanterns. Wada's catalog captures all of them — not as backdrop neutrals but as protagonists. These palettes are practical for interior design, residential branding, organic food and beverage, and any identity rooted in the natural world.",
+    keywords: [
+      "earth tone color palette",
+      "earthy color combinations",
+      "natural color scheme",
+      "brown color palette",
+      "organic color palette",
+    ],
+    curatedSlugs: [
+      "akane-tokiwa",
+      "moegi-sumi",
+      "enji-matsuba",
+    ],
+    match: (p) =>
+      p.moods.includes("earthy") || p.dominantHue === "brown",
+    limit: 24,
+    accentHex: "#7A5C3A",
+  },
 ];
 
 // ============================================================================
