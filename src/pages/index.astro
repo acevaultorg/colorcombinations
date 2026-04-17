@@ -4,10 +4,19 @@ import PaletteCard from "@components/PaletteCard.astro";
 import EmailCapture from "@components/EmailCapture.astro";
 import BundleCta from "@components/BundleCta.astro";
 import { featuredPalettes, allPalettes, wadaCatalog } from "@data/palettes";
+import { collections, paletteSetForCollection } from "@data/collections";
 
 const featured = featuredPalettes();
 const totalCount = allPalettes().length;
 const wadaCount = wadaCatalog().length;
+
+const featuredCollections = ["websites", "branding", "autumn", "summer", "green", "minimalist"]
+  .map(slug => collections.find(c => c.slug === slug))
+  .filter(Boolean)
+  .map(c => ({
+    ...c!,
+    previewColors: paletteSetForCollection(c!).slice(0, 3).flatMap(p => p.colors.slice(0, 2).map(col => col.hex)).slice(0, 5),
+  }));
 
 const title = "The Dictionary of Color Combinations";
 const description = `All ${wadaCount} combinations from Sanzo Wada's 1933 Dictionary of Color Combinations, free to browse, copy, and use. Plus ${totalCount - wadaCount} editorial deep-dives into the Japanese shikisai tradition.`;
@@ -80,6 +89,41 @@ const jsonLd = {
 
       <div class="featured__footer">
         <a href="/browse" class="btn btn-secondary">See all {totalCount} combinations →</a>
+      </div>
+    </div>
+  </section>
+
+  {/* ==================== COLLECTIONS ==================== */}
+  <section class="themes section">
+    <div class="container-wide">
+      <header class="section-head">
+        <p class="eyebrow">Browse by theme</p>
+        <h2 class="text-balance">Palettes for every creative purpose.</h2>
+        <p class="section-lede">
+          Seventeen curated collections — from website palettes to sunset colors to the full Heian tradition. Every combination drawn from the same 378-plate archive.
+        </p>
+      </header>
+
+      <ul class="themes-grid" role="list">
+        {featuredCollections.map((col) => (
+          <li role="listitem">
+            <a href={`/collections/${col.slug}/`} class="theme-card">
+              <div class="theme-card__swatches" aria-hidden="true">
+                {col.previewColors.map((hex) => (
+                  <span style={`background:${hex}`}></span>
+                ))}
+              </div>
+              <div class="theme-card__body">
+                <p class="theme-card__title">{col.title}</p>
+                <p class="theme-card__tagline">{col.tagline}</p>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="themes__footer">
+        <a href="/collections" class="btn btn-secondary">All 17 collections →</a>
       </div>
     </div>
   </section>
@@ -203,6 +247,88 @@ const jsonLd = {
 
   .featured__footer {
     margin-top: 3rem;
+    text-align: center;
+  }
+
+  /* ========== THEMES / COLLECTIONS ========== */
+  .themes {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .themes-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(1, 1fr);
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 560px) {
+    .themes-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .themes-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .theme-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+  }
+
+  .theme-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-ink-900);
+    box-shadow: var(--shadow-plate);
+  }
+
+  .theme-card__swatches {
+    display: flex;
+    height: 4.5rem;
+  }
+
+  .theme-card__swatches span {
+    flex: 1;
+  }
+
+  .theme-card__body {
+    padding: 1rem 1.125rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .theme-card__title {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .theme-card__tagline {
+    font-size: 0.875rem;
+    color: var(--color-ink-600);
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .themes__footer {
+    margin-top: 2.5rem;
     text-align: center;
   }
 
