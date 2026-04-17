@@ -1,0 +1,236 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Tools";
+const description =
+  "Free tools for working designers — a WCAG contrast checker and a palette finder that searches all 378 historical Wada combinations by the color you already have. No signups, no ads, no tracking.";
+
+const tools = [
+  {
+    href: "/tools/contrast-checker/",
+    title: "Contrast Checker",
+    subtitle: "WCAG 2.1 ratio calculator",
+    description:
+      "Paste any two colors, get the contrast ratio and WCAG AA/AAA grades. See how the pair looks on real body text, headings, and buttons before you ship.",
+    swatches: ["#1B2A4E", "#F4EEE0"],
+  },
+  {
+    href: "/tools/palette-from-color/",
+    title: "Palette Finder",
+    subtitle: "Start with one color, find 378 historical matches",
+    description:
+      "Pick a hex and we'll surface the closest colors from the full Sanzo Wada catalog — plus every historical palette that uses them. The fastest way to anchor a brand in the tradition.",
+    swatches: ["#9A2A2A", "#D4A76A", "#4E6C50"],
+  },
+] as const;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Color Tools",
+    description,
+    url: new URL("/tools/", Astro.site).toString(),
+    isPartOf: {
+      "@type": "WebSite",
+      name: "The Dictionary of Color Combinations",
+      url: Astro.site?.toString(),
+    },
+    hasPart: tools.map((t) => ({
+      "@type": "SoftwareApplication",
+      name: t.title,
+      applicationCategory: "DesignApplication",
+      operatingSystem: "Web",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      url: new URL(t.href, Astro.site).toString(),
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: new URL("/", Astro.site).toString(),
+      },
+      { "@type": "ListItem", position: 2, name: "Tools" },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <section class="tools-hero">
+    <div class="container-wide tools-hero__inner">
+      <p class="eyebrow">Free tools</p>
+      <h1 class="display-hero text-balance">Tools.</h1>
+      <p class="tools-hero__lede">
+        Two small, useful tools built on the same color library that powers
+        the rest of the site. Paste a color, get an answer. No signups, no
+        tracking, no ads.
+      </p>
+    </div>
+  </section>
+
+  <section class="tools-grid section">
+    <div class="container-wide">
+      <ul class="tools-list" role="list">
+        {tools.map((tool) => (
+          <li class="tool-card">
+            <a href={tool.href} class="tool-card__link">
+              <div class="tool-card__swatches" aria-hidden="true">
+                {tool.swatches.map((hex) => (
+                  <span style={`background:${hex}`}></span>
+                ))}
+              </div>
+              <div class="tool-card__body">
+                <p class="eyebrow">{tool.subtitle}</p>
+                <h2 class="tool-card__title">{tool.title}</h2>
+                <p class="tool-card__desc">{tool.description}</p>
+                <span class="tool-card__cta">
+                  Open tool <span aria-hidden="true">→</span>
+                </span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="tools-note section">
+    <div class="container-wide tools-note__inner">
+      <p class="eyebrow">Why these tools</p>
+      <p>
+        Most contrast checkers are buried under ads. Most palette generators
+        spit out randomized hues with no history behind them. These two do one
+        job each, grounded in the 378 palettes from the full Sanzo Wada
+        catalog. Bookmarkable, shareable, free — built for the browser tab
+        you keep open while you work.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tools-hero {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+  }
+
+  .tools-hero__inner {
+    max-width: 62rem;
+  }
+
+  .tools-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.2vw + 0.75rem, 1.3125rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin-top: 1.5rem;
+    max-width: 58ch;
+  }
+
+  .tools-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  @media (min-width: 760px) {
+    .tools-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .tool-card {
+    display: block;
+  }
+
+  .tool-card__link {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition:
+      transform 200ms ease,
+      box-shadow 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .tool-card__link:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-ink-900);
+    box-shadow: var(--shadow-plate);
+  }
+
+  .tool-card__swatches {
+    display: flex;
+    height: 6rem;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .tool-card__swatches span {
+    flex: 1;
+  }
+
+  .tool-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .tool-card__title {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--color-ink-900);
+  }
+
+  .tool-card__desc {
+    color: var(--color-ink-700);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    margin: 0;
+    max-width: none;
+  }
+
+  .tool-card__cta {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-accent-500);
+    margin-top: 0.25rem;
+  }
+
+  .tools-note {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+  }
+
+  .tools-note__inner {
+    max-width: 52rem;
+  }
+
+  .tools-note p {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    margin-top: 0.75rem;
+    max-width: none;
+  }
+</style>
