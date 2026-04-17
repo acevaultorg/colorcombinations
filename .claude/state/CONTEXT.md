@@ -1,7 +1,59 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-12 10:10 -->
+<!-- handoff: 2026-04-17 15:38 -->
+
+**Mode:** god --loop  (entered via `/acepilot sovereign auto`)
+**Objective:** first v17.2-balanced ship — retention hook + mobile-perfection gate enforcement
+
+**STATUS: SHIPPED. https://colorcombinations.org/palette-of-the-day/ LIVE.** ✓
+
+### V3.2 changes (this session — 2026-04-17 — sovereign auto)
+
+1. **Palette of the Day** — deterministic daily rotation over all 378 plates. Today's pick surfaces on homepage above the featured grid; deep-linkable archive at `/palette-of-the-day/` shows today + last 14 days. JSON-LD CreativeWork + BreadcrumbList on archive page.
+2. **Mobile header overflow fix** — pre-existing `site-header__nav` was 439px wide at 375px viewport (hard overflow). Fixed via `overflow-x: auto` + WCAG 2.5.5 tap targets (≥44px padding). First application of v17.2 mobile-perfection-default rule in this project.
+3. **v17.2 state files seeded** — `QUALITY.md` (Love Score log), `ORACLE.md` (Revenue Oracle calibration), `RETENTION.md` (Retention Oracle calibration). Bootstrapped with first entries.
+
+### Numbers
+
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Total pages | 603 | 619 (+16 from build indexing) |
+| Homepage retention hooks | 0 (only generic CTAs) | 1 (POTD card above fold) |
+| Canonical retention pages | 0 | 1 (`/palette-of-the-day/`) |
+| Mobile horizontal overflow | 529 > 375 (155px overflow) | 0 (clean at 375px) |
+| Build time | 2.73s | 4.57s |
+| Love Score log entries | 0 | 1 |
+| Oracle projections logged | 0 | 2 (revenue + retention) |
+
+### Live verified
+
+- https://colorcombinations.org/ — 200, "Palette of the day — Friday, April 17, 2026" visible
+- https://colorcombinations.org/palette-of-the-day/ — 200, today's palette + 14-day archive
+- Mobile @ 375px (Chrome MCP iframe probe) — zero horizontal overflow on both URLs
+
+### Love Score (@craftsman, v17.2)
+
+- PASS (mean 0.74)
+- Useful 0.7 · Delightful 0.6 · Reliable 0.8 · Clear 0.8 · Unique 0.8
+- Highest-leverage V2 fix: add entrance micro-interaction to POTD card to raise Delight
+
+### Oracle projections
+
+- Revenue Oracle: +$1.50/wk (core_loop_improvement archetype, confidence 0.3 cold)
+- Retention Oracle: +1.80% 7d return (confidence 0.3 cold)
+- Calibration blocked on Plausible operator activation
+
+### Next recommended actions
+
+1. **Plausible activation** (`[👤]`) — unblocks Oracle calibration + full measurement of POTD's actual retention lift
+2. Ship V2 delight upgrade — entrance animation on POTD swatches (~30 min)
+3. Consider POTD RSS feed — allow designers to subscribe to the daily pick
+4. Pillar blog article: "How to use Sanzo Wada's color combinations in modern design" — targets higher-intent search queries than collection pages
+
+---
+
+## Previous Handoff (2026-04-12 10:10)
 
 **Mode:** god
 **Objective:** color dictionary + RSS feed — 211 new SEO pages for long-tail search, content distribution channel

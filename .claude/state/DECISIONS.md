@@ -322,3 +322,26 @@ Handoff: all URLs/IDs live behind `isLive` getters in `src/config/monetization.t
 - User accounts / saved palettes
 
 **Rationale:** The Algorithm — simplest change that satisfies the need. V1 must be deployable, indexable, and look credible enough for launch. Everything else can iterate post-launch based on real traffic data.
+
+---
+
+## 2026-04-17 — Palette of the Day: retention hook + deterministic daily rotation
+
+**Decision:** Ship a "Palette of the Day" feature — homepage hero card + `/palette-of-the-day/` 14-day archive page — using deterministic rotation over all 378 plates keyed on `days-since-2026-01-01-UTC mod 378`.
+
+**Rationale:**
+
+- **Retention play** (v17.2 Retention Oracle archetype: `core_loop_improvement × +0.060 × 1.0 user_reach`). Gives designers a daily return ritual — "I'll check today's pick in the morning" — without requiring auth, saves, or notifications. Projected +1.80% 7d return rate lift (cold confidence 0.3 until Plausible activation unlocks measurement).
+- **SEO surface** — "palette of the day" / "color palette of the day" is a real long-tail query pattern. `/palette-of-the-day/` is a single canonical URL that rotates its primary content daily (good for freshness signals) with a 14-day archive listing that internally links to all 14 palette detail pages (internal link juice rotating across the catalog).
+- **Determinism over randomness** — same date always surfaces the same plate. Means a visitor can deep-link today's palette, come back next week, and the permalink still refers to the same historical pick if paired with a date. Also means the cached static page is correct until the next build's date ticks over.
+- **Mobile verification pattern** — this ship triggered the mobile-perfection-default rule and surfaced a pre-existing `site-header__nav` horizontal overflow at 375px (nav was 439px). Fixed inline via `overflow-x: auto` + WCAG 2.5.5 tap targets. First application of the v17.2 mobile gate in this project.
+
+**What it's NOT:**
+
+- Not random — randomness breaks deep-linking and spoils SEO
+- Not personalized — no tracking, no cookie dependency
+- Not gated — free tier fully accesses today's palette and the archive
+
+**Revenue model impact:** indirect. Retention lift → more affiliate impressions on palette detail pages (Bookshop/Amazon/DesignTools). Revenue Oracle projection $1.50/wk at current traffic; will re-calibrate after 30 days.
+
+**@craftsman Love Score:** 0.74 mean (useful 0.7 · delightful 0.6 · reliable 0.8 · clear 0.8 · unique 0.8). PASS. Weakest dimension is delight (no entrance animation); flagged as V2 follow-up.

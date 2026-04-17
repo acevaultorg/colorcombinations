@@ -132,4 +132,36 @@ const links = [
     color: var(--color-ink-900);
     border-bottom-color: var(--color-accent-500);
   }
+
+  /* Mobile: let the nav scroll horizontally rather than overflow the page.
+     Nothing gets hidden — every link stays reachable with a thumb-swipe. */
+  @media (max-width: 720px) {
+    .site-header__inner {
+      gap: 0.75rem;
+    }
+
+    .site-header__nav {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      /* Keep focus outlines visible on scroll */
+      margin-right: calc(-1 * var(--container-pad, 1rem));
+      padding-right: var(--container-pad, 1rem);
+    }
+
+    .site-header__nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .site-header__nav ul {
+      gap: 1.125rem;
+      flex-wrap: nowrap;
+    }
+
+    .site-header__link {
+      /* Generous tap target per WCAG 2.5.5 (≥44px) */
+      padding-block: 0.625rem;
+      white-space: nowrap;
+    }
+  }
 </style>
