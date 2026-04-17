@@ -555,6 +555,251 @@ export const collections: Collection[] = [
     limit: 24,
     accentHex: "#D4748A",
   },
+
+  // =========================================================================
+  // 18. Blue color palettes — high-volume hue family
+  // =========================================================================
+  {
+    slug: "blue",
+    title: "Blue Color Palettes",
+    tagline: "From sky blue to midnight indigo — the full Japanese blue spectrum.",
+    description:
+      "Japanese blue runs deeper than any single shade. Sora (sky) is the pale blue of a clear morning. Asagi is the clear, shallow-water turquoise of the Edo era. Hanada is the first wash of indigo on unbleached cloth. Ruri is the blue of lapis lazuli imported on the Silk Road. Kon is the deepest indigo — almost navy — the color that Japanese textile tradition mastered centuries before European indigo imports. These palettes span the full range, from airy and cool to authoritative and deep. Perfect for finance, technology, healthcare, hospitality, and any identity that needs trust without coldness.",
+    keywords: [
+      "blue color palette",
+      "blue color combinations",
+      "navy color scheme",
+      "sky blue palette",
+      "indigo color palette",
+    ],
+    curatedSlugs: [
+      "gunjo-gofun",
+      "asagi-shu",
+      "hanada-gin",
+      "kon-kinari",
+      "ao-shiro",
+      "ruri-gofun",
+      "sora-shu",
+    ],
+    match: (p) => p.dominantHue === "blue",
+    limit: 24,
+    accentHex: "#3E6A9F",
+  },
+
+  // =========================================================================
+  // 19. Purple color palettes — rich, historical, ceremonial
+  // =========================================================================
+  {
+    slug: "purple",
+    title: "Purple Color Palettes",
+    tagline: "Murasaki, fuji, kikyo — the most prestigious pigments of Japanese court.",
+    description:
+      "Purple was the rarest and most expensive dye in medieval Japan. Murasaki (violet) was extracted from the gromwell root and restricted to the highest ranks of the imperial court. Fuji (wisteria) is the blue-purple of temple flowers — quiet but unmistakable. Kikyo (bellflower) is the deeper purple of mountain flora. Edo murasaki is the grey-shifted purple of the merchant city, worn under layered kimonos as a subtle declaration of taste. These palettes carry that full history — from the pale lavender suitable for editorial wellness to the deep ceremonial purple of luxury identity work.",
+    keywords: [
+      "purple color palette",
+      "purple color combinations",
+      "lavender color scheme",
+      "violet palette",
+      "mauve color combinations",
+    ],
+    curatedSlugs: [
+      "murasaki-gin",
+      "fuji-ai",
+      "kikyo-sumi",
+      "edo-murasaki-nezumi",
+    ],
+    match: (p) => p.dominantHue === "purple",
+    limit: 24,
+    accentHex: "#7B5EA7",
+  },
+
+  // =========================================================================
+  // 20. Winter color palettes — completes the four seasons
+  // =========================================================================
+  {
+    slug: "winter",
+    title: "Winter Color Palettes",
+    tagline: "Deep indigo, ink black, frost white — the quietest register of the Japanese year.",
+    description:
+      "Winter in the Japanese palette is not the white-and-silver of Scandinavian design — it is the layered stillness of ink-on-paper: deep kon indigo, sumi black, cold gofun white, the blue-grey of stone lanterns under frost. Where spring is blush and summer is warmth, winter is restraint taken to its furthest point. These combinations work for premium fashion editorial, high-end architectural identity, technology brands that want authority, and any design that should feel considered and unhurried.",
+    keywords: [
+      "winter color palette",
+      "winter color combinations",
+      "dark blue white palette",
+      "cool color scheme",
+      "winter aesthetic colors",
+    ],
+    curatedSlugs: [
+      "kon-kinari",
+      "gunjo-gofun",
+      "murasaki-gin",
+      "ao-shiro",
+      "hanada-gin",
+      "moegi-sumi",
+    ],
+    match: (p) =>
+      p.moods.includes("austere") &&
+      (p.dominantHue === "blue" || p.dominantHue === "neutral" || p.dominantHue === "purple"),
+    limit: 24,
+    accentHex: "#2B3D5C",
+  },
+
+  // =========================================================================
+  // 21. Vintage color palettes — aged, faded, nostalgic
+  // =========================================================================
+  {
+    slug: "vintage",
+    title: "Vintage Color Palettes",
+    tagline: "The muted beauty of aged lacquer, worn cloth, and faded woodblock prints.",
+    description:
+      "Vintage in the Japanese color tradition is what time does to pigment: the persimmon-orange of aged kaki lacquerware, the warm brown of kogecha tea cloth washed a hundred times, the ochre of old paper yellowed at the edges. These are not colors that looked old when they were made — they earned their patina. Wada documented them at the moment of their tradition: just before synthetic dyes made the natural ones obsolete. Use them for heritage brands, print-inspired editorial layouts, food and beverage with provenance, and anything that benefits from the credibility that only time can give.",
+    keywords: [
+      "vintage color palette",
+      "retro color combinations",
+      "aged color scheme",
+      "nostalgic color palette",
+      "faded color combinations",
+    ],
+    curatedSlugs: [
+      "kogecha-kinari",
+      "tobi-kogane",
+      "yamabuki-kuri",
+      "kaki-kogecha",
+      "usubeni-cha",
+      "ukon-ai",
+    ],
+    match: (p) =>
+      (p.moods.includes("earthy") || p.moods.includes("warm")) &&
+      (p.dominantHue === "brown" || p.dominantHue === "orange" || p.dominantHue === "yellow"),
+    limit: 24,
+    accentHex: "#8C5E2A",
+  },
+
+  // =========================================================================
+  // 22. Japanese color palettes — brand identity, direct SEO
+  // =========================================================================
+  {
+    slug: "japanese",
+    title: "Japanese Color Palettes",
+    tagline: "Wada's 1933 dictionary — the definitive source for Japanese color tradition.",
+    description:
+      "The Japanese color tradition is one of the most precisely named and historically layered in the world. The Heian court codified hundreds of <em>kasane no irome</em> — seasonal layered robe combinations. The Edo merchant class developed its own restrained vocabulary of deep indigos, warm browns, and muted golds as a counter-aesthetic to imperial display. Sanzo Wada documented 348 of these combinations in 1933, drawing on that entire tradition. This collection covers the full breadth: court colors from the 8th century through industrial-era textile palettes from the early 20th. Each one is historically grounded, named in both Japanese and English, and immediately usable.",
+    keywords: [
+      "japanese color palette",
+      "japanese color combinations",
+      "traditional japanese colors",
+      "wabi sabi color palette",
+      "japanese aesthetic colors",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "sakura-wakatake",
+      "fuji-ai",
+      "matcha-kinari",
+      "ruri-gofun",
+      "moegi-sumi",
+      "entan-sumi",
+      "kon-kinari",
+    ],
+    match: (p) => p.moods.includes("refined") && p.era !== undefined,
+    limit: 24,
+    accentHex: "#B84E1F",
+  },
+
+  // =========================================================================
+  // 23. Wedding color palettes — high commercial intent
+  // =========================================================================
+  {
+    slug: "wedding",
+    title: "Wedding Color Palettes",
+    tagline: "Soft, ceremonial, enduring — the Japanese palette for celebration.",
+    description:
+      "Japanese weddings have historically used a very different color vocabulary from Western bridal: not white-and-cream, but layered complexity — the deep red of shiromuku wedding kimono, the soft blushed pink of uchikake robes, the pale green of spring ceremony, the restrained blue-greys of formal ceremony. The combinations here draw on that tradition but read cleanly in contemporary Western contexts too. Whether you're designing wedding stationery, a celebration brand identity, a bridal boutique, or the visual system for an event space, these palettes carry the gravity of ceremony without the cliché.",
+    keywords: [
+      "wedding color palette",
+      "wedding color scheme",
+      "bridal color combinations",
+      "elegant color palette",
+      "blush and sage palette",
+    ],
+    curatedSlugs: [
+      "sakura-wakatake",
+      "nadeshiko-mizu",
+      "ao-shiro",
+      "murasaki-gin",
+      "hanada-gin",
+      "fuji-ai",
+    ],
+    match: (p) =>
+      p.moods.includes("serene") &&
+      (p.dominantHue === "pink" || p.dominantHue === "purple" || p.dominantHue === "green"),
+    limit: 24,
+    accentHex: "#E8C4C4",
+  },
+
+  // =========================================================================
+  // 24. Logo color palettes — highest commercial intent
+  // =========================================================================
+  {
+    slug: "logo",
+    title: "Color Palettes for Logos",
+    tagline: "Combinations that hold at favicon scale and expand to full system.",
+    description:
+      "A logo palette has different requirements than a web palette or a print palette: it must work in one color, two colors, and full color; it must hold at 16px and at billboard scale; it must survive against white, black, and competing backgrounds. The Wada combinations that make the best logo palettes are the ones with extreme contrast — the deep kon indigo against off-white kinari, the saturated kurenai crimson against ink black, the complex three-tone combinations that read as a single recognizable shape at small sizes. Every palette here has been chosen for structural reliability: the kind of combination a logo designer reaches for on the day they need it to work.",
+    keywords: [
+      "logo color palette",
+      "brand color palette for logos",
+      "color schemes for logos",
+      "logo design colors",
+      "brand identity colors",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "entan-sumi",
+      "shu-kuro-kin",
+      "moegi-sumi",
+      "gunjo-gofun",
+      "kon-kinari",
+      "kogecha-kinari",
+    ],
+    match: (p) =>
+      (p.moods.includes("bold") || p.moods.includes("solemn")) &&
+      p.colors.length >= 2,
+    limit: 24,
+    accentHex: "#1B2A4E",
+  },
+
+  // =========================================================================
+  // 25. Interior design color palettes — high commercial intent
+  // =========================================================================
+  {
+    slug: "interior",
+    title: "Interior Design Color Palettes",
+    tagline: "Colors that live well in rooms — drawn from a tradition built for architecture.",
+    description:
+      "Japanese architecture has always had an intimate relationship with color. The vermilion of shrine torii. The warm grey of natural wood. The warm earth of clay walls. The deep green of moss against stone. Wada's catalog includes dozens of combinations directly descended from these architectural traditions — not as historical curiosities but as working color relationships. The palettes here are the ones that transfer to paint, fabric, tile, and natural material most naturally: the earthy warm neutrals, the cool grey-blues of stone and water, the restrained earth tones of a room designed for longevity rather than trend.",
+    keywords: [
+      "interior design color palette",
+      "home color scheme",
+      "room color combinations",
+      "interior color palette",
+      "home decor color palette",
+    ],
+    curatedSlugs: [
+      "kariyasu-rikyu",
+      "seiji-kinari",
+      "kogecha-kinari",
+      "tobi-kogane",
+      "matcha-kinari",
+      "ao-shiro",
+      "akane-tokiwa",
+    ],
+    match: (p) =>
+      (p.moods.includes("earthy") || p.moods.includes("refined") || p.moods.includes("serene")) &&
+      (p.dominantHue === "brown" || p.dominantHue === "green" || p.dominantHue === "neutral" || p.dominantHue === "yellow"),
+    limit: 24,
+    accentHex: "#7A5C3A",
+  },
 ];
 
 // ============================================================================
