@@ -404,6 +404,157 @@ export const collections: Collection[] = [
     limit: 24,
     accentHex: "#7A5C3A",
   },
+
+  // =========================================================================
+  // 13. Summer color palettes — seasonal, high search volume
+  // =========================================================================
+  {
+    slug: "summer",
+    title: "Summer Color Palettes",
+    tagline: "Bright yellows, warm oranges, playful pinks — the colors of light.",
+    description:
+      "Summer in the Japanese palette tradition isn't saturated and loud — it's the warmth of late afternoon light, the yellow of yamabuki fields, the orange of a persimmon in full sun. These combinations carry the season's energy without the visual noise of modern neon summer aesthetics. Ideal for food and beverage packaging, resort branding, children's editorial, summer fashion campaigns, and any project that needs vitality and warmth.",
+    keywords: [
+      "summer color palette",
+      "bright color combinations",
+      "warm summer colors",
+      "playful color palette",
+      "yellow orange color scheme",
+    ],
+    curatedSlugs: [
+      "daidai-kon",
+      "yamabuki-kuri",
+      "ominaeshi-asagi",
+      "ukon-ai",
+      "usubeni-cha",
+      "nadeshiko-mizu",
+    ],
+    match: (p) =>
+      p.moods.includes("playful") ||
+      (p.dominantHue === "yellow" && p.moods.includes("warm")),
+    limit: 24,
+    accentHex: "#D4850A",
+  },
+
+  // =========================================================================
+  // 14. Green color palettes — nature, organic, wellness
+  // =========================================================================
+  {
+    slug: "green",
+    title: "Green Color Palettes",
+    tagline: "Young bamboo, matcha, celadon — the green continuum of Japanese craft.",
+    description:
+      "Japanese green is a patient color. Wakatake (young bamboo) is barely yellow. Moegi (fresh sprout) is almost chartreuse. Matcha is the green you find in a properly handled bowl. Celadon is the green of Song-dynasty glaze and Heian-era ceramics. This collection spans that continuum — from the pale greens of spring to the deep indigo-greens of conifer forests. Use them for wellness brands, organic food packaging, sustainable fashion, and environmental nonprofits.",
+    keywords: [
+      "green color palette",
+      "nature color combinations",
+      "green color scheme",
+      "botanical color palette",
+      "forest color palette",
+    ],
+    curatedSlugs: [
+      "moegi-sumi",
+      "seiji-kinari",
+      "matcha-kinari",
+      "kariyasu-rikyu",
+      "akane-tokiwa",
+    ],
+    match: (p) =>
+      p.dominantHue === "green" ||
+      (p.moods.includes("earthy") && p.moods.includes("serene")),
+    limit: 24,
+    accentHex: "#3D6B4F",
+  },
+
+  // =========================================================================
+  // 15. Red color palettes — passion, heritage, energy
+  // =========================================================================
+  {
+    slug: "red",
+    title: "Red Color Palettes",
+    tagline: "Crimson, vermilion, madder — the most historically loaded pigments in Japan.",
+    description:
+      "Red is the most charged color in Japanese tradition. Kurenai (crimson) is the color of formal ceremony; entan (lead red) is the mineral pigment of ancient temples; akane (madder) is the organic dye worn by courtiers for a thousand years; shu (vermilion) is the lacquer of Shinto gates. Wada's catalog returns to red again and again because it is unavoidable — not aggressive, but authoritative. These palettes are for heritage brands, editorial mastheads, restaurant identities, and anywhere that needs conviction without cliché.",
+    keywords: [
+      "red color palette",
+      "crimson color scheme",
+      "red color combinations",
+      "bold red palette",
+      "vermilion color palette",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "entan-sumi",
+      "enji-matsuba",
+      "shu-kuro-kin",
+      "akane-tokiwa",
+      "asagi-shu",
+    ],
+    match: (p) => p.dominantHue === "red",
+    limit: 24,
+    accentHex: "#9A2A2A",
+  },
+
+  // =========================================================================
+  // 16. Sunset color palettes — warmth, dusk, golden hour
+  // =========================================================================
+  {
+    slug: "sunset",
+    title: "Sunset Color Palettes",
+    tagline: "The golden hour in pigment — orange, amber, rose, and deep red.",
+    description:
+      "The Japanese palette tradition has always read the sky at dusk with extraordinary precision. Daidai (bitter orange) captures that exact moment when the sun sits on the horizon. Yamabuki (mountain rose yellow) is the warm amber after it drops. Usubeni (pale crimson) is the pink left in the sky when everything else has gone blue. These palettes work for lifestyle photography, hospitality branding, warm-weather food products, and any project where golden-hour energy is the target feeling.",
+    keywords: [
+      "sunset color palette",
+      "golden hour colors",
+      "warm color palette",
+      "orange pink color scheme",
+      "dusk color combinations",
+    ],
+    curatedSlugs: [
+      "daidai-kon",
+      "yamabuki-kuri",
+      "usubeni-cha",
+      "kaki-kogecha",
+      "ukon-ai",
+      "enji-matsuba",
+    ],
+    match: (p) =>
+      (p.dominantHue === "orange" || p.dominantHue === "pink") &&
+      p.moods.includes("warm"),
+    limit: 24,
+    accentHex: "#C85A1A",
+  },
+
+  // =========================================================================
+  // 17. Pink color palettes — cherry blossom, nadeshiko, soft romance
+  // =========================================================================
+  {
+    slug: "pink",
+    title: "Pink Color Palettes",
+    tagline: "Sakura, nadeshiko, usubeni — the full range of Japanese pink.",
+    description:
+      "Pink in Japanese color tradition is rarely sweet. Sakura (cherry blossom) is almost white — a blush, not a statement. Nadeshiko (fringed pink) is a cooler, more assertive flower pink. Usubeni (pale crimson) has the weight of ceremony. The range from the barely-pink to the deeply-pink is more nuanced here than anywhere in Western color culture. These palettes are for beauty and skincare brands, bridal and wedding design, editorial fashion, fragrance packaging, and spring campaigns that want softness with precision.",
+    keywords: [
+      "pink color palette",
+      "blush color scheme",
+      "pastel pink combinations",
+      "sakura color palette",
+      "soft pink color palette",
+    ],
+    curatedSlugs: [
+      "sakura-wakatake",
+      "nadeshiko-mizu",
+      "usubeni-cha",
+      "kariyasu-rikyu",
+      "fuji-ai",
+    ],
+    match: (p) =>
+      p.dominantHue === "pink" ||
+      (p.dominantHue === "purple" && p.moods.includes("serene")),
+    limit: 24,
+    accentHex: "#D4748A",
+  },
 ];
 
 // ============================================================================
