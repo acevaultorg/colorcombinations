@@ -1,0 +1,190 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Privacy Policy";
+const description =
+  "How The Dictionary of Color Combinations collects, uses, and protects your data — including our use of analytics and advertising.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: title,
+  description,
+  url: new URL("/privacy", Astro.site).toString(),
+  isPartOf: {
+    "@type": "WebSite",
+    name: "The Dictionary of Color Combinations",
+    url: Astro.site?.toString(),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="legal-page section">
+    <div class="container-prose">
+      <header class="legal-page__header">
+        <p class="eyebrow">Legal</p>
+        <h1>Privacy Policy</h1>
+        <p class="legal-page__updated">Last updated: April 2026</p>
+      </header>
+
+      <div class="prose">
+        <h2>Who we are</h2>
+        <p>
+          The Dictionary of Color Combinations (<strong>colorcombinations.org</strong>) is a
+          color reference and design resource inspired by Sanzo Wada's 1933 dictionary. You can
+          contact us at <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>.
+        </p>
+
+        <h2>What data we collect</h2>
+        <p>We collect limited, anonymised data to understand how the site is used and to improve it:</p>
+        <ul>
+          <li>
+            <strong>Analytics:</strong> We use <a href="https://plausible.io" target="_blank" rel="noopener">Plausible Analytics</a>
+            — a privacy-first analytics tool that does not use cookies, does not collect personal data,
+            and does not track you across sites. No IP addresses are stored. Data is aggregated only.
+          </li>
+          <li>
+            <strong>Third-party advertising:</strong> We may display advertisements served by
+            <strong>Google AdSense</strong>. Google uses cookies and other identifiers to show
+            relevant ads based on your browsing activity. Google's use of advertising cookies
+            enables it and its partners to serve ads to you based on your visit to this site
+            and/or other sites on the Internet.
+            Learn more about <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">how Google uses data when you use our partners' sites or apps</a>.
+          </li>
+          <li>
+            <strong>Affiliate links:</strong> Some links on this site (books, design tools) are
+            affiliate links. If you click through and make a purchase, we may earn a small
+            commission at no extra cost to you. These links do not set cookies on this site.
+          </li>
+        </ul>
+
+        <h2>Cookies</h2>
+        <p>
+          Our own analytics (Plausible) are cookieless and do not require consent. Google AdSense,
+          when active, may set cookies on your device to personalise advertising. You can opt out
+          of personalised advertising at any time via
+          <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a> or
+          <a href="https://optout.networkadvertising.org/" target="_blank" rel="noopener">the NAI opt-out tool</a>.
+        </p>
+        <p>
+          A cookie consent banner is shown on first visit. You can manage your advertising
+          preferences at any time using the "Cookie Preferences" link in the footer.
+        </p>
+
+        <h2>Data sharing</h2>
+        <p>
+          We do not sell, trade, or rent your personal data to third parties. We share anonymised
+          usage data only with the analytics and advertising partners described above.
+        </p>
+
+        <h2>Your rights</h2>
+        <p>
+          Depending on your location, you may have rights to access, correct, or request deletion
+          of data held about you. Because we do not collect personal data directly, the most
+          relevant data requests should be directed to Google. To contact us, email
+          <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>.
+        </p>
+
+        <h2>EU / EEA / UK users</h2>
+        <p>
+          Under the GDPR and UK GDPR, you have additional rights including the right to object to
+          processing and to lodge a complaint with your national supervisory authority. For
+          personalised advertising by Google in the EEA/UK, a Google-certified Consent Management
+          Platform (CMP) controls the consent flow.
+        </p>
+
+        <h2>California users (CCPA)</h2>
+        <p>
+          California residents may opt out of the "sale" of personal information. We do not sell
+          personal information. To opt out of interest-based advertising by Google, use
+          <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>.
+        </p>
+
+        <h2>Children</h2>
+        <p>
+          This site is not directed at children under 13. We do not knowingly collect data from
+          children.
+        </p>
+
+        <h2>External links</h2>
+        <p>
+          This site contains links to external resources. We are not responsible for the privacy
+          practices of those sites.
+        </p>
+
+        <h2>Changes to this policy</h2>
+        <p>
+          We may update this policy periodically. The "Last updated" date at the top of the page
+          reflects when changes were last made.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Privacy questions or requests: <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>
+        </p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    padding-block: var(--spacing-section);
+  }
+
+  .legal-page__header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .legal-page__header h1 {
+    font-family: var(--font-serif);
+    font-size: var(--text-display-xl);
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin: 0.5rem 0 0;
+  }
+
+  .legal-page__updated {
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+    margin-top: 0.75rem;
+  }
+
+  .prose h2 {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose p,
+  .prose ul,
+  .prose ol {
+    color: var(--color-ink-700);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose ul {
+    padding-left: 1.5rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.75rem;
+  }
+
+  .prose a {
+    color: var(--color-link);
+    text-decoration-line: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose a:hover {
+    color: var(--color-link-hover);
+  }
+</style>

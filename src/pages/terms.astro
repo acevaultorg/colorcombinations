@@ -1,0 +1,178 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Terms of Service";
+const description =
+  "Terms of use for The Dictionary of Color Combinations — colorcombinations.org.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: title,
+  description,
+  url: new URL("/terms", Astro.site).toString(),
+  isPartOf: {
+    "@type": "WebSite",
+    name: "The Dictionary of Color Combinations",
+    url: Astro.site?.toString(),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="legal-page section">
+    <div class="container-prose">
+      <header class="legal-page__header">
+        <p class="eyebrow">Legal</p>
+        <h1>Terms of Service</h1>
+        <p class="legal-page__updated">Last updated: April 2026</p>
+      </header>
+
+      <div class="prose">
+        <h2>1. About this site</h2>
+        <p>
+          The Dictionary of Color Combinations (<strong>colorcombinations.org</strong>) is a
+          free color reference resource. By accessing or using this site, you agree to these
+          terms. If you do not agree, please do not use the site.
+        </p>
+
+        <h2>2. Content and ownership</h2>
+        <p>
+          The 348 Wada plates are derived from the MIT-licensed dataset
+          <a href="https://github.com/mattdesl/dictionary-of-colour-combinations" target="_blank" rel="noopener">dictionary-of-colour-combinations</a>
+          by Matt DesLauriers. That dataset is &copy; MIT. Our transformation, metadata, and
+          descriptions built on top of that data are &copy; The Dictionary of Color Combinations.
+        </p>
+        <p>
+          The 30 editorial palettes, site design, copy, and all original content on this site
+          are &copy; The Dictionary of Color Combinations. All rights reserved unless otherwise stated.
+        </p>
+        <p>
+          Traditional Japanese color names (shikisai) are centuries-old public domain cultural
+          knowledge. Color names are not trademarkable.
+        </p>
+
+        <h2>3. Permitted use</h2>
+        <p>
+          You are welcome to use palette hex values, color names, and export formats (CSS variables,
+          Tailwind config, JSON) in your personal and commercial design work. This is the
+          intended purpose of the site — no credit required, though appreciated.
+        </p>
+        <p>
+          You may not: reproduce or republish the site's written content, editorial descriptions, or
+          design in bulk; scrape the site programmatically in ways that create significant server
+          load; or represent the content as your own.
+        </p>
+
+        <h2>4. Affiliate links and advertising</h2>
+        <p>
+          This site contains affiliate links (Bookshop.org, Amazon Associates) and may display
+          third-party advertising (Google AdSense). Clicking affiliate links may result in a small
+          commission for us at no additional cost to you. Advertising is clearly labelled.
+        </p>
+
+        <h2>5. Accuracy</h2>
+        <p>
+          We strive for accuracy in color data, names, and historical references. However, the
+          site is provided "as is" without warranty. Color rendering varies across devices,
+          operating systems, and display calibrations. We are not liable for design decisions
+          made on the basis of information on this site.
+        </p>
+
+        <h2>6. Third-party services</h2>
+        <p>
+          This site uses third-party services including Google AdSense, Plausible Analytics,
+          Google Fonts, and Cloudflare Pages. Your use of this site is also subject to their
+          respective terms and privacy policies.
+        </p>
+
+        <h2>7. Limitation of liability</h2>
+        <p>
+          To the fullest extent permitted by law, The Dictionary of Color Combinations shall not
+          be liable for any indirect, incidental, or consequential damages arising from your use
+          of this site.
+        </p>
+
+        <h2>8. Changes to these terms</h2>
+        <p>
+          We may update these terms at any time. The "Last updated" date reflects the most
+          recent revision. Continued use of the site after changes constitutes acceptance of
+          the updated terms.
+        </p>
+
+        <h2>9. Governing law</h2>
+        <p>
+          These terms are governed by the laws of the Netherlands. Disputes shall be subject to
+          the exclusive jurisdiction of the courts of the Netherlands.
+        </p>
+
+        <h2>10. Contact</h2>
+        <p>
+          Questions about these terms:
+          <a href="mailto:hello@colorcombinations.org">hello@colorcombinations.org</a>
+        </p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    padding-block: var(--spacing-section);
+  }
+
+  .legal-page__header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .legal-page__header h1 {
+    font-family: var(--font-serif);
+    font-size: var(--text-display-xl);
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin: 0.5rem 0 0;
+  }
+
+  .legal-page__updated {
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+    margin-top: 0.75rem;
+  }
+
+  .prose h2 {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose p,
+  .prose ul,
+  .prose ol {
+    color: var(--color-ink-700);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose ul {
+    padding-left: 1.5rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.75rem;
+  }
+
+  .prose a {
+    color: var(--color-link);
+    text-decoration-line: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose a:hover {
+    color: var(--color-link-hover);
+  }
+</style>

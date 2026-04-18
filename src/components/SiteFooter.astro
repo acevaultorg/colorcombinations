@@ -49,6 +49,7 @@ const year = new Date().getFullYear();
       <ul>
         <li><a href="/#newsletter">Newsletter</a></li>
         <li><a href="mailto:hello@colorcombinations.org">Email</a></li>
+        <li><a href="/contact">Contact</a></li>
       </ul>
     </div>
   </div>
@@ -56,7 +57,12 @@ const year = new Date().getFullYear();
   <div class="site-footer__meta">
     <div class="container-wide site-footer__meta-inner">
       <p>&copy; {year} The Dictionary of Color Combinations. Inspired by Sanzo Wada's 1933 tradition.</p>
-      <p>Color names and historical references are public-domain cultural knowledge.</p>
+      <nav class="site-footer__legal" aria-label="Legal links">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/contact">Contact</a>
+        <button id="cc-reopen" class="site-footer__cc-btn">Cookie Preferences</button>
+      </nav>
     </div>
   </div>
 </footer>
@@ -157,4 +163,50 @@ const year = new Date().getFullYear();
       flex-direction: column;
     }
   }
+
+  .site-footer__legal {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .site-footer__legal a {
+    color: var(--color-ink-500);
+    text-decoration: none;
+    font-size: 0.8125rem;
+  }
+
+  .site-footer__legal a:hover {
+    color: var(--color-ink-700);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .site-footer__cc-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--color-ink-500);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .site-footer__cc-btn:hover {
+    color: var(--color-ink-700);
+  }
 </style>
+
+<script is:inline>
+  var ccReopen = document.getElementById('cc-reopen');
+  if (ccReopen) {
+    ccReopen.addEventListener('click', function () {
+      localStorage.removeItem('cc_status');
+      var banner = document.getElementById('cookie-banner');
+      if (banner) banner.hidden = false;
+    });
+  }
+</script>
