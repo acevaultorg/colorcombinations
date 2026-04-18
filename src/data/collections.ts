@@ -800,6 +800,164 @@ export const collections: Collection[] = [
     limit: 24,
     accentHex: "#7A5C3A",
   },
+
+  // =========================================================================
+  // 25. Ocean / Coastal color palettes — high search volume
+  // =========================================================================
+  {
+    slug: "ocean",
+    title: "Ocean Color Palettes",
+    tagline: "Deep-water blues, seafoam, and the colors the sea turns at dusk.",
+    description:
+      "The Japanese coast has its own color vocabulary: the deep ruri blue of open water, the hazy asagi of sky meeting sea, the ao that hovers between green and blue and names both at once, the pale foam-white against rocky black. These combinations work for coastal brands, marine organizations, spa and wellness, beach resort identity, surf culture, seafood restaurants, and any project that needs the emotional weight of large water — without the corporate navy cliché.",
+    keywords: [
+      "ocean color palette",
+      "coastal color palette",
+      "beach color combinations",
+      "nautical color scheme",
+      "sea color palette",
+    ],
+    curatedSlugs: [
+      "ao-shiro",
+      "ruri-gofun",
+      "hanada-gin",
+      "nadeshiko-mizu",
+      "asagi-shu",
+      "gunjo-gofun",
+    ],
+    match: (p) =>
+      p.dominantHue === "blue" &&
+      (p.moods.includes("serene") || p.moods.includes("cool")),
+    limit: 24,
+    accentHex: "#2E6B8F",
+  },
+
+  // =========================================================================
+  // 26. Fashion / Textile color palettes — high commercial intent
+  // =========================================================================
+  {
+    slug: "fashion",
+    title: "Fashion Color Palettes",
+    tagline: "Colors that survived centuries of wear — in fabric, dye, and silhouette.",
+    description:
+      "Japanese textile tradition is one of the oldest and most sophisticated color systems in the world. Every combination in the Wada catalog began life as a textile recipe — dyestuff combinations achievable with plant-based pigments on silk, cotton, and hemp. These aren't digital abstractions. They are combinations that have been worn. The ones here translate most directly to contemporary fashion: editorial lookbooks, clothing brand identity, collection decks, apparel packaging, and the kind of runway reference that a fashion designer's studio would actually pin to the wall.",
+    keywords: [
+      "fashion color palette",
+      "clothing color palette",
+      "textile color combinations",
+      "runway color palette",
+      "apparel color scheme",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "asagi-shu",
+      "murasaki-gin",
+      "fuji-ai",
+      "ukon-ai",
+      "daidai-kon",
+    ],
+    match: (p) =>
+      p.moods.includes("refined") &&
+      (p.moods.includes("bold") || p.moods.includes("solemn")),
+    limit: 24,
+    accentHex: "#7A2060",
+  },
+
+  // =========================================================================
+  // 27. Nature / Botanical color palettes — high search volume
+  // =========================================================================
+  {
+    slug: "nature",
+    title: "Nature Color Palettes",
+    tagline: "Mosses, matcha, bark, stone — the colors of the Japanese countryside.",
+    description:
+      "Japanese color tradition is inseparably tied to the natural world. Color names reference specific plants, bark patterns, seasonal phenomena, and geological materials. Moegi is the first green of new growth. Tokiwa is the evergreen of pine that persists through winter. Seiji is the pale grey-green of celadon pottery, derived from the ash that fell on the kiln. These aren't nature-inspired — they are nature, translated into pigment. Use them for botanical brands, environmental organizations, outdoor goods, garden design, landscape architecture, natural cosmetics, and any project that needs the credibility of the natural world rather than its decoration.",
+    keywords: [
+      "nature color palette",
+      "botanical color palette",
+      "forest color combination",
+      "green nature palette",
+      "earthy color scheme",
+    ],
+    curatedSlugs: [
+      "matcha-kinari",
+      "akane-tokiwa",
+      "moegi-sumi",
+      "seiji-kinari",
+      "kariyasu-rikyu",
+      "enji-matsuba",
+    ],
+    match: (p) =>
+      p.dominantHue === "green" ||
+      (p.moods.includes("earthy") && p.dominantHue !== "orange"),
+    limit: 24,
+    accentHex: "#3A6B3A",
+  },
+
+  // =========================================================================
+  // 28. Food / Restaurant color palettes — high commercial intent
+  // =========================================================================
+  {
+    slug: "food",
+    title: "Food & Restaurant Color Palettes",
+    tagline: "Warm, appetizing, grounded — the palette of Japanese dining culture.",
+    description:
+      "Japanese food culture has one of the most sophisticated visual traditions in the world: the lacquer red of a bento box lid, the earthy warmth of konbu broth, the deep amber of soy-glazed teriyaki, the yellow-gold of dashi noodles in a ceramic bowl, the burnt orange of kaki fruit at a market stall. These are the colors the eye reads as nourishing before the palate is engaged. They work for restaurant identities, food packaging, farmers market branding, cookbook design, café menus, and any project where the brief includes the phrase \"approachable and warm.\"",
+    keywords: [
+      "food color palette",
+      "restaurant color palette",
+      "cafe color scheme",
+      "warm color combinations",
+      "food brand colors",
+    ],
+    curatedSlugs: [
+      "kaki-kogecha",
+      "yamabuki-kuri",
+      "kogecha-kinari",
+      "entan-sumi",
+      "ukon-ai",
+      "usubeni-cha",
+    ],
+    match: (p) =>
+      (p.dominantHue === "orange" ||
+        p.dominantHue === "yellow" ||
+        p.dominantHue === "brown") &&
+      (p.moods.includes("warm") || p.moods.includes("earthy")),
+    limit: 24,
+    accentHex: "#C05A2A",
+  },
+
+  // =========================================================================
+  // 29. Teal / Aqua color palettes — popular hue family
+  // =========================================================================
+  {
+    slug: "teal",
+    title: "Teal Color Palettes",
+    tagline: "The blue-green that named itself after a bird — and the Japanese colors that own that space.",
+    description:
+      "Teal sits at one of the most contested points on the color wheel — the gap between blue and green where neither label quite fits. Japanese color tradition is exceptionally precise here. Ao (青) is the classical term that named both blue and green for centuries. Seiji is the pale blue-green of celadon ash glaze. Hanada is a mid-grade indigo that reads teal in natural light. These combinations are the reference for designers who need teal to do serious work: brand identity, product packaging, UI accent systems, hospitality design, and any project where the brief asks for \"fresh\" without the default teal cliché.",
+    keywords: [
+      "teal color palette",
+      "teal color combinations",
+      "turquoise color palette",
+      "blue-green color scheme",
+      "aqua color palette",
+    ],
+    curatedSlugs: [
+      "ao-shiro",
+      "seiji-kinari",
+      "matcha-kinari",
+      "hanada-gin",
+      "gunjo-gofun",
+      "kariyasu-rikyu",
+    ],
+    match: (p) =>
+      (p.dominantHue === "blue" || p.dominantHue === "green") &&
+      p.moods.includes("serene") &&
+      p.moods.includes("refined"),
+    limit: 24,
+    accentHex: "#2A8B8B",
+  },
 ];
 
 // ============================================================================
