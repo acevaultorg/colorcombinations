@@ -1,0 +1,262 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PaletteCard from "@components/PaletteCard.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import BundleCta from "@components/BundleCta.astro";
+import { paletteBySlug } from "@data/palettes";
+
+const exampleSlugs = ["kurenai-kon", "asagi-shu", "sakura-wakatake"];
+const examples = exampleSlugs
+  .map((slug) => paletteBySlug(slug))
+  .filter((p): p is NonNullable<typeof p> => !!p);
+
+const title = "A Designer's Primer on Sanzo Wada's Dictionary of Color Combinations";
+const description =
+  "How to read, choose, and use Wada's 1933 palettes in modern design — without it feeling like a history project. Three example palettes, five working principles, and a practical picking guide.";
+
+const keywords = [
+  "sanzo wada color palette guide",
+  "wada dictionary of color combinations",
+  "how to use japanese color palettes",
+  "traditional japanese color combinations",
+  "shikisai design reference",
+  "historical color palette guide",
+  "wada 1933 color book",
+];
+
+const datePublished = "2026-04-17";
+const dateModified = "2026-04-17";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: Astro.site?.toString() ?? "https://colorcombinations.org",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: Astro.site?.toString() ?? "https://colorcombinations.org",
+    },
+    datePublished,
+    dateModified,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${Astro.site}guide/wada-palette-primer/`,
+    },
+    keywords: keywords.join(", "),
+    articleSection: "Design reference",
+    inLanguage: "en",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${Astro.site}` },
+      { "@type": "ListItem", position: 2, name: "Guide", item: `${Astro.site}guide/` },
+      { "@type": "ListItem", position: 3, name: "Wada Palette Primer", item: `${Astro.site}guide/wada-palette-primer/` },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd} type="article">
+  <article class="guide section">
+    <div class="container-prose guide__inner">
+      <header class="guide__header">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Wada Palette Primer</span>
+        </nav>
+        <p class="eyebrow">Design reference · Updated April 2026</p>
+        <h1 class="text-balance">A Designer's Primer on Sanzo Wada's <em>Dictionary of Color Combinations</em></h1>
+        <p class="guide__lede">
+          Wada's 1933 book is a curious thing. It's a dictionary, but it doesn't define colors — it pairs them. Every page asks the same quiet question: <em>what happens when this color meets this one?</em> Ninety years later the question still rewards attention. This is a short, working designer's guide to how the 378 combinations in our archive are actually useful — and how to pick the right one for the project in front of you.
+        </p>
+      </header>
+
+      <div class="prose">
+        <h2 id="not-a-generator">It's not a palette generator</h2>
+
+        <p>
+          Coolors can hand you ten thousand palettes in an afternoon. That's not what Wada is. Wada is the opposite: 378 hand-curated combinations, each one rooted in a specific dye, fabric, season, or cultural use. The value isn't in volume — it's in the editing. Somebody (Sanzo Wada, painter and Academy-Award-winning costume designer) already threw the bad ones out for you. What's left is material that has been tested against real craft.
+        </p>
+
+        <p>
+          That's the design brief for this archive: treat it as a reference library, not a slot machine. Open it when you have a specific question — "I need a warm complement for navy," "I want a spring palette that isn't saccharine" — and let the editing do the work.
+        </p>
+
+        <h2 id="why-it-still-works">Why palettes from 1933 still work in 2026</h2>
+
+        <p>
+          Fashion changes; light doesn't. The dyes Wada documented — madder, indigo, safflower, kerria — were chosen over centuries because they made humans look well, read clearly at distance, and survived laundering. None of those constraints are obsolete. A combination that worked for a 17th-century Edo shopkeeper's wrapping cloth still works for a 2026 app's empty-state illustration, because the underlying visual system — figure/ground contrast, chromatic temperature, area balance — hasn't changed.
+        </p>
+
+        <p>
+          What has changed is the <em>medium</em>. Screens are brighter, colors are additive rather than subtractive, and contrast thresholds (<a href="/tools/contrast-checker/">WCAG</a>) now need to survive automated audits. The archive's <a href="/colors/">color dictionary</a> shows WCAG contrast ratios on each swatch so you can verify the pairing survives the jump from silk to pixel before you commit.
+        </p>
+
+        <h2 id="three-principles">Three principles that repeat across Wada's pairings</h2>
+
+        <p>
+          After a few hours with the archive, you start to see the moves. Three show up more than any other.
+        </p>
+
+        <h3>1. A dominant, a voice, and a breath</h3>
+        <p>
+          Three-color Wada plates almost always follow this rhythm: a dominant (often a deep red, indigo, or earth tone), a vocal contrast (a yellow, pink, or teal that makes the dominant register), and a "breath" — a neutral or desaturated tone that gives the eye somewhere to rest. You can reverse-engineer this into a layout: your dominant is your brand color, your voice is your CTA, your breath is your body background. <a href="/palettes/kurenai-kon/">Kurenai & Kon</a> is the canonical example.
+        </p>
+
+        <h3>2. Temperature contrast beats hue contrast</h3>
+        <p>
+          Wada's best pairings rarely rely on simple complementary-wheel logic. They rely on <em>temperature</em>: a warm color against a cool one, both at similar saturation levels. This is why <a href="/palettes/asagi-shu/">Asagi & Shu</a> (pale blue against vermillion) feels effortless where the naive "red + blue" equivalent looks like a flag.
+        </p>
+
+        <h3>3. A single desaturated note unlocks everything else</h3>
+        <p>
+          Many four-color plates include one color that's visibly muted relative to the others — a grayed pink, a dusted green, a chalked white. This isn't weakness; it's the <em>gearing</em>. The muted note keeps the saturated ones from competing, the same way a bass note keeps a melody readable. <a href="/palettes/sakura-wakatake/">Sakura & Wakatake</a> uses this trick to make spring-pink and bamboo-green cohabit without either one shouting.
+        </p>
+
+        <h2 id="examples">Three palettes to study</h2>
+
+        <p>
+          These three are not the "best" in any ranked sense — they're the ones that illustrate the three principles above most clearly. Open each on a real project file and the logic becomes visible.
+        </p>
+      </div>
+
+      <div class="guide__examples palette-grid" role="list">
+        {examples.map((palette) => (
+          <div role="listitem">
+            <PaletteCard palette={palette} headingLevel="h3" />
+          </div>
+        ))}
+      </div>
+
+      <div class="prose">
+        <h2 id="how-to-pick">How to pick a Wada palette for a specific project</h2>
+
+        <p>
+          A short decision tree, in rough order of how designers actually use the archive:
+        </p>
+
+        <ol>
+          <li>
+            <strong>Start with the use case, not the color.</strong> If you're
+            designing a website, open
+            <a href="/collections/websites/">Color Palettes for Websites</a>.
+            If you're designing a brand, open
+            <a href="/collections/branding/">Color Palettes for Branding</a>.
+            These collections are already pre-filtered for the contrast, balance, and restraint you need. You'll rule out 300+ plates in one click.
+          </li>
+          <li>
+            <strong>Filter by era if you need a mood.</strong>
+            <a href="/collections/heian/">Heian-era plates</a> carry a specific kind of quiet formality. <a href="/collections/indigo/">Indigo-era plates</a> carry merchant-class restraint. Era is a mood shortcut.
+          </li>
+          <li>
+            <strong>Filter by color count for layout fit.</strong> Two-color plates work for print and stationery. Three-color plates work for most digital interfaces. Four-color plates belong in editorial design and data visualization. Use the <a href="/browse/">browse page's color-count filter</a>.
+          </li>
+          <li>
+            <strong>Verify contrast before committing.</strong> Drop the palette into the <a href="/tools/contrast-checker/">WCAG contrast checker</a>. If the body-text pairing fails AA, the palette isn't ready for a digital product — you'll need a lighter or darker variant.
+          </li>
+          <li>
+            <strong>Use the export.</strong> Every palette page exports hex, Tailwind config, CSS variables, and JSON. You shouldn't be retyping hex values in 2026.
+          </li>
+        </ol>
+
+        <h2 id="next-steps">Where to go from here</h2>
+
+        <p>
+          Read the <a href="/about/">About page</a> for the provenance of the archive and honest notes on what's reproduced vs. reinterpreted. Bookmark <a href="/palette-of-the-day/">today's palette</a> for a daily design-reference ritual. When you're ready to pick one for a real project, <a href="/browse/">browse all 378</a> with live filters.
+        </p>
+
+        <p>
+          And if you want the physical book on your shelf — where this material actually belongs — the <a href="https://seigensha.com/" rel="noopener" target="_blank">Seigensha</a> reprint is beautiful and worth it.
+        </p>
+      </div>
+
+      <BundleCta variant="medium" />
+
+      <div class="guide__further">
+        <FurtherReading variant="compact" title="Further reading" intro="Three books that go deeper on color theory and Japanese design tradition." />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide {
+    padding-block: clamp(2rem, 5vw, 4rem);
+  }
+
+  .breadcrumb {
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    color: var(--color-ink-500);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-accent-500);
+    border-bottom-color: currentColor;
+  }
+
+  .breadcrumb span {
+    margin: 0 0.5rem;
+  }
+
+  .guide__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .guide__header h1 {
+    margin-top: 1rem;
+  }
+
+  .guide__header h1 em {
+    font-style: italic;
+    color: var(--color-accent-500);
+  }
+
+  .guide__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.2vw + 0.875rem, 1.375rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    max-width: 58ch;
+    margin-top: 1.75rem;
+  }
+
+  .guide__examples.palette-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(1, 1fr);
+    margin-block: 2rem 2.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .guide__examples.palette-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .guide__examples.palette-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .guide__further {
+    margin-top: 2.5rem;
+  }
+</style>

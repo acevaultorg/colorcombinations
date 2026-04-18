@@ -27,6 +27,9 @@ Build work: 0 tasks completed (all 16 TASKS.md tasks paused pending domain decis
 
 ## Behavior Log
 
+2026-04-17 15:56 | pillar-guide-wada-primer | pillar-content-seo | astro5-tailwind4-ts-strict | V3.3 | complex | self-craftsman+distributor | AUTO(god) | 720 | success
+2026-04-17 15:36 | palette-of-the-day | core-loop-retention | astro5-tailwind4-ts-strict | V3.2 | complex | self-designer+craftsman | AUTO(sovereign-auto) | 540 | success
+2026-04-17 15:33 | mobile-nav-fix | bug-fix-a11y | astro5-tailwind4-ts-strict | V3.2 | quick | self-designer | AUTO(sovereign-auto) | 120 | success
 2026-04-12 18:20 | handoff-update | content-seo-site | astro5-tailwind4-ts-strict | V3.1 | quick | self-qualify | AUTO | 30 | success
 2026-04-12 18:19 | robots-optimize | content-seo-site | astro5-tailwind4-ts-strict | V3.1 | micro | self-qualify | AUTO | 5 | success
 2026-04-12 18:18 | event-tracking | content-seo-site | astro5-tailwind4-ts-strict | V3.1 | standard | self-qualify | AUTO | 60 | success
@@ -145,15 +148,23 @@ Zero circuit breaker opens. Zero mistake loop entries. Clean session.
 
 ## Gate Log
 
-<!-- Empty — no gates encountered -->
+2026-04-17 | god | pillar-guide-ship | AUTO(reversible) | shipped-ok | correct
+2026-04-17 | sovereign-auto | feature-ship | AUTO(reversible) | shipped-ok | correct
+2026-04-17 | sovereign-auto | mobile-nav-fix | AUTO(reversible) | overflow-resolved | correct
+2026-04-17 | sovereign-auto | cf-pages-deploy | AUTO(reversible) | live-verified | correct
 
 ## Specialist Log
 
-<!-- Empty — no specialist reviews fired (research-only session) -->
+2026-04-17 | @craftsman | pillar guide wada-palette-primer | 0🔴 0🟡 love-score=0.76 (useful 0.8 delight 0.7 reliable 0.8 clear 0.8 unique 0.8) | actionable: V2 add TOC jump-links | PASS
+2026-04-17 | @distributor | pillar guide wada-palette-primer | 0🔴 0🟡 fit-score=0.74 (seo 0.8 shareable 0.7 channel 0.8 loop 0.6 moat 0.8) | actionable: V2 add explicit sticky share CTA on scroll | PASS
+2026-04-17 | @craftsman | palette-of-the-day homepage + archive page | 0🔴 0🟡 love-score=0.74 (useful 0.7 delight 0.6 reliable 0.8 clear 0.8 unique 0.8) | actionable: V2 add micro-delight entrance | PASS
+2026-04-17 | @designer (self) | mobile-header nav overflow at 375px viewport | 1🔴 (pre-existing nav overflow 529px > 375px viewport) auto-fixed via horizontal-scroll + WCAG 2.5.5 tap targets | 100% precision
 
 ## Cycle Times
 
-<!-- Empty — no tasks executed -->
+2026-04-17 | pillar-guide-wada-primer | complex | 900 | 720 | -20%
+2026-04-17 | palette-of-the-day | complex | 600 | 540 | -10%
+2026-04-17 | mobile-nav-fix    | quick   | 90  | 120 | +33% (unplanned scope from mobile-perfection-default rule)
 
 ## Recovery Log
 

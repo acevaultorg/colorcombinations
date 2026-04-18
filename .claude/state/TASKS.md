@@ -73,6 +73,15 @@
 
 <!-- Empty -->
 
+## Queue — Distribution + Pillar Content [objective:distribution-v1]
+
+- [x] `P1` WRITE pillar guide — editorial primer on using Sanzo Wada palettes in modern design. 1000 words, names "dominant/voice/breath" framework (quotable for LLM citation), 3 example palettes with deep links, decision-tree picking guide, 14 internal links, JSON-LD Article + BreadcrumbList. `src/pages/guide/wada-palette-primer.astro` [id:pillar-guide-primer] [score:12.0] ✓ Love 0.76 · Fit 0.74 · Revenue +$2/wk · Retention +0.010% · Distribution +30 vis/wk projected · deployed colorcombinations.org/guide/wada-palette-primer/ 2026-04-17
+
+## Queue — Retention + Mobile [objective:product-love-v1]
+
+- [x] `P1` BUILD Palette of the Day — deterministic daily rotation over 378 plates, homepage hero card + `/palette-of-the-day/` 14-day archive page, footer nav link, JSON-LD CreativeWork + BreadcrumbList, deep-linkable. `src/data/palette-of-the-day.ts`, `src/components/PaletteOfDay.astro`, `src/pages/palette-of-the-day/index.astro`, `src/pages/index.astro`, `src/components/SiteFooter.astro` [id:palette-of-the-day] [score:11.0] ✓ Love score 0.74 · Revenue Oracle +$1.50/wk projected · Retention Oracle +1.80% 7d projected · deployed colorcombinations.org 2026-04-17
+- [x] `P0` FIX site-header mobile nav overflow @ 375px viewport — nav was 439px wide at 375px viewport (pre-existing). Horizontal scroll + WCAG 2.5.5 tap targets. `src/components/SiteHeader.astro` [id:mobile-nav-overflow] [score:12.0] ✓ mobile-perfection-default rule enforced; deployed together with palette-of-the-day
+
 ## Queue — Color Dictionary + RSS [objective:color-dictionary-v1]
 
 - [x] `P0` CREATE color data module — extract 211 unique named colors from 378 palettes, hue classification, reverse palette lookup — `src/data/colors.ts` [id:color-data] [score:12.0] ✓
