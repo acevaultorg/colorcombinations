@@ -9,6 +9,7 @@ Primary window: 7-day return rate.
 
 Schema: `timestamp | task_id | archetype | projected_delta_7d_% | confidence | actual_7d_% | actual_30d_% | ratio | notes`
 
+2026-04-17 15:56 | pillar-guide-wada-primer | new_feature_usefulness | +0.010 | 0.3 | TBD | TBD | — | Pillar guide is acquisition-mostly but adds reference value for returning designers. Reach = visitors who find via SERP (estimated 10-30% of overall traffic once ranked). Cold confidence.
 2026-04-17 15:36 | palette-of-the-day | core_loop_improvement | +1.80 | 0.3 | TBD | TBD | — | Daily-rotation hook targeting designers who want a reference ritual. Reach = 100% of homepage visitors (above-fold). Cold confidence until baseline lands.
 
 ## Archetype Multipliers (local calibration)

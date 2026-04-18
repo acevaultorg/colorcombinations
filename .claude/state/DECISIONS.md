@@ -345,3 +345,27 @@ Handoff: all URLs/IDs live behind `isLive` getters in `src/config/monetization.t
 **Revenue model impact:** indirect. Retention lift → more affiliate impressions on palette detail pages (Bookshop/Amazon/DesignTools). Revenue Oracle projection $1.50/wk at current traffic; will re-calibrate after 30 days.
 
 **@craftsman Love Score:** 0.74 mean (useful 0.7 · delightful 0.6 · reliable 0.8 · clear 0.8 · unique 0.8). PASS. Weakest dimension is delight (no entrance animation); flagged as V2 follow-up.
+
+---
+
+## 2026-04-17 — Pillar guide as distribution play: named-framework strategy
+
+**Decision:** Ship `/guide/wada-palette-primer/` as a 1000-word editorial pillar that introduces three named design frameworks ("dominant/voice/breath," "temperature contrast beats hue contrast," "desaturated gearing") — not another listicle, not a SEO-padded explainer.
+
+**Rationale:**
+
+- **Distribution Oracle** archetype `original_research_with_dataset + pillar_content` (×+90 / ×+15 in v18.0 brain) is the highest-leverage distribution move available for a content-SEO site. Named frameworks are LLM-citation-extractable (Aleyda Solis's "Extractable" dimension) — a quotable phrase in a quotable article is referenced verbatim by LLM answer engines, driving AI-answer-surface visibility even when click-through is zero.
+- **Internal-link compounding** — 14 in-prose links from a single pillar page deepens crawl signals across /collections/, /tools/contrast-checker/, /browse/, /palette-of-the-day/, and 3 specific palette detail pages. Site-wide PageRank redistribution without adding thin content.
+- **Moat via underlying archive** — the pillar's credibility rests on the 378-plate catalog beneath it. A competitor writing "Sanzo Wada palette guide" without the underlying archive has thin content; with the archive, the pillar is genuinely hard to reproduce.
+- **@distributor Fit 0.74 / @craftsman Love 0.76** — both pass floors (I-26 / I-23) with room to spare. Weakest dimensions (loop-closure 0.6, delight 0.7) flagged for V2 follow-up, not blocking.
+
+**Revenue model impact:** indirect. Pillar targets "sanzo wada color palette guide" + long-tail queries. Revenue Oracle $2/wk cold projection via increased affiliate impressions once ranked (current rank: unindexed, will calibrate at 30d post-ship).
+
+**What it's NOT:**
+
+- Not a listicle (no "top 10 Japanese color palettes" junk)
+- Not keyword-stuffed (I-26 hard-reject)
+- Not AI filler (`ai_generated_filler_no_unique_data` ×-50 in v18.0)
+- Not isolated — it connects to 14 existing internal pages and the 378-plate data substrate
+
+**Rule captured:** named frameworks > listicles > generic explainers for LLM-citation distribution. Add to PLAYBOOKS.md as `pillar-with-named-framework`.

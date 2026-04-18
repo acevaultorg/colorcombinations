@@ -6,6 +6,7 @@ Append-only. Revenue Oracle projections and post-ship calibration.
 
 Schema: `timestamp | task_id | archetype | projected_weekly_$ | confidence | actual_7d | actual_30d | ratio | notes`
 
+2026-04-17 15:56 | pillar-guide-wada-primer | SEO_page_addition+pillar_content | $2.00 | 0.3 | TBD | TBD | — | 1000-word pillar with 3 example palettes + decision tree. High-intent long-tail SERP targeting. Revenue indirect via increased affiliate impressions on /palettes/ cross-links. Confidence cold; actuals blocked on GSC+Plausible operator activation.
 2026-04-17 15:36 | palette-of-the-day | core_loop_improvement | $1.50 | 0.3 | TBD | TBD | — | Homepage hero + archive page. Expected indirect lift via return visits → more affiliate/bundle impressions. Actuals blocked on Plausible operator activation.
 
 ## Archetype Multipliers (local calibration)

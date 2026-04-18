@@ -1,7 +1,66 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-17 15:38 -->
+<!-- handoff: 2026-04-17 16:00 -->
+
+**Mode:** god  (entered via `/acepilot god` — v17.3+v17.4+v18.0 brain)
+**Objective:** distribution ship — pillar guide for SERP + LLM-citation reach
+
+**STATUS: SHIPPED. https://colorcombinations.org/guide/wada-palette-primer/ LIVE.** ✓
+
+### V3.3 changes (this session — 2026-04-17 — cycle 3)
+
+1. **Pillar guide** — 1000-word editorial primer at `/guide/wada-palette-primer/`. Names three design principles as a reusable framework ("dominant/voice/breath" · "temperature contrast" · "desaturated gearing") — quotable, moated, LLM-citation extractable. 3 example palettes embedded as PaletteCard links to their detail pages. 5-step decision-tree picking guide with 14 internal links to /collections/, /tools/, /browse/, /palette-of-the-day/. JSON-LD Article + BreadcrumbList. Footer nav link ("Palette primer").
+2. **DISTRIBUTION.md seeded** — v17.3 state file bootstrapped with 2 calibration rows + v18.0 archetype multipliers.
+
+### Numbers
+
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Total pages | 619 | 620 |
+| Pillar guides | 0 | 1 (/guide/wada-palette-primer/) |
+| Internal links to collections/tools/palettes/POTD from a single page | ~3 | 14 |
+| Named design frameworks published | 0 | 3 (quotable, LLM-extractable) |
+| Build time | 4.57s | 2.21s |
+| Distribution.md calibration rows | 0 | 2 |
+
+### Live verified
+
+- https://colorcombinations.org/guide/wada-palette-primer/ — 200, h1 + eyebrow + TOC visible
+- Mobile @ 375px (Chrome MCP iframe probe): zero overflow, grid adapts 1→2→3 cols, 14 prose internal links
+
+### Specialist reviews
+
+- **@craftsman Love Score: 0.76 PASS** (useful 0.8 · delight 0.7 · reliable 0.8 · clear 0.8 · unique 0.8)
+  - Highest-leverage V2: TOC jump-links for longer-scroll SEO engagement
+- **@distributor Distribution Fit: 0.74 PASS** (seo 0.8 · shareable 0.7 · channel 0.8 · loop 0.6 · moat 0.8)
+  - Highest-leverage V2: sticky share CTA on scroll (close the loop from 0.6 → 0.8)
+
+### Oracle projections
+
+- Revenue Oracle: +$2.00/wk (SEO_page_addition+pillar, confidence 0.3 cold)
+- Retention Oracle: +0.010% (new_feature_usefulness, acquisition-mostly, low retention weight)
+- Distribution Oracle: +30 vis/wk (original_research_with_dataset +SEO_page_addition, confidence 0.3 cold)
+- All three calibration blocked on GSC + Plausible operator activation
+
+### Cumulative v3 ships (this session series)
+
+1. V3.2 — Palette of the Day (retention hook) — Love 0.74 · Revenue +$1.50/wk · Retention +1.80%
+2. V3.2 — Mobile nav overflow fix — WCAG 2.5.5
+3. V3.3 — Pillar guide Wada primer — Love 0.76 · Fit 0.74 · Revenue +$2.00/wk · Distribution +30 vis/wk
+
+Total session Oracle delta: **+$3.50/wk · +1.80% retention · +38 vis/wk distribution**
+
+### Next recommended actions
+
+1. **Plausible activation** (`[👤]`) — unblocks all three Oracles' calibration
+2. Ship V2 TOC jump-links on pillar guide + sticky share CTA (close distribution loop)
+3. Second pillar guide on "WCAG contrast for historical palettes" (compounds /tools/contrast-checker)
+4. POTD RSS feed for subscriber retention loop
+
+---
+
+## Previous Handoff (2026-04-17 15:38)
 
 **Mode:** god --loop  (entered via `/acepilot sovereign auto`)
 **Objective:** first v17.2-balanced ship — retention hook + mobile-perfection gate enforcement
