@@ -958,6 +958,162 @@ export const collections: Collection[] = [
     limit: 24,
     accentHex: "#2A8B8B",
   },
+
+  // =========================================================================
+  // 30. Terracotta color palettes — trending earth tone
+  // =========================================================================
+  {
+    slug: "terracotta",
+    title: "Terracotta Color Palettes",
+    tagline: "Clay, rust, and fired earth — the oldest pigments on the palette.",
+    description:
+      "Terracotta is the color of fired clay, Roman pottery, and sun-baked roof tiles — and it has never felt more contemporary. Japanese aesthetics understand this intimately. The word 'kaki' (柿) for persimmon-orange and 'bengara' for iron-oxide red both describe variants of what English speakers call terracotta. Wada's 1933 catalog is dense with these combinations: warm reds next to earthy neutrals, orange-tinged browns grounded by ivory and ink. These palettes are the designer's toolkit for interior spaces, ceramics-inspired branding, Mediterranean restaurant identities, organic skincare packaging, and any project where 'terracotta' appears in the brief.",
+    keywords: [
+      "terracotta color palette",
+      "terracotta color combinations",
+      "clay color palette",
+      "burnt orange color scheme",
+      "rust color palette",
+    ],
+    curatedSlugs: [
+      "kaki-kogecha",
+      "yamabuki-kuri",
+      "tobi-kogane",
+      "akane-tokiwa",
+      "entan-sumi",
+      "daidai-kon",
+    ],
+    match: (p) =>
+      (p.dominantHue === "red" || p.dominantHue === "orange") &&
+      p.moods.includes("warm"),
+    limit: 24,
+    accentHex: "#B5532A",
+  },
+
+  // =========================================================================
+  // 31. Neutral color palettes — interior design + branding staple
+  // =========================================================================
+  {
+    slug: "neutral",
+    title: "Neutral Color Palettes",
+    tagline: "Refined restraint — the palettes that let everything else breathe.",
+    description:
+      "Neutral color palettes are the backbone of interior design, typography systems, and brand identities that are meant to last decades, not seasons. Japanese aesthetic tradition has a word for this discipline: 'shibui' — understated, quietly beautiful, never shouting. Wada's catalog is remarkable for its neutrals: combinations of warm cream, cool grey, aged ivory, and muted stone that have aged without irony since 1933. These palettes are the reference for minimalist interiors, luxury packaging, editorial design, and any identity built to outlast its trend cycle.",
+    keywords: [
+      "neutral color palette",
+      "neutral color scheme",
+      "greige color palette",
+      "muted color combinations",
+      "understated color palette",
+    ],
+    curatedSlugs: [
+      "seiji-kinari",
+      "kariyasu-rikyu",
+      "kogecha-kinari",
+      "kon-kinari",
+      "moegi-sumi",
+      "hanada-gin",
+    ],
+    match: (p) =>
+      p.moods.includes("austere") &&
+      p.moods.includes("refined") &&
+      !p.moods.includes("bold") &&
+      !p.moods.includes("warm"),
+    limit: 24,
+    accentHex: "#8C8575",
+  },
+
+  // =========================================================================
+  // 32. Cafe / Coffee Shop color palettes — high commercial intent
+  // =========================================================================
+  {
+    slug: "cafe",
+    title: "Cafe Color Palettes",
+    tagline: "Roasted, steeped, and served — color combinations for coffee culture.",
+    description:
+      "The best cafes have a visual warmth that makes you want to stay. It is not accidental. The palette of coffee culture runs from the deep brown of espresso to the ivory of steamed milk, from the terracotta of Japanese hand-thrown cups to the warm gold of afternoon light through a window. Wada's catalog captures all of this in combinations that predate the third-wave coffee aesthetic by decades. These palettes work for cafe branding, packaging for roasters and specialty food producers, restaurant interior concepts, and any project that should feel like a warm room on a cold morning.",
+    keywords: [
+      "cafe color palette",
+      "coffee shop color scheme",
+      "coffee color combinations",
+      "warm brown color palette",
+      "restaurant color palette",
+    ],
+    curatedSlugs: [
+      "kaki-kogecha",
+      "kogecha-kinari",
+      "yamabuki-kuri",
+      "tobi-kogane",
+      "usubeni-cha",
+    ],
+    match: (p) =>
+      p.moods.includes("warm") &&
+      (p.dominantHue === "red" || p.dominantHue === "orange" || p.dominantHue === "yellow"),
+    limit: 24,
+    accentHex: "#5C3217",
+  },
+
+  // =========================================================================
+  // 33. Grey color palettes — one of the highest-volume neutral searches
+  // =========================================================================
+  {
+    slug: "grey",
+    title: "Grey Color Palettes",
+    tagline: "Between black and white — where Japanese aesthetics live.",
+    description:
+      "Grey is the color that Japanese aesthetic tradition has thought longest about. 'Nezumi' (鼠 — mouse grey) is a refined mid-grey used in Edo-era textile dyeing. 'Gin' (銀 — silver) is a lighter metallic grey. 'Ai-nezumi' is the blue-grey of indigo-dipped silk. 'Kokushoku' is near-black. These are not the lazy greys of generic branding — they are nuanced, warm or cool, with clear relationships to the other colors in a palette. Wada's combinations built around grey tones read as sophisticated anchors for modern brand systems, editorial layouts, and any palette that needs restraint without coldness.",
+    keywords: [
+      "grey color palette",
+      "gray color palette",
+      "grey color scheme",
+      "charcoal color palette",
+      "silver grey color combinations",
+    ],
+    curatedSlugs: [
+      "edo-murasaki-nezumi",
+      "murasaki-gin",
+      "hanada-gin",
+      "moegi-sumi",
+      "shu-kuro-kin",
+    ],
+    match: (p) =>
+      p.moods.includes("cool") &&
+      p.moods.includes("austere") &&
+      !p.moods.includes("warm"),
+    limit: 24,
+    accentHex: "#7A7A7A",
+  },
+
+  // =========================================================================
+  // 34. Tropical color palettes — travel, resort, vibrant greens + blues
+  // =========================================================================
+  {
+    slug: "tropical",
+    title: "Tropical Color Palettes",
+    tagline: "Vivid greens, ocean blues, and sun-saturated warmth.",
+    description:
+      "Tropical color palettes capture a specific quality of light: the saturated greens of dense foliage, the layered blues of shallow reefs, the warm terracotta of beach architecture, the burst of a hibiscus flower against dark leaves. Japanese color tradition reaches into this territory with 'tokiwa' (常磐 — the evergreen blue-green), 'matsuba' (松葉 — pine needle deep green), and 'ao' (青 — the classical blue-green that names both sky and forest). These combinations are the reference for resort and hospitality identities, travel brand systems, outdoor and adventure apparel, and any project that should feel alive and sun-struck.",
+    keywords: [
+      "tropical color palette",
+      "tropical color combinations",
+      "vibrant color palette",
+      "exotic color scheme",
+      "resort color palette",
+    ],
+    curatedSlugs: [
+      "ao-shiro",
+      "matcha-kinari",
+      "akane-tokiwa",
+      "ruri-gofun",
+      "gunjo-gofun",
+      "enji-matsuba",
+    ],
+    match: (p) =>
+      (p.dominantHue === "green" || p.dominantHue === "blue") &&
+      (p.moods.includes("bold") || p.moods.includes("serene") || p.moods.includes("playful")),
+    limit: 24,
+    accentHex: "#1A7A4A",
+  },
 ];
 
 // ============================================================================
