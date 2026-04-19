@@ -279,6 +279,48 @@ const jsonLd = [
     </section>
   )}
 
+  {/* ============ EMBED WIDGET ============ */}
+  <section class="section embed-section" aria-labelledby="embed-heading">
+    <div class="container-wide embed-inner">
+      <div class="embed-copy">
+        <h2 id="embed-heading" class="embed-heading">Embed this palette</h2>
+        <p class="embed-desc">
+          Add this swatch strip to any blog post, Notion page, or website.
+          It links back here automatically.
+        </p>
+        <div class="embed-snippet-wrap">
+          <code class="embed-snippet" id="embed-code-block">{`<iframe src="https://colorcombinations.org/embed/${palette.slug}/" width="320" height="80" frameborder="0" style="border-radius:6px;overflow:hidden;" title="${palette.title} color palette — colorcombinations.org"></iframe>`}</code>
+          <button
+            type="button"
+            class="embed-copy-btn"
+            id="copy-embed-code"
+            data-code={`<iframe src="https://colorcombinations.org/embed/${palette.slug}/" width="320" height="80" frameborder="0" style="border-radius:6px;overflow:hidden;" title="${palette.title} color palette — colorcombinations.org"></iframe>`}
+            aria-label="Copy embed code"
+          >
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.25"/>
+              <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.25" fill="none"/>
+            </svg>
+            Copy code
+          </button>
+          <span class="embed-copy-status" aria-live="polite" role="status"></span>
+        </div>
+      </div>
+      <div class="embed-preview" aria-label="Embed preview">
+        <p class="embed-preview-label">Preview</p>
+        <iframe
+          src={`/embed/${palette.slug}/`}
+          width="320"
+          height="80"
+          frameborder="0"
+          style="border-radius:6px;overflow:hidden;display:block;"
+          title={`${palette.title} color palette preview`}
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
   {/* ============ BUNDLE CTA ============ */}
   <div class="container-wide">
     <BundleCta variant="compact" />
@@ -321,6 +363,22 @@ const jsonLd = [
         if (status) status.textContent = "Use Cmd/Ctrl+C";
       }
     });
+  });
+
+  // Embed code copy button
+  const embedCopyBtn = document.querySelector<HTMLButtonElement>("#copy-embed-code");
+  const embedStatus = document.querySelector<HTMLSpanElement>(".embed-copy-status");
+  embedCopyBtn?.addEventListener("click", async () => {
+    const code = embedCopyBtn.dataset.code ?? "";
+    try {
+      await navigator.clipboard.writeText(code);
+      if (embedStatus) {
+        embedStatus.textContent = "✓ Copied!";
+        window.setTimeout(() => { if (embedStatus.textContent === "✓ Copied!") embedStatus.textContent = ""; }, 2000);
+      }
+    } catch {
+      if (embedStatus) embedStatus.textContent = "Select + copy manually";
+    }
   });
 </script>
 
@@ -665,5 +723,105 @@ const jsonLd = [
     .palette-grid {
       grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  /* ============ EMBED SECTION ============ */
+  .embed-section {
+    border-top: 1px solid var(--color-border);
+    padding: 2.5rem 0;
+  }
+
+  .embed-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 720px) {
+    .embed-inner {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 3rem;
+    }
+  }
+
+  .embed-heading {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .embed-desc {
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    margin: 0 0 1.25rem;
+    max-width: 50ch;
+  }
+
+  .embed-snippet-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .embed-snippet {
+    display: block;
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    padding: 0.75rem 1rem;
+    background: var(--color-paper-100);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    color: var(--color-ink-800);
+    white-space: pre-wrap;
+    word-break: break-all;
+    user-select: all;
+    margin-bottom: 0.25rem;
+  }
+
+  .embed-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.4375rem 0.875rem;
+    border: 1px solid var(--color-ink-300);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-700);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 150ms ease, color 150ms ease;
+    white-space: nowrap;
+  }
+
+  .embed-copy-btn:hover {
+    border-color: var(--color-ink-700);
+    color: var(--color-ink-900);
+  }
+
+  .embed-copy-btn svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .embed-copy-status {
+    font-size: 0.75rem;
+    color: var(--color-accent-500);
+    font-weight: 500;
+    min-width: 4rem;
+  }
+
+  .embed-preview-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    margin: 0 0 0.625rem;
   }
 </style>
