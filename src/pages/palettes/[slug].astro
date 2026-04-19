@@ -163,6 +163,40 @@ const jsonLd = [
     </div>
   </section>
 
+  {/* ============ QUICK SHARE STRIP ============ */}
+  <div class="container-wide">
+    <div class="quick-share" data-palette-slug={palette.slug}>
+      <button
+        type="button"
+        class="quick-share__btn"
+        id="copy-hex-all"
+        data-hexes={palette.colors.map((c) => c.hex).join(", ")}
+        data-event="copy_hex_all"
+        aria-label="Copy all hex values for this palette"
+      >
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.25"/>
+          <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.25" fill="none"/>
+        </svg>
+        Copy hex values
+      </button>
+      <a
+        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${palette.title}${palette.titleJa ? ` (${palette.titleJa})` : ""} — ${palette.era}-era palette\n${palette.colors.map((c) => c.hex).join("  ")}\n#ColorPalette #DesignInspiration #JapaneseColors`)}&url=${encodeURIComponent(`https://colorcombinations.org/palettes/${palette.slug}/`)}`}
+        class="quick-share__btn quick-share__btn--tweet"
+        target="_blank"
+        rel="noopener"
+        data-event="quick_share_twitter"
+        aria-label="Share on Twitter/X"
+      >
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M12.3 2h2.1l-4.6 5.3L15 14h-4.2L7.5 9.7 3.7 14H1.6l4.9-5.6L1.3 2h4.3l3 4 3.7-4zm-.7 10.7h1.2L4.6 3.2H3.3l8.3 9.5z" />
+        </svg>
+        Share
+      </a>
+      <span class="quick-share__status" aria-live="polite" role="status"></span>
+    </div>
+  </div>
+
   {/* ============ BODY + EXPORT ============ */}
   <section class="section">
     <div class="container-wide palette-body">
@@ -270,7 +304,76 @@ const jsonLd = [
   )}
 </BaseLayout>
 
+<script>
+  document.querySelectorAll<HTMLElement>("[data-palette-slug]").forEach((strip) => {
+    const copyBtn = strip.querySelector<HTMLButtonElement>("#copy-hex-all");
+    const status = strip.querySelector<HTMLSpanElement>(".quick-share__status");
+
+    copyBtn?.addEventListener("click", async () => {
+      const hexes = copyBtn.dataset.hexes ?? "";
+      try {
+        await navigator.clipboard.writeText(hexes);
+        if (status) {
+          status.textContent = "✓ Copied";
+          window.setTimeout(() => { if (status.textContent === "✓ Copied") status.textContent = ""; }, 2000);
+        }
+      } catch {
+        if (status) status.textContent = "Use Cmd/Ctrl+C";
+      }
+    });
+  });
+</script>
+
 <style>
+  /* ============ QUICK SHARE STRIP ============ */
+  .quick-share {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 0 1.5rem;
+  }
+
+  .quick-share__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.4375rem 0.875rem;
+    border: 1px solid var(--color-ink-300);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-700);
+    border-radius: 999px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 150ms ease, color 150ms ease;
+    white-space: nowrap;
+  }
+
+  .quick-share__btn:hover {
+    border-color: var(--color-ink-700);
+    color: var(--color-ink-900);
+  }
+
+  .quick-share__btn--tweet:hover {
+    border-color: #1da1f2;
+    color: #1da1f2;
+  }
+
+  .quick-share__btn svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .quick-share__status {
+    font-size: 0.75rem;
+    color: var(--color-accent-500);
+    font-weight: 500;
+    min-width: 5rem;
+  }
+
   .breadcrumb {
     padding-top: 1.5rem;
   }

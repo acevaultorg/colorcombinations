@@ -26,8 +26,9 @@ const title = palette.titleJa
   ? `${palette.title} (${palette.titleJa})`
   : palette.title;
 
-// Tweet text — concise, links the page, adds site hashtag
-const tweetText = `${title} — ${palette.colors.map((c) => c.hex).join(" ")}`;
+// Tweet text — include palette name, hex swatches, and discovery hashtags
+const hexList = palette.colors.map((c) => c.hex).join("  ");
+const tweetText = `${title} — a ${palette.era}-era combination from the 1933 Dictionary of Color Combinations\n${hexList}\n#ColorPalette #DesignInspiration #JapaneseColors`;
 const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(url)}`;
 
 // Pinterest needs `media` for the image — use the OG image on the page

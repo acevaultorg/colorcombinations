@@ -1305,6 +1305,201 @@ export const collections: Collection[] = [
     limit: 24,
     accentHex: "#1A7A4A",
   },
+
+  // =========================================================================
+  // 42. Muted color palettes — soft, understated, sophisticated restraint
+  // =========================================================================
+  {
+    slug: "muted",
+    title: "Muted Color Palettes",
+    tagline: "Soft, desaturated tones that feel considered rather than cautious.",
+    description:
+      "Muted color — the kind that doesn't announce itself — is the hardest to execute well and the most rewarding when you get it right. It's the difference between a room that feels quietly expensive and one that feels merely beige. Wada's Japanese palette is saturated with this sensibility: 'nezumi' (鼠 — mouse grey), 'rikyu' (利休 — the grey-green named for the tea master Sen no Rikyū), 'kinari' (生成り — the barely-off-white of undyed linen), 'fuji' (藤 — the washed lavender of wisteria). These are not timid colors. They are confident in their restraint, and they pair with almost everything. Reference material for Scandinavian interior brands, editorial fashion, sustainable packaging, and any project where the work should be noticed before the color is.",
+    keywords: [
+      "muted color palette",
+      "muted color combinations",
+      "desaturated color palette",
+      "soft color scheme",
+      "understated color palette",
+      "muted tones design",
+    ],
+    curatedSlugs: [
+      "seiji-kinari",
+      "kariyasu-rikyu",
+      "nadeshiko-mizu",
+      "fuji-ai",
+      "murasaki-gin",
+      "kogecha-kinari",
+    ],
+    match: (p) =>
+      p.moods.includes("refined") &&
+      (p.moods.includes("serene") || p.moods.includes("cool") || p.moods.includes("austere")),
+    limit: 24,
+    accentHex: "#8B7B8B",
+  },
+
+  // =========================================================================
+  // 43. Jewel tone color palettes — deep, saturated, precious
+  // =========================================================================
+  {
+    slug: "jewel-tone",
+    title: "Jewel Tone Color Palettes",
+    tagline: "Emerald, sapphire, amethyst — deep and unapologetically rich.",
+    description:
+      "Jewel tones are the opposite of muted — full-saturation colors anchored in the depth of gemstones: the sapphire blue of lapis lazuli, the deep green of malachite, the wine-red of garnet, the purple of amethyst. Japanese color tradition cultivated exactly these depths over centuries: 'ruri' (瑠璃 — lapis lazuli blue), 'kon' (紺 — the deep indigo of merchant robes), 'enji' (臙脂 — deep crimson from cochineal), 'murasaki' (紫 — the imperial purple processed from gromwell root). Each pigment was precious, labor-intensive, and status-marking — which is precisely what makes jewel-tone palettes the right choice for luxury retail, fine jewelry brands, premium hospitality, and any project where the material quality of the brand should be felt before a word is read.",
+    keywords: [
+      "jewel tone color palette",
+      "jewel tone colors",
+      "rich color palette",
+      "deep color combinations",
+      "saturated color palette",
+      "gemstone color scheme",
+    ],
+    curatedSlugs: [
+      "ruri-gofun",
+      "gunjo-gofun",
+      "kurenai-kon",
+      "kikyo-sumi",
+      "fuji-ai",
+      "edo-murasaki-nezumi",
+    ],
+    match: (p) =>
+      p.moods.includes("bold") &&
+      (p.dominantHue === "blue" || p.dominantHue === "purple" || p.dominantHue === "green" || p.dominantHue === "red"),
+    limit: 24,
+    accentHex: "#1B3A6B",
+  },
+
+  // =========================================================================
+  // 44. Moody color palettes — dark, atmospheric, cinematic depth
+  // =========================================================================
+  {
+    slug: "moody",
+    title: "Moody Color Palettes",
+    tagline: "Dark, atmospheric combinations with cinematic weight.",
+    description:
+      "Moody color is not simply dark — it's dark with intention. It carries atmosphere, suggests depth, implies narrative. The Japanese aesthetic has a specific word for this quality: 'wabi-sabi', the beauty of impermanence and imperfection, expressed in the charcoal of ink paintings, the deep indigo of storm clouds, the warm near-black of aged lacquer. Wada's dictionary reaches this territory through 'sumi' (墨 — ink black), 'kuro' (黒 — true black), 'koiai' (濃藍 — concentrated indigo), the deep warmth of 'entan' (鉛丹 — vermilion-red with depth). These palettes are reference material for film and television title sequences, premium whiskey brands, high-end restaurant identities, dark-mode interface systems, and any project that should feel like the third act.",
+    keywords: [
+      "moody color palette",
+      "dark color palette",
+      "dramatic color combinations",
+      "atmospheric color scheme",
+      "cinematic color palette",
+      "dark aesthetic colors",
+    ],
+    curatedSlugs: [
+      "moegi-sumi",
+      "entan-sumi",
+      "kikyo-sumi",
+      "shu-kuro-kin",
+      "kon-kinari",
+      "edo-murasaki-nezumi",
+    ],
+    match: (p) =>
+      p.moods.includes("solemn") &&
+      (p.moods.includes("bold") || p.moods.includes("austere")),
+    limit: 24,
+    accentHex: "#1E1E2E",
+  },
+
+  // =========================================================================
+  // 45. Coastal color palettes — sea, salt air, bleached driftwood
+  // =========================================================================
+  {
+    slug: "coastal",
+    title: "Coastal Color Palettes",
+    tagline: "Sea blue, bleached linen, and the quiet greys of driftwood.",
+    description:
+      "Coastal color is a specific register of serenity — the particular quality of light that bounces off water, the way salt air bleaches everything slightly pale, the contrast between deep ocean and sun-washed sand. Japanese color tradition has mapped this territory with precision: 'asagi' (浅葱 — the shallow-water blue that names the coast near Kyoto), 'hanada' (縹 — sky-flower blue, the color of the open horizon), 'gofun' (胡粉 — the chalk white of crushed shells), 'mizuiro' (水色 — water color, the palest possible blue). These palettes are reference material for beach-house interior identities, coastal hospitality brands, marine and watersports companies, sustainable fashion, and any project that should carry the uncrowded feeling of open water.",
+    keywords: [
+      "coastal color palette",
+      "beach color palette",
+      "ocean color scheme",
+      "coastal interior colors",
+      "nautical color palette",
+      "seaside color combinations",
+    ],
+    curatedSlugs: [
+      "ao-shiro",
+      "gunjo-gofun",
+      "ruri-gofun",
+      "asagi-shu",
+      "nadeshiko-mizu",
+      "hanada-gin",
+    ],
+    match: (p) =>
+      p.moods.includes("serene") &&
+      (p.dominantHue === "blue" || p.dominantHue === "green") &&
+      !p.moods.includes("bold"),
+    limit: 24,
+    accentHex: "#4A90B8",
+  },
+
+  // =========================================================================
+  // 46. Desert color palettes — warm sand, dusty terracotta, bleached sky
+  // =========================================================================
+  {
+    slug: "desert",
+    title: "Desert Color Palettes",
+    tagline: "Warm terracotta, dusty sand, and the bleached gold of open sky.",
+    description:
+      "Desert color is one of the oldest and most searched palettes in design — the warm sand of adobe walls at noon, the rust of iron-rich rock formations, the dusty sage of desert shrubs, the deep shadow-blue of a canyon wall in late afternoon. Japanese color tradition reaches this territory through its long history of working with iron and earth pigments: 'tobi' (鳶 — hawk-brown, a warm red-brown), 'kogecha' (焦茶 — burnt-tea brown), 'kaki' (柿 — persimmon orange), 'yamabuki' (山吹 — mountain-spring gold). These palettes carry the particular warmth of baked earth and dry sunlight — reference material for Southwest interior design, craft spirits and food brands, outdoor and adventure identities, natural cosmetics, and any project rooted in the land.",
+    keywords: [
+      "desert color palette",
+      "desert color scheme",
+      "southwest color palette",
+      "warm earthy colors",
+      "sand color palette",
+      "adobe color combinations",
+    ],
+    curatedSlugs: [
+      "kaki-kogecha",
+      "tobi-kogane",
+      "yamabuki-kuri",
+      "kogecha-kinari",
+      "daidai-kon",
+      "ukon-ai",
+    ],
+    match: (p) =>
+      p.moods.includes("warm") &&
+      p.moods.includes("earthy") &&
+      (p.dominantHue === "orange" || p.dominantHue === "yellow" || p.dominantHue === "brown"),
+    limit: 24,
+    accentHex: "#C47A3A",
+  },
+
+  // =========================================================================
+  // 47. Luxury color palettes — deep, precious, material richness
+  // =========================================================================
+  {
+    slug: "luxury",
+    title: "Luxury Color Palettes",
+    tagline: "Deep navy, gold, ivory, and the material weight of the precious.",
+    description:
+      "Luxury color communicates value before function. It works through depth, restraint, and material association — not brightness, not trendiness. The most enduring luxury palettes share a common logic: one very deep anchor (navy, black, forest green, wine), one precious accent (gold, silver, champagne), and one clean neutral (ivory, cream, linen white) that allows the eye to rest. Japanese craft tradition built exactly this system across centuries of lacquer, textile, and metalwork: 'kon' (紺 — the deep indigo of premium merchant robes), 'kin' (金 — gold from gilded lacquerware), 'kinari' (生成り — the natural cream of unprocessed silk), 'gin' (銀 — silver from mirror metal). These palettes are the foundation for luxury retail, fine jewelry, premium spirits, hotel and hospitality identity, and any brand that should feel materially expensive from the first visual contact.",
+    keywords: [
+      "luxury color palette",
+      "luxury brand colors",
+      "premium color scheme",
+      "elegant color palette",
+      "high-end color combinations",
+      "gold navy color palette",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "hanada-gin",
+      "shu-kuro-kin",
+      "kon-kinari",
+      "murasaki-gin",
+      "tobi-kogane",
+    ],
+    match: (p) =>
+      p.moods.includes("refined") &&
+      (p.moods.includes("solemn") || p.moods.includes("bold")) &&
+      !p.moods.includes("playful"),
+    limit: 24,
+    accentHex: "#9A7B2E",
+  },
 ];
 
 // ============================================================================
