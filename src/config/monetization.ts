@@ -162,7 +162,7 @@ export const PRINTS = {
  * https://plausible.io/colorcombinations.org
  */
 export const ANALYTICS = {
-  plausibleDomain: "PLACEHOLDER_PLAUSIBLE_DOMAIN",
+  plausibleDomain: "colorcombinations.org",
 
   get isLive(): boolean {
     return !this.plausibleDomain.startsWith("PLACEHOLDER");
