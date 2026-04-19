@@ -1085,6 +1085,197 @@ export const collections: Collection[] = [
   },
 
   // =========================================================================
+  // 35. Black color palettes — ink, charcoal, high contrast, editorial
+  // =========================================================================
+  {
+    slug: "black",
+    title: "Black Color Palettes",
+    tagline: "Sumi ink, lacquer, and the weight of restraint.",
+    description:
+      "Black in the Japanese color tradition is not a single shade — it is a spectrum from the grey-smoke of sumi (墨) ink diluted with water, to the deep pitch of shikkoku (漆黒), the lacquer black prized in Heian court objects. A black palette in Wada's system always carries a companion: a warm ivory to show the ink's depth, a vermilion accent to activate the void, or a silver-grey that makes the darkness feel luminous rather than heavy. These combinations are the backbone of editorial design, luxury brand identities, and any interface where contrast does the communicating.",
+    keywords: [
+      "black color palette",
+      "black color combinations",
+      "dark color palette",
+      "high contrast color palette",
+      "black and white palette",
+      "ink color palette",
+    ],
+    curatedSlugs: [
+      "shu-kuro-kin",
+      "entan-sumi",
+      "moegi-sumi",
+      "kikyo-sumi",
+      "kurenai-kon",
+      "hanada-gin",
+    ],
+    match: (p) => p.moods.includes("solemn") && p.moods.includes("bold"),
+    limit: 24,
+    accentHex: "#1A1A1A",
+  },
+
+  // =========================================================================
+  // 36. Sage green color palettes — muted, botanical, wellness
+  // =========================================================================
+  {
+    slug: "sage",
+    title: "Sage Green Color Palettes",
+    tagline: "The green of dried herbs, early morning mist, and quiet rooms.",
+    description:
+      "Sage — that particular grey-green that sits between green tea and stone — became ubiquitous in 2020s interior design for a reason: it reads as calming without being cold, botanical without being loud, and aged without being dull. Wada's vocabulary reaches it through 'moegi' (萌黄 — the budding yellow-green of new growth), 'seiji' (青磁 — celadon glaze green), and 'matcha' (抹茶 — the powdered-tea blue-green). Every palette here pairs the sage anchor with an off-white, a warm clay, or a deep ink so the muted green can breathe.",
+    keywords: [
+      "sage green color palette",
+      "sage color palette",
+      "sage green combinations",
+      "muted green palette",
+      "soft green color palette",
+      "botanical color palette",
+    ],
+    curatedSlugs: [
+      "matcha-kinari",
+      "seiji-kinari",
+      "moegi-sumi",
+      "kariyasu-rikyu",
+      "kogecha-kinari",
+    ],
+    match: (p) =>
+      p.dominantHue === "green" &&
+      (p.moods.includes("serene") || p.moods.includes("austere") || p.moods.includes("earthy")),
+    limit: 24,
+    accentHex: "#8A9E7E",
+  },
+
+  // =========================================================================
+  // 37. Navy blue color palettes — classic, maritime, elegant
+  // =========================================================================
+  {
+    slug: "navy",
+    title: "Navy Blue Color Palettes",
+    tagline: "The deep blue of indigo-dyed cloth and night harbors.",
+    description:
+      "Navy blue — the blue that anchors uniforms, flags, and fine tailoring — has its Japanese analog in 'kon' (紺), the deep indigo blue developed through multiple dye baths on natural cloth. Wada pairs it with ivory ('kinari'), cream, warm grey, and pale silver to create combinations that feel institutional without coldness, and classic without being stiff. These palettes work at scale — on signage, in web applications, in brand identities that need to convey reliability and depth over decades, not just for a season.",
+    keywords: [
+      "navy blue color palette",
+      "navy color palette",
+      "navy color combinations",
+      "deep blue palette",
+      "indigo color palette",
+      "classic blue color scheme",
+    ],
+    curatedSlugs: [
+      "kon-kinari",
+      "asagi-shu",
+      "hanada-gin",
+      "gunjo-gofun",
+      "ruri-gofun",
+      "kurenai-kon",
+    ],
+    match: (p) =>
+      p.dominantHue === "blue" &&
+      (p.moods.includes("solemn") || p.moods.includes("refined") || p.moods.includes("cool")),
+    limit: 24,
+    accentHex: "#1B2E5E",
+  },
+
+  // =========================================================================
+  // 38. Retro color palettes — 1930s–1970s palette nostalgia
+  // =========================================================================
+  {
+    slug: "retro",
+    title: "Retro Color Palettes",
+    tagline: "Wada's 1933 system is, by definition, the original retro palette.",
+    description:
+      "Sanzo Wada published the Dictionary of Color Combinations in 1933 — the same decade as the Bauhaus, Art Deco's peak, and Japan's taisho-showa design renaissance. The palettes that feel most 'retro' to a contemporary eye are the ones with warm ochres, dusty reds, olive greens, and faded blues that appeared in printed matter, textiles, and packaging of that era. No generation invented these colors; they re-emerge every decade because they are simply beautiful, aged well, and carry the weight of history without needing to reference it. These combinations are the foundation of vintage-brand identities, record-sleeve art, and editorial nostalgia.",
+    keywords: [
+      "retro color palette",
+      "vintage retro colors",
+      "1930s color palette",
+      "70s color palette",
+      "nostalgic color scheme",
+      "retro design colors",
+    ],
+    curatedSlugs: [
+      "yamabuki-kuri",
+      "kaki-kogecha",
+      "tobi-kogane",
+      "ukon-ai",
+      "kogecha-kinari",
+      "daidai-kon",
+    ],
+    match: (p) =>
+      (p.moods.includes("warm") || p.moods.includes("earthy")) &&
+      (p.dominantHue === "orange" || p.dominantHue === "yellow" || p.dominantHue === "brown"),
+    limit: 24,
+    accentHex: "#C4702A",
+  },
+
+  // =========================================================================
+  // 39. Boho color palettes — earthy, layered, eclectic warmth
+  // =========================================================================
+  {
+    slug: "boho",
+    title: "Boho Color Palettes",
+    tagline: "Warm terracotta, dusty turquoise, aged ivory, and woven warmth.",
+    description:
+      "Bohemian color — in its practical, non-clichéd version — is about warmth without matching, richness without saturation, and the comfortable feeling of many textures layered over time. Wada's tradition reaches this territory through the earthy reds of 'kaki' (柿 — persimmon), the dusty greens of 'matcha' and 'moegi', the warm neutral of 'kinari' (生成り — undyed linen), and the rich browns of 'kogecha' (焦茶 — burnt-tea brown). These combinations are the reference for home and lifestyle brands, boutique hospitality, handmade goods, and any brand identity that should feel curated, warm, and deeply human.",
+    keywords: [
+      "boho color palette",
+      "bohemian color palette",
+      "boho color combinations",
+      "earthy boho colors",
+      "eclectic color palette",
+      "free spirit color scheme",
+    ],
+    curatedSlugs: [
+      "kaki-kogecha",
+      "tobi-kogane",
+      "yamabuki-kuri",
+      "kogecha-kinari",
+      "matcha-kinari",
+      "ukon-ai",
+    ],
+    match: (p) =>
+      p.moods.includes("earthy") &&
+      (p.moods.includes("warm") || p.moods.includes("playful")) &&
+      !p.moods.includes("cool"),
+    limit: 24,
+    accentHex: "#B5603A",
+  },
+
+  // =========================================================================
+  // 40. Art deco color palettes — 1920s–30s geometric luxury
+  // =========================================================================
+  {
+    slug: "art-deco",
+    title: "Art Deco Color Palettes",
+    tagline: "Gold, black, deep blue, and the geometric luxury of the 1920s.",
+    description:
+      "Art Deco is Sanzo Wada's nearest Western contemporary — the style that defined the visual culture of the 1920s–30s, the same decades Wada was compiling his dictionary in Tokyo. Both systems share the same impulse: reduce color to its formal essence, honor craft and material, and build beauty from geometric restraint. The Art Deco palette — gold, black, ivory, deep blue, lacquer red — translates directly into Wada's vocabulary: 'kin' (金 — metallic gold), 'sumi' (墨 — ink black), 'kon' (紺 — deep indigo), 'kurenai' (紅 — crimson), 'kinari' (生成り — natural ivory). These combinations are the foundation for luxury packaging, hotel identity, jewelry brand systems, and any design project that should feel architecturally precise and materially rich.",
+    keywords: [
+      "art deco color palette",
+      "art deco colors",
+      "1920s color palette",
+      "deco color scheme",
+      "geometric luxury palette",
+      "gold black color palette",
+    ],
+    curatedSlugs: [
+      "shu-kuro-kin",
+      "kurenai-kon",
+      "kon-kinari",
+      "hanada-gin",
+      "tobi-kogane",
+      "yamabuki-kuri",
+    ],
+    match: (p) =>
+      (p.moods.includes("solemn") || p.moods.includes("refined")) &&
+      (p.moods.includes("bold") || p.moods.includes("warm")) &&
+      (p.dominantHue === "yellow" || p.dominantHue === "blue" || p.dominantHue === "red"),
+    limit: 24,
+    accentHex: "#C9A227",
+  },
+
+  // =========================================================================
   // 34. Tropical color palettes — travel, resort, vibrant greens + blues
   // =========================================================================
   {

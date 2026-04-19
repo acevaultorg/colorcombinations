@@ -11,7 +11,9 @@
     "bundle": "node scripts/build-bundle.mjs",
     "generate:wada": "node scripts/generate-wada-palettes.mjs",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "indexnow": "node scripts/indexnow-ping.mjs",
+    "deploy": "npm run build && npx wrangler pages deploy dist --project-name=colorcombinations && npm run indexnow"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
