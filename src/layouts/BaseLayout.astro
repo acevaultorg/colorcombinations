@@ -42,19 +42,44 @@ const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).toStri
 const ogImage = image ?? "/og-default.svg";
 const imageUrl = new URL(ogImage, Astro.site).toString();
 
-// Global Organization/WebSite schema — merged with page-specific entries.
-const siteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: siteName,
-  url: Astro.site?.toString() ?? "https://colorcombinations.org",
-  description:
-    "All 348 historical combinations from Sanzo Wada's 1933 Dictionary of Color Combinations, plus 30 editorial deep-dives into the Japanese shikisai tradition. Free to browse, copy, and export.",
-};
+// Global Organization + WebSite schema — merged with page-specific entries.
+// AceUserGrowth v3 Part 23 + Aleyda 10-characteristic: Recognizable, Credible, Transactable.
+const siteSchemas = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://colorcombinations.org/#organization",
+    name: siteName,
+    alternateName: "ColorCombinations.org",
+    url: "https://colorcombinations.org/",
+    logo: "https://colorcombinations.org/favicon.svg",
+    description:
+      "The Dictionary of Color Combinations — complete digital archive of Sanzo Wada's 1933 historical color system. 378 palettes, free to browse and export, plus commercial API and embeddable widgets.",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://colorcombinations.org/#website",
+    name: siteName,
+    url: Astro.site?.toString() ?? "https://colorcombinations.org/",
+    description:
+      "All 348 historical combinations from Sanzo Wada's 1933 Dictionary of Color Combinations, plus 30 editorial deep-dives into the Japanese shikisai tradition. Free to browse, copy, and export.",
+    publisher: { "@id": "https://colorcombinations.org/#organization" },
+    inLanguage: "en",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: "https://colorcombinations.org/browse?q={search_term_string}",
+      },
+      "query-input": "required name=search_term_string",
+    },
+  },
+];
 
 const jsonLdArray = jsonLd
-  ? [siteSchema, ...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])]
-  : [siteSchema];
+  ? [...siteSchemas, ...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])]
+  : siteSchemas;
 ---
 
 <!doctype html>

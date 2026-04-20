@@ -1,5 +1,95 @@
+# robots.txt — The Dictionary of Color Combinations
+# https://colorcombinations.org
+#
+# Policy (2026-04-20):
+#   1. All search engines welcome on all content (public-domain dataset).
+#   2. All LLM / AI training + retrieval crawlers welcome — we ship extractable
+#      JSON-LD (Dataset + DefinedTerm) + llms.txt for high-quality citation.
+#   3. /og/ excluded (machine-generated preview images, not content).
+#   4. /embed/ excluded from indexing (per-page noindex; iframe payloads).
+#   5. Cloudflare Pay-per-Crawl (managed at zone level) may apply per-request
+#      charge to selected commercial scraper user-agents; cite-back crawlers
+#      (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended,
+#      Meta-ExternalAgent) are always allowed free via CF zone settings.
+
 User-agent: *
 Allow: /
 Disallow: /og/
+Disallow: /embed/
+
+# ---------------------------------------------------------------------------
+# LLM / AI CRAWLERS — explicit allow-list. Monetization (if any) lives at the
+# Cloudflare zone (Pay-per-Crawl), not in robots.txt.
+# ---------------------------------------------------------------------------
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: FacebookExternalHit
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# ---------------------------------------------------------------------------
+# Sitemaps
+# ---------------------------------------------------------------------------
 
 Sitemap: https://colorcombinations.org/sitemap-index.xml

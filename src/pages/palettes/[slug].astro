@@ -49,22 +49,103 @@ const keywords = [
   ...palette.colors.flatMap((c) => [c.nameRomaji, c.nameJa].filter(Boolean) as string[]),
 ];
 
+// ============================================================================
+// JSON-LD — extractable-by-design per AceUserGrowth v3 Part 23 (LLM citation)
+// + Aleyda Solis 10-characteristic checklist (Useful · Extractable · Credible).
+// Emits Dataset + CreativeWork + DefinedTerm[] + BreadcrumbList.
+// ============================================================================
+
+const datasetUrl = new URL(`/palettes/${palette.slug}/`, Astro.site).toString();
+const apiUrl = new URL(`/api/v1/palettes/${palette.slug}`, Astro.site).toString();
+
 const jsonLd = [
+  // Primary payload — Dataset. LLMs prefer structured datasets over prose.
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": `${datasetUrl}#dataset`,
+    name: `${palette.title} — historical color combination`,
+    alternateName: palette.titleJa,
+    description: `${palette.summary} ${palette.colors.length}-color palette inspired by Sanzo Wada's 1933 Dictionary of Color Combinations. Hex: ${palette.colors.map((c) => c.hex).join(", ")}.`,
+    url: datasetUrl,
+    identifier: palette.slug,
+    keywords: keywords,
+    license: "https://creativecommons.org/publicdomain/zero/1.0/",
+    isAccessibleForFree: true,
+    creator: {
+      "@type": "Organization",
+      "@id": "https://colorcombinations.org/#organization",
+      name: "The Dictionary of Color Combinations",
+      url: "https://colorcombinations.org/",
+    },
+    publisher: {
+      "@id": "https://colorcombinations.org/#organization",
+    },
+    inLanguage: ["en", "ja"],
+    variableMeasured: palette.colors.map((c, i) => ({
+      "@type": "PropertyValue",
+      propertyID: `color_${i + 1}`,
+      name: c.nameRomaji ?? c.hex,
+      alternateName: c.nameJa,
+      value: c.hex,
+      description: c.meaning,
+    })),
+    distribution: [
+      {
+        "@type": "DataDownload",
+        encodingFormat: "application/json",
+        contentUrl: apiUrl,
+      },
+      {
+        "@type": "DataDownload",
+        encodingFormat: "text/css",
+        contentUrl: `${apiUrl}?format=css`,
+      },
+    ],
+    about: {
+      "@type": "CreativeWork",
+      name: "A Dictionary of Color Combinations (1933)",
+      creator: {
+        "@type": "Person",
+        name: "Sanzo Wada",
+        birthDate: "1883",
+        deathDate: "1967",
+        description:
+          "Japanese painter, costume designer, and color researcher. First Academy Award for Best Costume Design (1953, Gate of Hell).",
+      },
+    },
+  },
+  // Secondary — CreativeWork for general discovery.
   {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
     name: palette.title,
     alternateName: palette.titleJa,
     description: palette.summary,
-    url: new URL(`/palettes/${palette.slug}`, Astro.site).toString(),
+    url: datasetUrl,
     abstract: palette.description,
     keywords: keywords.join(", "),
-    about: palette.colors.map((c) => ({
-      "@type": "Thing",
-      name: c.nameRomaji ?? c.hex,
-      description: c.meaning,
-    })),
+    image: new URL(`/og/${palette.slug}.svg`, Astro.site).toString(),
   },
+  // DefinedTerm for each traditional Japanese color name — highly citable.
+  ...palette.colors
+    .filter((c) => c.nameJa && c.nameRomaji)
+    .map((c) => ({
+      "@context": "https://schema.org",
+      "@type": "DefinedTerm",
+      name: c.nameRomaji,
+      alternateName: c.nameJa,
+      description: c.meaning
+        ? `${c.meaning} Hex value: ${c.hex}.`
+        : `Traditional Japanese color name. Hex value: ${c.hex}.`,
+      inDefinedTermSet: {
+        "@type": "DefinedTermSet",
+        name: "Shikisai — Japanese color tradition",
+        url: "https://colorcombinations.org/colors/",
+      },
+      termCode: c.hex,
+    })),
+  // Breadcrumb.
   {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -287,6 +368,7 @@ const jsonLd = [
         <p class="embed-desc">
           Add this swatch strip to any blog post, Notion page, or website.
           It links back here automatically.
+          <a class="embed-pro-link" href="/pro-embed/">Agency? Get the unbranded Pro Embed →</a>
         </p>
         <div class="embed-snippet-wrap">
           <code class="embed-snippet" id="embed-code-block">{`<iframe src="https://colorcombinations.org/embed/${palette.slug}/" width="320" height="80" frameborder="0" style="border-radius:6px;overflow:hidden;" title="${palette.title} color palette — colorcombinations.org"></iframe>`}</code>
@@ -755,7 +837,19 @@ const jsonLd = [
     font-size: 0.9375rem;
     color: var(--color-ink-600);
     margin: 0 0 1.25rem;
-    max-width: 50ch;
+    max-width: 55ch;
+  }
+  .embed-pro-link {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-accent-500);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .embed-pro-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .embed-snippet-wrap {

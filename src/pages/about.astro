@@ -7,18 +7,46 @@ const title = "About";
 const description =
   "Why this archive exists, who Sanzo Wada was, and how to use the dictionary in real design work.";
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "AboutPage",
-  name: title,
-  description,
-  url: new URL("/about", Astro.site).toString(),
-  isPartOf: {
-    "@type": "WebSite",
-    name: "The Dictionary of Color Combinations",
-    url: Astro.site?.toString(),
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: title,
+    description,
+    url: new URL("/about", Astro.site).toString(),
+    isPartOf: { "@id": "https://colorcombinations.org/#website" },
+    about: {
+      "@type": "CreativeWork",
+      name: "A Dictionary of Color Combinations",
+      alternateName: "\u914d\u8272\u4e8b\u5178",
+      datePublished: "1933",
+      creator: { "@type": "Person", name: "Sanzo Wada" },
+      inLanguage: "ja",
+    },
+    mainEntity: {
+      "@type": "Person",
+      "@id": "https://en.wikipedia.org/wiki/Sanz%C5%8D_Wada",
+      name: "Sanzo Wada",
+      alternateName: "\u548c\u7530 \u4e09\u9020",
+      birthDate: "1883",
+      deathDate: "1967",
+      nationality: "Japanese",
+      description:
+        "Japanese painter, costume designer, and color researcher. Published A Dictionary of Color Combinations in 1933. Won the first Academy Award for Best Costume Design for Gate of Hell (1953).",
+      knowsAbout: [
+        "Japanese color tradition",
+        "shikisai",
+        "costume design",
+        "oil painting",
+      ],
+      award: "Academy Award for Best Costume Design (1953, Gate of Hell)",
+      sameAs: [
+        "https://en.wikipedia.org/wiki/Sanz%C5%8D_Wada",
+        "https://www.imdb.com/name/nm0906221/",
+      ],
+    },
   },
-};
+];
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>

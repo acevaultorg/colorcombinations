@@ -157,10 +157,36 @@ const title = `${palette.title} color palette — colorcombinations.org`;
           })
         }
       </div>
-      <div class="embed-footer">
-        <span class="embed-footer__title">{palette.title}</span>
+      <div class="embed-footer" id="embed-footer">
+        <span class="embed-footer__title" id="embed-title">{palette.title}</span>
         <span class="embed-footer__brand">colorcombinations.org</span>
       </div>
     </a>
+
+    {/* Pro Embed — reads ?k=[license] to hide attribution. Optional ?t=[text]
+        replaces the palette title with custom agency text. Weak-auth v1:
+        license key is a shared-secret URL token from Gumroad, not signed.
+        Upgrade path in v2: Cloudflare Function to verify against Gumroad API. */}
+    <script>
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var licenseKey = params.get("k");
+          var customTitle = params.get("t");
+          if (licenseKey && licenseKey.length >= 6) {
+            var footer = document.getElementById("embed-footer");
+            if (footer) footer.style.display = "none";
+            document.body.style.height = "62px";
+            document.documentElement.style.height = "62px";
+            var wrap = document.querySelector("a.embed-wrap") as HTMLAnchorElement | null;
+            if (wrap) wrap.style.height = "62px";
+          }
+          if (customTitle) {
+            var titleEl = document.getElementById("embed-title");
+            if (titleEl) titleEl.textContent = customTitle.slice(0, 60);
+          }
+        } catch (e) { /* noop */ }
+      })();
+    </script>
   </body>
 </html>

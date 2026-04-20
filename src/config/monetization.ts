@@ -76,6 +76,82 @@ export const BUNDLE = {
 } as const;
 
 // ============================================================================
+// PRO EMBED — white-label iframe widget, one-time $29 Gumroad license
+// ============================================================================
+
+/**
+ * Pro Embed — unbranded variant of `/embed/[slug]/` for agencies and
+ * commercial clients. Weak-auth v1: the `?k=` URL param on the embed page
+ * triggers footer-hide via client-side JS. Key is a shared-secret delivered
+ * by Gumroad after purchase. Upgrade path: CF Function + Gumroad license
+ * verification API for signed validation.
+ */
+export const PRO_EMBED = {
+  name: "Pro Embed",
+  tagline: "Unbranded palette iframe, perpetual license.",
+  price: "$29",
+  priceNumeric: 29,
+  oneTime: true,
+
+  /**
+   * Gumroad checkout URL. Replace the placeholder after creating the
+   * product in Gumroad. Recommended config: one-time $29, generate
+   * license keys (Settings → Licenses → Enable), product name "Pro
+   * Embed — Dictionary of Color Combinations".
+   */
+  checkoutUrl: "PLACEHOLDER_GUMROAD_PRO_EMBED_URL" as const,
+
+  get isLive(): boolean {
+    return this.checkoutUrl.startsWith("https://") &&
+      !this.checkoutUrl.includes("PLACEHOLDER");
+  },
+} as const;
+
+// ============================================================================
+// PAID API — JSON dataset access, $19/mo Gumroad subscription
+// ============================================================================
+
+/**
+ * Paid API — commercial-use tier. Free tier is public (rate-limited by
+ * Cloudflare zone rules, 100 req/day per IP). Paid tier is authenticated
+ * via Gumroad license key passed as `Authorization: Bearer [key]` header.
+ *
+ * Routes served by Cloudflare Pages Functions in /functions/api/v1/.
+ *
+ * Upgrade path: CF Function calls Gumroad's /v2/licenses/verify endpoint
+ * to confirm the key is active and within its subscription period.
+ */
+export const PAID_API = {
+  name: "JSON API",
+  tagline: "Every palette, every color, every collection — as JSON.",
+  freeTier: {
+    label: "Free",
+    rateLimit: "100 req/day per IP",
+    auth: "none",
+  },
+  paidTier: {
+    label: "Commercial",
+    price: "$19",
+    priceNumeric: 19,
+    period: "/month",
+    rateLimit: "10,000 req/day",
+    auth: "Authorization: Bearer [gumroad-license-key]",
+  },
+
+  /**
+   * Gumroad subscription URL. Replace placeholder after creating the
+   * Gumroad product. Recommended config: $19/mo recurring, license keys
+   * enabled, product name "API Access — Dictionary of Color Combinations".
+   */
+  checkoutUrl: "PLACEHOLDER_GUMROAD_API_URL" as const,
+
+  get isLive(): boolean {
+    return this.checkoutUrl.startsWith("https://") &&
+      !this.checkoutUrl.includes("PLACEHOLDER");
+  },
+} as const;
+
+// ============================================================================
 // BOOKSHOP.ORG — primary affiliate (10% commission, 30-day cookie)
 // ============================================================================
 

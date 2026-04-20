@@ -1,0 +1,278 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { PRO_EMBED } from "@/config/monetization";
+
+const title = "Pro Embed — unbranded palette widget";
+const description =
+  "A white-label version of the color-palette iframe for agencies, design tools, and client work. No attribution footer, custom title override, perpetual license.";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: "Pro Embed — The Dictionary of Color Combinations",
+    description,
+    brand: { "@id": "https://colorcombinations.org/#organization" },
+    category: "Design tool / licensing",
+    offers: {
+      "@type": "Offer",
+      price: "29.00",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: new URL("/pro-embed", Astro.site).toString(),
+      priceValidUntil: "2027-12-31",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Pro Embed" },
+    ],
+  },
+];
+
+const checkoutUrl = PRO_EMBED.isLive ? PRO_EMBED.checkoutUrl : "#contact";
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="pro-embed">
+    <div class="container-prose">
+      <header class="pro-embed__header">
+        <p class="eyebrow">Commercial license</p>
+        <h1 class="text-balance">Pro Embed — your palette, your brand.</h1>
+        <p class="pro-embed__lede">
+          The same clean swatch strip you already know from every palette
+          page — stripped of the footer, ready to embed on client sites,
+          agency work, Notion workspaces, Figma plugins, or SaaS
+          dashboards. One-time payment. Perpetual license. Use it on
+          unlimited client projects.
+        </p>
+      </header>
+
+      <div class="pro-embed__preview" aria-label="Pro Embed preview (no footer)">
+        <p class="pro-embed__label">Preview — unbranded</p>
+        <iframe
+          src="/embed/kurenai-kon/?k=preview-demo-key"
+          width="320"
+          height="62"
+          frameborder="0"
+          style="border-radius:6px;overflow:hidden;display:block;background:#fff;"
+          title="Pro Embed preview — no attribution footer"
+          loading="lazy"
+        ></iframe>
+        <p class="pro-embed__note">
+          No footer. No "colorcombinations.org" brand. Hover-to-expand still
+          works. Links out to the palette page if your client clicks.
+        </p>
+      </div>
+
+      <div class="pro-embed__grid">
+        <section>
+          <h2>What you get</h2>
+          <ul>
+            <li>Unbranded iframe for every one of the 378 palettes.</li>
+            <li>Optional <code>?t=Your Brand</code> parameter to replace
+              the palette title with your agency or product name.</li>
+            <li>Perpetual license — use on as many client sites or
+              products as you build.</li>
+            <li>License key delivered by Gumroad email within seconds
+              of checkout.</li>
+            <li>All future 378-palette updates free.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>What it looks like in code</h2>
+          <pre class="pro-embed__code"><code>{`<iframe
+  src="https://colorcombinations.org/embed/kurenai-kon/?k=YOUR_LICENSE_KEY&t=Acme%20Co."
+  width="320" height="62" frameborder="0"
+  style="border-radius:6px;overflow:hidden;"
+  title="Kurenai-Kon palette">
+</iframe>`}</code></pre>
+        </section>
+
+        <section>
+          <h2>Pricing</h2>
+          <p class="pro-embed__price">
+            <span class="pro-embed__amount">$29</span>
+            <span class="pro-embed__period">one-time</span>
+          </p>
+          <p>Perpetual license. No subscription. Pays for itself on the
+            first client project.</p>
+          <p>
+            <a
+              class="btn-primary"
+              href={checkoutUrl}
+              target={PRO_EMBED.isLive ? "_blank" : "_self"}
+              rel="noopener"
+              data-event="pro_embed_checkout_click"
+            >
+              {PRO_EMBED.isLive ? "Get the license — $29" : "Join the waitlist"}
+            </a>
+          </p>
+          {!PRO_EMBED.isLive && (
+            <p class="pro-embed__waitlist">
+              Pro Embed launches as soon as the Gumroad product goes live.
+              Email <a href="mailto:contact@colorcombinations.org?subject=Pro%20Embed%20waitlist">
+              contact@colorcombinations.org</a> to get notified.
+            </p>
+          )}
+        </section>
+
+        <section>
+          <h2>Who this is for</h2>
+          <ul>
+            <li>Design agencies presenting palettes to clients.</li>
+            <li>Figma plugin authors embedding palette references.</li>
+            <li>Design systems teams that want a permanent visual
+              reference in internal docs.</li>
+            <li>Educational / course authors showing historical color
+              tradition without the hosting brand.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>FAQ</h2>
+          <dl class="pro-embed__faq">
+            <dt>Can I use it on unlimited sites?</dt>
+            <dd>Yes — one license, unlimited client projects,
+              unlimited pages, unlimited embeds.</dd>
+
+            <dt>What happens if I lose the license key?</dt>
+            <dd>Gumroad stores every purchase; re-send from
+              <a href="https://gumroad.com/library" target="_blank" rel="noopener">
+              gumroad.com/library</a>.</dd>
+
+            <dt>Can I resell the embedded palettes?</dt>
+            <dd>The underlying hex values and Japanese color names are
+              public-domain cultural commons (no one can own them). The
+              Pro Embed license covers your right to embed the widget
+              without attribution — it doesn't add rights to the
+              underlying colors, which are already free.</dd>
+
+            <dt>Do you offer a refund?</dt>
+            <dd>Gumroad's standard 7-day no-questions-asked refund
+              applies.</dd>
+
+            <dt>What about team licensing?</dt>
+            <dd>One license covers everything a single agency /
+              company / freelancer uses. For multi-brand holding
+              companies or white-label SaaS redistribution, contact
+              <a href="mailto:contact@colorcombinations.org?subject=Team%20Pro%20Embed%20licensing">
+              contact@colorcombinations.org</a>.</dd>
+          </dl>
+        </section>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .pro-embed {
+    padding: 3rem 0 5rem;
+  }
+  .pro-embed__header {
+    margin-bottom: 3rem;
+  }
+  .pro-embed__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.2vw + 0.75rem, 1.3125rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin-top: 1.5rem;
+    max-width: 58ch;
+  }
+  .pro-embed__preview {
+    background: var(--color-paper-100);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+  .pro-embed__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    margin: 0 0 1rem;
+  }
+  .pro-embed__note {
+    font-size: 0.875rem;
+    color: var(--color-ink-600);
+    margin: 1rem 0 0;
+    max-width: 50ch;
+  }
+  .pro-embed__grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .pro-embed__grid h2 {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    margin: 0 0 1rem;
+  }
+  .pro-embed__code {
+    background: var(--color-paper-100);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--color-ink-800);
+  }
+  .pro-embed__price {
+    font-family: var(--font-serif);
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+  }
+  .pro-embed__amount {
+    font-size: 2.75rem;
+    font-weight: 600;
+    color: var(--color-ink-900);
+  }
+  .pro-embed__period {
+    font-size: 1rem;
+    color: var(--color-ink-500);
+  }
+  .btn-primary {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-ink-900);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    transition: background 150ms ease;
+  }
+  .btn-primary:hover {
+    background: var(--color-accent-500);
+  }
+  .pro-embed__waitlist {
+    font-size: 0.875rem;
+    color: var(--color-ink-600);
+    margin-top: 1rem;
+  }
+  .pro-embed__faq dt {
+    font-weight: 600;
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    margin-top: 1.5rem;
+  }
+  .pro-embed__faq dt:first-child {
+    margin-top: 0;
+  }
+  .pro-embed__faq dd {
+    margin: 0.5rem 0 0;
+    color: var(--color-ink-700);
+  }
+</style>
