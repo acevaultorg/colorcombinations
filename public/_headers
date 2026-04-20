@@ -4,11 +4,37 @@
 /*
   # Security headers (OWASP baseline for static site)
   X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
+  # SAMEORIGIN lets /pro-embed and palette pages iframe their own /embed
+  # widgets while still blocking third-party clickjacking. /embed/* overrides
+  # this below (for cross-origin iframe distribution).
+  X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
   # No inline scripts except our own (set:html blocks for JSON-LD) — unsafe-inline needed for that.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://forms.example.com
+  # Plausible analytics script loads from plausible.io.
+  # No frame-ancestors directive here — left to X-Frame-Options above (and the
+  # /embed/* path-scoped CSP below), since CF Pages _headers merges CSP
+  # additively and the per-path frame-ancestors * must be the only such directive.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://plausible.io; frame-src 'self'; base-uri 'self'; form-action 'self'
+
+# ---------------------------------------------------------------------------
+# /embed/* — iframe payloads meant to be embedded on third-party sites.
+# Must allow cross-origin framing. Remove X-Frame-Options AND the catch-all
+# CSP (otherwise browsers intersect multi-header CSP and strictest wins).
+# ---------------------------------------------------------------------------
+/embed/*
+  ! X-Frame-Options
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors *; base-uri 'self'
+  Access-Control-Allow-Origin: *
+
+# ---------------------------------------------------------------------------
+# /api/v1/* — JSON endpoints for programmatic consumption (CORS open).
+# ---------------------------------------------------------------------------
+/api/v1/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, OPTIONS
+  Access-Control-Allow-Headers: Authorization, Content-Type
 
 # Long-cache for hashed assets (Astro emits .hash.css, .hash.js)
 /_astro/*

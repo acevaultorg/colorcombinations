@@ -1,8 +1,19 @@
 # Cloudflare Pages _redirects file
 # https://developers.cloudflare.com/pages/configuration/redirects/
 
-# Trailing-slash normalization is handled by Astro (trailingSlash: "never")
-# No redirects currently needed for V1.
+# Trailing-slash normalization is handled by Astro (trailingSlash: "always")
+
+# ---------------------------------------------------------------------------
+# JSON API — accept extension-less paths and rewrite to the .json file so
+# /api/v1/palettes and /api/v1/palettes.json both work. 200 = rewrite
+# (preserves client URL + Content-Type).
+# ---------------------------------------------------------------------------
+/api/v1/palettes              /api/v1/palettes.json              200
+/api/v1/palettes/             /api/v1/palettes.json              200
+/api/v1/palettes/:slug        /api/v1/palettes/:slug.json        200
+/api/v1/collections           /api/v1/collections.json           200
+/api/v1/collections/          /api/v1/collections.json           200
+/api/v1/collections/:slug     /api/v1/collections/:slug.json     200
 
 # V2: if sumitome.com is later purchased as an alias, add:
 #   https://sumitome.com/*  https://colorcombinations.org/:splat  301
