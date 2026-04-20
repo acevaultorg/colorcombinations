@@ -50,14 +50,65 @@ const keywords = [
   "Japanese color",
 ].filter(Boolean) as string[];
 
+// JSON-LD for maximum LLM-citation fit — Dataset, DefinedTerm, CreativeWork,
+// BreadcrumbList. Each color exists in 1-N palettes; downstream hasPart links
+// to palette URLs signal the graph.
+const colorPageUrl = new URL(`/colors/${color.slug}/`, Astro.site).toString();
+const colorApiUrl = new URL(`/api/v1/colors/${color.slug}.json`, Astro.site).toString();
+
 const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": `${colorPageUrl}#dataset`,
+    name: `${color.name}${color.nameJa ? ` (${color.nameJa})` : ""} \u2014 traditional color`,
+    alternateName: color.nameJa,
+    description,
+    url: colorPageUrl,
+    identifier: color.slug,
+    keywords,
+    license: "https://creativecommons.org/publicdomain/zero/1.0/",
+    isAccessibleForFree: true,
+    creator: { "@id": "https://colorcombinations.org/#organization" },
+    publisher: { "@id": "https://colorcombinations.org/#organization" },
+    inLanguage: ["en", "ja"],
+    variableMeasured: [
+      { "@type": "PropertyValue", propertyID: "hex", value: color.hex },
+      { "@type": "PropertyValue", propertyID: "hue_family", value: color.hue },
+      { "@type": "PropertyValue", propertyID: "palette_count", value: color.paletteCount },
+    ],
+    distribution: [
+      {
+        "@type": "DataDownload",
+        encodingFormat: "application/json",
+        contentUrl: colorApiUrl,
+      },
+    ],
+  },
+  color.nameJa
+    ? {
+        "@context": "https://schema.org",
+        "@type": "DefinedTerm",
+        name: color.name,
+        alternateName: color.nameJa,
+        description: color.meaning
+          ? `${color.meaning} Hex: ${color.hex}.`
+          : `Traditional Japanese color name. Hex: ${color.hex}.`,
+        inDefinedTermSet: {
+          "@type": "DefinedTermSet",
+          name: "Shikisai \u2014 Japanese color tradition",
+          url: "https://colorcombinations.org/colors/",
+        },
+        termCode: color.hex,
+      }
+    : null,
   {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
     name: color.name,
     alternateName: color.nameJa,
     description,
-    url: new URL(`/colors/${color.slug}`, Astro.site).toString(),
+    url: colorPageUrl,
     keywords: keywords.join(", "),
     color: color.hex,
   },
@@ -65,26 +116,12 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: new URL("/", Astro.site).toString(),
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Colors",
-        item: new URL("/colors", Astro.site).toString(),
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: color.name,
-      },
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Colors", item: new URL("/colors", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: color.name },
     ],
   },
-];
+].filter(Boolean) as Record<string, unknown>[];
 ---
 
 <BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd}>

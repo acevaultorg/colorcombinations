@@ -1,22 +1,24 @@
 ---
-// Cookie consent banner — shown on first visit for EU/UK/CA users.
-// Minimal, non-blocking, clearly labelled. No accept-only pattern.
-// Preference stored in localStorage: "cc_status" = "accepted" | "rejected"
+// Cookie preferences note — no-tracking disclosure.
+// Per DECISIONS.md 2026-04-10, no AdSense / Mediavine / display-ad networks
+// run on this site. Plausible is cookieless. Under GDPR/CCPA we are not
+// required to show a consent banner at all. This banner is retained ONLY
+// as a transparency signal + a way for users to reopen from the footer.
+// Default state: hidden. Only appears if the user explicitly clicks the
+// "Cookie Preferences" button in the footer.
 ---
 
 <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie preferences" aria-live="polite" hidden>
   <div class="cookie-banner__inner">
     <p class="cookie-banner__text">
-      We use <strong>Google AdSense</strong> to serve ads, which may set cookies
-      on your device. Our own analytics (Plausible) are cookieless and need no
-      consent. <a href="/privacy" class="cookie-banner__link">Privacy policy</a>
+      <strong>No tracking cookies.</strong> This site runs on
+      <a href="https://plausible.io/data-policy" class="cookie-banner__link" rel="noopener" target="_blank">Plausible</a>
+      (cookieless analytics) and sets zero ad / marketing cookies.
+      <a href="/privacy" class="cookie-banner__link">Full privacy policy</a>.
     </p>
     <div class="cookie-banner__actions">
-      <button id="cc-reject" class="cookie-banner__btn cookie-banner__btn--secondary">
-        Reject ads
-      </button>
-      <button id="cc-accept" class="cookie-banner__btn cookie-banner__btn--primary">
-        Accept ads
+      <button id="cc-ok" class="cookie-banner__btn cookie-banner__btn--primary">
+        Got it
       </button>
     </div>
   </div>
@@ -24,31 +26,25 @@
 
 <script is:inline>
 (function () {
-  var STORAGE_KEY = 'cc_status';
-  var status = localStorage.getItem(STORAGE_KEY);
-
-  if (!status) {
-    // Show after a brief delay so it doesn't flash during page load
-    setTimeout(function () {
-      var banner = document.getElementById('cookie-banner');
-      if (banner) banner.hidden = false;
-    }, 800);
+  // Banner is NEVER shown by default — no tracking means no consent needed.
+  // Only appears when the operator-facing footer button #cc-reopen is clicked.
+  function show() {
+    var banner = document.getElementById('cookie-banner');
+    if (banner) banner.hidden = false;
   }
-
-  function dismiss(accepted) {
-    localStorage.setItem(STORAGE_KEY, accepted ? 'accepted' : 'rejected');
+  function dismiss() {
     var banner = document.getElementById('cookie-banner');
     if (banner) banner.hidden = true;
-    if (accepted && window.plausible) {
-      window.plausible('cookie_consent', { props: { choice: 'accept' } });
-    }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    var acceptBtn = document.getElementById('cc-accept');
-    var rejectBtn = document.getElementById('cc-reject');
-    if (acceptBtn) acceptBtn.addEventListener('click', function () { dismiss(true); });
-    if (rejectBtn) rejectBtn.addEventListener('click', function () { dismiss(false); });
+    var okBtn = document.getElementById('cc-ok');
+    if (okBtn) okBtn.addEventListener('click', dismiss);
+    var reopen = document.getElementById('cc-reopen');
+    if (reopen) reopen.addEventListener('click', function (e) {
+      e.preventDefault();
+      show();
+    });
   });
 })();
 </script>

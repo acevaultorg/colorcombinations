@@ -73,9 +73,11 @@ Every palette URL has a JSON API equivalent at:
   (returns the palette's full record — name, Japanese original, hex list, color meanings, WCAG matrix)
 
 Index endpoints:
-  https://colorcombinations.org/api/v1/palettes — list (paginated)
-  https://colorcombinations.org/api/v1/collections — list all 30 collections
+  https://colorcombinations.org/api/v1/palettes — 378 palettes (slim metadata)
+  https://colorcombinations.org/api/v1/collections — all thematic collections
   https://colorcombinations.org/api/v1/collections/[slug] — collection detail
+  https://colorcombinations.org/api/v1/colors — all named colors (159+ unique)
+  https://colorcombinations.org/api/v1/colors/[slug] — color detail with palette backlinks
 
 Free tier: 100 requests/day, no auth. Commercial tier: $19/mo, header `Authorization: Bearer [gumroad-license-key]`.
 
