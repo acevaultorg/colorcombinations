@@ -1500,6 +1500,228 @@ export const collections: Collection[] = [
     limit: 24,
     accentHex: "#9A7B2E",
   },
+
+  // =========================================================================
+  // 48. Neon color palettes — high-contrast, high-energy, maximum saturation
+  // =========================================================================
+  {
+    slug: "neon",
+    title: "Neon Color Palettes",
+    tagline: "Maximum saturation — the festival palette at full force.",
+    description:
+      "Neon as a modern aesthetic didn't exist in 1933, but the impulse behind it — maximum saturation, maximum contrast, maximum energy — absolutely did. The Edo festival tradition ran on vermilion and gold, on deep crimson banners against black lacquer, on the ultra-blue of gunjo lapis next to oyster white. These combinations are the archive's highest-energy palettes: the ones that hold their own on digital screens, in printed wayfinding, in identity systems for entertainment, events, streetwear, and any project where the brief includes the word 'electric.' Not loud for its own sake — precise and deliberate at full power.",
+    keywords: [
+      "neon color palette",
+      "vibrant color combinations",
+      "high energy color palette",
+      "electric color scheme",
+      "bright bold colors",
+    ],
+    curatedSlugs: [
+      "shu-kuro-kin",
+      "daidai-kon",
+      "akane-tokiwa",
+      "gunjo-gofun",
+      "ruri-gofun",
+      "yamabuki-kuri",
+    ],
+    match: (p) =>
+      p.moods.includes("bold") &&
+      p.moods.includes("playful") &&
+      (p.dominantHue === "red" || p.dominantHue === "orange" || p.dominantHue === "blue" || p.dominantHue === "yellow"),
+    limit: 24,
+    accentHex: "#D4360A",
+  },
+
+  // =========================================================================
+  // 49. Monochromatic color palettes — single-hue tonal harmony
+  // =========================================================================
+  {
+    slug: "monochromatic",
+    title: "Monochromatic Color Palettes",
+    tagline: "One hue, infinite depth — the harmony of a single color taken to its limits.",
+    description:
+      "Monochromatic doesn't mean boring — it means that all the work is done by value, saturation, and tonal variation within a single hue family. Japanese color culture mastered this discipline over centuries: the thirty named gradations of indigo from 'hanada' to 'koiai', the progression from pale 'sakura' pink to deep 'enji' crimson, the blue-green continuum from 'seiji' celadon to 'matsuba' pine needle. The combinations here use two to three tones within a narrow hue range — the kind of palette that reads as unified at a glance and reveals its complexity on closer inspection. Ideal for minimalist brand identities, refined packaging, editorial design, and any project where sophistication comes from restraint.",
+    keywords: [
+      "monochromatic color palette",
+      "monochrome color scheme",
+      "single color palette",
+      "tonal color combinations",
+      "one color palette variations",
+    ],
+    curatedSlugs: [
+      "fuji-ai",
+      "murasaki-gin",
+      "kon-kinari",
+      "ao-shiro",
+      "hanada-gin",
+      "seiji-kinari",
+    ],
+    match: (p) =>
+      p.colors.length === 2 &&
+      (p.moods.includes("refined") || p.moods.includes("serene") || p.moods.includes("austere")),
+    limit: 24,
+    accentHex: "#3E5A8A",
+  },
+
+  // =========================================================================
+  // 50. Farmhouse color palettes — rustic warmth, natural materials, lived-in comfort
+  // =========================================================================
+  {
+    slug: "farmhouse",
+    title: "Farmhouse Color Palettes",
+    tagline: "Aged wood, warm linen, and the honest palette of natural materials.",
+    description:
+      "Farmhouse color is about material honesty: the warm tan of aged linen, the ochre of earth floors, the ivory of washed cotton, the faded brown of worn wood, the quiet warmth of clay. Wada's 1933 catalog — compiled before synthetic pigments took over Japanese craft — is an archive of exactly these natural material tones. 'Kinari' (生成り) is unbleached, barely-off-white linen. 'Kogecha' (焦茶) is the warm brown of burnt-tea dye, aged to a perfect depth. 'Tobi' (鳶) is the red-brown of old lacquerware. These combinations are the honest palette of a life lived among natural things — reference material for farmhouse interior design, artisan food and beverage brands, homewares and textiles, and any identity that should feel both authentic and enduring.",
+    keywords: [
+      "farmhouse color palette",
+      "rustic color scheme",
+      "farmhouse color combinations",
+      "cottage color palette",
+      "natural material colors",
+    ],
+    curatedSlugs: [
+      "kogecha-kinari",
+      "tobi-kogane",
+      "yamabuki-kuri",
+      "usubeni-cha",
+      "seiji-kinari",
+      "kaki-kogecha",
+    ],
+    match: (p) =>
+      p.moods.includes("earthy") &&
+      (p.moods.includes("warm") || p.moods.includes("austere")) &&
+      (p.dominantHue === "brown" || p.dominantHue === "yellow" || p.dominantHue === "neutral"),
+    limit: 24,
+    accentHex: "#A07850",
+  },
+
+  // =========================================================================
+  // 51. Scandinavian color palettes — clean, cool, considered minimalism
+  // =========================================================================
+  {
+    slug: "scandinavian",
+    title: "Scandinavian Color Palettes",
+    tagline: "Cool restraint, natural light, and the clarity of considered minimalism.",
+    description:
+      "Scandinavian design and Japanese design share the same fundamental aesthetic commitment: remove what isn't necessary, and what remains should be beautiful. Both traditions converge on a palette of cool whites, pale naturals, muted blues, and quiet grey-greens — colors that work in low winter light and feel expansive rather than cold. Wada's catalog arrives at exactly this territory through different paths: the chalk-white of 'gofun' (胡粉 — crushed shells), the pale cool of 'hanada' (縹 — a blue halfway between sky and water), the grey-green of 'seiji' (青磁 — celadon ash glaze), the silvery neutral of 'gin' (銀). These palettes are reference material for Scandinavian interior brands, minimalist architecture, premium homewares, and any project that should feel like a well-lit room on a clear winter morning.",
+    keywords: [
+      "scandinavian color palette",
+      "nordic color scheme",
+      "hygge color palette",
+      "scandi color combinations",
+      "nordic design colors",
+    ],
+    curatedSlugs: [
+      "ao-shiro",
+      "hanada-gin",
+      "seiji-kinari",
+      "kon-kinari",
+      "murasaki-gin",
+      "kariyasu-rikyu",
+    ],
+    match: (p) =>
+      p.moods.includes("cool") &&
+      p.moods.includes("austere") &&
+      (p.dominantHue === "blue" || p.dominantHue === "neutral" || p.dominantHue === "green"),
+    limit: 24,
+    accentHex: "#9BB4C8",
+  },
+
+  // =========================================================================
+  // 52. Mid-century color palettes — 1950s–1960s modernist warmth
+  // =========================================================================
+  {
+    slug: "mid-century",
+    title: "Mid-Century Color Palettes",
+    tagline: "Mustard, olive, teal, and warm brown — the modernist palette at its peak.",
+    description:
+      "Mid-century modern color — the palette of 1950s–60s furniture, textile, and graphic design — converges on a specific register of warmth and restraint that was already present in Wada's 1933 Japanese catalog. The warm mustard of 'ukon' (鬱金 — turmeric yellow), the olive-green of 'matcha' (抹茶), the warm brown of 'kuri' (栗 — chestnut), the deep teal of 'ao' (青) — these are the same pigments the Eames era reached for through different cultural traditions. The combinations here work for mid-century interior design, vintage furniture brands, record-label aesthetics, graphic design studios, and any project that should feel like 1962 in the best possible way.",
+    keywords: [
+      "mid century color palette",
+      "mid century modern colors",
+      "1950s color palette",
+      "retro modern color scheme",
+      "mustard olive color palette",
+    ],
+    curatedSlugs: [
+      "ukon-ai",
+      "matcha-kinari",
+      "yamabuki-kuri",
+      "kaki-kogecha",
+      "akane-tokiwa",
+      "ao-shiro",
+    ],
+    match: (p) =>
+      (p.moods.includes("earthy") || p.moods.includes("warm")) &&
+      (p.dominantHue === "yellow" || p.dominantHue === "green" || p.dominantHue === "orange" || p.dominantHue === "brown"),
+    limit: 24,
+    accentHex: "#C4982A",
+  },
+
+  // =========================================================================
+  // 53. Dark academia color palettes — scholarly, brooding, romantic depth
+  // =========================================================================
+  {
+    slug: "dark-academia",
+    title: "Dark Academia Color Palettes",
+    tagline: "Library stacks, aged leather, candlelight, and the romantic weight of deep study.",
+    description:
+      "Dark academia is the aesthetic of old libraries, burgundy wainscoting, parchment under candlelight, and the deep forest greens of collegiate architecture. It's an aesthetic that Wada's 1933 catalog anticipates in remarkable ways: the deep crimson of 'enji' (臙脂 — cochineal red), the ink-and-pine-needle combination of 'matsuba' (松葉) with 'sumi' (墨), the layered near-navy of 'kon' with aged warm tones, the deep grey-purple of 'edo-murasaki'. These combinations carry that specific quality of intellectual romance — the beauty of things that have accumulated depth over decades. Reference material for editorial publishing, academic branding, heritage fashion, independent bookshops, and any project where the brief could reasonably include the word 'Oxbridge.'",
+    keywords: [
+      "dark academia color palette",
+      "dark academic aesthetic colors",
+      "gothic academia color scheme",
+      "scholarly color palette",
+      "dark moody color combinations",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "enji-matsuba",
+      "moegi-sumi",
+      "entan-sumi",
+      "fuji-ai",
+      "edo-murasaki-nezumi",
+    ],
+    match: (p) =>
+      p.moods.includes("solemn") &&
+      (p.moods.includes("earthy") || p.moods.includes("refined")) &&
+      (p.dominantHue === "red" || p.dominantHue === "green" || p.dominantHue === "blue" || p.dominantHue === "purple"),
+    limit: 24,
+    accentHex: "#5C3A2E",
+  },
+
+  // =========================================================================
+  // 54. Cottagecore color palettes — soft botanical warmth and pastoral romance
+  // =========================================================================
+  {
+    slug: "cottagecore",
+    title: "Cottagecore Color Palettes",
+    tagline: "Soft pinks, sage greens, lavender, and the gentle palette of a pastoral world.",
+    description:
+      "Cottagecore color is the pastoral romantic: blush roses, sage green herbs drying in a doorway, lavender fields in soft afternoon light, undyed linen, hand-thrown pottery in cream and clay. The Japanese color tradition reaches this territory through combinations of extraordinary gentleness: 'sakura' (桜 — cherry blossom pink) with 'wakatake' (若竹 — young bamboo green), 'nadeshiko' (撫子 — fringed pink) with 'mizu' (水 — water blue), 'fuji' (藤 — wisteria lavender) with 'ai' (藍 — soft indigo). These are the combinations that feel simultaneously hand-made and considered, botanical and timeless. Reference material for artisan food and wellness brands, handmade goods, botanical illustration, garden-inspired packaging, and any project where the brief includes the word 'handcrafted.'",
+    keywords: [
+      "cottagecore color palette",
+      "cottagecore aesthetic colors",
+      "pastoral color palette",
+      "botanical color scheme",
+      "soft floral color combinations",
+    ],
+    curatedSlugs: [
+      "sakura-wakatake",
+      "nadeshiko-mizu",
+      "kariyasu-rikyu",
+      "fuji-ai",
+      "matcha-kinari",
+      "seiji-kinari",
+    ],
+    match: (p) =>
+      p.moods.includes("serene") &&
+      p.moods.includes("playful") &&
+      (p.dominantHue === "pink" || p.dominantHue === "green" || p.dominantHue === "purple"),
+    limit: 24,
+    accentHex: "#D4A8B8",
+  },
 ];
 
 // ============================================================================
