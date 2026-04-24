@@ -98,6 +98,7 @@ Build work: 0 tasks completed (all 16 TASKS.md tasks paused pending domain decis
 2026-04-10 13:44 | readme | content-seo-site | astro5-tailwind4-ts-strict | V1 | quick | self-qualify | AUTO | 60 | success
 2026-04-10 13:45 | growth-state | content-seo-site | astro5-tailwind4-ts-strict | V1 | quick | self-qualify | AUTO | 60 | success
 2026-04-24 19:56 | collections-batch-v19 | content-seo-site | astro5-tailwind4-ts-strict | programmatic-seo | quick | self-craftsman+self-distributor | AUTO | 210 | success
+2026-04-24 20:15 | collection-embed-widget | content-seo-site | astro5-tailwind4-ts-strict | embeddable_widget | standard | self-craftsman+self-distributor | AUTO | 480 | success
 
 ## Session Rollups
 
