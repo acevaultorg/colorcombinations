@@ -236,6 +236,16 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "The source tradition this archive draws from. Out of print for decades; Seigensha brought it back.",
   },
   {
+    title: "A Dictionary of Color Combinations Vol. 2",
+    author: "Sanzo Wada",
+    note: "Seigensha, 2020. The companion volume.",
+    bookshopPath:
+      "https://bookshop.org/beta-search?keywords=9784861527722",
+    amazonAsin: "4861527724",
+    isbn: "4861527724",
+    why: "Wada's 1935–1938 follow-ups — 72 plates on the Japanese seasons and 165 from early-century fashion, interior, and graphic design. The second half of the same hand.",
+  },
+  {
     title: "Interaction of Color",
     author: "Josef Albers",
     note: "50th Anniversary Edition, Yale University Press.",
