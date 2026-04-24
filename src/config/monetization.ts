@@ -230,6 +230,16 @@ export interface CuratedBook {
    * `/public/...` at build time.
    */
   coverUrl?: string;
+  /**
+   * Which storefront takes the primary CTA slot. Default: `"bookshop"`
+   * (10% commission, 30-day cookie, indie-bookstore-supporting).
+   * Override to `"amazon"` ONLY when Bookshop.org US genuinely doesn't
+   * stock the title and the Bookshop link would dead-end in a search
+   * page — e.g. imported Japanese publishers. Sending a buyer to a
+   * search page with no results costs more trust than the commission
+   * difference is worth.
+   */
+  primaryCta?: "bookshop" | "amazon";
   /** Pull-quote reason for inclusion — shown inline on listings. */
   why: string;
 }
@@ -249,13 +259,14 @@ export const FURTHER_READING: CuratedBook[] = [
   {
     title: "A Dictionary of Color Combinations Vol. 2",
     author: "Sanzo Wada",
-    note: "Seigensha, 2020. The companion volume.",
+    note: "Seigensha, 2020. Japanese import — US Bookshop doesn't stock it.",
     bookshopPath:
       "https://bookshop.org/beta-search?keywords=9784861527722",
     amazonAsin: "4861527724",
     isbn: "4861527724",
     coverUrl: "/book-covers/wada-vol-2.jpg",
-    why: "Wada's 1935–1938 follow-ups — 72 plates on the Japanese seasons and 165 from early-century fashion, interior, and graphic design. The second half of the same hand.",
+    primaryCta: "amazon",
+    why: "Wada's 1935–1938 follow-ups: 72 plates on the Japanese seasons and 165 drawn from early-century fashion, interior, and graphic design. Not in Vol. 1. Not in this archive. The book itself is a design object — Japanese binding, matte pages, zero captions.",
   },
   {
     title: "Interaction of Color",

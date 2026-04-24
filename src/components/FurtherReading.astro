@@ -44,7 +44,12 @@ const books = (() => {
   return typeof limit === "number" ? rotated.slice(0, limit) : rotated;
 })();
 
-const hasAffiliate = BOOKSHOP.isLive || AMAZON.isLive;
+// FTC disclosure is shown unconditionally on non-sidebar listings: affiliate
+// click-tracking fires on link click regardless of whether an affiliate ID is
+// pasted in yet, so the disclosure is an always-on compliance surface — not
+// gated by `isLive`. (Prior bug: disclosure only rendered once IDs were real,
+// meaning every pre-activation page load was an undisclosed affiliate rail.)
+const showDisclosure = true;
 ---
 
 <section class:list={["further-reading", `further-reading--${variant}`]}>
@@ -63,16 +68,37 @@ const hasAffiliate = BOOKSHOP.isLive || AMAZON.isLive;
         .map((w) => w[0])
         .join("")
         .toUpperCase();
+
+      // Most books primary-CTA to Bookshop.org (higher commission, indie support).
+      // A few — e.g. Japanese imports not stocked by Bookshop US — flip so the
+      // primary button goes to Amazon (the place the visitor can actually buy).
+      // Sending a buyer to a dead-end search page costs more trust than the
+      // commission difference is worth.
+      const amazonFirst = book.primaryCta === "amazon" && !!book.amazonAsin;
+      const primaryHref = amazonFirst
+        ? AMAZON.link(book.amazonAsin!)
+        : BOOKSHOP.link(book.bookshopPath);
+      const primaryLabel = amazonFirst ? "Amazon" : "Bookshop.org";
+      const primaryNote = amazonFirst ? "ships faster" : null;
+      const primaryEvent = amazonFirst ? "amazon_click" : "bookshop_click";
+      const secondaryHref = amazonFirst
+        ? BOOKSHOP.link(book.bookshopPath)
+        : (book.amazonAsin ? AMAZON.link(book.amazonAsin) : null);
+      const secondaryLabel = amazonFirst
+        ? "or search Bookshop.org"
+        : "or Amazon (ships faster)";
+      const secondaryEvent = amazonFirst ? "bookshop_click" : "amazon_click";
+
       return (
         <li class="further-reading__item">
           <a
-            href={BOOKSHOP.link(book.bookshopPath)}
+            href={primaryHref}
             rel="noopener sponsored"
             target="_blank"
             class="further-reading__cover"
-            data-event="bookshop_click"
+            data-event={primaryEvent}
             data-book={book.title}
-            aria-label={`${book.title} on Bookshop.org`}
+            aria-label={`${book.title} on ${primaryLabel}`}
           >
             {coverUrl ? (
               <img
@@ -98,10 +124,10 @@ const hasAffiliate = BOOKSHOP.isLive || AMAZON.isLive;
             <p class="further-reading__by">{book.author}</p>
             <h3 class="further-reading__title">
               <a
-                href={BOOKSHOP.link(book.bookshopPath)}
+                href={primaryHref}
                 rel="noopener sponsored"
                 target="_blank"
-                data-event="bookshop_click"
+                data-event={primaryEvent}
                 data-book={book.title}
               >
                 {book.title}
@@ -115,25 +141,25 @@ const hasAffiliate = BOOKSHOP.isLive || AMAZON.isLive;
             )}
             <div class="further-reading__links">
               <a
-                href={BOOKSHOP.link(book.bookshopPath)}
+                href={primaryHref}
                 rel="noopener sponsored"
                 target="_blank"
                 class="btn btn-secondary further-reading__link"
-                data-event="bookshop_click"
+                data-event={primaryEvent}
                 data-book={book.title}
               >
-                Bookshop.org <span aria-hidden="true">↗</span>
+                {primaryLabel} <span aria-hidden="true">↗</span>
               </a>
-              {book.amazonAsin && variant !== "sidebar" && (
+              {secondaryHref && variant !== "sidebar" && (
                 <a
-                  href={AMAZON.link(book.amazonAsin)}
+                  href={secondaryHref}
                   rel="noopener sponsored"
                   target="_blank"
                   class="further-reading__amazon"
-                  data-event="amazon_click"
+                  data-event={secondaryEvent}
                   data-book={book.title}
                 >
-                  or Amazon
+                  {secondaryLabel}
                 </a>
               )}
             </div>
@@ -143,7 +169,7 @@ const hasAffiliate = BOOKSHOP.isLive || AMAZON.isLive;
     })}
   </ul>
 
-  {hasAffiliate && variant !== "sidebar" && (
+  {showDisclosure && variant !== "sidebar" && (
     <p class="further-reading__disclosure">
       Links to Bookshop.org and Amazon earn a small commission at no cost to
       you. Bookshop.org's share supports independent bookstores.
