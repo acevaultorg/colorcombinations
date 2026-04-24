@@ -27,6 +27,7 @@ Build work: 0 tasks completed (all 16 TASKS.md tasks paused pending domain decis
 
 ## Behavior Log
 
+2026-04-19 09:20 | shop-wada-vol2 | affiliate_inventory_expansion | astro5-tailwind4-ts-strict | V3.1 | quick | self-designer+craftsman+distributor+security | AUTO | 280 | success
 2026-04-12 18:20 | handoff-update | content-seo-site | astro5-tailwind4-ts-strict | V3.1 | quick | self-qualify | AUTO | 30 | success
 2026-04-12 18:19 | robots-optimize | content-seo-site | astro5-tailwind4-ts-strict | V3.1 | micro | self-qualify | AUTO | 5 | success
 2026-04-12 18:18 | event-tracking | content-seo-site | astro5-tailwind4-ts-strict | V3.1 | standard | self-qualify | AUTO | 60 | success
@@ -145,15 +146,18 @@ Zero circuit breaker opens. Zero mistake loop entries. Clean session.
 
 ## Gate Log
 
-<!-- Empty — no gates encountered -->
+2026-04-19 09:20 | auto-accept(sovereign-auto) | affiliate_inventory_expansion | reversible-copy-edit | shipped | ok
 
 ## Specialist Log
 
-<!-- Empty — no specialist reviews fired (research-only session) -->
+2026-04-19 09:20 | @craftsman | shop-page-book-addition | Love 0.78 mean (U0.85 D0.70 R0.80 C0.90 Un0.65) | PASS | actionable=1 (upload Wada Vol 2 cover to OL — deferred)
+2026-04-19 09:20 | @distributor | shop-page-book-addition | Fit 0.50 mean (SEO0.6 Share0.2 Ch0.8 Loop0.3 Moat0.6) | PASS at threshold | actionable=0
+2026-04-19 09:20 | @designer | shop+about copy + FurtherReading | PASS (6-book grid balances cleaner than 5) | 0 🔴 | actionable=0
+2026-04-19 09:20 | @security | affiliate link addition | PASS (noopener sponsored preserved; no secrets) | 0 🔴 | actionable=0
 
 ## Cycle Times
 
-<!-- Empty — no tasks executed -->
+2026-04-19 | shop-wada-vol2 | quick | est 180s | actual 280s | +55% (research overhead: Bookshop slug + OL cover search)
 
 ## Recovery Log
 
