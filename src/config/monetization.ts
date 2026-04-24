@@ -220,6 +220,16 @@ export interface CuratedBook {
    *   https://covers.openlibrary.org/b/id/{id}-{size}.jpg
    */
   olCoverId?: number;
+  /**
+   * Explicit cover URL override. Takes precedence over all other lookups.
+   * Use this when Open Library has no cover for the ISBN (common for
+   * Japanese publisher ISBNs) or when we want reliable local hosting
+   * instead of depending on a third-party CDN.
+   *
+   * Absolute URLs pass through verbatim. Leading-slash paths resolve to
+   * `/public/...` at build time.
+   */
+  coverUrl?: string;
   /** Pull-quote reason for inclusion — shown inline on listings. */
   why: string;
 }
@@ -233,6 +243,7 @@ export const FURTHER_READING: CuratedBook[] = [
       "/p/books/a-dictionary-of-color-combinations-vol-1-sanzo-wada/19108229",
     amazonAsin: "4861522471",
     isbn: "4861522471",
+    coverUrl: "/book-covers/wada-vol-1.jpg",
     why: "The source tradition this archive draws from. Out of print for decades; Seigensha brought it back.",
   },
   {
@@ -243,6 +254,7 @@ export const FURTHER_READING: CuratedBook[] = [
       "https://bookshop.org/beta-search?keywords=9784861527722",
     amazonAsin: "4861527724",
     isbn: "4861527724",
+    coverUrl: "/book-covers/wada-vol-2.jpg",
     why: "Wada's 1935–1938 follow-ups — 72 plates on the Japanese seasons and 165 from early-century fashion, interior, and graphic design. The second half of the same hand.",
   },
   {
@@ -289,17 +301,27 @@ export const FURTHER_READING: CuratedBook[] = [
 ] as const;
 
 /**
- * Build an Open Library cover URL for a book. Prefers `olCoverId` (direct
- * internal ID — most reliable) over ISBN lookups, which can return a 1x1
- * transparent placeholder when the cover isn't indexed.
+ * Resolve a cover image URL for a book.
  *
- * The `default=false` query param tells Open Library to return a 404 on
- * miss instead of the 1x1 PNG, so the `onerror` handler in FurtherReading
- * fires correctly and the fallback tile renders.
+ * Priority (highest first):
+ *   1. `coverUrl`    — explicit override, absolute or site-relative.
+ *                      Use for reliable hosting when OL lacks the ISBN.
+ *   2. `olCoverId`   — direct Open Library internal ID. More reliable
+ *                      than ISBN lookups; use `openlibrary.org/search.json`
+ *                      to find the `cover_i` field.
+ *   3. ISBN / ASIN   — Open Library ISBN endpoint. Can return 404 when
+ *                      the ISBN isn't indexed (common for Japanese
+ *                      publisher ISBNs). The `default=false` query tells
+ *                      OL to 404 instead of returning a 1x1 PNG, so the
+ *                      `onerror` handler in FurtherReading fires and the
+ *                      fallback tile renders.
  *
  * Sizes: S (small, ~150px), M (medium, ~400px), L (large, ~800px).
+ * The `size` param only applies to Open Library sources; `coverUrl` is
+ * treated as size-agnostic (host the size you want).
  */
 export function bookCover(book: CuratedBook, size: "S" | "M" | "L" = "M"): string {
+  if (book.coverUrl) return book.coverUrl;
   if (typeof book.olCoverId === "number") {
     return `https://covers.openlibrary.org/b/id/${book.olCoverId}-${size}.jpg?default=false`;
   }
