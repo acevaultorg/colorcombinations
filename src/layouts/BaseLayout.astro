@@ -20,6 +20,8 @@ export interface Props {
   keywords?: string[];
   /** Suppress indexing (used on 404) */
   noIndex?: boolean;
+  /** Optional machine-readable JSON endpoint for this page (emits <link rel="alternate" type="application/json">). Used by LLM crawlers + third-party clients to traverse the data graph without scraping HTML. */
+  jsonAlternate?: string;
 }
 
 const {
@@ -31,6 +33,7 @@ const {
   jsonLd,
   keywords,
   noIndex = false,
+  jsonAlternate,
 } = Astro.props;
 
 const siteName = "The Dictionary of Color Combinations";
@@ -97,6 +100,10 @@ const jsonLdArray = jsonLd
 
     <!-- RSS feed -->
     <link rel="alternate" type="application/rss+xml" title="The Dictionary of Color Combinations" href="/feed.xml" />
+
+    {jsonAlternate && (
+      <link rel="alternate" type="application/json" title={`${title} — JSON data`} href={jsonAlternate} />
+    )}
 
     <!-- Editorial fonts — EB Garamond for serif, Inter for UI -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
