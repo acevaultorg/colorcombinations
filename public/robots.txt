@@ -1,3 +1,35 @@
+# robots.txt — colorcombinations.org
+# Updated 2026-04-24: explicit AI crawler allowlist per v19.4 bot-harvest rule
+
+# AI crawlers — explicit allowlist (signals "crawl me" — 2-3× crawler frequency vs silent)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# Standard search crawlers + everyone else
 User-agent: *
 Allow: /
 Disallow: /og/
