@@ -50,6 +50,10 @@ const keywords = [
   "Japanese color",
 ].filter(Boolean) as string[];
 
+// Freshness signals for LLM citation + Google Freshness (Aleyda #9).
+const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -60,6 +64,15 @@ const jsonLd = [
     url: new URL(`/colors/${color.slug}`, Astro.site).toString(),
     keywords: keywords.join(", "),
     color: color.hex,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: "https://colorcombinations.org",
+    },
   },
   {
     "@context": "https://schema.org",
