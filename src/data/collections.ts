@@ -1722,6 +1722,208 @@ export const collections: Collection[] = [
     limit: 24,
     accentHex: "#D4A8B8",
   },
+
+  // =========================================================================
+  // 55. Japandi color palettes — Japanese + Scandinavian fusion
+  // =========================================================================
+  {
+    slug: "japandi",
+    title: "Japandi Color Palettes",
+    tagline: "Where Japanese restraint meets Scandinavian clarity — the quietest palette in modern design.",
+    description:
+      "Japandi is the aesthetic meeting point between two traditions that already agreed: remove what isn't necessary, and honor what remains. The Japanese side brings warm earth tones, the patina of natural materials, and a reverence for imperfection — 'wabi-sabi' in color form. The Scandinavian side brings cool light, white space, and the clarity of considered minimalism. Wada's 1933 catalog sits exactly at this intersection: the chalk white of 'gofun' (胡粉) against the pale ink grey of 'nezumi' (鼠), the soft indigo of 'ai' (藍) beside unbleached linen, the celadon hush of 'seiji' (青磁) warmed by 'kinari' (生成 — undyed silk). These combinations are reference material for Japandi interiors, minimalist product brands, hospitality and wellness design, and any project where the brief is 'calm, considered, built to last.'",
+    keywords: [
+      "japandi color palette",
+      "japandi color scheme",
+      "japanese scandinavian colors",
+      "wabi sabi color palette",
+      "minimalist japandi colors",
+    ],
+    curatedSlugs: [
+      "ao-shiro",
+      "hanada-gin",
+      "seiji-kinari",
+      "kariyasu-rikyu",
+      "murasaki-gin",
+      "kon-kinari",
+    ],
+    match: (p) =>
+      (p.moods.includes("austere") || p.moods.includes("serene")) &&
+      p.moods.includes("refined") &&
+      (p.dominantHue === "neutral" || p.dominantHue === "blue" || p.dominantHue === "green"),
+    limit: 24,
+    accentHex: "#A8B2A6",
+  },
+
+  // =========================================================================
+  // 56. Kitchen color palettes — warm, welcoming, real-world interior
+  // =========================================================================
+  {
+    slug: "kitchen",
+    title: "Kitchen Color Palettes",
+    tagline: "Warm cream, sage, terracotta, deep green — the colors that make a kitchen feel lived-in.",
+    description:
+      "A kitchen is the room that sees the most light, the most wear, and the most hours. The palette has to work at breakfast and at dinner, in summer glare and in winter dusk, next to wood, stone, ceramic, and stainless steel. The Japanese color tradition is unusually well-suited: 'seiji' (青磁 — celadon) is the green of a hand-thrown tea bowl, warm against oak. 'Matcha' (抹茶) is the sage of herbs on a windowsill. 'Kaki' (柿 — persimmon) is the warm earthenware that reads as terracotta. 'Kariyasu' (刈安 — grass yellow) is the undyed cream that softens every other color in the room. These palettes are reference material for kitchen renovations, cabinetry brands, ceramic tile design, cookbook publishing, and any project that should feel like a kitchen at the end of a long, good day.",
+    keywords: [
+      "kitchen color palette",
+      "kitchen color scheme",
+      "kitchen colors",
+      "kitchen cabinet color palette",
+      "sage kitchen colors",
+    ],
+    curatedSlugs: [
+      "seiji-kinari",
+      "matcha-kinari",
+      "kariyasu-rikyu",
+      "kaki-kogecha",
+      "ao-shiro",
+      "kogecha-kinari",
+    ],
+    match: (p) =>
+      (p.moods.includes("warm") || p.moods.includes("serene")) &&
+      (p.dominantHue === "green" ||
+        p.dominantHue === "orange" ||
+        p.dominantHue === "brown" ||
+        p.dominantHue === "neutral"),
+    limit: 24,
+    accentHex: "#7A9473",
+  },
+
+  // =========================================================================
+  // 57. Bedroom color palettes — restful, enclosing, soft
+  // =========================================================================
+  {
+    slug: "bedroom",
+    title: "Bedroom Color Palettes",
+    tagline: "Quiet lavenders, soft pinks, dusky blues — the colors that lower the heart rate.",
+    description:
+      "A bedroom palette has one job: help the body slow down. That means low contrast, muted saturation, and colors that read warm even at night — the opposite of the bright, alert palette of a workspace. Japanese color tradition is especially fluent here. 'Fuji' (藤 — wisteria) is the specific dusty lavender that reads soft but never saccharine. 'Nadeshiko' (撫子 — fringed pink) is a pink with enough grey in it to feel grown-up. 'Hanada' (縹 — half-indigo) is the blue of paper screens at dusk. 'Murasaki' (紫) warmed with 'gin' (銀 — silver) is the color of cool cotton bedding in lamp light. These palettes are reference material for bedroom renovations, bedding and linen brands, sleep-focused wellness design, interior photography, and any project where the brief is 'restful.'",
+    keywords: [
+      "bedroom color palette",
+      "bedroom color scheme",
+      "bedroom colors",
+      "calming bedroom colors",
+      "master bedroom color palette",
+    ],
+    curatedSlugs: [
+      "fuji-ai",
+      "murasaki-gin",
+      "nadeshiko-mizu",
+      "hanada-gin",
+      "sakura-wakatake",
+      "kariyasu-rikyu",
+    ],
+    match: (p) =>
+      p.moods.includes("serene") &&
+      (p.moods.includes("cool") || p.moods.includes("refined")) &&
+      (p.dominantHue === "purple" ||
+        p.dominantHue === "pink" ||
+        p.dominantHue === "blue" ||
+        p.dominantHue === "neutral"),
+    limit: 24,
+    accentHex: "#A89BB8",
+  },
+
+  // =========================================================================
+  // 58. Y2K color palettes — bright, digital, early-2000s revival
+  // =========================================================================
+  {
+    slug: "y2k",
+    title: "Y2K Color Palettes",
+    tagline: "Bubblegum pink, cyber lilac, sky blue — the early-2000s revival, historically grounded.",
+    description:
+      "The Y2K aesthetic that designers have been reaching for since 2022 isn't actually a 2000s thing — it's an emotional shorthand for optimism, playfulness, and a specific register of digital-era color. The surprising thing is that Wada's 1933 catalog already contained those combinations, pulled from flower dyes and glazed ceramics rather than plastic and pixels. 'Nadeshiko' (撫子 — fringed pink) is the exact hot-pink of a 2001 flip phone. 'Sora' (空 — sky) is Windows XP blue filtered through a Kyoto summer. 'Fuji' (藤 — wisteria) is the early-iMac translucent lilac. 'Sakura' (桜) beside bright pop green is the TRL-era color moment pulled back to its flower-pigment source. These palettes are reference material for nostalgia-driven packaging, streetwear capsule collections, beauty and skincare relaunches, playful digital products, and any brand that wants the energy of 2001 without the cringe.",
+    keywords: [
+      "y2k color palette",
+      "y2k aesthetic colors",
+      "2000s color palette",
+      "early 2000s color scheme",
+      "cyber pink color palette",
+    ],
+    curatedSlugs: [
+      "nadeshiko-mizu",
+      "sakura-wakatake",
+      "fuji-ai",
+      "sora-shu",
+      "ao-shiro",
+      "daidai-kon",
+    ],
+    match: (p) =>
+      p.moods.includes("playful") &&
+      (p.moods.includes("bold") || p.moods.includes("serene")) &&
+      (p.dominantHue === "pink" ||
+        p.dominantHue === "purple" ||
+        p.dominantHue === "blue"),
+    limit: 24,
+    accentHex: "#E27AB4",
+  },
+
+  // =========================================================================
+  // 59. Forest color palettes — deep green, bark, ink, the understory
+  // =========================================================================
+  {
+    slug: "forest",
+    title: "Forest Color Palettes",
+    tagline: "Deep moss, pine needle, aged bark — the palette of the understory at dusk.",
+    description:
+      "A forest palette isn't just green — it's green layered over bark, shadow, and late light. Japanese color tradition catalogued the forest floor in extraordinary detail: 'moegi' (萌黄) is the spring green of new bamboo shoots, 'matsuba' (松葉) is the blue-black green of pine needles, 'tokiwa' (常磐) is the 'evergreen' that gives the name its meaning, 'kogecha' (焦茶 — burnt brown) is the color of wet bark, 'sumi' (墨) is the ink-black of the understory at dusk. Combined, these are some of the most restful palettes in the catalog — saturated without being aggressive, dark without being heavy. Reference material for outdoor brands, botanical illustration, environmental nonprofits, cabin hospitality and lodge design, hiking and travel editorial, and any project that should feel like walking into a Japanese cedar forest in early evening.",
+    keywords: [
+      "forest color palette",
+      "forest green color scheme",
+      "woodland color palette",
+      "deep green color combinations",
+      "dark forest color palette",
+    ],
+    curatedSlugs: [
+      "moegi-sumi",
+      "matcha-kinari",
+      "akane-tokiwa",
+      "kogecha-kinari",
+      "entan-sumi",
+      "seiji-kinari",
+    ],
+    match: (p) =>
+      (p.moods.includes("earthy") || p.moods.includes("solemn")) &&
+      (p.dominantHue === "green" ||
+        p.dominantHue === "brown" ||
+        (p.dominantHue === "neutral" && p.moods.includes("austere"))),
+    limit: 24,
+    accentHex: "#2F4A36",
+  },
+
+  // =========================================================================
+  // 60. Maximalist color palettes — saturated, fearless, fully committed
+  // =========================================================================
+  {
+    slug: "maximalist",
+    title: "Maximalist Color Palettes",
+    tagline: "Crimson against ultramarine, vermilion on ink — the palette that refuses to apologize.",
+    description:
+      "Maximalism isn't clutter — it's conviction. A maximalist palette takes the strongest pigments the tradition produced and combines them without softening, the way a Kabuki robe layers 'kurenai' (紅 — crimson) directly onto 'kon' (紺 — deep indigo), or a temple banner puts 'shu' (朱 — vermilion) against 'kuro' (黒 — ink). Wada's catalog is full of these fearless combinations because the underlying pigments — safflower, madder, indigo, cinnabar, turmeric, lacquer — were themselves so saturated that restraint would have been a waste. These palettes are reference material for print and editorial design that needs to survive a crowded newsstand, textile and wallpaper brands willing to carry a room, restaurant and hospitality identities that trade on drama, and any project where the brief is 'more, and better.'",
+    keywords: [
+      "maximalist color palette",
+      "maximalist aesthetic colors",
+      "bold color combinations",
+      "saturated color palette",
+      "dopamine color palette",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "shu-kuro-kin",
+      "akane-tokiwa",
+      "entan-sumi",
+      "ukon-ai",
+      "daidai-kon",
+    ],
+    match: (p) =>
+      p.moods.includes("bold") &&
+      (p.moods.includes("warm") || p.moods.includes("solemn")) &&
+      (p.dominantHue === "red" ||
+        p.dominantHue === "orange" ||
+        p.dominantHue === "yellow"),
+    limit: 24,
+    accentHex: "#B21F2D",
+  },
 ];
 
 // ============================================================================
