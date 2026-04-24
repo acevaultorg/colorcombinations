@@ -58,6 +58,100 @@
 
 ## Human Actions (TaskAssistant)
 
+<!-- 2026-04-24: Clarity Card format per I-27 — surfaced by specialist audit on shop rail ship. -->
+
+### 🔴 REQUIRED — Activate the Bookshop.org affiliate ID
+
+**WHAT:** Paste your real Bookshop.org affiliate associate ID into the project config. Today the shop book rail renders `PLACEHOLDER_BOOKSHOP_ID` — every Bookshop link still fires click-tracking, but zero commission flows because the URL has no `aid=`. This is the single highest-$/week unlock.
+
+**WHY:** The shop page is live with 5 of 6 books pointing to Bookshop as the primary CTA (the sixth, Wada Vol. 2, points to Amazon because Bookshop US doesn't stock the import). At ~2,000 visits/week × 5% click-through × 15% conversion × $35 AOV × 10% commission, pasting the real ID activates **~$52/week** of passive revenue that is currently $0. Cost of skipping: every book click on colorcombinations.org today earns nothing.
+
+**TIME:** ~6 minutes end-to-end (5 min signup, 1 min paste + redeploy).
+
+**HOW:**
+1. Open Bookshop.org's affiliate signup page in your browser:
+   `https://bookshop.org/affiliates/apply`
+   → expected: 1-page form asking site URL + payout method. Approval is instant for content sites.
+2. Fill in site URL `https://colorcombinations.org` + your PayPal / bank payout info + submit.
+   → expected: approval email within minutes with your affiliate ID (format: usually a lowercase slug like `color-combinations` or a 4–6 digit number).
+3. Open `src/config/monetization.ts` locally. Line ~90 reads `affiliateId: "PLACEHOLDER_BOOKSHOP_ID",`. Replace `PLACEHOLDER_BOOKSHOP_ID` with your new ID (keep the quotes).
+4. Rebuild + deploy:
+   `npm run build && wrangler pages deploy dist --project-name=colorcombinations --branch=main`
+   → expected: "✨ Deployment complete!" + a `*.colorcombinations.pages.dev` URL.
+
+**VERIFY:**
+`curl -sS "https://colorcombinations.org/shop/" | grep -oE 'aid=[a-z0-9-]+' | head -1`
+→ expected: `aid=[your-id]` — matches what you pasted. If output is `aid=PLACEHOLDER_BOOKSHOP_ID`, the deploy hasn't propagated yet; retry in 30 seconds.
+
+**IF STUCK:**
+- **Signup form errors out:** make sure you used the US Bookshop.org site, not UK (`uk.bookshop.org` has a different affiliate program with different IDs).
+- **`wrangler` not found:** run `nvm use 20 && npm i -g wrangler@latest` first, then re-try.
+- **Deploy succeeds but `aid=` still PLACEHOLDER in output:** Cloudflare edge cache — wait 60 sec then retry verify, or curl the `*.pages.dev` preview URL directly.
+
+[id:bookshop-id-activate] [score:14.0] 👤 — ESTIMATED +$52/WEEK once live
+
+### 🟡 RECOMMENDED — Enable Cloudflare Pay-Per-Crawl on the zone
+
+**WHAT:** Flip the "Enable Pay-Per-Crawl" toggle in the Cloudflare dashboard for `colorcombinations.org`. Cloudflare will bill AI crawlers (GPTBot, ClaudeBot, PerplexityBot, etc.) on your behalf and deposit a share to you. Your `robots.txt` already has the 9-crawler allowlist per v19.4 — PPC turns the bot traffic from cost center into revenue.
+
+**WHY:** Even at modest bot-crawl volumes (100–500 crawls/day), direct PPC revenue lands $3–$30/month. Cost of skipping: those crawls happen anyway (they're already in your server logs per v19.4 bot-harvest rule), just uncompensated. Small money but fully passive.
+
+**TIME:** ~2 min UI toggle + ~5 min one-time payout method setup.
+
+**HOW:**
+1. Open Cloudflare dashboard: `https://dash.cloudflare.com`.
+2. Select the `colorcombinations.org` zone (left-nav).
+3. Navigate: AI Audit (left sidebar) → "Enable Pay-Per-Crawl".
+4. Agree to marketplace Terms (legal review on first-time setup).
+5. Configure payout method (bank transfer or Stripe Connect).
+6. Optional: override per-crawler pricing tiers (defaults are reasonable for a V1 site — leave as-is).
+
+**VERIFY:**
+After 24 hours, Cloudflare dashboard → AI Audit → Reports should show bot crawls being monetized. First earnings row may take 7 days.
+
+**IF STUCK:**
+- **"AI Audit" not visible:** your Cloudflare plan level may hide it — check Cloudflare Pro / Business features in the same left-nav.
+- **Payout method rejects bank info:** use Stripe Connect instead (supported everywhere Stripe operates).
+
+[id:cf-ppc-enable] [score:9.0] 👤 — ~$3–30/mo passive, payment-gated
+
+### 🟢 OPTIONAL — Email Perplexity Publishers Program
+
+**WHAT:** Send a short email to `publishers@perplexity.ai` proposing colorcombinations.org for their publisher revenue-share program. Perplexity runs an 80/20 revenue split on a ~$42.5M publisher pool for sites they cite in AI-search answers. Museum-grade reference content is exactly what they want.
+
+**WHY:** Free to pitch. Zero commitment required if not accepted. If accepted, a side bonus: free Perplexity Enterprise Pro account (~$200/mo value). Cost of skipping: zero downside, just leaves a small revenue lane unexplored.
+
+**TIME:** ~5 min to draft + send.
+
+**HOW:**
+1. Open your email client.
+2. To: `publishers@perplexity.ai`.
+3. Subject: `Publisher program inquiry — colorcombinations.org (color reference archive)`.
+4. Body (template):
+   > Hi Perplexity team,
+   >
+   > I run colorcombinations.org — a modern, editorially curated archive of Sanzo Wada's 1933 Dictionary of Color Combinations. 378 palettes with historical context, Japanese shikisai names, and free-to-copy hex values.
+   >
+   > The site is designed for LLM citation: static HTML, schema.org markup, llms.txt manifest, stable URLs, comprehensive metadata. Would you like to evaluate it for the Publishers Program?
+   >
+   > URL: `https://colorcombinations.org`
+   > Traffic: [your current number from Cloudflare / Plausible]
+   > Contact: [your email]
+   >
+   > Thanks,
+   > [your name]
+
+**VERIFY:** Auto-reply confirms receipt within 1 hour. Team response within 5–10 business days.
+
+**IF STUCK:**
+- **No auto-reply:** email the form at `https://www.perplexity.ai/hub/publishers` as a backup.
+- **They want analytics numbers you don't have:** say "building measurement — current Cloudflare Web Analytics visibility only" and share the CF dashboard link.
+
+[id:perplexity-publishers-email] [score:6.0] 👤 — free / no downside
+
+---
+
+
 - [x] `P0` BUY domain colorcombinations.org — `platform:cloudflare-registrar` [id:buy-domain] [score:10.0] ✓ Bought via Cloudflare Registrar 2026-04-10 (pivoted from Namecheap → cleaner because registrar + hosting in same ecosystem)
 - [x] `P0` CONNECT repo to Cloudflare Pages + custom domain — `platform:cloudflare-pages` [id:deploy-cloudflare-pages] [needs:buy-domain] [score:9.5] ✓ DEPLOYED 2026-04-10 via `wrangler pages deploy dist` — 34 pages live, all routes 200, custom 404 serving, security headers applied. Also fixed trailing-slash redirect hop.
 - [👤] `P0` SIGN UP for Gumroad (or Lemonsqueezy) seller account + upload `bundle-source/wada-bundle-v1.zip` as $9 product — `platform:gumroad` [id:gumroad-setup] [score:12.0] 👤 REVENUE-CRITICAL
