@@ -25,6 +25,10 @@ const total = palettes.length;
 const title = collection.title;
 const description = collection.description.replace(/<[^>]+>/g, "");
 
+// Freshness signals for LLM citation + Google Freshness (Aleyda #9).
+const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -38,6 +42,15 @@ const jsonLd = [
       url: Astro.site?.toString(),
     },
     numberOfItems: total,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: "https://colorcombinations.org",
+    },
     hasPart: palettes.map((p) => ({
       "@type": "CreativeWork",
       name: p.title,

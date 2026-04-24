@@ -49,6 +49,12 @@ const keywords = [
   ...palette.colors.flatMap((c) => [c.nameRomaji, c.nameJa].filter(Boolean) as string[]),
 ];
 
+// Freshness signals for LLM citation + Google Freshness (Aleyda #9).
+// datePublished: first site publication. dateModified: current build.
+// Source: Sanzo Wada, A Dictionary of Color Combinations (1933).
+const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -59,6 +65,23 @@ const jsonLd = [
     url: new URL(`/palettes/${palette.slug}`, Astro.site).toString(),
     abstract: palette.description,
     keywords: keywords.join(", "),
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    dateCreated: "1933-01-01",
+    inLanguage: "en",
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@type": "Person", name: "Sanzo Wada" },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: "https://colorcombinations.org",
+    },
     about: palette.colors.map((c) => ({
       "@type": "Thing",
       name: c.nameRomaji ?? c.hex,
