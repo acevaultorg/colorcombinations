@@ -86,6 +86,7 @@
 ## Queue — SEO Collections Batch v19 [objective:seo-expansion-batch]
 
 - [x] `P1` ADD 6 commercial-intent SEO collections — japandi, kitchen, bedroom, y2k, forest, maximalist — `src/data/collections.ts` [id:collections-batch-v19] [score:9.0] [oracle:$0.30-1.20/wk post-index] [reach:+12-36 visitors/wk long-tail] ✓ 60 total collections, 1042 build pages, 0 errors, sitemap clean
+- [x] `P1` SHIP embeddable collection widgets — per-collection iframe at /embed/collection/[slug] (560×320) + "Embed this collection" section on every collection detail page + sitemap filter to exclude /embed/* — `src/pages/embed/collection/[slug].astro`, `src/pages/collections/[slug].astro`, `astro.config.mjs` [id:collection-embed-widget] [score:9.5] [reach:advocacy archetype embeddable_widget × +80] ✓ 60 embed routes, 1102 build pages, sitemap 0 noindex leaks
 
 ## Deferred to V2
 

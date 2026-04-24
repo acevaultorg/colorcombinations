@@ -6,7 +6,14 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   site: "https://colorcombinations.org",
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      // /embed/* routes are noindex iframe widgets, not discovery surfaces.
+      // Exclude from sitemap to avoid GSC "Excluded by noindex" noise.
+      filter: (page) => !page.includes("/embed/"),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

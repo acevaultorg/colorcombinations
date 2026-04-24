@@ -1,0 +1,263 @@
+---
+/**
+ * /embed/collection/[slug] — iframe-embeddable collection gallery (560×320px).
+ *
+ * Shows the collection title + up to 6 palette strips as a single compact
+ * widget. Designed for third-party blog posts and design publications
+ * writing about themes like "japandi color palette" or "kitchen color palette".
+ * Each palette strip + the header both link back to colorcombinations.org
+ * (header → collection page, strip → palette page).
+ *
+ * Usage:
+ *   <iframe src="https://colorcombinations.org/embed/collection/japandi/"
+ *           width="560" height="320" frameborder="0"
+ *           style="border-radius:8px;overflow:hidden;"
+ *           title="Japandi color palettes — colorcombinations.org">
+ *   </iframe>
+ */
+import {
+  collections,
+  collectionBySlug,
+  paletteSetForCollection,
+} from "@/data/collections";
+import { bestTextColorOn } from "@/lib/color";
+
+export async function getStaticPaths() {
+  return collections.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const collection = collectionBySlug(slug ?? "");
+
+if (!collection) {
+  return Astro.redirect("/404");
+}
+
+// Show up to 6 palettes — keeps the widget compact + scannable
+const palettes = paletteSetForCollection(collection).slice(0, 6);
+const collectionUrl = `https://colorcombinations.org/collections/${collection.slug}/`;
+const title = `${collection.title} — colorcombinations.org`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 560px;
+        height: 320px;
+        overflow: hidden;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #fff;
+        color: #222;
+      }
+
+      .embed-root {
+        display: flex;
+        flex-direction: column;
+        width: 560px;
+        height: 320px;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .embed-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        height: 40px;
+        background: #fafaf7;
+        border-bottom: 1px solid #ece9e2;
+        text-decoration: none;
+        color: inherit;
+        flex-shrink: 0;
+      }
+
+      .embed-head:hover .embed-head__title {
+        text-decoration: underline;
+      }
+
+      .embed-head__title {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 380px;
+      }
+
+      .embed-head__meta {
+        font-size: 11px;
+        color: #888;
+        white-space: nowrap;
+        letter-spacing: 0.01em;
+      }
+
+      .embed-grid {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .palette-row {
+        flex: 1;
+        display: flex;
+        text-decoration: none;
+        color: inherit;
+        overflow: hidden;
+        border-bottom: 1px solid #ece9e2;
+        transition: opacity 0.15s ease;
+      }
+
+      .palette-row:last-child {
+        border-bottom: 0;
+      }
+
+      .palette-row:hover {
+        opacity: 0.92;
+      }
+
+      .palette-row__swatches {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .swatch {
+        flex: 1;
+        display: flex;
+        align-items: flex-end;
+        padding: 0 6px 3px;
+        overflow: hidden;
+        transition: flex 0.15s ease;
+      }
+
+      .palette-row:hover .swatch {
+        flex: 1;
+      }
+
+      .swatch__hex {
+        font-size: 8px;
+        line-height: 1;
+        font-family: "SF Mono", "Fira Mono", ui-monospace, monospace;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+        white-space: nowrap;
+      }
+
+      .palette-row:hover .swatch__hex {
+        opacity: 0.85;
+      }
+
+      .swatch--light .swatch__hex {
+        color: rgba(0, 0, 0, 0.7);
+      }
+
+      .swatch--dark .swatch__hex {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .palette-row__title {
+        display: flex;
+        align-items: center;
+        min-width: 150px;
+        max-width: 180px;
+        padding: 0 14px;
+        background: #fff;
+        font-size: 12px;
+        font-weight: 500;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-left: 1px solid #ece9e2;
+      }
+
+      .embed-foot {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 14px;
+        height: 22px;
+        background: #fff;
+        border-top: 1px solid #ece9e2;
+        flex-shrink: 0;
+      }
+
+      .embed-foot__brand {
+        font-size: 10px;
+        color: #999;
+        letter-spacing: 0.02em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="embed-root">
+      <a
+        class="embed-head"
+        href={collectionUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`View the full ${collection.title} collection on colorcombinations.org`}
+      >
+        <span class="embed-head__title">{collection.title}</span>
+        <span class="embed-head__meta">{palettes.length} palettes →</span>
+      </a>
+
+      <div class="embed-grid">
+        {
+          palettes.map((palette) => {
+            const paletteUrl = `https://colorcombinations.org/palettes/${palette.slug}/`;
+            const hexList = palette.colors.map((c) => c.hex).join(" · ");
+            return (
+              <a
+                class="palette-row"
+                href={paletteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`${palette.title} — ${hexList}`}
+                aria-label={`View ${palette.title} palette on colorcombinations.org`}
+              >
+                <div class="palette-row__swatches">
+                  {palette.colors.map((color) => {
+                    const tone = bestTextColorOn(color.hex);
+                    return (
+                      <div
+                        class={`swatch swatch--${tone}`}
+                        style={`background-color:${color.hex};`}
+                      >
+                        <span class="swatch__hex">{color.hex}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div class="palette-row__title">{palette.title}</div>
+              </a>
+            );
+          })
+        }
+      </div>
+
+      <div class="embed-foot">
+        <span class="embed-foot__brand">colorcombinations.org</span>
+      </div>
+    </div>
+  </body>
+</html>
