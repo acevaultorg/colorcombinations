@@ -142,7 +142,7 @@ These are PUBLIC DOMAIN cultural knowledge (centuries old), safe to use:
 - **Pages hostname:** `colorcombinations.pages.dev`
 - **Custom domain:** `colorcombinations.org` ✓ LIVE (SSL auto-provisioned, CNAME @ → colorcombinations.pages.dev)
 - **Repo:** https://github.com/acevaultorg/colorcombinations (public)
-- **Deploy command:** `wrangler pages deploy dist --project-name=colorcombinations --branch=main` (Git integration exists on acevaultorg but CLI deploy is proven-working path for this project)
+- **Deploy command:** `wrangler pages deploy dist --project-name=colorcombinations --branch=main` (REQUIRED — CF Pages project has `Git Provider: No`; verified 2026-04-24. Pushing to `origin/main` does NOT trigger a build. Every ship must run `npm run build` then `wrangler pages deploy`. Skipping this = deploy silence: GitHub PR merges, live site stays stale, fingerprint never matches.)
 - **Build:** `npm run build` (Astro default)
 - **Output:** `./dist/`
 - **Node version:** 20 (Cloudflare Pages default; Astro 5 requires ≥18.17)
@@ -152,7 +152,20 @@ These are PUBLIC DOMAIN cultural knowledge (centuries old), safe to use:
 - **Previous plan:** Vercel (locked in DECISIONS.md 2026-04-08) — pivoted because registrar colocation eliminates DNS cross-config
 
 ## Error patterns
-<!-- Empty — new project -->
+
+### Deploy silence on main merge <!-- verified: 2026-04-24 -->
+**Symptom:** PR merges cleanly to `main`, but `colorcombinations.org` and `colorcombinations.pages.dev` both continue serving the previous build. Fingerprint curl (e.g. `grep -c "Vol. 2"`) returns 0 for 10+ minutes post-merge.
+
+**Root cause:** CF Pages project has no GitHub Git provider connected. No auto-build on push.
+
+**Workaround (every ship):**
+```
+npm run build
+wrangler pages deploy dist --project-name=colorcombinations --branch=main
+```
+Takes ~10 sec for 1000-page build. Deploy URL printed (e.g. `https://0ffb9c8b.colorcombinations.pages.dev`) propagates to custom domain within seconds.
+
+**Verify:** `curl -sS "https://colorcombinations.org/[unique-fingerprint]"` — must match repo's current HEAD content.
 
 ## Orient snapshot
 ColorCombinations is a content + commerce-lite website built as a modern, monetized reinterpretation of Sanzo Wada's 1933 Dictionary of Color Combinations. Target users: designers, developers, artists, brand agencies. Revenue: print affiliate + Pro subscription + design-tool affiliate. Tech: Astro SSG for max SEO + minimal JS.
