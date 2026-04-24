@@ -100,6 +100,15 @@ Build work: 0 tasks completed (all 16 TASKS.md tasks paused pending domain decis
 
 ## Session Rollups
 
+2026-04-24 (auto) | auto (sovereign auto) | shop-wada-vol2 | affiliate_inventory_expansion | 2 commits shipped + live | 0 blocked | 0 human | cycle: ~290s avg | DATA: Sanzo Wada Vol. 2 added to FurtherReading + shop/about copy updated "Five → Six books" + both Wada covers self-hosted at /book-covers/ (drops OL CDN dependency) + CuratedBook interface gains coverUrl override
+Tasks: shop-wada-vol2-add, shop-wada-covers-selfhost
+Output: 2 new 354×500 JPEGs in public/book-covers/, CuratedBook interface + bookCover() resolver extended with coverUrl precedence, monetization.ts +10 lines for Vol 2 entry, shop.astro + about.astro copy updated
+Build: 1036 pages (post-rebase), astro check clean, 9.4 sec wrangler deploy, 662 new files uploaded
+Specialist review: @craftsman Love 0.78 (PASS I-23), @distributor Fit 0.50 (PASS threshold I-26), @designer 0🔴, @security 0🔴
+Path: local commits → rebase onto origin/main (1 ORACLE.md conflict, resolved) → push → PR #2 → squash-merge as 0521dd7 → wrangler pages deploy (CF Pages Git Provider: No, manual required) → Chrome MCP fingerprint-verified on colorcombinations.org
+Lesson captured: CF Pages project has no GitHub auto-deploy; logged to KNOWLEDGE.md Error patterns + Deploy target. Future sessions MUST run wrangler deploy; `git push` to main is necessary but not sufficient.
+Gate accuracy: AUTO 100% (zero prompts except implicit auto-accept per I-32); PAYMENT GATE not triggered (no real money). Zero circuit breaker opens, zero mistake loop entries.
+
 2026-04-11 (pm2) | god | collections | content-seo-site | 6 tasks shipped | 0 blocked | 0 human | cycle: ~238s avg | DATA: 8 commercial-intent landing pages (websites/branding/autumn/spring/minimalist/indigo/bold/heian), 9 new pages total, cross-linked via "Featured in" chips on all 378 palette pages
 Tasks: collections-data, collections-index-page, collections-detail-page, collections-nav-footer, featured-in-chips, collections-deploy
 Output: 1 new data file (collections.ts with 8 collection defs + 4 helper functions), 2 new page templates (index + [slug]), palette detail pages enriched with "Featured in" chip row, header/footer updated with Collections links
