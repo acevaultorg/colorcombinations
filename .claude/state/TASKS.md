@@ -83,6 +83,10 @@
 - [x] `P1` ADD Colors to nav + footer + RSS discovery link in BaseLayout — `SiteHeader.astro`, `SiteFooter.astro`, `BaseLayout.astro` [id:color-nav] [needs:color-index] [score:9.5] ✓
 - [x] `P0` BUILD + VERIFY + DEPLOY — 603 pages, 2.73s, 0 errors, all live at colorcombinations.org [id:color-deploy] [needs:color-nav,rss-feed,swatch-links] [score:9.0] ✓
 
+## Queue — SEO Collections Batch v19 [objective:seo-expansion-batch]
+
+- [x] `P1` ADD 6 commercial-intent SEO collections — japandi, kitchen, bedroom, y2k, forest, maximalist — `src/data/collections.ts` [id:collections-batch-v19] [score:9.0] [oracle:$0.30-1.20/wk post-index] [reach:+12-36 visitors/wk long-tail] ✓ 60 total collections, 1042 build pages, 0 errors, sitemap clean
+
 ## Deferred to V2
 
 - Full Sanzo Wada 348 dataset import (requires verified source)

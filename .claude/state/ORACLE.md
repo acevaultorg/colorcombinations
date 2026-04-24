@@ -19,6 +19,7 @@ affiliate_inventory_expansion: 0.15
 ## Calibration
 # timestamp | task | archetype | projected_$/wk | actual_$/wk_d7 | actual_$/wk_d30 | ratio
 2026-04-19 09:20 | shop-wada-vol2 | affiliate_inventory_expansion | 0.50-2.00 (post-activation) | TBD | TBD | n/a — Bookshop/Amazon affiliates placeholder
+2026-04-24 19:56 | collections-batch-v19 | SEO_page_addition × 0.15 + affiliate_inventory_expansion × 0.15 | 0.30-1.20 (post-index, 3-6 mo) — 6 new indexable pages × est 2-6 visitors/wk each × ~$0.03/visitor when affiliate rails live | TBD (rails gated on operator Gumroad/Bookshop signups) | TBD | n/a — pre-activation
 
 ## Corrections
 # (none)
