@@ -23,6 +23,14 @@ interface PillarSpec {
 
 const PILLARS: ReadonlyArray<PillarSpec> = [
   {
+    slug: "heian-court-color-theory",
+    title: "Heian Court Color Theory",
+    subtitle: "Kasane, kinjiki, the seasonal palette",
+    blurb:
+      "How the Heian imperial court systematised colour into layered-robe combinations, forbidden pigments, and a 12-month seasonal calendar.",
+    swatches: ["#9A2A2A", "#1B2A4E", "#5C2D5C", "#D4AF37"],
+  },
+  {
     slug: "japanese-reds",
     title: "The Four Reds",
     subtitle: "Kurenai, Akane, Shu, Entan",
