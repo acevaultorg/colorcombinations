@@ -88,9 +88,10 @@ export const GET: APIRoute = ({ params }) => {
       : color.meaning
     : "";
 
-  // Site mark (matches palette + collection OG)
+  // Site mark — placed on the right (cream) side because the left side is
+  // the variable-color swatch (could be red, dark, etc., obscuring the mark).
   const siteMark = `
-    <g transform="translate(80, 64)">
+    <g transform="translate(${SWATCH_W + 60}, 64)">
       <rect x="0" y="-14" width="14" height="14" fill="#9A2A2A" />
       <rect x="16" y="-14" width="14" height="14" fill="#1B2A4E" />
       <rect x="32" y="-14" width="14" height="14" fill="#F4EEE0" stroke="#d9d6ce" stroke-width="0.5" />
