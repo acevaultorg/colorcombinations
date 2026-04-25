@@ -156,6 +156,59 @@ const jsonLd = {
     </div>
   </section>
 
+  {/* ==================== LEARN — pillar articles ==================== */}
+  <section class="learn-feature section" aria-labelledby="learn-feature-heading">
+    <div class="container-wide">
+      <header class="section-head">
+        <p class="eyebrow">Learn</p>
+        <h2 id="learn-feature-heading" class="text-balance">Working guides for designers.</h2>
+        <p class="section-lede">
+          Long-form articles on color theory, palette use, and the
+          Japanese tradition behind the dictionary. Each piece links to
+          specific palettes you can drop into a project today.
+        </p>
+      </header>
+      <ul class="learn-feature__list" role="list">
+        <li>
+          <a href="/learn/japanese-reds/" class="learn-feature__card">
+            <p class="learn-feature__eyebrow">Color theory · 5 min</p>
+            <h3 class="learn-feature__title">The Four Reds: Kurenai, Akane, Shu, Entan</h3>
+            <p class="learn-feature__desc">
+              Why the tradition distinguishes safflower crimson from
+              madder from vermilion from lead red — and which to reach
+              for when the brief asks for "a Japanese red."
+            </p>
+          </a>
+        </li>
+        <li>
+          <a href="/learn/wabi-sabi-color-theory/" class="learn-feature__card">
+            <p class="learn-feature__eyebrow">Color theory · 5 min</p>
+            <h3 class="learn-feature__title">Wabi-Sabi Color Theory</h3>
+            <p class="learn-feature__desc">
+              What it actually means for color when a tradition values
+              age over newness, asymmetry over balance, and imperfection
+              over polish.
+            </p>
+          </a>
+        </li>
+        <li>
+          <a href="/learn/japandi-color-theory/" class="learn-feature__card">
+            <p class="learn-feature__eyebrow">Color theory · 5 min</p>
+            <h3 class="learn-feature__title">Japandi Color Theory</h3>
+            <p class="learn-feature__desc">
+              How Japanese and Scandinavian traditions converge — and
+              which palettes from the Wada dictionary actually fit the
+              Japandi brief.
+            </p>
+          </a>
+        </li>
+      </ul>
+      <p class="learn-feature__more">
+        <a href="/learn/">All articles →</a>
+      </p>
+    </div>
+  </section>
+
   {/* ==================== BUNDLE ==================== */}
   <BundleCta variant="medium" />
 
@@ -373,4 +426,82 @@ const jsonLd = {
     margin: 0;
   }
 
+  /* ============ LEARN FEATURE ============ */
+
+  .learn-feature {
+    background: var(--color-paper-100);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .learn-feature__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .learn-feature__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .learn-feature__card {
+    display: block;
+    height: 100%;
+    padding: 1.5rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms ease;
+  }
+
+  .learn-feature__card:hover {
+    border-color: var(--color-ink-900);
+  }
+
+  .learn-feature__eyebrow {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+
+  .learn-feature__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.25vw + 0.875rem, 1.375rem);
+    line-height: 1.2;
+    margin: 0 0 0.625rem;
+    color: var(--color-ink-900);
+  }
+
+  .learn-feature__desc {
+    font-size: 0.9375rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .learn-feature__more {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9375rem;
+  }
+
+  .learn-feature__more a {
+    color: var(--color-accent-500);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .learn-feature__more a:hover {
+    text-decoration: underline;
+  }
 </style>
