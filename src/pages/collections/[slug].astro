@@ -23,6 +23,29 @@ if (!collection) {
 const palettes = paletteSetForCollection(collection);
 const total = palettes.length;
 
+// Pillar-article cross-link — when a collection has a matching /learn pillar,
+// surface it as a "From the editorial" callout. Compounds internal-link
+// density between thematic palettes and long-form context.
+type PillarLink = { href: string; title: string; lede: string };
+const learnLinkMap: Record<string, PillarLink> = {
+  japandi: {
+    href: "/learn/japandi-color-theory/",
+    title: "Japandi Color Theory: Where Restraint Meets Light",
+    lede: "A working guide to where Japanese and Scandinavian color traditions converge — three palettes from this collection are the working examples.",
+  },
+  "wabi-sabi": {
+    href: "/learn/wabi-sabi-color-theory/",
+    title: "Wabi-Sabi Color Theory: The Beauty of Things That Have Aged",
+    lede: "What it actually means for color when a tradition values age over newness — the tea-room palette, three exemplars, and the anti-patterns to avoid.",
+  },
+  red: {
+    href: "/learn/japanese-reds/",
+    title: "The Four Reds: Kurenai, Akane, Shu, Entan",
+    lede: "Why Japanese tradition distinguishes safflower crimson from madder from vermilion from lead red — and which to reach for when the brief asks for 'a Japanese red.'",
+  },
+};
+const pillar: PillarLink | undefined = learnLinkMap[collection.slug];
+
 const title = collection.title;
 const description = collection.description.replace(/<[^>]+>/g, "");
 
@@ -179,6 +202,20 @@ const jsonLd = [
       </div>
     </div>
   </section>
+
+  {/* Pillar article cross-link — only on collections that have a matching /learn/ pillar */}
+  {pillar && (
+    <section class="collection-pillar section">
+      <div class="container-wide">
+        <a href={pillar.href} class="collection-pillar__link">
+          <p class="collection-pillar__eyebrow">From the editorial · Long read</p>
+          <h2 class="collection-pillar__title">{pillar.title}</h2>
+          <p class="collection-pillar__lede">{pillar.lede}</p>
+          <span class="collection-pillar__more">Read the article →</span>
+        </a>
+      </div>
+    </section>
+  )}
 
   {/* Other collections — cross-linking for SEO + navigation */}
   <section class="collection-related section">
@@ -441,6 +478,56 @@ const jsonLd = [
     letter-spacing: 0.07em;
     color: var(--color-ink-500);
     margin: 0 0 0.625rem;
+  }
+
+  /* ============ PILLAR ARTICLE CROSS-LINK ============ */
+
+  .collection-pillar {
+    background: var(--color-bg-elevated);
+    border-top: 1px solid var(--color-border);
+    padding: 2.5rem 0;
+  }
+
+  .collection-pillar__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .collection-pillar__eyebrow {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    font-weight: 600;
+    margin: 0 0 0.625rem;
+  }
+
+  .collection-pillar__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2vw + 1rem, 2rem);
+    line-height: 1.2;
+    margin: 0 0 0.75rem;
+    color: var(--color-ink-900);
+    max-width: 32ch;
+  }
+
+  .collection-pillar__lede {
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 0 0 1rem;
+    max-width: 60ch;
+  }
+
+  .collection-pillar__more {
+    color: var(--color-accent-500);
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+
+  .collection-pillar__link:hover .collection-pillar__title {
+    color: var(--color-accent-700);
   }
 
   /* ============ OTHER COLLECTIONS ============ */
