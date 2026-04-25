@@ -1,0 +1,230 @@
+---
+/**
+ * /learn — Section landing page for long-form pillar articles.
+ *
+ * Currently hosts one pillar (Japandi Color Theory). As more articles
+ * ship, they get indexed here. Schema.org Blog with first article as
+ * blogPost ItemList — Knowledge-Graph-eligible.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Learn";
+const description =
+  "Long-form articles on color theory, palette use, and the Japanese tradition behind the dictionary. Working guides for designers, with named pigments and concrete palette references.";
+
+const articles = [
+  {
+    href: "/learn/japandi-color-theory/",
+    title: "Japandi Color Theory: Where Restraint Meets Light",
+    eyebrow: "Color theory · Long read",
+    description:
+      "How Japanese and Scandinavian color traditions converge — and which palettes from the Wada dictionary actually fit the Japandi brief. Three working palettes, three anti-patterns, and the three-axis test.",
+    publishedDate: "2026-04-25",
+    readingTime: "5 min",
+    tags: ["Japandi", "Wabi-Sabi", "Scandinavian"],
+  },
+];
+
+const siteUrl = "https://colorcombinations.org/";
+const learnUrl = `${siteUrl}learn/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Learn — The Dictionary of Color Combinations",
+    description,
+    url: learnUrl,
+    inLanguage: "en",
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    blogPost: articles.map((a) => ({
+      "@type": "BlogPosting",
+      headline: a.title,
+      url: new URL(a.href, Astro.site).toString(),
+      datePublished: a.publishedDate,
+      keywords: a.tags.join(", "),
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={[
+    "color theory articles",
+    "japandi color theory",
+    "wabi sabi color guide",
+    "japanese color palette guide",
+    "design color theory",
+  ]}
+  jsonLd={jsonLd}
+>
+  <section class="learn-hero">
+    <div class="container-narrow">
+      <p class="eyebrow">Learn</p>
+      <h1 class="display-hero text-balance">
+        Working guides for designers.
+      </h1>
+      <p class="learn-hero__lede">
+        Long-form articles on color theory, palette use, and the Japanese
+        tradition behind the dictionary. Each piece links to specific
+        palette + collection pages so you can move from idea to
+        implementation in one click.
+      </p>
+    </div>
+  </section>
+
+  <section class="section learn-list">
+    <div class="container-narrow">
+      <ul class="learn-articles" role="list">
+        {articles.map((a) => (
+          <li>
+            <a href={a.href} class="learn-article">
+              <p class="learn-article__eyebrow">{a.eyebrow} · {a.readingTime}</p>
+              <h2 class="learn-article__title">{a.title}</h2>
+              <p class="learn-article__desc">{a.description}</p>
+              <div class="learn-article__meta">
+                <time datetime={a.publishedDate}>{a.publishedDate}</time>
+                <span class="learn-article__tags">
+                  {a.tags.map((t, i) => (
+                    <>
+                      <span>{t}</span>
+                      {i < a.tags.length - 1 && <span aria-hidden="true">·</span>}
+                    </>
+                  ))}
+                </span>
+                <span class="learn-article__more" aria-hidden="true">Read →</span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="learn-future">
+        More articles coming soon — wabi-sabi color theory, the three
+        Japanese reds, brand colors that age well. Subscribe via the
+        <a href="/feed.xml">RSS feed</a> or
+        <a href="/#newsletter">newsletter</a> to get them as they ship.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .learn-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .learn-hero__lede {
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    line-height: 1.55;
+    margin-top: 1rem;
+    max-width: 56ch;
+  }
+
+  .learn-list {
+    padding: 1rem 0 4rem;
+  }
+
+  .learn-articles {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .learn-article {
+    display: block;
+    padding: 1.75rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .learn-article:hover {
+    border-color: var(--color-ink-900);
+    box-shadow: 0 1px 0 var(--color-border);
+  }
+
+  .learn-article__eyebrow {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+
+  .learn-article__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 1.5vw + 0.875rem, 1.625rem);
+    line-height: 1.2;
+    margin: 0 0 0.625rem;
+    color: var(--color-ink-900);
+  }
+
+  .learn-article__desc {
+    font-size: 0.9375rem;
+    color: var(--color-ink-700);
+    line-height: 1.55;
+    margin: 0 0 1rem;
+    max-width: 60ch;
+  }
+
+  .learn-article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    align-items: center;
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+  }
+
+  .learn-article__tags {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .learn-article__more {
+    margin-left: auto;
+    color: var(--color-accent-500);
+    font-weight: 500;
+  }
+
+  .learn-future {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.9375rem;
+    color: var(--color-ink-700);
+    max-width: 60ch;
+  }
+
+  .learn-future a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>
