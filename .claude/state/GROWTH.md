@@ -118,3 +118,20 @@ _Growth-relevant ships from this session:_
   - Zero dark-pattern incidents
 
   Archetype distribution: 23 ships with `dataset_json_api × +70` / `embeddable_widget × +80` / `programmatic_page_with_unique_data × +55` / `share_by_design_result × +95` / `original_research_with_dataset × +90` (the pillar). Heavy compound on autonomous-distribution archetypes.
+
+- 2026-04-25 (loop continuation, +12 ships beyond initial 32): the back half of the endless-loop session pushed the site from "complete infrastructure" to "complete editorial + UX cross-linking":
+  - **/learn section established**: 3 pillar articles shipped (japandi-color-theory, wabi-sabi-color-theory, japanese-reds — kurenai/akane/shu/entan deep-dive). Each ~720 words, full Article schema with isBasedOn Wada Book + author Organization, Pinterest article rich-pin meta, ShareActions row. Combined: ~2200 words of original editorial covering the three highest-search-volume Japanese-color queries.
+  - **/learn/ section landing page** with Schema.org Blog + nested BlogPosting array — Knowledge-Graph-eligible recurring publication.
+  - **Header nav + footer wired** to /learn/ — visible from every page. Header now 7 links (Browse · Colors · Collections · Tools · Learn · About · Shop).
+  - **Final 2 index OGs** (/og/learn.svg + /og/about.svg) — total index OG matrix complete: 9 hand-crafted static SVGs covering /, /browse/, /collections/, /tools/, /colors/, /shop/, /data/, /learn/, /about/.
+  - **9 hue-family OGs** at /og/hue/[hue].svg — parameterized endpoint pulling top swatches from live data per hue (red/orange/yellow/brown/pink/green/blue/purple/neutral). Wires /colors/[hue]/ pages to use them with type=article so they also get Pinterest article meta.
+  - **5 SEO collections batch 3** (gothic / art-nouveau / victorian / vaporwave / coquette). Total taxonomy 64 → 69.
+  - **Person schema for Sanzo Wada on /about** with sameAs (Wikipedia + Wikidata Q1407928), Academy Award metadata, AboutPage cross-link to Organization. 4 schemas now stack on /about: Organization + WebSite + AboutPage + Person.
+  - **RSS feed extended** to include /learn/ pillar articles at the top of the item list — subscribers via Feedly/Inoreader/RSS-to-email tools now get notified when a new pillar ships. Item count 30 → 33.
+  - **Homepage Learn feature section** — 3-card pillar showcase between how-it-works and bundle CTA, with "All articles →" link to /learn/. Converts homepage traffic into pillar-article reads.
+  - **Pillar cross-link callouts** on /collections/japandi/, /collections/wabi-sabi/, /collections/red/ → matching /learn/ pillar. Compounds internal-link density between thematic palette pages and long-form context.
+  - **Final state files batch** (this commit) ensures all 44 session ships are logged.
+
+  Build trajectory across both halves of the session: **603 → 1335 pages (+732)**. Total PRs merged: 48 (PR #4 → PR #48). All Chrome-MCP visually verified live. One Chrome-MCP-caught silent bug fixed (X-Frame-Options + CSP doubled appending blocking iframes globally — discovered + remediated within 5 minutes).
+
+  Site reached complete-surface state: 3 API matrices (palettes 378 / collections 69 / colors 210 = 657 JSON), 4 OG matrices (palettes 378 + collections 69 + colors 210 + hue 9 = 666 dynamic + 9 static index = 675 SVGs), 3 embed matrices (palettes 378 / collections 69 / colors 210 = 657 iframes), 3 CSV downloads, /data hub with DataCatalog, /learn/ section with 3 pillars + Blog schema, full Pinterest Article rich-pin meta everywhere, Wikipedia+Wikidata sameAs on /about, llms.txt fully updated, sitemap clean (no noindex leaks). Next strategic ship: when fleet reaches threshold for new acquisition channel (Mediavine 1k sessions/mo, Show HN launch, etc.) — current state is launch-ready.

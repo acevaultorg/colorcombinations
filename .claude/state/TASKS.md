@@ -206,6 +206,14 @@ Session shipped 32 atomic ships, all live + Chrome MCP verified. Site went 603 �
 - [x] `P1` SHIP Person schema for Sanzo Wada on /about — Wikipedia+Wikidata sameAs, AboutPage cross-link to Org [id:wada-person-schema] [score:8.5] [reach:Aleyda #7 Credible] ✓
 - [x] `P1` SHIP /og/hue/[hue].svg parameterized endpoint — 9 hue-family OGs pulling live data [id:hue-ogs] [score:7.5] ✓
 - [x] `P1` SHIP /learn/japandi-color-theory/ pillar article — ~720 words, 17 internal links, Article schema [id:pillar-japandi] [score:10.0] [reach:original_research_with_dataset × +90] ✓ establishes /learn/ section
+- [x] `P1` SHIP /learn/ section landing page with Blog + nested BlogPosting schema [id:learn-index] [score:8.0] ✓
+- [x] `P2` WIRE /learn/ link into header nav (between Tools and About) + footer Explore column [id:learn-nav] [score:6.5] ✓
+- [x] `P1` SHIP /learn/wabi-sabi-color-theory/ — second pillar (~720 words, tea-room palette codification, 5 named-pigment links, 3 exemplars) [id:pillar-wabi-sabi] [score:9.5] ✓
+- [x] `P1` SHIP /learn/japanese-reds/ — third pillar (~740 words, 4 reds × cultural register × working palette, 4-question picker framework) [id:pillar-reds] [score:9.5] ✓
+- [x] `P1` SHIP final 2 index OGs (/og/learn.svg + /og/about.svg) — completes index OG matrix (9 static SVGs) [id:learn-about-ogs] [score:7.0] ✓
+- [x] `P1` SHIP RSS feed extension — /learn/ articles at top of /feed.xml, item count 30→33 [id:rss-learn] [score:7.0] ✓
+- [x] `P1` SHIP homepage Learn feature section — 3-card pillar showcase + "All articles →" link [id:home-learn-section] [score:8.5] ✓ converts homepage traffic into pillar reads
+- [x] `P1` SHIP pillar cross-link callouts on matching /collections/ pages — japandi/wabi-sabi/red → matching /learn pillar [id:collection-pillar-cross-link] [score:8.0] ✓ compounds internal-link density
 
 ## Deferred to V2
 
