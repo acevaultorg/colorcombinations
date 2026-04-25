@@ -1,0 +1,315 @@
+---
+/**
+ * /data — Data hub landing page.
+ *
+ * Documents the bulk CSV downloads + JSON API endpoints in one place.
+ * Designed for Wikipedia editors hunting for citable sources, LLM
+ * training pipelines wanting documentation, and data analysts who want
+ * to grab the dataset in one place. Indexed by Google as a "data
+ * landing page" — strong signal for Knowledge-Graph eligibility.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { allPalettes } from "@/data/palettes";
+import { allColors } from "@/data/colors";
+import { collections } from "@/data/collections";
+
+const paletteCount = allPalettes().length;
+const colorCount = allColors().length;
+const collectionCount = collections.length;
+
+const title = "Data + API";
+const description = `Bulk CSV downloads (${paletteCount} palettes, ${colorCount} colors, ${collectionCount} collections) + machine-readable JSON API for the Dictionary of Color Combinations. Free, CORS-enabled, CC-BY-4.0.`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "DataCatalog",
+    name: "The Dictionary of Color Combinations — Data Catalog",
+    description:
+      "Free, CORS-enabled tabular and JSON datasets covering all 348 historical Sanzo Wada palettes, 30 editorial palettes, 210 named colors, and 64 thematic collections. Released under CC-BY-4.0.",
+    url: new URL("/data", Astro.site).toString(),
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    publisher: {
+      "@type": "Organization",
+      "@id": "https://colorcombinations.org/#organization",
+      name: "The Dictionary of Color Combinations",
+    },
+    dataset: [
+      {
+        "@type": "Dataset",
+        name: "Palettes (full archive)",
+        description: `${paletteCount}-row CSV + JSON. Each palette: slug, title, Japanese title, hex codes, color names, dominant hue, moods, era.`,
+        url: new URL("/data/palettes.csv", Astro.site).toString(),
+        encodingFormat: "text/csv",
+        license: "https://creativecommons.org/licenses/by/4.0/",
+      },
+      {
+        "@type": "Dataset",
+        name: "Colors (full dictionary)",
+        description: `${colorCount}-row CSV + JSON. Each color: slug, name, Japanese name, hex, RGB, hue, palette count.`,
+        url: new URL("/data/colors.csv", Astro.site).toString(),
+        encodingFormat: "text/csv",
+        license: "https://creativecommons.org/licenses/by/4.0/",
+      },
+      {
+        "@type": "Dataset",
+        name: "Collections",
+        description: `${collectionCount}-row CSV + JSON. Each collection: slug, title, tagline, accent, palette count, keywords.`,
+        url: new URL("/data/collections.csv", Astro.site).toString(),
+        encodingFormat: "text/csv",
+        license: "https://creativecommons.org/licenses/by/4.0/",
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={[
+    "color palette dataset",
+    "Japanese color CSV",
+    "Sanzo Wada data",
+    "color JSON API",
+    "color combinations dataset",
+    "color theory dataset",
+    "WCAG color CSV",
+  ]}
+  jsonLd={jsonLd}
+>
+  <section class="data-hero">
+    <div class="container-narrow">
+      <p class="eyebrow">Data + API</p>
+      <h1 class="display-hero">
+        The full archive, downloadable.
+      </h1>
+      <p class="data-hero__lede">
+        All {paletteCount} palettes, {colorCount} named colors, and {collectionCount} thematic collections —
+        as CSV downloads and machine-readable JSON endpoints. Free,
+        CORS-enabled, attributed under CC-BY-4.0.
+      </p>
+    </div>
+  </section>
+
+  <section class="section data-section">
+    <div class="container-narrow">
+      <h2>Bulk CSV downloads</h2>
+      <p class="data-section__lede">
+        RFC 4180–compliant. UTF-8. Includes all canonical, JSON, embed, and OG URLs per row so a
+        single CSV is sufficient to traverse the full dataset.
+      </p>
+
+      <div class="data-card">
+        <div class="data-card__head">
+          <h3>palettes.csv</h3>
+          <p class="data-card__count">{paletteCount} rows</p>
+        </div>
+        <p class="data-card__desc">
+          One row per palette. Includes slug, English + Japanese title, summary,
+          dominant hue, moods, era, color count, hex codes, color names, plus
+          canonical/api/embed/og URLs.
+        </p>
+        <a class="data-card__btn" href="/data/palettes.csv" download>
+          Download palettes.csv
+        </a>
+      </div>
+
+      <div class="data-card">
+        <div class="data-card__head">
+          <h3>colors.csv</h3>
+          <p class="data-card__count">{colorCount} rows</p>
+        </div>
+        <p class="data-card__desc">
+          One row per named color. Includes slug, English + Japanese name,
+          meaning, hex, RGB, hue family, palette count, plus canonical and
+          API URLs.
+        </p>
+        <a class="data-card__btn" href="/data/colors.csv" download>
+          Download colors.csv
+        </a>
+      </div>
+
+      <div class="data-card">
+        <div class="data-card__head">
+          <h3>collections.csv</h3>
+          <p class="data-card__count">{collectionCount} rows</p>
+        </div>
+        <p class="data-card__desc">
+          One row per thematic collection. Includes slug, title, tagline,
+          accent hex, palette count, keywords, and canonical/api/og/embed URLs.
+        </p>
+        <a class="data-card__btn" href="/data/collections.csv" download>
+          Download collections.csv
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section data-section">
+    <div class="container-narrow">
+      <h2>JSON API</h2>
+      <p class="data-section__lede">
+        Per-record JSON endpoints with versioned schemas. CORS enabled. Each
+        HTML detail page advertises its JSON counterpart via
+        <code>&lt;link rel="alternate" type="application/json"&gt;</code>.
+      </p>
+
+      <ul class="data-list">
+        <li>
+          <code class="data-list__path">/api/palettes/[slug].json</code> &middot; {paletteCount} endpoints &middot;
+          schema <code>colorcombinations-palette/v1</code>
+        </li>
+        <li>
+          <code class="data-list__path">/api/collections/[slug].json</code> &middot; {collectionCount} endpoints &middot;
+          schema <code>colorcombinations-collection/v1</code>
+        </li>
+        <li>
+          <code class="data-list__path">/api/colors/[slug].json</code> &middot; {colorCount} endpoints &middot;
+          schema <code>colorcombinations-color/v1</code>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section data-section">
+    <div class="container-narrow">
+      <h2>License + attribution</h2>
+      <p>
+        Released under
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">
+          CC-BY-4.0</a>. When citing or reusing, please attribute
+        <strong>colorcombinations.org</strong>.
+      </p>
+      <p>
+        348 of the 378 palettes are derived from the
+        <a href="https://github.com/mattdesl/dictionary-of-colour-combinations" target="_blank" rel="noopener noreferrer">
+          mattdesl/dictionary-of-colour-combinations</a> dataset (MIT). Original
+        source: Sanzo Wada, <em>A Dictionary of Color Combinations</em>, 1933 (six volumes).
+        Modern reprint: Seigensha Art Publishing, 2010.
+      </p>
+      <p>
+        Questions or partnership inquiries:
+        <a href="mailto:contact@colorcombinations.org">contact@colorcombinations.org</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .data-hero {
+    padding: 3rem 0 2rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .data-hero__lede {
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    max-width: 56ch;
+    margin-top: 1rem;
+  }
+
+  .data-section {
+    padding: 2.5rem 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .data-section h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2vw + 1rem, 2.125rem);
+    margin: 0 0 0.75rem;
+    line-height: 1.15;
+  }
+
+  .data-section__lede {
+    font-size: 0.9375rem;
+    color: var(--color-ink-700);
+    max-width: 60ch;
+    margin: 0 0 1.75rem;
+  }
+
+  .data-card {
+    margin-bottom: 1.25rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .data-card__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.625rem;
+  }
+
+  .data-card__head h3 {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--color-ink-900);
+  }
+
+  .data-card__count {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin: 0;
+  }
+
+  .data-card__desc {
+    font-size: 0.875rem;
+    color: var(--color-ink-700);
+    margin: 0 0 1rem;
+    line-height: 1.55;
+  }
+
+  .data-card__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 0.9375rem;
+    border: 1px solid var(--color-ink-300);
+    background: var(--color-bg);
+    color: var(--color-ink-900);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: border-color 150ms ease;
+  }
+
+  .data-card__btn:hover {
+    border-color: var(--color-ink-900);
+  }
+
+  .data-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .data-list li {
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9375rem;
+    color: var(--color-ink-700);
+  }
+
+  .data-list__path {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--color-ink-900);
+    background: var(--color-paper-100);
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+  }
+</style>
