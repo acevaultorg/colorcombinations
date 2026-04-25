@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#FAF7EF"/>
+
+  <g transform="translate(80, 64)">
+    <rect x="0" y="-14" width="14" height="14" fill="#9A2A2A"/>
+    <rect x="16" y="-14" width="14" height="14" fill="#1B2A4E"/>
+    <rect x="32" y="-14" width="14" height="14" fill="#F4EEE0" stroke="#d9d6ce" stroke-width="0.5"/>
+    <text x="58" y="0" font-family="EB Garamond, Garamond, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
+  </g>
+
+  <text x="80" y="135" font-family="Inter, sans-serif" font-size="14" fill="#9A2A2A" letter-spacing="0.14em">COLORS</text>
+  <text x="80" y="220" font-family="EB Garamond, Garamond, serif" font-size="84" font-weight="500" fill="#141414">210 named</text>
+  <text x="80" y="305" font-family="EB Garamond, Garamond, serif" font-size="84" font-weight="500" fill="#141414">colors.</text>
+  <text x="80" y="365" font-family="EB Garamond, Garamond, serif" font-size="26" font-style="italic" fill="#6b6b6b">Kurenai, asagi, fuji, kogecha, sakura — every</text>
+  <text x="80" y="400" font-family="EB Garamond, Garamond, serif" font-size="26" font-style="italic" fill="#6b6b6b">color in the archive, with WCAG contrast.</text>
+
+  <line x1="80" y1="445" x2="1120" y2="445" stroke="#d9d6ce" stroke-width="1"/>
+
+  <!-- 9 hue-family swatches with names -->
+  <g>
+    <rect x="80" y="475" width="106" height="80" fill="#9A2A2A"/>
+    <text x="133" y="585" text-anchor="middle" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="#6b6b6b">紅 Kurenai</text>
+
+    <rect x="196" y="475" width="106" height="80" fill="#C45C2A"/>
+    <text x="249" y="585" text-anchor="middle" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="#6b6b6b">橙 Daidai</text>
+
+    <rect x="312" y="475" width="106" height="80" fill="#D4A017"/>
+    <text x="365" y="585" text-anchor="middle" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="#6b6b6b">山吹 Yamabuki</text>
+
+    <rect x="428" y="475" width="106" height="80" fill="#5A8B5A"/>
+    <text x="481" y="585" text-anchor="middle" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="#6b6b6b">萌黄 Moegi</text>
+
+    <rect x="544" y="475" width="106" height="80" fill="#3C6E8F"/>
+    <text x="597" y="585" text-anchor="middle" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="#6b6b6b">縹 Hanada</text>
+
+    <rect x="660" y="475" width="106" height="80" fill="#7A4E8F"/>
+    <text x="713" y="585" text-anchor="middle" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="#6b6b6b">紫 Murasaki</text>
+
+    <rect x="776" y="475" width="106" height="80" fill="#F9D5E0"/>
+    <text x="829" y="585" text-anchor="middle" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="#6b6b6b">桜 Sakura</text>
+
+    <rect x="892" y="475" width="106" height="80" fill="#7E6B4E"/>
+    <text x="945" y="585" text-anchor="middle" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="#6b6b6b">茶 Cha</text>
+
+    <rect x="1008" y="475" width="112" height="80" fill="#878A74"/>
+    <text x="1064" y="585" text-anchor="middle" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="#6b6b6b">利休 Rikyū</text>
+  </g>
+
+  <text x="1120" y="615" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#8a8a8a" letter-spacing="0.08em">colorcombinations.org/colors</text>
+</svg>
