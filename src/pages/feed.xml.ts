@@ -18,6 +18,15 @@ const LEARN_ARTICLES: ReadonlyArray<{
   categories: string[];
 }> = [
   {
+    slug: "scandinavian-color-theory",
+    title: "Scandinavian Color Theory: A Working Guide",
+    pubDate: new Date(Date.UTC(2026, 3, 25, 11, 0, 0)),
+    description:
+      "What Scandinavian color tradition actually is — beyond IKEA-white — plus the hygge divergence, three palettes from the dictionary that fit, and the all-grey trap to avoid.",
+    body: "<p>The Scandinavian colour brief reduces to a three-axis palette: bright cool anchor, pale cool axis, and one controlled warm accent. This guide walks the divergence between Nordic modernism and hygge, three palettes from the 1933 archive that fit, and three mistakes that collapse the brief.</p>",
+    categories: ["Scandinavian", "Hygge", "Nordic"],
+  },
+  {
     slug: "japanese-reds",
     title: "The Four Reds: Kurenai, Akane, Shu, Entan",
     pubDate: new Date(Date.UTC(2026, 3, 25, 10, 0, 0)),
