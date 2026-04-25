@@ -1,0 +1,163 @@
+---
+/**
+ * /random — permalink-shareable random palette redirect.
+ *
+ * Renders a tiny page that picks a random palette slug client-side and
+ * window.location.replace()s to /palettes/[slug]/. Has a noscript
+ * fallback that lists 12 random palettes as a 'pick one' grid.
+ *
+ * Useful for: discovery, sharing links like "look what came up on
+ * /random today", returning visitors who want a fresh palette.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { allPalettes } from "@data/palettes";
+
+const palettes = allPalettes();
+
+// Sample 12 for the noscript fallback grid (random-but-stable per build)
+const sample = [...palettes]
+  .sort(() => Math.random() - 0.5)
+  .slice(0, 12);
+
+// Embed all slugs as JSON so the client picks from the entire archive
+const allSlugs = palettes.map((p) => p.slug);
+
+const title = "A random palette — colorcombinations.org";
+const description = `Get a random palette from the 378-combination archive. Reload for a different one. Permalink-shareable.`;
+
+const siteUrl = "https://colorcombinations.org/";
+const pageUrl = `${siteUrl}random/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: title,
+    description,
+    url: pageUrl,
+    isPartOf: { "@id": `${siteUrl}#website` },
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={["random palette", "random color combination", "wada palette generator"]}
+  jsonLd={jsonLd}
+>
+  <section class="random-hero">
+    <div class="container-narrow">
+      <p class="eyebrow">A random palette</p>
+      <h1 class="display-hero text-balance">Picking one for you…</h1>
+      <p class="random-hero__lede">
+        Reload this page for a different palette. Bookmark
+        <a href="/random/"><code>/random</code></a> and use it like a
+        coffee-break colour wheel.
+      </p>
+      <p class="random-hero__manual">
+        <a href="/palettes/" class="random-hero__cta">Or browse the full archive →</a>
+      </p>
+    </div>
+  </section>
+
+  <noscript>
+    <section class="random-noscript">
+      <div class="container-narrow">
+        <p class="random-noscript__heading">JavaScript is off — pick one manually:</p>
+        <ul class="random-noscript__list" role="list">
+          {sample.map((p) => (
+            <li>
+              <a href={`/palettes/${p.slug}/`}>{p.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </noscript>
+</BaseLayout>
+
+<script type="application/json" id="random-slugs" set:html={JSON.stringify(allSlugs)} />
+
+<script is:inline>
+  (() => {
+    const node = document.getElementById("random-slugs");
+    if (!node) return;
+    let slugs;
+    try {
+      slugs = JSON.parse(node.textContent || "[]");
+    } catch (e) {
+      return;
+    }
+    if (!Array.isArray(slugs) || slugs.length === 0) return;
+    const slug = slugs[Math.floor(Math.random() * slugs.length)];
+    // Replace so the back button doesn't bounce the visitor through /random
+    window.location.replace(`/palettes/${slug}/`);
+  })();
+</script>
+
+<style>
+  .random-hero {
+    padding: 5rem 0 3rem;
+  }
+
+  .random-hero__lede {
+    margin-top: 1.25rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-ink-700);
+    max-width: 56ch;
+  }
+
+  .random-hero__lede code {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    padding: 0.0625rem 0.375rem;
+    font-size: 0.9em;
+  }
+
+  .random-hero__manual {
+    margin-top: 1.5rem;
+  }
+
+  .random-hero__cta {
+    display: inline-block;
+    color: var(--color-accent-500);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .random-hero__cta:hover {
+    text-decoration: underline;
+  }
+
+  .random-noscript {
+    padding: 1rem 0 4rem;
+  }
+
+  .random-noscript__heading {
+    font-weight: 600;
+    margin: 0 0 1rem;
+  }
+
+  .random-noscript__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 600px) {
+    .random-noscript__list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .random-noscript__list a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+  }
+</style>
