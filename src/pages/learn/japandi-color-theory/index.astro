@@ -1,0 +1,398 @@
+---
+/**
+ * /learn/japandi-color-theory/ — first pillar article.
+ *
+ * Long-form editorial covering Japandi color theory in depth, using
+ * Wada's 1933 catalog as the historical anchor. Designed for:
+ * - SEO long-tail ("japandi color theory", "japandi palette guide")
+ * - LLM citation (extractable H2s, structured data, named pigments)
+ * - Internal-linking hub: links out to /collections/japandi,
+ *   /collections/wabi-sabi, /collections/scandinavian, several palette
+ *   detail pages, and the relevant /colors/ pages.
+ *
+ * Schema.org Article with author + isBasedOn (Wada's Dictionary) +
+ * datePublished/Modified for freshness.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+
+const title = "Japandi Color Theory: Where Restraint Meets Light";
+const description =
+  "How Japanese and Scandinavian color traditions converge — and which palettes from the Wada dictionary actually fit the Japandi brief. A working guide for designers, with named pigments, paired collections, and worked examples.";
+
+const keywords = [
+  "japandi color theory",
+  "japandi color palette guide",
+  "japandi aesthetic colors",
+  "japanese scandinavian color",
+  "wabi sabi color theory",
+  "japandi interior color",
+  "japandi design colors",
+  "minimalist japandi colors",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-04-25T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/japandi-color-theory/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Color theory",
+    wordCount: 720,
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Japandi Color Theory" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Japandi Color Theory</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Color theory · Long read</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          A working guide to where Japanese and Scandinavian color traditions
+          converge, which palettes from Sanzo Wada's 1933 dictionary actually
+          fit the Japandi brief, and how to use them on real projects.
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/collections/japandi.svg", Astro.site).toString()}
+          description={description}
+          heading="Share this article"
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        Japandi is the fastest-spreading aesthetic shorthand in interior and
+        product design since Scandinavian minimalism itself — and like every
+        successful shorthand, it conceals more than it reveals. The word
+        suggests a fusion: Japanese heritage plus Scandinavian modernity.
+        What it actually points at, when you look closely at the rooms, the
+        objects, and the brand systems labelled "Japandi," is something
+        more precise: <strong>a colour palette in which both
+        traditions had already arrived at the same conclusions, separately,
+        for centuries before the term was coined.</strong>
+      </p>
+
+      <p>
+        Sanzo Wada published his
+        <a href="/about/">six-volume <em>Dictionary of Color Combinations</em></a>
+        in 1933, decades before Japandi became a styling category. Read
+        through the catalogue today, and entire pages of it would file
+        cleanly under the term. The convergence is not coincidence; the
+        shared aesthetic commitments — restraint, natural materials,
+        <span lang="ja">侘寂</span> (wabi-sabi) on one side and
+        <em>hygge</em> on the other — produce overlapping colour decisions
+        when you remove the surface ornament.
+      </p>
+
+      <h2 id="what-japandi-actually-is">
+        What Japandi actually is, in colour
+      </h2>
+
+      <p>
+        The Japandi brief, distilled, is a <strong>three-axis palette
+        decision</strong>:
+      </p>
+
+      <ol>
+        <li>
+          <strong>A warm, off-white anchor</strong> — never pure white,
+          always pulled towards the colour of unbleached linen, oat paper,
+          or the chalk-white pigment <span lang="ja">胡粉</span> (gofun)
+          that Wada uses as a brightening base across multiple plates.
+        </li>
+        <li>
+          <strong>A cool, low-saturation grey-green or grey-blue</strong>
+          — the colour of pale celadon glaze, eucalyptus leaves in winter
+          light, or a wool throw lit by a north window. Wada gives this to
+          us as <span lang="ja">青磁</span> (seiji, celadon),
+          <span lang="ja">縹</span> (hanada, half-indigo), and
+          <span lang="ja">利休</span> (rikyū, the tea master's restrained
+          grey-green).
+        </li>
+        <li>
+          <strong>A grounding warm earth tone</strong> — burnt cedar,
+          aged leather, terracotta in shadow. Wada offers
+          <span lang="ja">焦茶</span> (kogecha, burnt brown),
+          <span lang="ja">柿</span> (kaki, persimmon), or the ink-brown
+          <span lang="ja">鳶</span> (tobi, kite-brown) for this slot.
+        </li>
+      </ol>
+
+      <p>
+        The result, when the three axes are honoured, reads as Japandi
+        whether the form factor is a Copenhagen kitchen, a Kyoto stationery
+        line, or a Brooklyn skincare brand. The palette is the syntax;
+        everything else (the joinery, the typography, the photography
+        style) is dialect.
+      </p>
+
+      <h2 id="three-palettes-from-the-archive">
+        Three palettes from the archive that hit the brief
+      </h2>
+
+      <p>
+        Three combinations from the dictionary fit the three-axis test
+        cleanly enough to use as starting points on a working project:
+      </p>
+
+      <ul>
+        <li>
+          <a href="/palettes/seiji-kinari/"><strong>Celadon &amp; Unbleached</strong></a>
+          — celadon green with unbleached silk and a pine-needle accent.
+          The textbook Japandi range, with the cool axis at celadon, the
+          warm axis at olive-pine, and the anchor pulled all the way to
+          chalk-white.
+        </li>
+        <li>
+          <a href="/palettes/kariyasu-rikyu/"><strong>Grass Yellow &amp; Rikyū Grey</strong></a>
+          — the warm axis here moves from earth into sun-bleached straw,
+          the cool axis stays at the tea-master's grey, and the cream
+          anchor connects them. Reads warmer; works for hospitality.
+        </li>
+        <li>
+          <a href="/palettes/hanada-gin/"><strong>Indigo Blue &amp; Silver</strong></a>
+          — colder Japandi: the cool axis pushes to half-indigo, the warm
+          axis recedes to a pale silver-grey, the anchor stays cream. Reads
+          like a Stockholm winter morning.
+        </li>
+      </ul>
+
+      <p>
+        For the full curated set, see the
+        <a href="/collections/japandi/">Japandi collection</a> — 18
+        combinations from the archive that pass this filter. For the
+        adjacent traditions, the
+        <a href="/collections/wabi-sabi/">Wabi-Sabi collection</a> sits
+        one half-step warmer and the
+        <a href="/collections/scandinavian/">Scandinavian collection</a>
+        sits one half-step cooler.
+      </p>
+
+      <h2 id="anti-patterns">Common Japandi anti-patterns</h2>
+
+      <p>
+        Three common mistakes break the brief:
+      </p>
+
+      <p>
+        <strong>Pure black as the warm axis.</strong>
+        <span lang="ja">墨</span> (sumi, ink black) <em>is</em> in the
+        Japanese tradition, but it's used sparingly as accent — never as
+        the warm-anchor against a white. When Japandi is rendered with
+        black-on-white as the foundation, the warmth axis collapses and
+        the room reads Scandinavian-minimalist instead.
+      </p>
+
+      <p>
+        <strong>Saturated bright accents.</strong> The dictionary contains
+        plates with vermilion, crimson, deep indigo at full saturation,
+        and they're glorious — but they belong to <a href="/collections/maximalist/">maximalist</a>
+        or <a href="/collections/heian/">Heian-court</a> palettes, not
+        Japandi. The Japandi target is restraint; saturation breaks it.
+      </p>
+
+      <p>
+        <strong>The white-and-wood-only shortcut.</strong> A palette that
+        contains only off-white and warm wood is read as
+        <a href="/collections/farmhouse/">farmhouse</a> or
+        <a href="/collections/scandinavian/">Scandinavian-modern</a>, not
+        Japandi. The cool axis (the grey-green or grey-blue) is the
+        Japanese contribution; without it, the brief drifts.
+      </p>
+
+      <h2 id="how-to-use-it">How to use this on a real project</h2>
+
+      <p>
+        Pick one palette from the
+        <a href="/collections/japandi/">Japandi collection</a> as your
+        starting set. Verify it passes the three-axis test (warm anchor /
+        cool axis / warm earth). Drop the hex codes into your design
+        tool — every palette page has copy-ready hex, Tailwind config,
+        CSS custom properties, and a downloadable JSON. Then push the
+        palette through the
+        <a href="/tools/contrast-checker/">contrast checker</a> against
+        whatever text colour you plan to use; aim for AA on body text
+        minimum, AAA where the editorial weight justifies it.
+      </p>
+
+      <p>
+        If you need to expand beyond three colours — say, for a brand
+        system that asks for accent ranges — pull from the same hue
+        family within the dictionary rather than introducing a new
+        saturated voice. The <a href="/colors/seiji/">seiji</a>,
+        <a href="/colors/hanada/">hanada</a>, and
+        <a href="/colors/kinari/">kinari</a> entries each list every
+        palette in the archive that uses them, so you can see at a
+        glance which combinations stay inside the Japandi register.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--color-ink-300);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .article-hero__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+    max-width: 56ch;
+  }
+
+  .article-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .article-body p {
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .article-body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    line-height: 1.2;
+    margin: 2.5rem 0 1rem;
+    max-width: 28ch;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-body li {
+    margin-bottom: 0.75rem;
+  }
+
+  .article-body a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .article-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .article-body strong {
+    color: var(--color-ink-900);
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>
