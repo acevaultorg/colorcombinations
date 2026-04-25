@@ -17,41 +17,50 @@
 
   <line x1="80" y1="445" x2="1120" y2="445" stroke="#d9d6ce" stroke-width="1"/>
 
-  <!-- Four article cards horizontally — 248px each, 16px gutter -->
+  <!-- Five article cards horizontally — 200px each, 10px gutter -->
   <g>
-    <rect x="80" y="475" width="248" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
-    <rect x="96" y="495" width="42" height="80" fill="#9A2A2A"/>
-    <text x="150" y="514" font-family="Inter, sans-serif" font-size="9" fill="#9a9a9a" letter-spacing="0.1em">COLOR THEORY</text>
-    <text x="150" y="540" font-family="EB Garamond, Garamond, serif" font-size="19" fill="#141414">The Four Reds</text>
-    <text x="150" y="562" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">Kurenai, akane,</text>
-    <text x="150" y="580" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">shu, entan.</text>
+    <rect x="80" y="475" width="200" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
+    <rect x="92" y="495" width="36" height="80" fill="#5C2D5C"/>
+    <text x="138" y="514" font-family="Inter, sans-serif" font-size="9" fill="#9a9a9a" letter-spacing="0.1em">COLOR THEORY</text>
+    <text x="138" y="540" font-family="EB Garamond, Garamond, serif" font-size="17" fill="#141414">Heian Court</text>
+    <text x="138" y="562" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">Kasane, kinjiki,</text>
+    <text x="138" y="580" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">seasonal palette.</text>
   </g>
 
   <g>
-    <rect x="344" y="475" width="248" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
-    <rect x="360" y="495" width="42" height="80" fill="#7E6B4E"/>
-    <text x="414" y="514" font-family="Inter, sans-serif" font-size="9" fill="#9a9a9a" letter-spacing="0.1em">COLOR THEORY</text>
-    <text x="414" y="540" font-family="EB Garamond, Garamond, serif" font-size="19" fill="#141414">Wabi-Sabi</text>
-    <text x="414" y="562" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">Beauty of things</text>
-    <text x="414" y="580" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">that have aged.</text>
+    <rect x="290" y="475" width="200" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
+    <rect x="302" y="495" width="36" height="80" fill="#9A2A2A"/>
+    <text x="348" y="514" font-family="Inter, sans-serif" font-size="9" fill="#9a9a9a" letter-spacing="0.1em">COLOR THEORY</text>
+    <text x="348" y="540" font-family="EB Garamond, Garamond, serif" font-size="17" fill="#141414">Four Reds</text>
+    <text x="348" y="562" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">Kurenai, akane,</text>
+    <text x="348" y="580" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">shu, entan.</text>
   </g>
 
   <g>
-    <rect x="608" y="475" width="248" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
-    <rect x="624" y="495" width="42" height="80" fill="#A8B2A6"/>
-    <text x="678" y="514" font-family="Inter, sans-serif" font-size="9" fill="#9a9a9a" letter-spacing="0.1em">COLOR THEORY</text>
-    <text x="678" y="540" font-family="EB Garamond, Garamond, serif" font-size="19" fill="#141414">Japandi</text>
-    <text x="678" y="562" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">Where restraint</text>
-    <text x="678" y="580" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">meets light.</text>
+    <rect x="500" y="475" width="200" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
+    <rect x="512" y="495" width="36" height="80" fill="#7E6B4E"/>
+    <text x="558" y="514" font-family="Inter, sans-serif" font-size="9" fill="#9a9a9a" letter-spacing="0.1em">COLOR THEORY</text>
+    <text x="558" y="540" font-family="EB Garamond, Garamond, serif" font-size="17" fill="#141414">Wabi-Sabi</text>
+    <text x="558" y="562" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">Beauty of things</text>
+    <text x="558" y="580" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">that have aged.</text>
   </g>
 
   <g>
-    <rect x="872" y="475" width="248" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
-    <rect x="888" y="495" width="42" height="80" fill="#3F5874"/>
-    <text x="942" y="514" font-family="Inter, sans-serif" font-size="9" fill="#9a9a9a" letter-spacing="0.1em">COLOR THEORY</text>
-    <text x="942" y="540" font-family="EB Garamond, Garamond, serif" font-size="19" fill="#141414">Scandinavian</text>
-    <text x="942" y="562" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">Beyond IKEA-</text>
-    <text x="942" y="580" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">white. Hygge too.</text>
+    <rect x="710" y="475" width="200" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
+    <rect x="722" y="495" width="36" height="80" fill="#A8B2A6"/>
+    <text x="768" y="514" font-family="Inter, sans-serif" font-size="9" fill="#9a9a9a" letter-spacing="0.1em">COLOR THEORY</text>
+    <text x="768" y="540" font-family="EB Garamond, Garamond, serif" font-size="17" fill="#141414">Japandi</text>
+    <text x="768" y="562" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">Where restraint</text>
+    <text x="768" y="580" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">meets light.</text>
+  </g>
+
+  <g>
+    <rect x="920" y="475" width="200" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
+    <rect x="932" y="495" width="36" height="80" fill="#3F5874"/>
+    <text x="978" y="514" font-family="Inter, sans-serif" font-size="9" fill="#9a9a9a" letter-spacing="0.1em">COLOR THEORY</text>
+    <text x="978" y="540" font-family="EB Garamond, Garamond, serif" font-size="17" fill="#141414">Scandinavian</text>
+    <text x="978" y="562" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">Beyond IKEA-</text>
+    <text x="978" y="580" font-family="EB Garamond, Garamond, serif" font-size="11" fill="#6b6b6b">white. Hygge too.</text>
   </g>
 
   <text x="1120" y="615" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#8a8a8a" letter-spacing="0.08em">colorcombinations.org/learn</text>
