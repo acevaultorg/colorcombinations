@@ -1,0 +1,382 @@
+---
+/**
+ * /learn/japanese-reds/ — third pillar article.
+ *
+ * Deep-dive on the four most historically important reds in the
+ * Japanese tradition: kurenai (safflower crimson), akane (madder),
+ * shu (vermilion), and entan (lead red). Each gets cultural context,
+ * pigment history, and a working palette recommendation. Heavy
+ * internal links to /colors/[slug] pages and /collections/red/.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+
+const title = "The Four Reds: Kurenai, Akane, Shu, Entan";
+const description =
+  "Why Japanese tradition distinguishes safflower crimson from madder from vermilion from lead red — and which to reach for when the brief asks for 'a Japanese red.' The pigments, the meaning, and four working palettes from the 1933 archive.";
+
+const keywords = [
+  "japanese red colors",
+  "kurenai color",
+  "akane color",
+  "shu vermilion",
+  "entan lead red",
+  "japanese red pigments",
+  "shikisai red",
+  "crimson japanese palette",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-04-25T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/japanese-reds/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Color theory",
+    wordCount: 740,
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "The Four Japanese Reds" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">The Four Japanese Reds</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Color theory · Long read</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          Japanese tradition distinguishes four reds the way English
+          distinguishes red from pink: as different colors, used in
+          different places, for different reasons. Here's how to tell them
+          apart — and which to reach for when the brief asks for "a
+          Japanese red."
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/collections/red.svg", Astro.site).toString()}
+          description={description}
+          heading="Share this article"
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        English-speaking designers brief in "red." A senior Japanese
+        designer asks <em>which</em> red — and waits, because the answer
+        determines the rest of the palette. The tradition codified four
+        primary reds, each from a different pigment source, each
+        carrying centuries of specific cultural use. Wada's 1933
+        catalogue treats them as functionally distinct color identities,
+        the way a Western catalogue might separate cobalt blue from
+        ultramarine.
+      </p>
+
+      <h2 id="kurenai">
+        <a href="/colors/kurenai/"><span lang="ja">紅</span> Kurenai</a> — safflower crimson
+      </h2>
+
+      <p>
+        Kurenai is the deep crimson dyed from safflower (<span lang="ja">
+        紅花</span>, <em>benibana</em>). The pigment was so labour-
+        intensive to produce — requiring petals processed through cold
+        water, alkaline water, and acid — that during the Heian period
+        kurenai cloth was reserved for court use, and laws periodically
+        forbade commoners from wearing it. The colour signals
+        <em>ceremony, status, and the highest grade of formal
+        attention</em>. In practice it sits a fraction cooler and more
+        purple than Western "crimson lake," and slightly less brown than
+        burgundy.
+      </p>
+
+      <p>
+        Working palette: <a href="/palettes/kurenai-kon/">Crimson &amp; Navy</a>
+        — the textbook Heian formal pairing.
+      </p>
+
+      <h2 id="akane">
+        <a href="/colors/akane/"><span lang="ja">茜</span> Akane</a> — madder
+      </h2>
+
+      <p>
+        Akane is the warmer, slightly orange-leaning red dyed from
+        madder root (<em>Rubia akane</em>) — one of the oldest organic
+        dyes used continuously in Japan, with archaeological evidence
+        going back to the Yayoi period. Where kurenai is the crimson of
+        the court, akane is the red of <em>everyday cloth and folk
+        textiles</em> — kimonos for daughters, theatre costumes,
+        traditional wedding accessories. It reads as warm, settled, and
+        connected to specifically human craft tradition rather than
+        formal authority.
+      </p>
+
+      <p>
+        Working palette: <a href="/palettes/akane-tokiwa/">Madder Red &amp; Evergreen</a>
+        — the classic "red and green" of Japanese textile combinations,
+        without the holiday connotations of the Western pairing.
+      </p>
+
+      <h2 id="shu">
+        <a href="/colors/shu/"><span lang="ja">朱</span> Shu</a> — vermilion
+      </h2>
+
+      <p>
+        Shu is the bright orange-red of the cinnabar pigment used to
+        lacquer Shinto torii gates, temple pillars, and ceremonial
+        bowls. It's a mineral, not a dye — produced by grinding
+        cinnabar (mercury sulfide) — and carries a completely different
+        cultural register from the textile reds. Shu signals the
+        <em>sacred, the threshold, and the protective</em>. The orange
+        push against the red gives it a luminous, almost glowing
+        quality that no purely-red pigment can match. In contemporary
+        design it works for hospitality, religious or wellness brands,
+        and any project that needs to feel "doorway."
+      </p>
+
+      <p>
+        Working palette: <a href="/palettes/shu-kuro-kin/">Vermilion, Black &amp; Gold</a>
+        — the temple-architecture palette: shu against ink, lifted by
+        gold leaf.
+      </p>
+
+      <h2 id="entan">
+        <a href="/colors/entan/"><span lang="ja">鉛丹</span> Entan</a> — lead red
+      </h2>
+
+      <p>
+        Entan is the heavier, slightly muted red made from lead
+        tetroxide. It's the pigment of older temple architecture —
+        used as a ground for shu lacquer, but also visible on its own
+        in unrestored medieval structures. The colour reads
+        <em>ancient, weathered, and structural</em>. Closer to brick
+        than to crimson, it's the red you reach for when the brief
+        wants gravitas without ceremony — historic identity systems,
+        old-money editorial, and projects where wear is part of the
+        story.
+      </p>
+
+      <p>
+        Working palette: <a href="/palettes/entan-sumi/">Lead Red &amp; Ink</a>
+        — entan as a dominant warm against deep sumi black; reads like
+        a Tang-dynasty ink-and-wash painting on aged parchment.
+      </p>
+
+      <h2 id="how-to-pick">How to pick the right red for a brief</h2>
+
+      <p>
+        Four working questions:
+      </p>
+
+      <ol>
+        <li>
+          <strong>Is the project formal or folk?</strong> Formal pulls
+          you toward kurenai; folk pulls you toward akane.
+        </li>
+        <li>
+          <strong>Should the colour glow or settle?</strong> Glow takes
+          you to shu; settle takes you to entan or akane.
+        </li>
+        <li>
+          <strong>Is age part of the brand story?</strong> Yes →
+          entan. No → kurenai or shu, depending on register.
+        </li>
+        <li>
+          <strong>What surrounds the red?</strong> Navy or indigo asks
+          for kurenai. Evergreen asks for akane. Gold and ink ask for
+          shu. Warm ink and aged neutrals ask for entan.
+        </li>
+      </ol>
+
+      <p>
+        For the full historical-red set, the
+        <a href="/collections/red/">Red collection</a> includes 24
+        palettes; the
+        <a href="/collections/heian/">Heian-court collection</a> covers
+        the formal ceremonial register heavily, and
+        <a href="/collections/maximalist/">maximalist palettes</a> show
+        the reds at their most fearless. To go deeper, every named-red
+        page (<a href="/colors/kurenai/">kurenai</a>,
+        <a href="/colors/akane/">akane</a>,
+        <a href="/colors/shu/">shu</a>,
+        <a href="/colors/entan/">entan</a>) lists every palette in the
+        archive that uses the colour, with WCAG contrast already
+        calculated against both white and black grounds.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--color-ink-300);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .article-hero__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+    max-width: 56ch;
+  }
+
+  .article-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .article-body p {
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .article-body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    line-height: 1.2;
+    margin: 2.5rem 0 1rem;
+    max-width: 28ch;
+  }
+
+  .article-body h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .article-body h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-body li {
+    margin-bottom: 0.75rem;
+  }
+
+  .article-body p a,
+  .article-body li a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .article-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .article-body strong {
+    color: var(--color-ink-900);
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>
