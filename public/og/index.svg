@@ -31,12 +31,13 @@
   <rect x="772" y="500" width="173" height="80" fill="#D4A017"/>
   <rect x="945" y="500" width="175" height="80" fill="#7A4E8F"/>
 
-  <text x="80" y="601" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="#9a9a9a" opacity="0.85">#9A2A2A</text>
-  <text x="253" y="601" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="#9a9a9a" opacity="0.85">#1B2A4E</text>
-  <text x="426" y="601" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="#9a9a9a" opacity="0.85">#F3EBDA</text>
-  <text x="599" y="601" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="#9a9a9a" opacity="0.85">#3A7D7B</text>
-  <text x="772" y="601" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="#9a9a9a" opacity="0.85">#D4A017</text>
-  <text x="945" y="601" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="#9a9a9a" opacity="0.85">#7A4E8F</text>
+  <!-- Hex labels rendered INSIDE each swatch (bottom-left), tone-aware text color, so they don't compete with the brand wordmark. -->
+  <text x="92" y="572" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="rgba(255,255,255,0.85)">#9A2A2A</text>
+  <text x="265" y="572" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="rgba(255,255,255,0.85)">#1B2A4E</text>
+  <text x="438" y="572" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="rgba(0,0,0,0.65)">#F3EBDA</text>
+  <text x="611" y="572" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="rgba(255,255,255,0.85)">#3A7D7B</text>
+  <text x="784" y="572" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="rgba(0,0,0,0.65)">#D4A017</text>
+  <text x="957" y="572" font-family="JetBrains Mono, Menlo, monospace" font-size="11" fill="rgba(255,255,255,0.85)">#7A4E8F</text>
 
-  <text x="1120" y="601" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#8a8a8a" letter-spacing="0.08em">colorcombinations.org</text>
+  <text x="1120" y="610" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#8a8a8a" letter-spacing="0.08em">colorcombinations.org</text>
 </svg>
