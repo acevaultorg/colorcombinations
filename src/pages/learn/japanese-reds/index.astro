@@ -11,6 +11,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import BundleCta from "@components/BundleCta.astro";
 import ShareActions from "@components/ShareActions.astro";
+import PillarNav from "@components/PillarNav.astro";
 
 const title = "The Four Reds: Kurenai, Akane, Shu, Entan";
 const description =
@@ -254,6 +255,8 @@ const jsonLd = [
       </p>
 
       <p class="article-end">— colorcombinations.org editorial</p>
+
+      <PillarNav current="japanese-reds" />
 
       <BundleCta variant="medium" />
     </div>

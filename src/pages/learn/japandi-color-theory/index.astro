@@ -16,6 +16,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import BundleCta from "@components/BundleCta.astro";
 import ShareActions from "@components/ShareActions.astro";
+import PillarNav from "@components/PillarNav.astro";
 
 const title = "Japandi Color Theory: Where Restraint Meets Light";
 const description =
@@ -281,6 +282,8 @@ const jsonLd = [
       </p>
 
       <p class="article-end">— colorcombinations.org editorial</p>
+
+      <PillarNav current="japandi-color-theory" />
 
       <BundleCta variant="medium" />
     </div>

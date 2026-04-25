@@ -1,0 +1,168 @@
+---
+/**
+ * PillarNav — prev/next navigation between /learn/ pillar articles.
+ *
+ * Each pillar drops this in at the end of the body. Pass `current`
+ * (the current pillar slug) and the component shows the two adjacent
+ * articles in the canonical reading order:
+ *   1. japanese-reds (the named pigments — historical foundation)
+ *   2. wabi-sabi-color-theory (the source philosophy)
+ *   3. japandi-color-theory (the modern fusion)
+ *
+ * Keeps /learn engagement compounding — a visitor reading one pillar
+ * has one click to the next, so pillar-per-session goes up.
+ */
+
+export interface Props {
+  current: "japanese-reds" | "wabi-sabi-color-theory" | "japandi-color-theory";
+}
+
+const { current } = Astro.props;
+
+const ORDER = [
+  {
+    slug: "japanese-reds",
+    title: "The Four Reds: Kurenai, Akane, Shu, Entan",
+    eyebrow: "The named pigments",
+  },
+  {
+    slug: "wabi-sabi-color-theory",
+    title: "Wabi-Sabi Color Theory",
+    eyebrow: "The source philosophy",
+  },
+  {
+    slug: "japandi-color-theory",
+    title: "Japandi Color Theory",
+    eyebrow: "The modern fusion",
+  },
+] as const;
+
+const idx = ORDER.findIndex((p) => p.slug === current);
+const prev = idx > 0 ? ORDER[idx - 1] : null;
+const next = idx < ORDER.length - 1 ? ORDER[idx + 1] : null;
+---
+
+{(prev || next) && (
+  <nav class="pillar-nav" aria-label="Other articles in this series">
+    <p class="pillar-nav__series">Working guides — color theory foundations</p>
+    <div class="pillar-nav__row">
+      {prev ? (
+        <a href={`/learn/${prev.slug}/`} class="pillar-nav__link pillar-nav__link--prev">
+          <span class="pillar-nav__direction">← Previous</span>
+          <span class="pillar-nav__eyebrow">{prev.eyebrow}</span>
+          <span class="pillar-nav__title">{prev.title}</span>
+        </a>
+      ) : <span class="pillar-nav__spacer" aria-hidden="true"></span>}
+
+      {next ? (
+        <a href={`/learn/${next.slug}/`} class="pillar-nav__link pillar-nav__link--next">
+          <span class="pillar-nav__direction">Next →</span>
+          <span class="pillar-nav__eyebrow">{next.eyebrow}</span>
+          <span class="pillar-nav__title">{next.title}</span>
+        </a>
+      ) : <span class="pillar-nav__spacer" aria-hidden="true"></span>}
+    </div>
+    <p class="pillar-nav__index">
+      <a href="/learn/">All articles →</a>
+    </p>
+  </nav>
+)}
+
+<style>
+  .pillar-nav {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .pillar-nav__series {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    font-weight: 600;
+    margin: 0 0 1rem;
+  }
+
+  .pillar-nav__row {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .pillar-nav__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .pillar-nav__link {
+    display: block;
+    padding: 1.25rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms ease;
+  }
+
+  .pillar-nav__link:hover {
+    border-color: var(--color-ink-900);
+  }
+
+  .pillar-nav__link--next {
+    text-align: right;
+  }
+
+  .pillar-nav__direction {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--color-accent-500);
+    font-weight: 500;
+    margin-bottom: 0.375rem;
+  }
+
+  .pillar-nav__eyebrow {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-ink-500);
+    margin-bottom: 0.25rem;
+  }
+
+  .pillar-nav__title {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.25;
+    color: var(--color-ink-900);
+  }
+
+  .pillar-nav__spacer {
+    display: none;
+  }
+
+  @media (min-width: 720px) {
+    .pillar-nav__spacer {
+      display: block;
+    }
+  }
+
+  .pillar-nav__index {
+    margin-top: 1.25rem;
+    text-align: center;
+    font-size: 0.9375rem;
+  }
+
+  .pillar-nav__index a {
+    color: var(--color-accent-500);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .pillar-nav__index a:hover {
+    text-decoration: underline;
+  }
+</style>
