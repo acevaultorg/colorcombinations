@@ -55,6 +55,38 @@ const keywords = [
 const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
 const BUILD_DATE = new Date().toISOString();
 
+// Pillar-article cross-link map. When a named color anchors a pillar
+// article, surface that pillar inline so /colors traffic compounds into
+// /learn pillar reads. Anchor jumps the reader straight to the relevant
+// section when one exists (e.g. /learn/japanese-reds/#kurenai).
+type PillarLink = {
+  slug: "japanese-reds" | "wabi-sabi-color-theory" | "japandi-color-theory";
+  title: string;
+  eyebrow: string;
+  blurb: string;
+  anchor?: string;
+};
+
+const PILLAR_MAP: Record<string, PillarLink> = {
+  kurenai: { slug: "japanese-reds", title: "The Four Reds: Kurenai, Akane, Shu, Entan", eyebrow: "The named pigments", blurb: "Why Japanese tradition distinguishes safflower crimson from madder from vermilion from lead red.", anchor: "kurenai" },
+  akane: { slug: "japanese-reds", title: "The Four Reds: Kurenai, Akane, Shu, Entan", eyebrow: "The named pigments", blurb: "Why Japanese tradition distinguishes safflower crimson from madder from vermilion from lead red.", anchor: "akane" },
+  shu: { slug: "japanese-reds", title: "The Four Reds: Kurenai, Akane, Shu, Entan", eyebrow: "The named pigments", blurb: "Why Japanese tradition distinguishes safflower crimson from madder from vermilion from lead red.", anchor: "shu" },
+  entan: { slug: "japanese-reds", title: "The Four Reds: Kurenai, Akane, Shu, Entan", eyebrow: "The named pigments", blurb: "Why Japanese tradition distinguishes safflower crimson from madder from vermilion from lead red.", anchor: "entan" },
+  tobi: { slug: "wabi-sabi-color-theory", title: "Wabi-Sabi Color Theory", eyebrow: "The source philosophy", blurb: "What wabi-sabi actually is in colour, and which Wada palettes fit the brief." },
+  kogecha: { slug: "wabi-sabi-color-theory", title: "Wabi-Sabi Color Theory", eyebrow: "The source philosophy", blurb: "What wabi-sabi actually is in colour, and which Wada palettes fit the brief." },
+  sumi: { slug: "wabi-sabi-color-theory", title: "Wabi-Sabi Color Theory", eyebrow: "The source philosophy", blurb: "What wabi-sabi actually is in colour, and which Wada palettes fit the brief." },
+  gofun: { slug: "wabi-sabi-color-theory", title: "Wabi-Sabi Color Theory", eyebrow: "The source philosophy", blurb: "What wabi-sabi actually is in colour, and which Wada palettes fit the brief." },
+  seiji: { slug: "japandi-color-theory", title: "Japandi Color Theory", eyebrow: "The modern fusion", blurb: "Where Japanese restraint and Scandinavian light converge — and which Wada palettes hit the brief." },
+  hanada: { slug: "japandi-color-theory", title: "Japandi Color Theory", eyebrow: "The modern fusion", blurb: "Where Japanese restraint and Scandinavian light converge — and which Wada palettes hit the brief." },
+  kaki: { slug: "japandi-color-theory", title: "Japandi Color Theory", eyebrow: "The modern fusion", blurb: "Where Japanese restraint and Scandinavian light converge — and which Wada palettes hit the brief." },
+  kinari: { slug: "japandi-color-theory", title: "Japandi Color Theory", eyebrow: "The modern fusion", blurb: "Where Japanese restraint and Scandinavian light converge — and which Wada palettes hit the brief." },
+};
+
+const pillar: PillarLink | undefined = PILLAR_MAP[color.slug];
+const pillarHref = pillar
+  ? `/learn/${pillar.slug}/${pillar.anchor ? `#${pillar.anchor}` : ""}`
+  : null;
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -216,6 +248,21 @@ const jsonLd = [
       </aside>
     </div>
   </section>
+
+  {pillar && pillarHref && (
+    <section class="section pillar-callout-section" aria-labelledby="pillar-callout-heading">
+      <div class="container-wide">
+        <a href={pillarHref} class="pillar-callout">
+          <span class="pillar-callout__eyebrow">Working guide · {pillar.eyebrow}</span>
+          <h2 id="pillar-callout-heading" class="pillar-callout__title">
+            Read the pillar: {pillar.title}
+          </h2>
+          <p class="pillar-callout__blurb">{pillar.blurb}</p>
+          <span class="pillar-callout__cta">Open the article →</span>
+        </a>
+      </div>
+    </section>
+  )}
 
   {/* ============ EMBED WIDGET ============ */}
   <section class="section color-embed-section" aria-labelledby="color-embed-heading">
@@ -646,5 +693,63 @@ const jsonLd = [
     letter-spacing: 0.07em;
     color: var(--color-ink-500);
     margin: 0 0 0.625rem;
+  }
+
+  /* ============ PILLAR CALLOUT ============ */
+  .pillar-callout-section {
+    padding-top: 0;
+  }
+
+  .pillar-callout {
+    display: block;
+    padding: 1.75rem 2rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+
+  .pillar-callout:hover {
+    border-color: var(--color-ink-900);
+    transform: translateY(-1px);
+  }
+
+  .pillar-callout__eyebrow {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-500);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .pillar-callout__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 1.5vw + 0.75rem, 1.625rem);
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+    color: var(--color-ink-900);
+  }
+
+  .pillar-callout__blurb {
+    margin: 0 0 0.75rem;
+    color: var(--color-ink-700);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    max-width: 60ch;
+  }
+
+  .pillar-callout__cta {
+    display: inline-block;
+    color: var(--color-accent-500);
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+
+  .pillar-callout:hover .pillar-callout__cta {
+    color: var(--color-accent-700);
   }
 </style>
