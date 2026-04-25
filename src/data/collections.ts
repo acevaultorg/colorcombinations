@@ -1924,6 +1924,144 @@ export const collections: Collection[] = [
     limit: 24,
     accentHex: "#B21F2D",
   },
+
+  // =========================================================================
+  // 61. Modernist color palettes — Bauhaus, De Stijl, machine-age clarity
+  // =========================================================================
+  {
+    slug: "modernist",
+    title: "Modernist Color Palettes",
+    tagline: "Primary reds, blues, and yellows against ink and white — the Bauhaus impulse, in pigment.",
+    description:
+      "Modernist color is the palette of Bauhaus textile design, De Stijl painting, Russian constructivist posters, and the early-twentieth-century insistence that a color should justify itself with structural reason. The lineage runs through Wada's 1933 catalog: 'shu' (朱 — vermilion lacquer) doing the work of Mondrian's red, 'kon' (紺 — deep indigo) doing the work of Klee's grounded blue, 'ukon' (鬱金 — turmeric yellow) carrying weight against ink black. These palettes share a commitment to clarity over comfort — they're for editorial design, contemporary architecture, art-school identity, modernist furniture brands, and anywhere a brief asks for 'considered, geometric, primary.'",
+    keywords: [
+      "modernist color palette",
+      "modernist color scheme",
+      "bauhaus color palette",
+      "de stijl color palette",
+      "constructivist color combinations",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "shu-kuro-kin",
+      "ao-shiro",
+      "ukon-ai",
+      "entan-sumi",
+      "akane-tokiwa",
+    ],
+    match: (p) =>
+      p.moods.includes("bold") &&
+      p.moods.includes("refined") &&
+      (p.dominantHue === "red" ||
+        p.dominantHue === "blue" ||
+        p.dominantHue === "yellow" ||
+        p.dominantHue === "neutral"),
+    limit: 24,
+    accentHex: "#1B2A4E",
+  },
+
+  // =========================================================================
+  // 62. Hygge color palettes — Danish warmth + soft contentment
+  // =========================================================================
+  {
+    slug: "hygge",
+    title: "Hygge Color Palettes",
+    tagline: "Candle-lit cream, wool grey, soft moss — the Danish art of cozy in pigment.",
+    description:
+      "Hygge color isn't just Scandinavian neutral — it's specifically the warm-paper light of a Copenhagen winter afternoon, the wool-grey of a thick blanket, the muted green of a houseplant on a kitchen sill. Wada's catalog, surprisingly, holds these tones as carefully as any modern hygge mood-board: 'kinari' (生成 — undyed silk) is the cream, 'rikyu' (利休 — tea master's restrained grey-green) is the wool, 'matcha' (抹茶) softens to the houseplant green when paired with cream, 'fuji' (藤 — wisteria) gives the windowsill its faintest evening violet. Reference material for slow-living and wellness brands, Scandinavian-leaning interior projects, candle and homewares packaging, lifestyle photography, and any project where the brief is 'warm, restorative, uncomplicated.'",
+    keywords: [
+      "hygge color palette",
+      "hygge aesthetic colors",
+      "danish color palette",
+      "cozy color scheme",
+      "warm minimalist colors",
+    ],
+    curatedSlugs: [
+      "kariyasu-rikyu",
+      "matcha-kinari",
+      "seiji-kinari",
+      "fuji-ai",
+      "murasaki-gin",
+      "kogecha-kinari",
+    ],
+    match: (p) =>
+      p.moods.includes("serene") &&
+      (p.moods.includes("warm") || p.moods.includes("earthy")) &&
+      (p.dominantHue === "neutral" ||
+        p.dominantHue === "green" ||
+        p.dominantHue === "brown" ||
+        p.dominantHue === "yellow"),
+    limit: 24,
+    accentHex: "#D4B896",
+  },
+
+  // =========================================================================
+  // 63. Wabi-sabi color palettes — beauty in age, asymmetry, restraint
+  // =========================================================================
+  {
+    slug: "wabi-sabi",
+    title: "Wabi-Sabi Color Palettes",
+    tagline: "Aged ceramic, weathered wood, ink stain on paper — the Japanese aesthetic of imperfection.",
+    description:
+      "Wabi-sabi (侘寂) is the Japanese aesthetic philosophy that finds beauty in age, asymmetry, and the marks of use. In color, it's the patina of a hundred-year-old tea bowl: 'sumi' (墨 — ink black) softened by the iron oxide of an ancient kettle, 'gofun' (胡粉 — chalk white) yellowed by years of use, 'kogecha' (焦茶 — burnt brown) with the warmth of cedar that has darkened in a teahouse. Wada's catalog, drawn from the same cultural well, is full of these understated combinations — none of them forcing themselves on the eye. Reference material for ceramic studios, tea-tradition products, wellness brands, slow-craft makers, gallery identity systems, and any project that should feel like it was made by someone who knew what they were doing.",
+    keywords: [
+      "wabi-sabi color palette",
+      "wabi sabi color scheme",
+      "japanese minimalist colors",
+      "muted earth color palette",
+      "tea ceremony color combinations",
+    ],
+    curatedSlugs: [
+      "kogecha-kinari",
+      "tobi-kogane",
+      "kariyasu-rikyu",
+      "moegi-sumi",
+      "matcha-kinari",
+      "entan-sumi",
+    ],
+    match: (p) =>
+      (p.moods.includes("austere") || p.moods.includes("earthy")) &&
+      p.moods.includes("refined") &&
+      (p.dominantHue === "neutral" ||
+        p.dominantHue === "brown" ||
+        p.dominantHue === "green"),
+    limit: 24,
+    accentHex: "#7E6B4E",
+  },
+
+  // =========================================================================
+  // 64. Biophilic color palettes — natural, living, organic
+  // =========================================================================
+  {
+    slug: "biophilic",
+    title: "Biophilic Color Palettes",
+    tagline: "Living green, soil brown, water blue — color borrowed directly from the natural world.",
+    description:
+      "Biophilic design — the architectural and design movement that argues humans are calmer, more focused, and healthier when surrounded by living forms — converges on a specific color palette: the saturated green of indoor plants, the warm brown of unfinished wood, the muted blue of clean water, the cream of natural linen. The Japanese color tradition arrived at the same combinations through its own ecology: 'matcha' (抹茶) and 'tokiwa' (常磐 — evergreen) for the plant green, 'cha' (茶) and 'kogecha' (焦茶) for the wood brown, 'mizu' (水 — water blue) and 'asagi' (浅葱 — shallow water) for the natural blue, 'kinari' (生成 — undyed silk) for the linen. These palettes are reference material for biophilic interior design, wellness and meditation brands, plant-based product packaging, sustainability-focused identities, and any project briefed with 'natural, calming, alive.'",
+    keywords: [
+      "biophilic color palette",
+      "biophilic design colors",
+      "natural color palette",
+      "organic color scheme",
+      "earthy living colors",
+    ],
+    curatedSlugs: [
+      "matcha-kinari",
+      "moegi-sumi",
+      "akane-tokiwa",
+      "seiji-kinari",
+      "kogecha-kinari",
+      "kariyasu-rikyu",
+    ],
+    match: (p) =>
+      p.moods.includes("earthy") &&
+      (p.moods.includes("serene") || p.moods.includes("warm")) &&
+      (p.dominantHue === "green" ||
+        p.dominantHue === "brown" ||
+        p.dominantHue === "blue"),
+    limit: 24,
+    accentHex: "#5A8B5A",
+  },
 ];
 
 // ============================================================================
