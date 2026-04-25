@@ -25,8 +25,19 @@ Structured data endpoints (CORS-enabled, CC-BY-4.0) for bots, LLMs, and third-pa
 
 - /api/palettes/[slug].json — 378 per-palette JSON documents. Schema: `colorcombinations-palette/v1`. Fields: slug, title, titleJa, summary, dominantHue, moods[], era, tags[], colors[{hex, nameRomaji, nameJa, meaning}], urls{canonical, embed, openGraph, api}, license, source.
 - /api/collections/[slug].json — 60 per-collection JSON documents. Schema: `colorcombinations-collection/v1`. Fields: slug, title, tagline, description, keywords[], accentHex, paletteCount, palettes[{slug, title, dominantHue, moods, colors, url, api}], urls{canonical, embed, openGraph, api}, license, source.
+- /api/colors/[slug].json — 210 per-color JSON documents. Schema: `colorcombinations-color/v1`. Fields: slug, name, nameJa, meaning, hex, rgb{r,g,b}, hue, paletteCount, contrast{white,black}.{ratio, aa, aaa, aaLarge}, palettes[{slug, title, url, api}], urls{canonical, api}, license, source.
 
 Each HTML detail page advertises its JSON counterpart via `<link rel="alternate" type="application/json">`.
+
+## Bulk CSV downloads
+
+Tabular dataset exports for citation, training pipelines, and data analysts. CC-BY-4.0:
+
+- /data/palettes.csv — 378-row palette table (slug, title, hex_1..hex_6, color names, era, moods, urls).
+- /data/colors.csv — 210-row color table (slug, name, hex, rgb, hue, palette_count, urls).
+- /data/collections.csv — 60-row collection table (slug, title, tagline, accent_hex, palette_count, keywords, urls).
+
+CSVs are RFC 4180–compliant, served with CORS Access-Control-Allow-Origin: * + Content-Disposition: inline. Wikipedia-citable + LLM-training-ingestible without HTML scraping.
 
 Sitemap: /sitemap-index.xml → /sitemap-0.xml (603 primary URLs; /embed/* intentionally excluded — those are noindex iframe widgets).
 
