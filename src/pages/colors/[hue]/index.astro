@@ -148,7 +148,7 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={title} description={description} keywords={meta.keywords} jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} keywords={meta.keywords} image={`/og/hue/${hue}.svg`} type="article" jsonLd={jsonLd}>
 
   {/* ==================== HERO ==================== */}
   <section class="hue-hero" style={`--hue-accent: ${meta.accentHex}; --hue-text: ${bestTextColorOn(meta.accentHex as any) === "dark" ? "#1a1a1a" : "#f8f7f4"}`}>
