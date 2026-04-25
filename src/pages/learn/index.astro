@@ -122,6 +122,22 @@ const jsonLd = [
         palette + collection pages so you can move from idea to
         implementation in one click.
       </p>
+      <aside class="learn-hero__order">
+        <p class="learn-hero__order-eyebrow">Suggested reading order</p>
+        <p class="learn-hero__order-text">
+          The five pillars trace one argument across 1,200 years.
+          Read in this order if you want the full thread:
+          <a href="/learn/heian-court-color-theory/">Heian (the historical foundation)</a>
+          <span aria-hidden="true">→</span>
+          <a href="/learn/japanese-reds/">The Four Reds (the named pigments)</a>
+          <span aria-hidden="true">→</span>
+          <a href="/learn/wabi-sabi-color-theory/">Wabi-Sabi (the source philosophy)</a>
+          <span aria-hidden="true">→</span>
+          <a href="/learn/japandi-color-theory/">Japandi (the modern fusion)</a>
+          <span aria-hidden="true">→</span>
+          <a href="/learn/scandinavian-color-theory/">Scandinavian (the Western half of the fusion)</a>.
+        </p>
+      </aside>
     </div>
   </section>
 
@@ -178,6 +194,49 @@ const jsonLd = [
     line-height: 1.55;
     margin-top: 1rem;
     max-width: 56ch;
+  }
+
+  .learn-hero__order {
+    margin-top: 2rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent-500);
+    border-radius: var(--radius-sm);
+    max-width: 65ch;
+  }
+
+  .learn-hero__order-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    margin: 0 0 0.5rem;
+  }
+
+  .learn-hero__order-text {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-ink-800);
+    margin: 0;
+  }
+
+  .learn-hero__order-text a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    margin: 0 0.125rem;
+  }
+
+  .learn-hero__order-text a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .learn-hero__order-text span[aria-hidden] {
+    color: var(--color-ink-300);
+    margin: 0 0.25rem;
   }
 
   .learn-list {
