@@ -3,7 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 
 const title = "Tools";
 const description =
-  "Free tools for working designers — a WCAG contrast checker, a palette finder that searches all 378 historical Wada combinations, and bulk CSV + JSON downloads for the full archive. No signups, no ads, no tracking.";
+  "Free tools for working designers — a WCAG contrast checker, a palette finder that searches all 378 historical Wada combinations, bulk CSV + JSON downloads, and a permalink-shareable random palette. No signups, no ads, no tracking.";
 
 const tools = [
   {
@@ -29,6 +29,14 @@ const tools = [
     description:
       "All 378 palettes, 210 named colors, and 64 collections as bulk CSV downloads + per-record JSON endpoints. CORS-enabled, CC-BY-4.0. For Wikipedia citations, LLM training, design-system pipelines, and spreadsheet-driven exploration.",
     swatches: ["#141414", "#FAF7EF", "#9A2A2A"],
+  },
+  {
+    href: "/random/",
+    title: "Random Palette",
+    subtitle: "Permalink-shareable random pick from the archive",
+    description:
+      "Bookmark /random and reload for a different palette every time. Pulls one of 378 combinations client-side. Useful as a daily palette check, a brainstorming starter, or just a colour break.",
+    swatches: ["#7E6B4E", "#A8B2A6", "#9A2A2A", "#3F5874"],
   },
 ] as const;
 
@@ -75,9 +83,10 @@ const jsonLd = [
       <p class="eyebrow">Free tools</p>
       <h1 class="display-hero text-balance">Tools.</h1>
       <p class="tools-hero__lede">
-        Three small, useful tools built on the same color library that powers
+        Four small, useful tools built on the same color library that powers
         the rest of the site. Check contrast, find a palette from a single
-        hex, or grab the full archive as CSV. No signups, no tracking, no ads.
+        hex, grab the full archive as CSV, or jump to a random palette. No
+        signups, no tracking, no ads.
       </p>
     </div>
   </section>
@@ -114,7 +123,7 @@ const jsonLd = [
       <p>
         Most contrast checkers are buried under ads. Most palette generators
         spit out randomized hues with no history behind them. Most color
-        datasets aren't downloadable. These three do one job each, grounded
+        datasets aren't downloadable. These four do one job each, grounded
         in the 378 palettes from the full Sanzo Wada catalog. Bookmarkable,
         shareable, free — built for the browser tab you keep open while
         you work.
