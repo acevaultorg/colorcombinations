@@ -89,3 +89,32 @@ _Growth-relevant ships from this session:_
 - 2026-04-10: **WADA 348 IMPORTED.** Full Sanzo Wada 1933 catalog (348 historical combinations) now lives at /palettes/wada-NNN-*. Total archive: 378 palettes (30 editorial + 348 historical). Hero copy reframed around "complete dictionary." Bundle upgraded to "The Complete Wada Bundle" at $12 (was $9 for 30). Build: 383 pages, 1.88s, 10M dist. Source: mattdesl/dictionary-of-colour-combinations (MIT).
 - 2026-04-24: **+6 SEO COLLECTIONS** (japandi, kitchen, bedroom, y2k, forest, maximalist). Targets high-volume commercial-intent designer queries at the intersection of the existing 378-plate catalog. Total collections 54→60. Build: 1042 pages, 2.52s, 0 errors. Archetype: `programmatic_page_with_unique_data × +55 + SEO_page_addition × +50`. Oracle projection: +12-36 visitors/wk cumulative, $0.30-1.20/wk post-affiliate-activation. @craftsman PASS (mean 0.70). @distributor PASS (mean 0.62). Replays proven 54-collection playbook.
 - 2026-04-24: **EMBEDDABLE COLLECTION WIDGETS.** Per-collection iframe embed at /embed/collection/[slug] (560×320, 6 palette strips) + "Embed this collection" section on all 60 collection detail pages with copy-code button + live preview. Collections are higher-intent embed targets than single palettes — blog posts about "japandi color palette" will embed the collection gallery, each placement = permanent discovery channel for colorcombinations.org. Also: sitemap filter added to exclude /embed/* (removes 438 noindex URL leaks from sitemap). Build: 1102 pages, 3.84s, 0 errors. Archetype: `embeddable_widget × +80`. @craftsman PASS (mean 0.74). @distributor PASS strong (mean 0.76).
+
+- 2026-04-24/25 (endless-loop session, 32 ships): SHIPPED IN ATOMIC PRs:
+  - `/embed/*` X-Frame-Options + CSP fix — Chrome MCP-caught silent breakage; both palette and collection embeds were 200 but iframe-blocked. Two-commit fix (`! X-Frame-Options` then `! Content-Security-Policy` to unset inherited CSP before override). Without this fix every embed widget was unusable on third-party sites.
+  - **Complete API surface (648 JSON endpoints):** /api/palettes/[slug].json (378), /api/collections/[slug].json (60), /api/colors/[slug].json (210). Versioned schemas (`colorcombinations-{palette,collection,color}/v1`), CORS, CC-BY-4.0, deep-link urls{canonical,embed,openGraph,api} per record. BaseLayout jsonAlternate prop emits `<link rel="alternate" type="application/json">` so LLM crawlers discover the data graph without scraping.
+  - **Complete OG matrix (673 SVGs):** /og/[slug] palette OGs (already shipped) + /og/collections/[slug].svg (60 new) + /og/colors/[slug].svg (210 new) + /og/hue/[hue].svg (9 new) + 7 hand-crafted index OGs (/og/{index,collections,tools,browse,colors,shop,data}.svg). Every shareable URL on the site now serves a branded preview.
+  - **Complete embed surface (648 iframe routes):** /embed/[slug] (existed) + /embed/collection/[slug] (60) + /embed/colors/[slug] (210). Three differently-sized cards optimized for different blog contexts (320×80 / 560×320 / 360×180).
+  - Pinterest Article rich-pin meta + og:image dimensions on all 648 detail pages: og:type=article, article:published_time/modified_time/author/section, og:image:width/height/alt — Pinterest reads these for Article rich pins.
+  - ShareActions component (Copy/Pinterest/X-Twitter) on collection + color detail pages, mirroring palette ShareBar.
+  - Site-wide Organization JSON-LD with stable @id, knowsAbout topical entities, sameAs (GitHub), ContactPoint. WebSite schema gains SearchAction (sitelinks-search-box). Aleyda Solis #3 Recognizable.
+  - Person schema for Sanzo Wada on /about with sameAs (Wikipedia + Wikidata Q1407928), Academy Award metadata, AboutPage cross-link to Organization. Aleyda #7 Credible — entity disambiguation for LLMs.
+  - Freshness signals (datePublished/dateModified/license/publisher/isBasedOn-Wada-Book) on all 648 detail-page JSON-LD. Aleyda #9 Fresh + Google QDF.
+  - 3 CSV bulk downloads (palettes 378 / colors 210 / collections 60) at /data/*.csv — RFC 4180, CORS, CC-BY-4.0. Wikipedia citation + LLM training pipeline ingestible without HTML scraping.
+  - /data hub landing page with Schema.org DataCatalog + 3 nested Dataset entries — Knowledge-Graph-eligible as a data catalog.
+  - /data wired into footer + /tools index card + stale "two tools" copy fixed.
+  - Updated /llms.txt with full surface map (JSON API + Embed widgets + CSV downloads + 64-then-69 collection taxonomy).
+  - SEO collections batch 2 (4): modernist, hygge, wabi-sabi, biophilic.
+  - SEO collections batch 3 (5): gothic, art-nouveau, victorian, vaporwave, coquette.
+  - Total collections 54 → 69.
+  - **First /learn/ pillar article:** /learn/japandi-color-theory/ — ~720 words, 4 H2 sections, 17 internal links to relevant collections/palettes/colors/tools, full Article schema with isBasedOn Wada Book + author Organization + datePublished/Modified. Establishes /learn/ section for future pillars.
+
+  Build: 603 → 1332 pages (+729). All 32 ships verified live + Chrome MCP visual verification on each user-facing surface. PRs #4 through #37 all squash-merged to main. Wrangler deploys all green (one EPIPE retry on PR #17 per known rules/cloudflare-pages-epipe.md).
+
+  Specialist passes (self-review, archetype-aware):
+  - @craftsman Love avg ~0.72 across all public ships, no 🔴 blocks
+  - @distributor Fit avg ~0.69, archetypes verified per ship
+  - Zero I-23 / I-26 violations
+  - Zero dark-pattern incidents
+
+  Archetype distribution: 23 ships with `dataset_json_api × +70` / `embeddable_widget × +80` / `programmatic_page_with_unique_data × +55` / `share_by_design_result × +95` / `original_research_with_dataset × +90` (the pillar). Heavy compound on autonomous-distribution archetypes.
