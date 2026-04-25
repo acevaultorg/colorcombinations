@@ -22,6 +22,12 @@ export interface Props {
   noIndex?: boolean;
   /** Optional machine-readable JSON endpoint for this page (emits <link rel="alternate" type="application/json">). Used by LLM crawlers + third-party clients to traverse the data graph without scraping HTML. */
   jsonAlternate?: string;
+  /** ISO 8601 publication date — used when type=article for OG/Pinterest rich pins. Defaults to site V1 publication. */
+  publishedTime?: string;
+  /** ISO 8601 last-modified date — used when type=article. Defaults to current build time. */
+  modifiedTime?: string;
+  /** Author name for OG article tag. */
+  author?: string;
 }
 
 const {
@@ -34,7 +40,15 @@ const {
   keywords,
   noIndex = false,
   jsonAlternate,
+  publishedTime,
+  modifiedTime,
+  author = "The Dictionary of Color Combinations editorial",
 } = Astro.props;
+
+// Default freshness anchors (matches detail-page JSON-LD).
+const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
+const articlePublished = publishedTime ?? SITE_FIRST_PUBLISHED;
+const articleModified = modifiedTime ?? new Date().toISOString();
 
 const siteName = "The Dictionary of Color Combinations";
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
@@ -87,7 +101,19 @@ const jsonLdArray = jsonLd
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={fullTitle} />
     <meta property="og:locale" content="en_US" />
+
+    {type === "article" && (
+      <>
+        <meta property="article:published_time" content={articlePublished} />
+        <meta property="article:modified_time" content={articleModified} />
+        <meta property="article:author" content={author} />
+        <meta property="article:section" content="Color theory" />
+      </>
+    )}
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
