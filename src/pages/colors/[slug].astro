@@ -209,6 +209,48 @@ const jsonLd = [
     </div>
   </section>
 
+  {/* ============ EMBED WIDGET ============ */}
+  <section class="section color-embed-section" aria-labelledby="color-embed-heading">
+    <div class="container-wide color-embed-inner">
+      <div class="color-embed-copy">
+        <h2 id="color-embed-heading" class="color-embed-heading">Embed this color</h2>
+        <p class="color-embed-desc">
+          Drop a {color.name} swatch card into any blog post, design review,
+          or color-study reference page. Links back to this color's detail.
+        </p>
+        <div class="color-embed-snippet-wrap">
+          <code class="color-embed-snippet" id="color-embed-code-block">{`<iframe src="https://colorcombinations.org/embed/colors/${color.slug}/" width="360" height="180" frameborder="0" style="border-radius:8px;overflow:hidden;" title="${color.name}${color.nameJa ? ` (${color.nameJa})` : ""} — colorcombinations.org"></iframe>`}</code>
+          <button
+            type="button"
+            class="color-embed-copy-btn"
+            id="copy-color-embed-code"
+            data-code={`<iframe src="https://colorcombinations.org/embed/colors/${color.slug}/" width="360" height="180" frameborder="0" style="border-radius:8px;overflow:hidden;" title="${color.name}${color.nameJa ? ` (${color.nameJa})` : ""} — colorcombinations.org"></iframe>`}
+            aria-label="Copy embed code"
+          >
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.25"/>
+              <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.25" fill="none"/>
+            </svg>
+            Copy code
+          </button>
+          <span class="color-embed-copy-status" aria-live="polite" role="status"></span>
+        </div>
+      </div>
+      <div class="color-embed-preview" aria-label="Embed preview">
+        <p class="color-embed-preview-label">Preview</p>
+        <iframe
+          src={`/embed/colors/${color.slug}/`}
+          width="360"
+          height="180"
+          frameborder="0"
+          style="border-radius:8px;overflow:hidden;display:block;max-width:100%;"
+          title={`${color.name} color preview`}
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
   <BundleCta variant="medium" />
 </BaseLayout>
 
@@ -235,6 +277,24 @@ const jsonLd = [
         document.body.removeChild(input);
       }
     });
+  });
+
+  // Color embed copy-code button
+  const colorEmbedCopyBtn = document.querySelector<HTMLButtonElement>("#copy-color-embed-code");
+  const colorEmbedStatus = document.querySelector<HTMLSpanElement>(".color-embed-copy-status");
+  colorEmbedCopyBtn?.addEventListener("click", async () => {
+    const code = colorEmbedCopyBtn.dataset.code ?? "";
+    try {
+      await navigator.clipboard.writeText(code);
+      if (colorEmbedStatus) {
+        colorEmbedStatus.textContent = "✓ Copied!";
+        window.setTimeout(() => {
+          if (colorEmbedStatus.textContent === "✓ Copied!") colorEmbedStatus.textContent = "";
+        }, 2000);
+      }
+    } catch {
+      if (colorEmbedStatus) colorEmbedStatus.textContent = "Select + copy manually";
+    }
   });
 </script>
 
@@ -477,5 +537,106 @@ const jsonLd = [
   .copy-btn.copied {
     border-color: var(--color-accent-500);
     color: var(--color-accent-500);
+  }
+
+  /* ============ EMBED SECTION ============ */
+
+  .color-embed-section {
+    border-top: 1px solid var(--color-border);
+    padding: 2.5rem 0;
+  }
+
+  .color-embed-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 960px) {
+    .color-embed-inner {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 3rem;
+    }
+  }
+
+  .color-embed-heading {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .color-embed-desc {
+    font-size: 0.9375rem;
+    color: var(--color-ink-600);
+    margin: 0 0 1.25rem;
+    max-width: 50ch;
+  }
+
+  .color-embed-snippet-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .color-embed-snippet {
+    display: block;
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    padding: 0.75rem 1rem;
+    background: var(--color-paper-100);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    color: var(--color-ink-800);
+    white-space: pre-wrap;
+    word-break: break-all;
+    user-select: all;
+    margin-bottom: 0.25rem;
+  }
+
+  .color-embed-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.4375rem 0.875rem;
+    border: 1px solid var(--color-ink-300);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-700);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 150ms ease, color 150ms ease;
+    white-space: nowrap;
+  }
+
+  .color-embed-copy-btn:hover {
+    border-color: var(--color-ink-700);
+    color: var(--color-ink-900);
+  }
+
+  .color-embed-copy-btn svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .color-embed-copy-status {
+    font-size: 0.75rem;
+    color: var(--color-accent-500);
+    font-weight: 500;
+    min-width: 4rem;
+  }
+
+  .color-embed-preview-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    margin: 0 0 0.625rem;
   }
 </style>
