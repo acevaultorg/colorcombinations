@@ -18,6 +18,15 @@ const LEARN_ARTICLES: ReadonlyArray<{
   categories: string[];
 }> = [
   {
+    slug: "heian-court-color-theory",
+    title: "Heian Court Color Theory: Kasane, Kinjiki, and the Seasonal Palette",
+    pubDate: new Date(Date.UTC(2026, 3, 25, 12, 0, 0)),
+    description:
+      "How the Heian imperial court systematised colour into layered-robe combinations (kasane no irome), forbidden pigments (kinjiki), and a 12-month seasonal calendar.",
+    body: "<p>The Heian period (794-1185) sits at the centre of Japanese colour history — naming most colours still in Wada's 1933 catalogue, codifying combination rules, and producing the literary texts that document court colour use in extraordinary detail. This guide walks the three structural ideas: kinjiki (forbidden colours), kasane no irome (layered-robe combinations), and the 12-month seasonal palette.</p>",
+    categories: ["Heian", "Imperial", "Kasane"],
+  },
+  {
     slug: "scandinavian-color-theory",
     title: "Scandinavian Color Theory: A Working Guide",
     pubDate: new Date(Date.UTC(2026, 3, 25, 11, 0, 0)),

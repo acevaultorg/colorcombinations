@@ -5,10 +5,11 @@
  * Each pillar drops this in at the end of the body. Pass `current`
  * (the current pillar slug) and the component shows the two adjacent
  * articles in the canonical reading order:
- *   1. japanese-reds (the named pigments — historical foundation)
- *   2. wabi-sabi-color-theory (the source philosophy)
- *   3. japandi-color-theory (the modern fusion)
- *   4. scandinavian-color-theory (the Western half of the fusion)
+ *   1. heian-court-color-theory (the deepest historical foundation)
+ *   2. japanese-reds (the named pigments)
+ *   3. wabi-sabi-color-theory (the source philosophy)
+ *   4. japandi-color-theory (the modern fusion)
+ *   5. scandinavian-color-theory (the Western half of the fusion)
  *
  * Keeps /learn engagement compounding — a visitor reading one pillar
  * has one click to the next, so pillar-per-session goes up.
@@ -16,6 +17,7 @@
 
 export interface Props {
   current:
+    | "heian-court-color-theory"
     | "japanese-reds"
     | "wabi-sabi-color-theory"
     | "japandi-color-theory"
@@ -25,6 +27,11 @@ export interface Props {
 const { current } = Astro.props;
 
 const ORDER = [
+  {
+    slug: "heian-court-color-theory",
+    title: "Heian Court Color Theory",
+    eyebrow: "The historical foundation",
+  },
   {
     slug: "japanese-reds",
     title: "The Four Reds: Kurenai, Akane, Shu, Entan",
