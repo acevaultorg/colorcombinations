@@ -7,18 +7,59 @@ const title = "About";
 const description =
   "Why this archive exists, who Sanzo Wada was, and how to use the dictionary in real design work.";
 
-const jsonLd = {
+// Aleyda Solis LLM-citation characteristic #7 (Credible): explicit
+// authorship + about-the-publisher schema. Wada gets a Person entry
+// as the historical author of the source dictionary; the editorial
+// team gets credited as the modern publisher and curator.
+const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+
+const wadaPerson = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${siteUrl}#person-sanzo-wada`,
+  name: "Sanzo Wada",
+  alternateName: "和田三造",
+  birthDate: "1883-03-03",
+  deathDate: "1967-08-22",
+  nationality: "Japanese",
+  jobTitle: ["Painter", "Costume designer", "Color theorist"],
+  award: "Academy Award for Best Costume Design (1955, Gate of Hell)",
+  knowsAbout: [
+    "Japanese color theory",
+    "Shikisai",
+    "Color combinations",
+    "Costume design",
+  ],
+  description:
+    "Japanese painter, costume designer, and color theorist. Author of the 6-volume 'Dictionary of Color Combinations' (1933), the source archive this site digitises.",
+  sameAs: [
+    "https://en.wikipedia.org/wiki/Sanzo_Wada",
+    "https://www.wikidata.org/wiki/Q1407928",
+  ],
+};
+
+const aboutPage = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
   name: title,
   description,
   url: new URL("/about", Astro.site).toString(),
-  isPartOf: {
-    "@type": "WebSite",
-    name: "The Dictionary of Color Combinations",
-    url: Astro.site?.toString(),
-  },
+  inLanguage: "en",
+  datePublished: SITE_FIRST_PUBLISHED,
+  dateModified: BUILD_DATE,
+  isPartOf: { "@id": `${siteUrl}#website` },
+  about: { "@id": `${siteUrl}#person-sanzo-wada` },
+  mainEntity: { "@id": `${siteUrl}#organization` },
+  publisher: { "@id": `${siteUrl}#organization` },
+  mentions: [
+    { "@id": `${siteUrl}#person-sanzo-wada` },
+    { "@id": `${siteUrl}#organization` },
+  ],
 };
+
+const jsonLd = [aboutPage, wadaPerson];
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
