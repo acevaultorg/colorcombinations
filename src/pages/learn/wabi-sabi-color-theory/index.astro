@@ -1,0 +1,399 @@
+---
+/**
+ * /learn/wabi-sabi-color-theory/ — second pillar article.
+ *
+ * Companion to /learn/japandi-color-theory. Where Japandi is a fusion,
+ * wabi-sabi is the source philosophy and one of the deepest currents
+ * in the entire Japanese color tradition. ~700 words. Heavy internal
+ * links to /collections/wabi-sabi, palette pages, and the relevant
+ * pigments in /colors/.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+
+const title = "Wabi-Sabi Color Theory: The Beauty of Things That Have Aged";
+const description =
+  "Wabi-sabi (侘寂) is the Japanese aesthetic that finds beauty in age, asymmetry, and imperfection. Here's what that means for color — and which palettes from the Wada dictionary actually carry the philosophy.";
+
+const keywords = [
+  "wabi sabi color theory",
+  "wabi sabi color palette",
+  "wabi sabi aesthetic colors",
+  "japanese tea ceremony colors",
+  "patina color palette",
+  "japanese minimalism colors",
+  "muted earth color palette",
+  "imperfect aesthetic colors",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-04-25T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/wabi-sabi-color-theory/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Color theory",
+    wordCount: 720,
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Wabi-Sabi Color Theory" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Wabi-Sabi Color Theory</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Color theory · Long read</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          What it actually means for color when a tradition values age over
+          newness, asymmetry over balance, and imperfection over polish —
+          and which palettes from the 1933 archive carry the philosophy
+          most cleanly.
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/collections/wabi-sabi.svg", Astro.site).toString()}
+          description={description}
+          heading="Share this article"
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        Wabi-sabi (<span lang="ja">侘寂</span>) is the Japanese aesthetic
+        philosophy that became fashionable abroad in the 1990s as a
+        shorthand for "rustic minimalism," and has been steadily
+        misunderstood ever since. The concept is older and stranger than
+        the styling lift suggests. <strong>Wabi-sabi is the recognition
+        that all material things are headed toward decay, and that this
+        process — when honoured rather than fought — is where beauty
+        actually lives.</strong>
+      </p>
+
+      <p>
+        The contemporary furniture brand using "wabi-sabi" to sell linen
+        sheets in three shades of cream is borrowing the syllable, not
+        the substance. The substance is harder, more interesting, and
+        deeply present in
+        <a href="/about/">Sanzo Wada's 1933 catalogue</a> — because Wada
+        was working inside a tea-ceremony tradition that had been
+        thinking about wabi-sabi color for four centuries.
+      </p>
+
+      <h2 id="what-the-tea-room-knew">
+        What the tea room knew about color
+      </h2>
+
+      <p>
+        The Japanese tea ceremony (<span lang="ja">茶道</span>) codified
+        wabi-sabi as a working aesthetic from the 16th century onwards,
+        and the tea master Sen no Rikyū gave his name to a specific
+        grey-green that still carries his ethic:
+        <a href="/colors/rikyu/"><span lang="ja">利休</span> (rikyū)</a>
+        — the colour of an ash glaze on a hand-thrown tea bowl,
+        photographed in dull window light. The word means "restraint."
+      </p>
+
+      <p>
+        Around it, the tea room's working palette settles on a small,
+        specific set:
+      </p>
+
+      <ul>
+        <li>
+          <a href="/colors/sumi/"><span lang="ja">墨</span> (sumi)</a>
+          — ink black, but never harsh; softened by the iron oxide of an
+          ancient kettle.
+        </li>
+        <li>
+          <a href="/colors/gofun/"><span lang="ja">胡粉</span> (gofun)</a>
+          — chalk white, made from crushed shells, and yellowed by years
+          of use into the colour of old paper.
+        </li>
+        <li>
+          <a href="/colors/kogecha/"><span lang="ja">焦茶</span> (kogecha)</a>
+          — burnt brown, the colour of cedar that has darkened in the tea
+          house through two centuries of incense smoke.
+        </li>
+        <li>
+          <a href="/colors/seiji/"><span lang="ja">青磁</span> (seiji)</a>
+          — celadon, the colour of an ash-glazed bowl in winter light.
+        </li>
+        <li>
+          <a href="/colors/kinari/"><span lang="ja">生成</span> (kinari)</a>
+          — undyed silk, the colour of wabi at its quietest.
+        </li>
+      </ul>
+
+      <p>
+        These five together cover almost the entire wabi-sabi register.
+        Note what's absent: pure white, full saturation, anything that
+        suggests <em>newness</em>. The tradition reads chemically-bright
+        color as evidence that something hasn't yet earned its place — a
+        novice's tea bowl, a dye that hasn't been worn into the cloth.
+      </p>
+
+      <h2 id="palettes-that-carry-the-philosophy">
+        Three palettes from the archive that carry the philosophy
+      </h2>
+
+      <p>
+        Reading Wada's catalogue with the wabi-sabi filter, three
+        combinations emerge as exemplary:
+      </p>
+
+      <ul>
+        <li>
+          <a href="/palettes/kogecha-kinari/"><strong>Burnt Brown &amp; Unbleached</strong></a>
+          — the textbook tea-room palette: aged cedar, undyed silk, a
+          green-grey accent that reads as ash glaze.
+        </li>
+        <li>
+          <a href="/palettes/tobi-kogane/"><strong>Kite-Brown &amp; Gold</strong></a>
+          — the warmer wabi-sabi register: weathered roof beams against
+          dim gold leaf in candlelight.
+        </li>
+        <li>
+          <a href="/palettes/moegi-sumi/"><strong>Spring Green &amp; Ink</strong></a>
+          — the surprise: wabi-sabi accommodates a single bright accent
+          when the ground is dark and disciplined enough to absorb it.
+          New green moss against the wet ink of a temple stone.
+        </li>
+      </ul>
+
+      <p>
+        For the full curated set, see the
+        <a href="/collections/wabi-sabi/">Wabi-Sabi collection</a> —
+        9 combinations from the archive that pass this filter. The
+        <a href="/collections/japandi/">Japandi collection</a> sits one
+        step in the modernist direction;
+        <a href="/collections/heian/">Heian-court palettes</a> sit one
+        step toward the saturated and ceremonial; and
+        <a href="/collections/dark-academia/">dark academia</a> hits a
+        Western parallel that shares wabi-sabi's love of accumulated
+        depth.
+      </p>
+
+      <h2 id="anti-patterns">Anti-patterns</h2>
+
+      <p>
+        Three common mistakes break the brief:
+      </p>
+
+      <p>
+        <strong>The cream-and-stone reduction.</strong> Wabi-sabi is not
+        beige. A palette of off-white, oat, and travertine reads as
+        "spa," not as wabi-sabi. The philosophy needs at least one
+        colour that's been through something — burnt, ash-glazed, ink-
+        soaked, or otherwise marked by use.
+      </p>
+
+      <p>
+        <strong>Saturated accent for "interest."</strong> The Western
+        designer impulse to "add a pop of color" to balance a muted
+        palette is the exact opposite of the wabi-sabi reading. The
+        muted register isn't seeking balance — it's the entire point.
+        A bright accent imported as visual seasoning reads as
+        impatience.
+      </p>
+
+      <p>
+        <strong>Symmetry and grid.</strong> Wabi-sabi extends to layout.
+        A perfectly-aligned three-square palette grid renders the
+        colour content correctly but undermines the philosophy that
+        produced it. Consider asymmetric proportions — one dominant
+        ground, two smaller anchors, one accent — when the brief asks
+        for wabi-sabi.
+      </p>
+
+      <h2 id="how-to-use-it">How to use this on a real project</h2>
+
+      <p>
+        Start with a single named pigment as the spine of the palette
+        — usually
+        <a href="/colors/rikyu/">rikyū</a>,
+        <a href="/colors/seiji/">seiji</a>, or
+        <a href="/colors/kogecha/">kogecha</a>. From the per-color
+        page, pull every palette in the archive that uses it; this
+        gives you a shortlist of historically-validated pairings to
+        choose from. Test the chosen pair against
+        <a href="/tools/contrast-checker/">contrast standards</a> at
+        body-text scale; for editorial work, aim for AAA where the
+        weight of the writing earns it.
+      </p>
+
+      <p>
+        For brand systems specifically — wabi-sabi works as a brand
+        palette only when the brand's product or service genuinely
+        carries the philosophy: handcrafted, considered, slow, made
+        to age. When a brand wears the palette without the substance,
+        users sense the mismatch within months.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--color-ink-300);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .article-hero__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+    max-width: 56ch;
+  }
+
+  .article-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .article-body p {
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .article-body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    line-height: 1.2;
+    margin: 2.5rem 0 1rem;
+    max-width: 28ch;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-body li {
+    margin-bottom: 0.75rem;
+  }
+
+  .article-body a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .article-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .article-body strong {
+    color: var(--color-ink-900);
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>
