@@ -2062,6 +2062,179 @@ export const collections: Collection[] = [
     limit: 24,
     accentHex: "#5A8B5A",
   },
+
+  // =========================================================================
+  // 65. Gothic color palettes — cathedral stained glass meets ink-and-stone
+  // =========================================================================
+  {
+    slug: "gothic",
+    title: "Gothic Color Palettes",
+    tagline: "Stained-glass jewel tones over ink and stone — the gothic palette in pigment.",
+    description:
+      "Gothic color is the palette of cathedral stained glass laid against the dark stone of the nave: deep crimson, lapis blue, gold leaf, and the sumi-ink black of carved oak. The Japanese tradition reaches the same register through different sources — 'kurenai' (紅 — safflower crimson) doing the work of medieval rose windows, 'gunjo' (群青 — ultramarine) for the lapis, 'ukon' (鬱金 — turmeric) for the gold, 'sumi' (墨) for the deep ink-black ground. These combinations are reference material for editorial design with weight, dark-academia branding, gothic-novel cover identity, occult-leaning lifestyle products, theatrical posters, and any project where the brief asks for 'reverent, dramatic, dark.'",
+    keywords: [
+      "gothic color palette",
+      "gothic aesthetic colors",
+      "dark academia gothic",
+      "cathedral stained glass colors",
+      "dark dramatic color palette",
+    ],
+    curatedSlugs: [
+      "kurenai-kon",
+      "gunjo-gofun",
+      "shu-kuro-kin",
+      "entan-sumi",
+      "kikyo-sumi",
+      "edo-murasaki-nezumi",
+    ],
+    match: (p) =>
+      p.moods.includes("solemn") &&
+      p.moods.includes("bold") &&
+      (p.dominantHue === "red" ||
+        p.dominantHue === "blue" ||
+        p.dominantHue === "purple" ||
+        p.dominantHue === "neutral"),
+    limit: 24,
+    accentHex: "#3A1F2E",
+  },
+
+  // =========================================================================
+  // 66. Art Nouveau color palettes — sinuous botanical curves in muted bloom
+  // =========================================================================
+  {
+    slug: "art-nouveau",
+    title: "Art Nouveau Color Palettes",
+    tagline: "Mucha's botanical pastels, Klimt's gold leaf — the curve-forward aesthetic of 1900.",
+    description:
+      "Art Nouveau color is the palette of Alphonse Mucha's poster women, Hector Guimard's Métro entrances, and the stained glass of Émile Gallé: muted botanical pastels — cream, sage, mauve, dusty rose — punctuated by gold leaf and deep forest green. Wada's 1933 catalog, drawn from the same European-Japonisme exchange, is full of these combinations: 'kariyasu' (刈安 — grass yellow) softened to gold, 'sakura' (桜) and 'fuji' (藤) for the pastel rose and mauve, 'matsuba' (松葉 — pine) for the deep botanical green. Reference material for editorial publishing, perfume and skincare brands, theatre and ballet design, hotel and salon identities, and any project that should feel like Paris in 1900.",
+    keywords: [
+      "art nouveau color palette",
+      "art nouveau aesthetic colors",
+      "mucha color palette",
+      "edwardian color palette",
+      "fin de siècle colors",
+    ],
+    curatedSlugs: [
+      "sakura-wakatake",
+      "fuji-ai",
+      "kariyasu-rikyu",
+      "ominaeshi-asagi",
+      "matcha-kinari",
+      "yamabuki-kuri",
+    ],
+    match: (p) =>
+      p.moods.includes("refined") &&
+      (p.moods.includes("playful") || p.moods.includes("serene")) &&
+      (p.dominantHue === "pink" ||
+        p.dominantHue === "purple" ||
+        p.dominantHue === "yellow" ||
+        p.dominantHue === "green"),
+    limit: 24,
+    accentHex: "#A48F65",
+  },
+
+  // =========================================================================
+  // 67. Victorian color palettes — burgundy, brass, and deep parlor green
+  // =========================================================================
+  {
+    slug: "victorian",
+    title: "Victorian Color Palettes",
+    tagline: "Heavy burgundy, brass, parlor green — the layered confidence of late-1800s interiors.",
+    description:
+      "Victorian color is the palette of crowded parlors, William Morris wallpaper, deep mahogany cabinets, and the burgundy velvet of theatre seats: saturated, layered, and confident in a way that modern minimalism rejects. Wada's catalog reaches the same depth through different cultural geometry — 'enji' (臙脂 — cochineal red) for the burgundy, 'matsuba' (松葉 — pine green) for the parlor walls, 'kogecha' (焦茶 — burnt brown) and 'tobi' (鳶 — kite-brown) for the rich woodwork, 'kogane' (黄金 — gold) for the brass fittings. Reference material for heritage hospitality brands, antique-inspired branding, period-drama design, library and bookshop identities, and any project briefed with 'rich, layered, full.'",
+    keywords: [
+      "victorian color palette",
+      "victorian aesthetic colors",
+      "victorian interior color scheme",
+      "burgundy and gold color palette",
+      "morris color palette",
+    ],
+    curatedSlugs: [
+      "enji-matsuba",
+      "kogecha-kinari",
+      "tobi-kogane",
+      "shu-kuro-kin",
+      "akane-tokiwa",
+      "edo-murasaki-nezumi",
+    ],
+    match: (p) =>
+      p.moods.includes("solemn") &&
+      (p.moods.includes("warm") || p.moods.includes("earthy")) &&
+      (p.dominantHue === "red" ||
+        p.dominantHue === "brown" ||
+        p.dominantHue === "green" ||
+        p.dominantHue === "purple"),
+    limit: 24,
+    accentHex: "#6B2F2F",
+  },
+
+  // =========================================================================
+  // 68. Vaporwave color palettes — synth pink, cyber lavender, glitch teal
+  // =========================================================================
+  {
+    slug: "vaporwave",
+    title: "Vaporwave Color Palettes",
+    tagline: "Synth pink, cyber lavender, glitch teal — 2010s digital melancholia in pigment.",
+    description:
+      "Vaporwave color is the digital-melancholia palette that emerged from 2010s internet aesthetics: hot pink and lavender from CRT screens, glitchy teal from 1990s Windows boot screens, sunset gradients from 1980s Pacific posters, and the high-saturation purples of malls remembered through nostalgia. The Japanese color tradition surprisingly aligns: 'nadeshiko' (撫子 — fringed pink) is the synth-pink, 'fuji' (藤 — wisteria) is the cyber-lavender, 'asagi' (浅葱 — pale teal) is the glitch turquoise, 'kikyo' (桔梗 — bellflower purple) is the saturated mall-twilight tone. Reference material for music-cover design, indie-game UI, retro-futurist branding, CRT-aesthetic editorial, and any project drawn from the well of 2010s post-internet visual culture.",
+    keywords: [
+      "vaporwave color palette",
+      "vaporwave aesthetic colors",
+      "synthwave color palette",
+      "retro futurism color palette",
+      "80s aesthetic color palette",
+    ],
+    curatedSlugs: [
+      "nadeshiko-mizu",
+      "fuji-ai",
+      "kikyo-sumi",
+      "asagi-shu",
+      "sakura-wakatake",
+      "ominaeshi-asagi",
+    ],
+    match: (p) =>
+      p.moods.includes("playful") &&
+      p.moods.includes("cool") &&
+      (p.dominantHue === "pink" ||
+        p.dominantHue === "purple" ||
+        p.dominantHue === "blue"),
+    limit: 24,
+    accentHex: "#D870B0",
+  },
+
+  // =========================================================================
+  // 69. Coquette color palettes — ribbons, blush, and feminine softness
+  // =========================================================================
+  {
+    slug: "coquette",
+    title: "Coquette Color Palettes",
+    tagline: "Pale rose, cream, and powder blue — the ribbon-soft palette of the coquette aesthetic.",
+    description:
+      "Coquette color is the soft-feminine palette that took over fashion and TikTok in the early 2020s: pale rose, blush, cream, powder blue, and the occasional gold leaf for emphasis. Less saturated than 2010s 'girly,' more deliberate than minimalist nude — coquette is romanticism with intent. Wada's 1933 catalog of Japanese refinement is full of the source material: 'sakura' (桜) for the cherry-blossom blush, 'gofun' (胡粉 — chalk white) for the cream, 'mizu' (水 — water blue) for the powder blue, 'fuji' (藤 — wisteria) for the soft lilac, 'usubeni' (薄紅 — pale crimson) for the romantic accent. Reference material for fashion and beauty brands, bridal stationery, perfume packaging, lifestyle photography, ballet and cabaret design, and any project that should feel 'romantic, deliberate, soft-but-considered.'",
+    keywords: [
+      "coquette color palette",
+      "coquette aesthetic colors",
+      "blush pink color palette",
+      "balletcore color palette",
+      "soft feminine color palette",
+    ],
+    curatedSlugs: [
+      "sakura-wakatake",
+      "nadeshiko-mizu",
+      "usubeni-cha",
+      "fuji-ai",
+      "kariyasu-rikyu",
+      "ruri-gofun",
+    ],
+    match: (p) =>
+      p.moods.includes("serene") &&
+      p.moods.includes("playful") &&
+      (p.dominantHue === "pink" ||
+        p.dominantHue === "purple" ||
+        p.dominantHue === "neutral"),
+    limit: 24,
+    accentHex: "#F2C5D5",
+  },
 ];
 
 // ============================================================================
