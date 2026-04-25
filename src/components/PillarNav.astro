@@ -8,13 +8,18 @@
  *   1. japanese-reds (the named pigments — historical foundation)
  *   2. wabi-sabi-color-theory (the source philosophy)
  *   3. japandi-color-theory (the modern fusion)
+ *   4. scandinavian-color-theory (the Western half of the fusion)
  *
  * Keeps /learn engagement compounding — a visitor reading one pillar
  * has one click to the next, so pillar-per-session goes up.
  */
 
 export interface Props {
-  current: "japanese-reds" | "wabi-sabi-color-theory" | "japandi-color-theory";
+  current:
+    | "japanese-reds"
+    | "wabi-sabi-color-theory"
+    | "japandi-color-theory"
+    | "scandinavian-color-theory";
 }
 
 const { current } = Astro.props;
@@ -34,6 +39,11 @@ const ORDER = [
     slug: "japandi-color-theory",
     title: "Japandi Color Theory",
     eyebrow: "The modern fusion",
+  },
+  {
+    slug: "scandinavian-color-theory",
+    title: "Scandinavian Color Theory",
+    eyebrow: "The Western half of the fusion",
   },
 ] as const;
 

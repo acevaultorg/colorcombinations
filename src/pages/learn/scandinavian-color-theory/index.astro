@@ -1,0 +1,424 @@
+---
+/**
+ * /learn/scandinavian-color-theory/ — fourth pillar article.
+ *
+ * Sister piece to japandi-color-theory: covers the Scandinavian
+ * tradition (hygge + Nordic minimalism + Bauhaus Northern adaptation)
+ * and which Wada palettes fit the brief. Closes the philosophical arc:
+ * Japanese pigments → wabi-sabi → japandi (the fusion) → Scandinavian.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+import PillarNav from "@components/PillarNav.astro";
+
+const title = "Scandinavian Color Theory: A Working Guide";
+const description =
+  "What Scandinavian color tradition actually is — beyond IKEA-white — and which palettes from Sanzo Wada's 1933 dictionary read as Nordic when you remove the surface ornament.";
+
+const keywords = [
+  "scandinavian color theory",
+  "nordic color palette",
+  "hygge color theory",
+  "scandinavian color scheme",
+  "nordic minimalism colors",
+  "scandinavian interior color palette",
+  "hygge palette",
+  "wabi-sabi vs hygge",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-04-25T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/scandinavian-color-theory/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Color theory",
+    wordCount: 760,
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Scandinavian Color Theory" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Scandinavian Color Theory</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Color theory · Long read</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          A working guide to what Scandinavian color tradition actually
+          is — beyond the IKEA-white shorthand — and which combinations
+          from a 1933 Japanese dictionary read as Nordic when you
+          remove the surface ornament.
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/collections/scandinavian.svg", Astro.site).toString()}
+          description={description}
+          heading="Share this article"
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        "Scandinavian" as a colour brief is two distinct traditions
+        sitting under one word. The first is mid-century functionalist
+        modernism — the design school that produced Stelton, Iittala,
+        Marimekko, the original Eames-adjacent Nordic furniture canon.
+        The second is hygge — the contemporary Danish word that anchors
+        a quieter, warmer, more textile-driven palette built around
+        candlelight, wool, and the colour of unbleached linen. Both
+        share a foundation, but the briefs diverge on the warmth axis.
+      </p>
+
+      <h2 id="what-it-is">What Scandinavian colour actually is</h2>
+
+      <p>
+        Strip the visible style — the joinery, the furniture silhouettes,
+        the brand typography — and the colour decisions reduce to a
+        three-axis palette, similar in shape to the Japandi axis from
+        <a href="/learn/japandi-color-theory/">our Japandi guide</a>
+        but pulled cooler, brighter, and lighter at every position:
+      </p>
+
+      <ol>
+        <li>
+          <strong>A bright cool anchor.</strong> Scandinavian whites are
+          colder than Japandi whites. Where Japandi pulls toward the
+          cream of unbleached linen, Scandinavian pulls toward the
+          chalk of <em>gofun</em> (<span lang="ja">胡粉</span>) or the
+          cool grey-white of <em>gin</em> (<span lang="ja">銀</span>,
+          silver-white) — pure enough to read as "winter morning" and
+          cool enough to throw warm wood into relief.
+        </li>
+        <li>
+          <strong>A pale cool axis.</strong> The signature Scandinavian
+          mid-tone is a pale grey-blue or grey-green: <em>hanada</em>
+          (<span lang="ja">縹</span>, half-indigo blue), <em>seiji</em>
+          (<span lang="ja">青磁</span>, celadon), or <em>aijiro</em>
+          (<span lang="ja">藍白</span>, the palest indigo). All three
+          read as "Stockholm winter sky in a well-designed room."
+        </li>
+        <li>
+          <strong>A controlled warm accent.</strong> The Nordic
+          tradition allows ONE warm — saffron yellow, terracotta, or
+          clear pine — used at low coverage as the punctuation mark.
+          Wada's <em>kihada</em> (<span lang="ja">黄檗</span>, mountain
+          ash yellow) or the soft warm of <em>asagi</em>
+          (<span lang="ja">浅葱</span>) covers this slot.
+        </li>
+      </ol>
+
+      <p>
+        The Japandi guide describes a similar three-axis structure
+        pulled toward warmer cream-and-earth. Scandinavian's distinction
+        is that it pushes one axis colder (the anchor white) and lets
+        the warm accent do more visual work because there's less warmth
+        in the surrounding field.
+      </p>
+
+      <h2 id="hygge-divergence">Where hygge diverges from Nordic modernism</h2>
+
+      <p>
+        Hygge — the Danish concept of cosy, soft, low-light comfort —
+        operates on the same axis structure but inverts the proportions.
+        Where Nordic modernism uses 70% cool anchor + 20% pale cool axis
+        + 10% warm accent, hygge uses 50% cool anchor + 20% pale cool
+        axis + 30% warm — and pulls the warm closer to amber, deep
+        terracotta, and aged-paper tan rather than yellow. The result
+        feels cosy where modernism feels crisp.
+      </p>
+
+      <p>
+        For practical work: <strong>brand systems and architecture</strong>
+        usually want Nordic modernism (crisp, expansive, daylit).
+        <strong>Lifestyle, hospitality, and interior brands</strong>
+        usually want hygge (warm, candlelit, evening). Wada's catalogue
+        contains both registers; the
+        <a href="/collections/scandinavian/">Scandinavian collection</a>
+        leans modernist, the
+        <a href="/collections/hygge/">Hygge collection</a>
+        leans warmer.
+      </p>
+
+      <h2 id="palettes-that-fit">Three palettes from the archive that fit</h2>
+
+      <p>
+        Three combinations from the dictionary read cleanly as
+        Scandinavian when matched to a north-light project context:
+      </p>
+
+      <ul>
+        <li>
+          <strong>Indigo Blue &amp; Silver</strong> — the textbook
+          modernist Scandinavian palette: cool indigo against
+          silver-grey neutral against a chalk-white anchor. Reads as a
+          Stockholm winter morning rendered as a brand system.
+        </li>
+        <li>
+          <strong>Celadon &amp; Unbleached</strong> — the warmer
+          Scandinavian register, sliding toward Japandi: pale celadon
+          green, unbleached silk, and a controlled pine accent. Works
+          for hospitality and homewares brands that need to feel
+          welcoming without warming all the way to cosy.
+        </li>
+        <li>
+          <strong>Sky Grey &amp; Persimmon</strong> — Scandinavian with
+          a warm punctuation mark: pale sky-grey as the cool field, a
+          single persimmon accent at small coverage. The "one warm" rule
+          done by the book. Best for editorial and premium-product
+          systems.
+        </li>
+      </ul>
+
+      <h2 id="anti-patterns">Common Scandinavian anti-patterns</h2>
+
+      <p>
+        Three mistakes break the brief:
+      </p>
+
+      <ol>
+        <li>
+          <strong>The all-grey trap.</strong> Pulling cool too hard
+          across all three axes (cool anchor + cool mid + cool accent)
+          collapses the palette into corporate grey. Scandinavian needs
+          the warm accent to read as Scandinavian; without it, the
+          palette is just grey.
+        </li>
+        <li>
+          <strong>Pure white as anchor.</strong> Scandinavian anchors
+          are off-white, not pure white. Pure white reads as clinical or
+          web-default; off-white reads as paper, plaster, or chalk. The
+          distinction is invisible in a swatch grid and decisive on a
+          finished surface.
+        </li>
+        <li>
+          <strong>Wood-tone as warm axis.</strong> Wood is a material,
+          not a colour position. Plenty of Scandinavian projects
+          contain wood, but the warm accent in the colour brief is
+          something more saturated than wood — saffron, terracotta,
+          deep amber. Wood rendered as the warm axis collapses the
+          palette into "any beige modern interior."
+        </li>
+      </ol>
+
+      <h2 id="how-to-pick">How to pick the right Scandinavian register</h2>
+
+      <p>
+        Three working questions:
+      </p>
+
+      <ol>
+        <li>
+          <strong>Daylight or evening?</strong> Daylight pulls modernist
+          (cool, crisp). Evening pulls hygge (warm, soft). Brand
+          systems usually want daylight; lifestyle photography usually
+          wants evening.
+        </li>
+        <li>
+          <strong>Architecture or textile?</strong> Architectural
+          contexts (large surfaces, clean joinery, gallery feel) want
+          the modernist register with a single bold warm. Textile-heavy
+          contexts (rugs, throws, ceramics, candles) want hygge
+          proportions with multiple low-saturation warms.
+        </li>
+        <li>
+          <strong>Standalone or paired with Japan?</strong> Standalone
+          Scandinavian = use the
+          <a href="/collections/scandinavian/">Scandinavian</a> or
+          <a href="/collections/hygge/">Hygge</a> collections. Paired
+          with the Japanese tradition = move to the
+          <a href="/collections/japandi/">Japandi register</a>, which
+          sits between the two and resolves the warm-axis question by
+          splitting the difference.
+        </li>
+      </ol>
+
+      <p>
+        For deeper context, the
+        <a href="/learn/japandi-color-theory/">Japandi guide</a>
+        covers how this Scandinavian foundation merges with the Japanese
+        tradition; the
+        <a href="/learn/wabi-sabi-color-theory/">Wabi-Sabi guide</a>
+        covers what the Japanese half brings into the fusion.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <PillarNav current="scandinavian-color-theory" />
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--color-ink-300);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .article-hero__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+    max-width: 56ch;
+  }
+
+  .article-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .article-body p {
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .article-body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    line-height: 1.2;
+    margin: 2.5rem 0 1rem;
+    max-width: 28ch;
+  }
+
+  .article-body h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .article-body h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-body li {
+    margin-bottom: 0.75rem;
+  }
+
+  .article-body p a,
+  .article-body li a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .article-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .article-body strong {
+    color: var(--color-ink-900);
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>
