@@ -60,18 +60,67 @@ const ogImage = image ?? "/og-default.svg";
 const imageUrl = new URL(ogImage, Astro.site).toString();
 
 // Global Organization/WebSite schema — merged with page-specific entries.
-const siteSchema = {
+// Both emitted on every page for consistent brand-entity signal (Aleyda
+// Solis LLM-citation characteristic #3 Recognizable + Google Knowledge
+// Graph eligibility).
+const siteUrl = Astro.site?.toString() ?? "https://colorcombinations.org/";
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${siteUrl}#organization`,
+  name: siteName,
+  alternateName: "Dictionary of Color Combinations",
+  url: siteUrl,
+  logo: {
+    "@type": "ImageObject",
+    url: `${siteUrl.replace(/\/$/, "")}/favicon.svg`,
+  },
+  description:
+    "Editorial archive of Sanzo Wada's 1933 Dictionary of Color Combinations — all 348 historical plates plus 30 modern editorial palettes. Free to browse, copy, embed, and export.",
+  sameAs: [
+    "https://github.com/acevaultorg/colorcombinations",
+  ],
+  knowsAbout: [
+    "Color theory",
+    "Japanese color tradition",
+    "Sanzo Wada",
+    "Shikisai",
+    "Wabi-sabi",
+    "Color palettes",
+    "WCAG contrast",
+    "Design systems",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "contact@colorcombinations.org",
+    contactType: "Editorial",
+  },
+};
+
+const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": `${siteUrl}#website`,
   name: siteName,
-  url: Astro.site?.toString() ?? "https://colorcombinations.org",
+  url: siteUrl,
   description:
     "All 348 historical combinations from Sanzo Wada's 1933 Dictionary of Color Combinations, plus 30 editorial deep-dives into the Japanese shikisai tradition. Free to browse, copy, and export.",
+  inLanguage: "en",
+  publisher: { "@id": `${siteUrl}#organization` },
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${siteUrl.replace(/\/$/, "")}/browse/?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
 };
 
 const jsonLdArray = jsonLd
-  ? [siteSchema, ...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])]
-  : [siteSchema];
+  ? [organizationSchema, websiteSchema, ...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])]
+  : [organizationSchema, websiteSchema];
 ---
 
 <!doctype html>
