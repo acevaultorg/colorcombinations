@@ -6,6 +6,7 @@ import BundleCta from "@components/BundleCta.astro";
 import ShareActions from "@components/ShareActions.astro";
 import { FURTHER_READING } from "@/config/monetization";
 import { allColors, colorBySlug, palettesForColor } from "@data/colors";
+import { COLOR_STORIES } from "@data/colorStories";
 import { bestTextColorOn, contrastRatio } from "@/lib/color";
 import type { HexColor } from "@/types/palette";
 
@@ -86,6 +87,11 @@ const pillar: PillarLink | undefined = PILLAR_MAP[color.slug];
 const pillarHref = pillar
   ? `/learn/${pillar.slug}/${pillar.anchor ? `#${pillar.anchor}` : ""}`
   : null;
+
+// Editorial color story (when one exists for this slug). Surfaces ~150-200
+// words of authoritative context per named color — pigment origin,
+// register, modern usage. Improves LLM citation-fit on detail pages.
+const story = COLOR_STORIES[color.slug];
 
 const jsonLd = [
   {
@@ -172,6 +178,23 @@ const jsonLd = [
       </div>
     </div>
   </section>
+
+  {story && (
+    <section class="color-story-section section" aria-labelledby="color-story-heading">
+      <div class="container-narrow">
+        <h2 id="color-story-heading" class="color-story-heading">The story of {color.name}</h2>
+        {story.paragraphs.map((p) => (
+          <p class="color-story-p" set:html={p} />
+        ))}
+        {story.workingNote && (
+          <p class="color-story-working">
+            <span class="color-story-working-label">Working note:</span>{" "}
+            <span set:html={story.workingNote} />
+          </p>
+        )}
+      </div>
+    </section>
+  )}
 
   <section class="color-details section">
     <div class="container-wide color-details__grid">
@@ -693,6 +716,55 @@ const jsonLd = [
     letter-spacing: 0.07em;
     color: var(--color-ink-500);
     margin: 0 0 0.625rem;
+  }
+
+  /* ============ COLOR STORY ============ */
+  .color-story-section {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .color-story-heading {
+    font-family: var(--font-serif);
+    font-size: clamp(1.375rem, 1.5vw + 0.875rem, 1.75rem);
+    line-height: 1.2;
+    margin: 0 0 1.25rem;
+    color: var(--color-ink-900);
+    max-width: 28ch;
+  }
+
+  .color-story-p {
+    max-width: 65ch;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    margin: 0 0 1rem;
+  }
+
+  .color-story-p em {
+    font-style: italic;
+  }
+
+  .color-story-working {
+    max-width: 65ch;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    border-left: 3px solid var(--color-accent-500);
+    padding: 0.5rem 0 0.5rem 1rem;
+    margin: 1.25rem 0 0;
+    background: var(--color-bg-elevated);
+  }
+
+  .color-story-working-label {
+    font-weight: 600;
+    color: var(--color-ink-900);
   }
 
   /* ============ PILLAR CALLOUT ============ */
