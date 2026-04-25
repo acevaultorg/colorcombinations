@@ -182,6 +182,31 @@ After 24 hours, Cloudflare dashboard → AI Audit → Reports should show bot cr
 - [x] `P1` ADD 6 commercial-intent SEO collections — japandi, kitchen, bedroom, y2k, forest, maximalist — `src/data/collections.ts` [id:collections-batch-v19] [score:9.0] [oracle:$0.30-1.20/wk post-index] [reach:+12-36 visitors/wk long-tail] ✓ 60 total collections, 1042 build pages, 0 errors, sitemap clean
 - [x] `P1` SHIP embeddable collection widgets — per-collection iframe at /embed/collection/[slug] (560×320) + "Embed this collection" section on every collection detail page + sitemap filter to exclude /embed/* — `src/pages/embed/collection/[slug].astro`, `src/pages/collections/[slug].astro`, `astro.config.mjs` [id:collection-embed-widget] [score:9.5] [reach:advocacy archetype embeddable_widget × +80] ✓ 60 embed routes, 1102 build pages, sitemap 0 noindex leaks
 
+## Queue — Endless-loop session 2026-04-24/25 [objective:infrastructure-completeness]
+
+Session shipped 32 atomic ships, all live + Chrome MCP verified. Site went 603 → 1332 build pages.
+
+- [x] `P1` FIX `/embed/*` X-Frame-Options + CSP frame-ancestors override (2 commits — `! X-Frame-Options` then `! Content-Security-Policy`) — `public/_headers` [id:headers-fix] [score:14.0] ✓ Chrome MCP-caught silent bug; both palette + collection embeds were 200 but iframe-blocked
+- [x] `P1` SHIP per-collection OG endpoint — 60 SVGs at build [id:per-collection-og] [score:9.5] [reach:share_by_design_result × +95] ✓
+- [x] `P1` SHIP JSON APIs (palettes 378 + collections 60) with versioned schemas + rel=alternate meta [id:json-api-batch1] [score:11.0] [reach:dataset_json_api × +70] ✓
+- [x] `P1` UPDATE /llms.txt with full surface map [id:llms-txt-v2] [score:8.0] ✓
+- [x] `P1` SHIP /api/colors/[slug].json (210) with WCAG contrast + RGB [id:json-api-colors] [score:10.0] ✓ completes API surface
+- [x] `P1` ADD freshness signals to detail JSON-LD — datePublished/dateModified/license/publisher/isBasedOn(Wada Book) [id:freshness-jsonld] [score:9.5] [reach:Aleyda Solis #9 Fresh] ✓
+- [x] `P1` SHIP per-color embed widgets (210, 360×180) [id:per-color-embed] [score:9.0] [reach:embeddable_widget × +80] ✓
+- [x] `P1` SHIP per-color OG endpoint (210) with WCAG badges [id:per-color-og] [score:9.0] ✓ + visual fix on site mark position
+- [x] `P1` SHIP Pinterest article rich-pin meta + og:image dimensions on 648 detail pages [id:pinterest-rich-pin] [score:9.0] ✓
+- [x] `P1` SHIP ShareActions component (Copy/Pinterest/X-Twitter) on collection + color detail pages [id:share-actions-component] [score:8.5] ✓
+- [x] `P0` SHIP site-wide Organization JSON-LD + WebSite SearchAction [id:org-schema-sitewide] [score:11.5] [reach:Aleyda #3 Recognizable + Knowledge Graph] ✓
+- [x] `P1` SHIP CSV bulk downloads (palettes/colors/collections, RFC 4180, CORS, CC-BY-4.0) [id:csv-bulk] [score:9.0] [reach:Wikipedia citation + LLM training] ✓
+- [x] `P1` SHIP SEO collections batch 2 — modernist/hygge/wabi-sabi/biophilic [id:seo-collections-batch2] [score:8.5] ✓ 60→64
+- [x] `P1` SHIP /data hub with DataCatalog schema + 3 nested Dataset entries [id:data-hub] [score:9.0] ✓
+- [x] `P2` WIRE /data into footer + /tools index card + fix stale "two tools" copy [id:data-nav] [score:6.5] ✓
+- [x] `P1` SHIP 7 index page custom OGs (/, /collections/, /tools/, /browse/, /colors/, /shop/, /data/) + hex-overlap fix [id:index-page-ogs] [score:8.0] ✓
+- [x] `P1` SHIP SEO collections batch 3 — gothic/art-nouveau/victorian/vaporwave/coquette [id:seo-collections-batch3] [score:8.0] ✓ 64→69
+- [x] `P1` SHIP Person schema for Sanzo Wada on /about — Wikipedia+Wikidata sameAs, AboutPage cross-link to Org [id:wada-person-schema] [score:8.5] [reach:Aleyda #7 Credible] ✓
+- [x] `P1` SHIP /og/hue/[hue].svg parameterized endpoint — 9 hue-family OGs pulling live data [id:hue-ogs] [score:7.5] ✓
+- [x] `P1` SHIP /learn/japandi-color-theory/ pillar article — ~720 words, 17 internal links, Article schema [id:pillar-japandi] [score:10.0] [reach:original_research_with_dataset × +90] ✓ establishes /learn/ section
+
 ## Deferred to V2
 
 - Full Sanzo Wada 348 dataset import (requires verified source)
