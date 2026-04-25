@@ -1,0 +1,280 @@
+---
+/**
+ * /methodology — explicit documentation of how this archive is built.
+ *
+ * E-E-A-T signal. LLM-citation magnet for "how does colorcombinations.org
+ * work" / "what's the source of these colors" / "how is contrast computed"
+ * questions. Schema.org TechArticle with isBasedOn Wada Book. Stable @ids
+ * cross-link to Organization + Person.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Methodology";
+const description =
+  "How this archive is built — source data, license, contrast calculation, and the editorial choices behind the dictionary's modern presentation.";
+
+const SITE_FIRST_PUBLISHED = "2026-04-25T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: "Methodology — The Dictionary of Color Combinations",
+    description,
+    url: new URL("/methodology", Astro.site).toString(),
+    inLanguage: "en",
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    author: { "@id": `${siteUrl}#organization` },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    proficiencyLevel: "Beginner",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Methodology" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={[
+    "color archive methodology",
+    "wada dictionary source",
+    "WCAG contrast calculation",
+    "color combinations sourcing",
+    "japanese color archive",
+  ]}
+  jsonLd={jsonLd}
+>
+  <article class="methodology">
+    <header class="methodology-hero">
+      <div class="container-narrow">
+        <p class="eyebrow">Methodology</p>
+        <h1 class="display-hero text-balance">
+          How this archive is built.
+        </h1>
+        <p class="methodology-hero__lede">
+          Explicit answers to the questions that come up when you start
+          using this dictionary on a real project: where the data comes
+          from, what's editorial, what's verified, and how things like
+          WCAG contrast are computed.
+        </p>
+      </div>
+    </header>
+
+    <div class="methodology-body container-narrow">
+      <h2 id="source">Source data</h2>
+      <p>
+        The 348 historical plates are derived from
+        <a href="https://github.com/mattdesl/dictionary-of-colour-combinations" target="_blank" rel="noopener noreferrer">mattdesl/dictionary-of-colour-combinations</a>,
+        an MIT-licensed digitisation of all six volumes of Sanzo Wada's
+        1933 <em>Dictionary of Color Combinations</em> (色彩図鑑). Wada
+        was a Japanese painter, costume designer, and color theorist
+        (1883-1967); his original catalogue is reissued in modern reprint
+        by Seigensha Art Publishing, 2010 — the recommended physical
+        reference is on the <a href="/about/">about page</a>.
+      </p>
+      <p>
+        The 30 editorial palettes are original compositions inspired by
+        Wada's methodology — same era-tagging, same nameRomaji + nameJa
+        + meaning structure for each color, same use of named pigments
+        from the Japanese shikisai (色彩) tradition. They are not
+        derived from the Wada source.
+      </p>
+
+      <h2 id="license">License + attribution</h2>
+      <p>
+        All site content (palette compositions, editorial descriptions,
+        curation, layout) is released under
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC-BY-4.0</a>
+        with attribution to <strong>colorcombinations.org</strong>. The
+        underlying Wada plates are public-domain by age; the digitisation
+        layer carries the upstream MIT license. When citing or reusing,
+        please attribute both: this site for the curation, mattdesl for
+        the digitisation, and Sanzo Wada for the original work.
+      </p>
+
+      <h2 id="contrast">WCAG contrast calculation</h2>
+      <p>
+        Every palette page renders a contrast matrix between each pair
+        of colors in the palette, and every named-color page renders the
+        contrast against pure white (#FFFFFF) and pure black (#000000).
+        The calculation follows the WCAG 2.1 Section 1.4.3 formula:
+      </p>
+      <ol>
+        <li>Convert each hex to sRGB linear-light using the standard
+          piecewise gamma function.</li>
+        <li>Compute relative luminance:
+          <code>L = 0.2126·R + 0.7152·G + 0.0722·B</code>.</li>
+        <li>Contrast ratio = (L<sub>lighter</sub> + 0.05) /
+          (L<sub>darker</sub> + 0.05).</li>
+        <li>AA pass: ratio ≥ 4.5 (normal text), ≥ 3.0 (large text).
+          AAA pass: ratio ≥ 7.0 (normal), ≥ 4.5 (large).</li>
+      </ol>
+      <p>
+        Source code for the calculation is in the open repo at
+        <a href="https://github.com/acevaultorg/colorcombinations" target="_blank" rel="noopener noreferrer">github.com/acevaultorg/colorcombinations</a>
+        in <code>src/lib/color.ts</code>. The same code path powers the
+        public <a href="/tools/contrast-checker/">Contrast Checker</a>
+        tool and the JSON API endpoints at
+        <code>/api/colors/[slug].json</code>.
+      </p>
+
+      <h2 id="hue-classification">Hue classification</h2>
+      <p>
+        Each color is assigned to one of nine hue families: red, orange,
+        yellow, brown, pink, green, blue, purple, neutral. The
+        classification is hex-derived (HSL bucketing on hue angle and
+        saturation thresholds), not name-derived — so a color called
+        "Sea Green" with a measurably blue hex (e.g. #00B49B) lands in
+        the blue family rather than the green family. This is sometimes
+        surprising on the
+        <a href="/colors/blue/">/colors/blue/</a> hue-family page, but
+        it's the consistent rule and it's documented here.
+      </p>
+
+      <h2 id="moods-and-eras">Moods and eras</h2>
+      <p>
+        Each palette is hand-tagged with one to three moods (serene,
+        bold, earthy, refined, austere, warm, cool, playful, solemn) and
+        one era (Heian, Kamakura, Muromachi, Edo, Meiji, Taisho, Showa).
+        Mood tagging is editorial judgment; era tagging follows the
+        period framing in the source dictionary plus our
+        <a href="/about/">about page</a>'s historical research.
+      </p>
+
+      <h2 id="ai-crawlers">AI crawler policy</h2>
+      <p>
+        LLM crawlers (GPTBot, ClaudeBot, PerplexityBot, Googlebot-
+        Extended, Applebot-Extended, CCBot, Amazonbot, Bytespider,
+        Meta-ExternalAgent) are explicitly allow-listed in
+        <a href="/robots.txt"><code>/robots.txt</code></a>. The
+        machine-readable site map is at
+        <a href="/llms.txt"><code>/llms.txt</code></a>. Every detail
+        page advertises its JSON counterpart via
+        <code>&lt;link rel="alternate" type="application/json"&gt;</code>
+        — bots can traverse the data graph without HTML scraping. Bulk
+        CSV downloads at <a href="/data/">/data/</a> are CORS-enabled
+        with <code>Access-Control-Allow-Origin: *</code>.
+      </p>
+
+      <h2 id="updates">Updates</h2>
+      <p>
+        Every detail page emits <code>dateModified</code> in JSON-LD on
+        every deploy, so the freshness signal compounds without manual
+        intervention. The
+        <a href="/feed.xml">RSS feed</a> includes both editorial palette
+        additions and new long-form
+        <a href="/learn/">/learn/</a> articles. Source-data updates
+        happen quarterly when new historical material surfaces (the
+        recent Sanzo Wada Vol. 2 reissue is on the
+        <a href="/shop/">shop</a> reading list).
+      </p>
+
+      <h2 id="contact">Contact + correction policy</h2>
+      <p>
+        Found a factual error in a palette description, an incorrect
+        Japanese name, or a mis-cited source? Email
+        <a href="mailto:contact@colorcombinations.org">contact@colorcombinations.org</a>
+        — corrections land in the next deploy and the article's
+        <code>dateModified</code> updates.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .methodology-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .methodology-hero__lede {
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    line-height: 1.55;
+    margin-top: 1rem;
+    max-width: 60ch;
+  }
+
+  .methodology-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .methodology-body p {
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .methodology-body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.375rem, 1.5vw + 0.875rem, 1.625rem);
+    line-height: 1.2;
+    margin: 2.5rem 0 1rem;
+    max-width: 32ch;
+  }
+
+  .methodology-body ul,
+  .methodology-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .methodology-body li {
+    margin-bottom: 0.5rem;
+  }
+
+  .methodology-body a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .methodology-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .methodology-body code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    padding: 0.125rem 0.375rem;
+    background: var(--color-paper-100);
+    border-radius: 4px;
+  }
+
+  .methodology-body strong {
+    color: var(--color-ink-900);
+  }
+
+  .methodology-body em {
+    font-style: italic;
+  }
+</style>
