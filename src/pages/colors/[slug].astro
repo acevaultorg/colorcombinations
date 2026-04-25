@@ -3,6 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
 import { FURTHER_READING } from "@/config/monetization";
 import { allColors, colorBySlug, palettesForColor } from "@data/colors";
 import { bestTextColorOn, contrastRatio } from "@/lib/color";
@@ -129,6 +130,13 @@ const jsonLd = [
         <h1 class="display-hero text-balance">{color.name}</h1>
         {color.nameJa && <p class="color-hero__ja">{color.nameJa}</p>}
         {color.meaning && <p class="color-hero__meaning">{color.meaning}</p>}
+        <ShareActions
+          title={`${color.name}${color.nameJa ? ` (${color.nameJa})` : ""}`}
+          url={new URL(`/colors/${color.slug}`, Astro.site).toString()}
+          image={new URL(`/og/colors/${color.slug}.svg`, Astro.site).toString()}
+          description={color.meaning ? `${color.name} (${color.hex}) — ${color.meaning}` : `${color.name} (${color.hex})`}
+          heading="Share this color"
+        />
       </div>
     </div>
   </section>

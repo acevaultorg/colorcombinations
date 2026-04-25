@@ -2,6 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
 import {
   collections,
   collectionBySlug,
@@ -113,6 +114,13 @@ const jsonLd = [
       <h1 class="display-hero text-balance">{collection.title}</h1>
       <p class="collection-hero__tagline">{collection.tagline}</p>
       <div class="collection-hero__description" set:html={collection.description}></div>
+      <ShareActions
+        title={collection.title}
+        url={new URL(`/collections/${collection.slug}`, Astro.site).toString()}
+        image={new URL(`/og/collections/${collection.slug}.svg`, Astro.site).toString()}
+        description={`${collection.title} — ${collection.tagline}`}
+        heading="Share this collection"
+      />
     </div>
   </section>
 
