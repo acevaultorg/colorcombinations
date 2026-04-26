@@ -62,6 +62,14 @@ const PILLARS: ReadonlyArray<PillarSpec> = [
       "What Scandinavian color tradition actually is — Nordic modernism, the hygge divergence, and three palettes from the dictionary that fit.",
     swatches: ["#F4EEE0", "#A8B5C2", "#3F5874", "#C2774E"],
   },
+  {
+    slug: "japanese-color-glossary",
+    title: "Japanese Color Glossary",
+    subtitle: "20 traditional named colours, anchored",
+    blurb:
+      "Kurenai, akane, ai, murasaki, seiji, gofun, tobi, sumi, yamabuki, kon and more — pigment origin, cultural register, and modern usage.",
+    swatches: ["#9A2A2A", "#1B2A4E", "#5C2D5C", "#A8B2A6"],
+  },
 ];
 
 export function getStaticPaths() {
