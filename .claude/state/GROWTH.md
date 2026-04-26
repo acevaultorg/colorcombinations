@@ -185,3 +185,25 @@ _Growth-relevant ships from this session:_
   - Cross-pillar callouts everywhere they should be
 
   Site state: editorial-spine compound-complete. Every entry surface (homepage, /colors, /colors/[slug], /collections, /collections/[slug], /palettes/[slug], /random, /tools) routes visitors toward /learn. Every /learn article links back to specific palette/collection/color pages. Every shared URL renders a tradition-correct OG card. Every machine surface (sitemap.xml, llms.txt, /api/*, /data/*.csv, /feed.xml) is up-to-date. Total 25 PRs shipped in resumed-session continuation (PR #54 → #78).
+
+- 2026-04-26 (audit segment 3, +3 ships beyond v79 — PR #80 → #81): operator directive `/acepilot auto [chrome mcp, check if all live that should be live or could be live best choises]` triggered comprehensive Chrome-MCP + curl audit of every shipped surface + gap-closure ships:
+
+  **Audit results (all 200 OK or correct redirect):**
+  - 7 /learn pages (5 pillars + glossary + index) — all live with article-shaped OGs
+  - 4 /api/* per-record templates (palettes/colors/collections/learn) — all live
+  - 3 /data/*.csv bulk downloads — all live
+  - 3 /embed/* templates — all live
+  - 6 hub pages (/, /colors, /collections, /tools, /random, /data) — all live
+  - 9 /og/*.svg static index OGs — all live
+  - 6 /og/learn/[slug].svg per-pillar dynamic OGs — all live
+  - sitemap-0.xml has 682 URLs (full coverage)
+  - llms.txt up-to-date (re-verified date stamp 2026-04-26)
+  - robots.txt + ads.txt + Twitter card meta + Pinterest article meta + canonical URLs all comprehensive
+
+  **🟡 Gaps identified + shipped (closed audit-cycle):**
+  - **PR #80 — API index endpoints** — site had per-record /api/{palettes,colors,collections}/[slug].json but NO list-of-all index endpoints. Shipped 4 new endpoints: /api/index.json (top-level discoverability map), /api/palettes.json (378 palettes), /api/colors.json (210 colors), /api/collections.json (69 collections). Each schema-versioned (`colorcombinations-{thing}-index/v1`), CORS-enabled, CC-BY-4.0, 1h cache. llms.txt updated to advertise.
+  - **PR #81 — /og/random.svg** — /random/ permalink-shareable page was using og-default.svg fallback. Shipped dedicated 8-tradition swatch card (kurenai red · kon navy · wabi-sabi brown · japandi sage · murasaki purple · yamabuki gold · scandinavian indigo · gofun cream).
+
+  **Cumulative this resumed-session loop (PR #54 → #81): 28 PRs merged + deployed + Chrome-MCP-verified.**
+
+  Site state post-audit: every public-facing surface has dedicated branded OG card (no og-default.svg fallback anywhere reachable from primary nav). Every machine surface has structured-data shape with schema versioning. Every shareable URL renders tradition-correct preview. Site is API-discoverable end-to-end via /api/index.json single fetch.
