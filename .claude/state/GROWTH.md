@@ -162,3 +162,26 @@ _Growth-relevant ships from this session:_
   - Per-pillar OGs = each social share renders a tradition-correct branded card
 
   Site state: complete editorial spine. All 5 historical/aesthetic traditions covered. Bidirectional cross-link graph between pillars / collections / colors / palettes. Random-palette utility for return-visit retention. llms.txt + RSS up-to-date with full surface map.
+
+- 2026-04-26 (continuation, +9 ships beyond the v15 batch — PR #70 → #78): closed the cross-link triangle and shipped editorial reference layer:
+  - **Pillar callout on /palettes/[slug]** — extracts pillar mapping into shared `@data/pillarMap` module (DRY); 271/378 palettes (72%) surface a `/learn` callout via their primary collection's pillar mapping. Closes the cross-link triangle (collections + colors + palettes all → pillars).
+  - **Color stories expanded 12 → 20** — adds editorial Color Story sections for murasaki, ai, asagi, ruri, tokiwa, kon, kuro, yamabuki. The 20 are now the canonical Japanese named-colour set.
+  - **/learn/japanese-color-glossary/** — single-page reference aggregating all 20 storied colours into 6 thematic sections with hex swatch + 80-150 word entry + CTA to full /colors/[slug]. Schema.org DefinedTermSet with 20 DefinedTerm children. Different angle from /colors/ (hue-grid) and /colors/[slug] (deep editorial). Wired into /learn/ index, RSS feed, homepage Learn cards (now 6), per-pillar OG endpoint.
+  - **Per-glossary OG card** — multi-tradition swatch strip (kurenai + kon + murasaki + seiji) at /og/learn/japanese-color-glossary.svg. BaseLayout image prop + ShareActions image prop both wired.
+  - **'See in Glossary' CTA on /colors/[slug]** — inline link from each of the 20 storied color detail pages to their matching glossary anchor (#slug). Closes bidirectional link.
+  - **Glossary banner on /colors/ index** — Reference aside in the hero pointing visitors at the glossary. Compounds /colors → /learn discovery.
+  - **llms.txt updated** — date stamp 2026-04-26, 12 → 20 storied color list, new 'For named-colour definitions' section pointing at glossary anchors.
+  - **/api/learn.json endpoint** — schema `colorcombinations-learn-index/v1`. Programmatic mirror of /learn/ with all 6 articles' metadata (slug, type, readingOrder, title, description, eyebrow, readingTime, tags, wordCount, url, openGraph, datePublished) + top-level publisher / counts / suggested reading order. CORS-enabled. /learn/ HTML advertises via `<link rel="alternate" type="application/json">`.
+  - **State-files batch (this commit)** ensures all 9 ships are logged.
+
+  Build trajectory: 1339 → 1340 pages (+1 net new — glossary article). Total PRs merged this segment: 9 (PR #70 → #78). All Chrome-MCP visually verified live.
+
+  Compounding architecture now complete:
+  - 5 pillars + 1 glossary = 6 /learn articles
+  - 20 named-color stories (was 12)
+  - Cross-link triangle: /collections (18 mapped) + /colors (12 storied with anchors) + /palettes (271 via collection mapping) → /learn pillars
+  - /api/learn.json + /api/palettes/[slug].json + /api/collections/[slug].json + /api/colors/[slug].json — 4 API matrices
+  - 5 dynamic per-pillar OGs + 1 dynamic glossary OG + 657 per-record dynamic OGs across palette/collection/color = 663 dynamic OGs total
+  - Cross-pillar callouts everywhere they should be
+
+  Site state: editorial-spine compound-complete. Every entry surface (homepage, /colors, /colors/[slug], /collections, /collections/[slug], /palettes/[slug], /random, /tools) routes visitors toward /learn. Every /learn article links back to specific palette/collection/color pages. Every shared URL renders a tradition-correct OG card. Every machine surface (sitemap.xml, llms.txt, /api/*, /data/*.csv, /feed.xml) is up-to-date. Total 25 PRs shipped in resumed-session continuation (PR #54 → #78).
