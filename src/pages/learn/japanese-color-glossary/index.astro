@@ -176,6 +176,7 @@ const jsonLd = [
   title={title}
   description={description}
   keywords={keywords}
+  image="/og/learn/japanese-color-glossary.svg"
   type="article"
   jsonLd={jsonLd}
 >
@@ -200,7 +201,7 @@ const jsonLd = [
         <ShareActions
           title={title}
           url={articleUrl}
-          image={new URL("/og/learn.svg", Astro.site).toString()}
+          image={new URL("/og/learn/japanese-color-glossary.svg", Astro.site).toString()}
           description={description}
           heading="Share this glossary"
         />
