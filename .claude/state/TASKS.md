@@ -250,3 +250,19 @@ Operator's persistent "endless loop" directive ran 15 ships through PR-merge →
 Build trajectory: 1335 → 1339 pages. All visually verified live via Chrome MCP.
 
 Compounding installed: 5 pillars × bidirectional nav, 18 collection → pillar callouts, 12 color → pillar callouts, 12 named-color story sections, reading-order intro, /random/ utility.
+
+## Session log — 2026-04-26 endless-loop continuation, segment 2 (9 PRs, PR #70 → #78)
+
+- [x] PR #70: Pillar callout on /palettes/[slug] — closes the triangle (271/378 palettes mapped via shared `@data/pillarMap`)
+- [x] PR #71: Color stories expanded 12 → 20 named colors (added murasaki, ai, asagi, ruri, tokiwa, kon, kuro, yamabuki)
+- [x] PR #72: /learn/japanese-color-glossary/ — single-page 20-color reference + DefinedTermSet schema
+- [x] PR #73: Homepage Learn feature 6th card for glossary
+- [x] PR #74: Per-glossary OG /og/learn/japanese-color-glossary.svg
+- [x] PR #75: 'See in Glossary' anchor CTA on the 20 colored-stories /colors pages
+- [x] PR #76: llms.txt update for glossary + 20 named colors
+- [x] PR #77: Glossary banner on /colors/ index
+- [x] PR #78: /api/learn.json endpoint with editorial index schema
+
+Build trajectory: 1339 → 1340 pages.
+
+Cumulative this resumed-session loop (PR #54 → #78): 25 PRs merged + deployed + Chrome-MCP-verified.
