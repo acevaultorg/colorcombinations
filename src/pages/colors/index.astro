@@ -55,6 +55,15 @@ const jsonLd = [
         Every named color in the archive — from Hermosa Pink to Cossack Green. Each entry links
         to every palette that uses it, so you can trace one color across the full dictionary.
       </p>
+      <aside class="colors-hero__glossary">
+        <p class="colors-hero__glossary-eyebrow">Reference</p>
+        <p class="colors-hero__glossary-text">
+          Looking for the canonical traditional Japanese names with their pigment origin and meaning?
+          Read the
+          <a href="/learn/japanese-color-glossary/">Japanese Color Glossary</a> — 20 names with
+          80-150 word entries, anchored for jump-linking.
+        </p>
+      </aside>
     </div>
   </section>
 
@@ -178,6 +187,44 @@ const jsonLd = [
     color: var(--color-ink-700);
     max-width: 58ch;
     margin-top: 1.75rem;
+  }
+
+  .colors-hero__glossary {
+    margin-top: 1.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent-500);
+    border-radius: var(--radius-sm);
+    max-width: 65ch;
+  }
+
+  .colors-hero__glossary-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    margin: 0 0 0.375rem;
+  }
+
+  .colors-hero__glossary-text {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-800);
+    margin: 0;
+  }
+
+  .colors-hero__glossary-text a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    font-weight: 500;
+  }
+
+  .colors-hero__glossary-text a:hover {
+    color: var(--color-accent-700);
   }
 
   /* ============ FILTER BAR ============ */
