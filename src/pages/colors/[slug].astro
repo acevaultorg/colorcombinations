@@ -192,6 +192,11 @@ const jsonLd = [
             <span set:html={story.workingNote} />
           </p>
         )}
+        <p class="color-story-glossary-cta">
+          <a href={`/learn/japanese-color-glossary/#${color.slug}`}>
+            See {color.name} in the Japanese Color Glossary →
+          </a>
+        </p>
       </div>
     </section>
   )}
@@ -765,6 +770,21 @@ const jsonLd = [
   .color-story-working-label {
     font-weight: 600;
     color: var(--color-ink-900);
+  }
+
+  .color-story-glossary-cta {
+    margin: 1.25rem 0 0;
+    font-size: 0.9375rem;
+  }
+
+  .color-story-glossary-cta a {
+    color: var(--color-accent-500);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .color-story-glossary-cta a:hover {
+    text-decoration: underline;
   }
 
   /* ============ PILLAR CALLOUT ============ */
