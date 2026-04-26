@@ -9,6 +9,7 @@ import ShareBar from "@components/ShareBar.astro";
 import { FURTHER_READING } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
 import { collectionsForPalette, paletteSetForCollection } from "@data/collections";
+import { pillarForCollection } from "@data/pillarMap";
 import { bestTextColorOn } from "@/lib/color";
 
 export async function getStaticPaths() {
@@ -35,6 +36,15 @@ const collectionSiblings = primaryCollection
       .filter((p) => p.slug !== palette.slug)
       .slice(0, 6)
   : [];
+
+// Pillar-article cross-link — if any of this palette's collections maps to a
+// pillar, surface it. Tries collections in order until one matches. Compounds
+// /palettes → /learn discovery alongside the existing /collections + /colors
+// → /learn paths.
+const pillar =
+  paletteCollections
+    .map((c) => pillarForCollection(c.slug))
+    .find((p): p is NonNullable<typeof p> => p !== null) ?? null;
 
 // Deterministic book rotation — different palette pages show different books
 // so impressions are distributed across the full FurtherReading inventory.
@@ -360,6 +370,20 @@ const jsonLd = [
   <div class="container-wide">
     <BundleCta variant="compact" />
   </div>
+
+  {/* ============ PILLAR CALLOUT ============ */}
+  {pillar && (
+    <section class="section palette-pillar-section" aria-labelledby="palette-pillar-heading">
+      <div class="container-wide">
+        <a href={pillar.href} class="palette-pillar">
+          <p class="palette-pillar__eyebrow">From the editorial · Long read</p>
+          <h2 id="palette-pillar-heading" class="palette-pillar__title">{pillar.title}</h2>
+          <p class="palette-pillar__lede">{pillar.lede}</p>
+          <span class="palette-pillar__cta">Read the article →</span>
+        </a>
+      </div>
+    </section>
+  )}
 
   {/* ============ COLLECTION SIBLINGS ============ */}
   {primaryCollection && collectionSiblings.length > 0 && (
@@ -758,6 +782,65 @@ const jsonLd = [
     height: 1.125rem;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  /* PILLAR CALLOUT */
+  .palette-pillar-section {
+    padding-top: 2rem;
+    padding-bottom: 0;
+  }
+
+  .palette-pillar {
+    display: block;
+    padding: 2rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+
+  .palette-pillar:hover {
+    border-color: var(--color-ink-900);
+    transform: translateY(-1px);
+  }
+
+  .palette-pillar__eyebrow {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-500);
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+
+  .palette-pillar__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.375rem, 1.75vw + 0.875rem, 1.75rem);
+    line-height: 1.25;
+    margin: 0 0 0.625rem;
+    color: var(--color-ink-900);
+    max-width: 50ch;
+  }
+
+  .palette-pillar__lede {
+    margin: 0 0 0.75rem;
+    color: var(--color-ink-700);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    max-width: 65ch;
+  }
+
+  .palette-pillar__cta {
+    display: inline-block;
+    color: var(--color-accent-500);
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+
+  .palette-pillar:hover .palette-pillar__cta {
+    color: var(--color-accent-700);
   }
 
   /* COLLECTION SIBLINGS */
