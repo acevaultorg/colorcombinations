@@ -18,6 +18,15 @@ const LEARN_ARTICLES: ReadonlyArray<{
   categories: string[];
 }> = [
   {
+    slug: "japanese-color-glossary",
+    title: "Japanese Color Glossary: 20 Traditional Named Colors",
+    pubDate: new Date(Date.UTC(2026, 3, 26, 12, 0, 0)),
+    description:
+      "Twenty canonical traditional Japanese colour names — kurenai, akane, shu, entan, murasaki, ai, asagi, ruri, tokiwa, kon, kuro, yamabuki, tobi, kogecha, sumi, gofun, seiji, hanada, kaki, kinari — with pigment origin, cultural register, and modern usage notes.",
+    body: "<p>Single-page glossary aggregating the 20 most-canonical traditional Japanese colour names organised into 6 thematic sections (Four Reds · Wabi-Sabi Earth & Ink · Japandi Cool & Warm · Imperial & Court · Indigo & Folk · Black/Yellow/Spring). Each entry has a 80-150 word summary plus deep-link anchor and CTA to the full /colors/[slug] detail page. DefinedTermSet schema makes every name machine-readable.</p>",
+    categories: ["Glossary", "Reference", "Named colors"],
+  },
+  {
     slug: "heian-court-color-theory",
     title: "Heian Court Color Theory: Kasane, Kinjiki, and the Seasonal Palette",
     pubDate: new Date(Date.UTC(2026, 3, 25, 12, 0, 0)),
