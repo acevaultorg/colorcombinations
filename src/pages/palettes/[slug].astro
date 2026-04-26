@@ -238,6 +238,23 @@ const jsonLd = [
         </svg>
         Share
       </a>
+      <button
+        type="button"
+        class="quick-share__btn quick-share__btn--download"
+        id="download-share-card"
+        data-slug={palette.slug}
+        data-title={palette.title}
+        data-title-ja={palette.titleJa ?? ""}
+        data-era={palette.era}
+        data-colors={JSON.stringify(palette.colors.map((c) => ({ hex: c.hex, name: c.nameRomaji ?? c.nameJa ?? "" })))}
+        data-event="download_share_card"
+        aria-label="Download 1200×630 share card image"
+      >
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Save image
+      </button>
       <span class="quick-share__status" aria-live="polite" role="status"></span>
     </div>
   </div>
@@ -463,6 +480,99 @@ const jsonLd = [
       if (embedStatus) embedStatus.textContent = "Select + copy manually";
     }
   });
+
+  // Share card Canvas download
+  const downloadBtn = document.querySelector<HTMLButtonElement>("#download-share-card");
+  downloadBtn?.addEventListener("click", () => {
+    const slug = downloadBtn.dataset.slug ?? "palette";
+    const title = downloadBtn.dataset.title ?? "";
+    const titleJa = downloadBtn.dataset.titleJa ?? "";
+    const era = downloadBtn.dataset.era ?? "";
+    type ColorEntry = { hex: string; name: string };
+    let colors: ColorEntry[] = [];
+    try { colors = JSON.parse(downloadBtn.dataset.colors ?? "[]"); } catch { /* ignore */ }
+
+    const W = 1200, H = 630;
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // — background
+    ctx.fillStyle = "#faf9f7";
+    ctx.fillRect(0, 0, W, H);
+
+    // — colour swatches (top 60%)
+    const swatchH = Math.round(H * 0.60);
+    const n = colors.length || 1;
+    const swatchW = Math.floor(W / n);
+    colors.forEach((c, i) => {
+      const x = i * swatchW;
+      const w = i === n - 1 ? W - x : swatchW; // fill remainder on last
+      ctx.fillStyle = c.hex.startsWith("#") ? c.hex : `#${c.hex}`;
+      ctx.fillRect(x, 0, w, swatchH);
+    });
+
+    // — thin separator line
+    ctx.fillStyle = "#e8e5e0";
+    ctx.fillRect(0, swatchH, W, 2);
+
+    // — info area (bottom 40%)
+    const infoY = swatchH + 2;
+    const infoH = H - infoY;
+    ctx.fillStyle = "#faf9f7";
+    ctx.fillRect(0, infoY, W, infoH);
+
+    // — palette title
+    ctx.fillStyle = "#1a1714";
+    ctx.font = `bold ${titleJa ? 28 : 34}px 'Georgia', serif`;
+    ctx.fillText(title, 48, infoY + 56);
+
+    // — Japanese title
+    if (titleJa) {
+      ctx.fillStyle = "#7a7066";
+      ctx.font = `22px 'Georgia', serif`;
+      ctx.fillText(titleJa, 48, infoY + 88);
+    }
+
+    // — era tag
+    if (era) {
+      const eraY = titleJa ? infoY + 116 : infoY + 96;
+      ctx.fillStyle = "#a89a88";
+      ctx.font = `500 16px 'system-ui', sans-serif`;
+      ctx.fillText(era, 48, eraY);
+    }
+
+    // — hex values row
+    const hexRowY = infoY + infoH - 52;
+    ctx.font = `500 13px 'Courier New', monospace`;
+    const hexSpacing = Math.min(120, Math.floor((W - 96) / n));
+    colors.forEach((c, i) => {
+      const hex = c.hex.startsWith("#") ? c.hex.toUpperCase() : `#${c.hex.toUpperCase()}`;
+      ctx.fillStyle = "#1a1714";
+      ctx.fillText(hex, 48 + i * hexSpacing, hexRowY);
+      if (c.name) {
+        ctx.fillStyle = "#7a7066";
+        ctx.font = `400 11px 'system-ui', sans-serif`;
+        ctx.fillText(c.name, 48 + i * hexSpacing, hexRowY + 18);
+        ctx.font = `500 13px 'Courier New', monospace`;
+      }
+    });
+
+    // — branding (bottom-right)
+    ctx.fillStyle = "#a89a88";
+    ctx.font = `500 15px 'system-ui', sans-serif`;
+    ctx.textAlign = "right";
+    ctx.fillText("colorcombinations.org", W - 48, H - 26);
+    ctx.textAlign = "left";
+
+    // — trigger download
+    const link = document.createElement("a");
+    link.download = `colorcombinations-${slug}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
 </script>
 
 <style>
@@ -501,6 +611,11 @@ const jsonLd = [
   .quick-share__btn--tweet:hover {
     border-color: #1da1f2;
     color: #1da1f2;
+  }
+
+  .quick-share__btn--download:hover {
+    border-color: var(--color-accent-500);
+    color: var(--color-accent-600, var(--color-accent-500));
   }
 
   .quick-share__btn svg {
