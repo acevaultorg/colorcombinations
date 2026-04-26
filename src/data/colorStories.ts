@@ -111,4 +111,67 @@ export const COLOR_STORIES: Record<string, ColorStory> = {
       "In Japandi colour systems kinari is the warm-anchor variant: where gofun pulls cool-white, kinari pulls warm-cream. The choice between them sets the temperature of the entire palette. A Japandi room anchored on kinari reads as <em>cosy and traditional</em>; the same room anchored on gofun reads as <em>spare and architectural</em>.",
     ],
   },
+
+  // ---------- Additional canonical named colours (v2 expansion) ----------
+
+  murasaki: {
+    paragraphs: [
+      "Murasaki (紫) is the deep purple dyed from the roots of the murasaki plant (<em>Lithospermum erythrorhizon</em>) — a colour so labour-intensive to produce that the Heian court reserved its darkest variants as <em>kinjiki</em> (forbidden colours), wearable only by the imperial family and highest court ranks. The cheaper variants were available to the rest of the aristocracy; commoners were forbidden the colour entirely.",
+      "The dye-plant gave its name to the colour and to one of the most-quoted figures in Japanese literature: Murasaki Shikibu, author of <em>The Tale of Genji</em>, took her name from this very pigment. Modern usage: heritage luxury, premium publishing, brands trading on intellectual or imperial association. Reads more spiritual than party-purple.",
+    ],
+    workingNote: "Pairs canonically with chalk-white gofun for high-formality or with deep gold for ceremonial register. Avoid fluorescent neighbours — murasaki belongs to a slow palette.",
+  },
+
+  ai: {
+    paragraphs: [
+      "Ai (藍) is indigo — the deep blue dyed from the leaves of <em>Polygonum tinctorium</em> (Japanese indigo plant) through a fermented vat dye process that takes months to set up and decades to master. By the Edo period, ai was the workhorse blue of the entire country: samurai under-armour, merchant work clothes, futon covers, noren shop curtains. Whole towns built their economy around ai dyeing.",
+      "The colour reads <em>everyday Japanese</em> in a way no other blue does — closer to denim than to ultramarine, closer to navy than to cobalt, with a slight green undertone and the textile-dye depth that synthetic blues never quite match. Modern usage: heritage food brands, craft-goods packaging, anywhere that wants to read as 'old Japan' without reading as 'tourist Japan.'",
+    ],
+    workingNote: "The textbook ai pairing is with kinari (unbleached cream) — the indigo-and-cream of Edo-period workwear. Reads instantly traditional + warm + grounded.",
+  },
+
+  asagi: {
+    paragraphs: [
+      "Asagi (浅葱) is the pale green-blue of young leek shoots — literally 'shallow leek' — and one of the named colours that appears most consistently across Wada's catalogue. It sits between sky-blue and pale celadon, with enough green to read as <em>fresh</em> rather than cool, and enough blue to read as <em>bright</em> rather than vegetal. Historically it was used for under-robes in summer kimonos and for low-rank samurai garments (specifically the Shinsengumi uniform haori in mid-19th century Kyoto).",
+      "Modern usage: hospitality, wellness, summer-season editorial, beauty packaging — anywhere a 'fresh cool' reads better than 'cold cool.' Asagi is one of the colours that lets a Japandi or wabi-sabi palette feel <em>vital</em> instead of austere.",
+    ],
+  },
+
+  ruri: {
+    paragraphs: [
+      "Ruri (瑠璃) is the vivid deep blue of lapis lazuli — the gemstone, not the dye. The colour is named after the stone, and the Buddhist Pure Land ('Eastern Lapis Realm') is where the pigment's cultural weight comes from. Where ai is everyday-blue, ruri is jewel-blue: saturated, slightly cool, and traditionally reserved for ceremonial textiles, religious paintings, and the most expensive lacquerware inlays.",
+      "Modern usage: luxury hospitality, premium beauty, anywhere the brief asks for a blue that reads as <em>precious</em> rather than functional. Ruri pulls darker and more saturated than hanada (the half-indigo blue), brighter than kon (deep navy), and richer than asagi.",
+    ],
+  },
+
+  tokiwa: {
+    paragraphs: [
+      "Tokiwa (常磐) — literally 'eternal rock' — is the deep evergreen of pine needles and cedar bark, named for the trees that hold their colour through winter. It's a structural green: the colour of an eternal hedge, a temple cypress, a household crest passed through generations. The word carries the connotation of <em>permanence</em> rather than <em>nature</em>.",
+      "In palette work tokiwa is the canonical green axis of folk-textile combinations — most famously paired with akane (madder red) in the textbook 'red and green' of Japanese rural clothing, without the Christmas-y connotations of the Western pairing. Reads grounded, warm, and pre-modern.",
+    ],
+    workingNote: "Tokiwa + akane is the folk-formal pair; tokiwa + kinari is the everyday wear. Avoid pairing with seiji or asagi — those greens cancel rather than complement.",
+  },
+
+  kon: {
+    paragraphs: [
+      "Kon (紺) is deep navy — the darkest practical shade of indigo, the colour of dyed-and-redyed-and-redyed cotton until the fibres are nearly black. Used historically for samurai under-armour (because the blue-black colour hides bloodstains), Edo-period merchant workwear, and the deep-night skies in classical wood-block prints. Kon reads <em>weighty, grounded, and authoritative</em> in a way pure black does not.",
+      "Modern usage: business identity, premium menswear, heritage brands, editorial publishing. Kon is the 'corporate navy' of the Japanese tradition — but with depth and material warmth that synthetic navies lack.",
+    ],
+    workingNote: "Pairs canonically with kurenai (court formal — see Heian guide) or with gofun (clean modern). Both pairings preserve kon's gravitas.",
+  },
+
+  kuro: {
+    paragraphs: [
+      "Kuro (黒) is black — but Japanese tradition distinguishes several blacks, and kuro is the everyday one: closer to Indian ink with a slight warmth, less absolute than printer's black. Used for kimono base colour in formal mourning (where it's worn paired with white only), for crests (mon) on white silk, and for the structural lines in calligraphy and ink-wash painting (sumi-e).",
+      "Where sumi (墨, ink) is the calligraphy-specific black with sheen and depth, kuro is the broader 'black' of textile and lacquer. Modern usage: luxury packaging, premium menswear, editorial design — kuro reads warmer than Western black, especially when paired with cream rather than pure white.",
+    ],
+  },
+
+  yamabuki: {
+    paragraphs: [
+      "Yamabuki (山吹) is the saturated golden-yellow of the Japanese kerria flower — a bright spring-blooming shrub whose colour gave its name to one of the canonical Heian seasonal palettes. The colour reads <em>sun-on-petals</em> rather than <em>citrus</em>: it has the deep gold undertone that pure yellow lacks, and the soft warmth that prevents it from reading as institutional.",
+      "Yamabuki was historically associated with prosperity (the flower blooms in late spring, after winter scarcity ends) and was a popular layering colour in the kasane-no-irome tradition. Modern usage: hospitality, premium food packaging, seasonal-rotation brand systems, anywhere a 'warm spring yellow' reads better than 'corporate yellow.'",
+    ],
+    workingNote: "Pairs canonically with deep evergreen (the spring-blossom-against-pine combination) or with sumi black (the Edo-textile gold-on-ink pairing). Both reverse the institutional-yellow trap.",
+  },
 };
