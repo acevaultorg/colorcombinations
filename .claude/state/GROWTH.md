@@ -135,3 +135,30 @@ _Growth-relevant ships from this session:_
   Build trajectory across both halves of the session: **603 → 1335 pages (+732)**. Total PRs merged: 48 (PR #4 → PR #48). All Chrome-MCP visually verified live. One Chrome-MCP-caught silent bug fixed (X-Frame-Options + CSP doubled appending blocking iframes globally — discovered + remediated within 5 minutes).
 
   Site reached complete-surface state: 3 API matrices (palettes 378 / collections 69 / colors 210 = 657 JSON), 4 OG matrices (palettes 378 + collections 69 + colors 210 + hue 9 = 666 dynamic + 9 static index = 675 SVGs), 3 embed matrices (palettes 378 / collections 69 / colors 210 = 657 iframes), 3 CSV downloads, /data hub with DataCatalog, /learn/ section with 3 pillars + Blog schema, full Pinterest Article rich-pin meta everywhere, Wikipedia+Wikidata sameAs on /about, llms.txt fully updated, sitemap clean (no noindex leaks). Next strategic ship: when fleet reaches threshold for new acquisition channel (Mediavine 1k sessions/mo, Show HN launch, etc.) — current state is launch-ready.
+
+- 2026-04-25 (resumed-session continuation, +15 ships beyond v45): operator's persistent "endless loop" directive ran a second wave of compounding ships focused on /learn editorial expansion + cross-link density:
+  - **PillarNav component** with prev/next nav between pillars. Operator reading-order discovery: japanese-reds → wabi-sabi → japandi (then expanded).
+  - **Pillar callouts on the 12 named-color detail pages** — kurenai/akane/shu/entan → /learn/japanese-reds/#anchor (with section anchors); tobi/kogecha/sumi/gofun → /learn/wabi-sabi-color-theory/; seiji/hanada/kaki/kinari → /learn/japandi-color-theory/. Reverse direction of pillar-to-color links, compounding /colors → /learn discovery.
+  - **4th pillar /learn/scandinavian-color-theory/** — 760 words, three-axis Nordic palette + hygge divergence + 3 fitting palettes + 3 anti-patterns. Closes Japanese-pigments → wabi-sabi → japandi → Scandinavian arc.
+  - **/og/learn.svg 4-card layout** then 5-card after Heian — every fleet-shareable surface rendered correctly with all pillars.
+  - **Color Story sections on 12 named-color pages** — each ~150-200 words of editorial context (pigment origin, traditional use, modern application) + optional Working Note. Boosts thin-content profile + LLM citation-fit (Aleyda #2 Useful · #4 Extractable · #7 Credible).
+  - **Per-pillar /og/learn/[slug].svg dynamic OG endpoint** — each pillar gets its own article-shaped 1200×630 card with tradition-specific 4-swatch strip (kurenai-derived for japanese-reds, tea-room palette for wabi-sabi, three-axis for japandi, cool gofun + persimmon for scandinavian, deep-purple imperial for heian). Replaces fallback to /og/collections/[matched].svg. Wired into BaseLayout image prop AND ShareActions across all pillars.
+  - **Collection-siblings widget on /palettes/[slug]** — shows up to 6 sibling palettes from primary collection, different axis from existing relatedPalettes (hue similarity). Compounds thematic browsing.
+  - **5th pillar /learn/heian-court-color-theory/** — 720 words on kasane no irome (layered-robe combinations) + kinjiki (forbidden colours) + 12-month seasonal palette. Anchors long-tail "heian colors" / "kasane irome" / "japanese imperial colors" SEO. Made FIRST in PillarNav ORDER (the deepest historical foundation).
+  - **Expanded callout map 6 → 18 collections** — refactored learnLinkMap into PILLAR_LINKS + COLLECTION_TO_PILLAR. New mappings: terracotta+maximalist → japanese-reds; earth-tones+minimalist+monochromatic+muted → wabi-sabi; modernist+mid-century → scandinavian; spring+summer+autumn+winter → heian (the seasonal palette is the Heian 12-month system generalised).
+  - **Suggested reading order intro on /learn/ index** — aside block at top showing 5-pillar canonical reading order with hyperlinks, compounds engagement (multi-pillar sessions).
+  - **/random/ permalink-shareable** random palette redirect — JS-only client-side picker from full 378 archive, replace() so back button doesn't bounce. Surface for discovery + returning-visitor compounding.
+  - **/random/ surfaced on /tools/ index as 4th tool card** + footer Tools column updated. SoftwareApplication schema auto-extends.
+  - **llms.txt refreshed** for all 5 pillars + /random/ + /methodology + /data + 18-collection callout map. New Pillar Articles section + revised Best-pages-to-cite (pillars now lead).
+
+  Build trajectory: 1335 → 1339 pages (+4 net new pages: scandinavian + heian pillars + random + 12 named-color story sections). Total PRs merged this session: 15 (PR #54 → PR #68). All Chrome-MCP visually verified live. /og/learn.svg redesigned twice (4-card → 5-card). Per-pillar OGs verified individually with screenshots showing tradition-correct swatch strips.
+
+  Compounding mechanics installed:
+  - 5 pillars × 4 navigation points each (prev/next/all-articles/share) = full bidirectional graph between /learn pieces
+  - 18 /collections/[slug] → /learn pillar callouts = compounds /collections traffic into /learn
+  - 12 /colors/[slug] → /learn pillar callouts (anchored where applicable) = compounds /colors traffic into /learn  
+  - 12 /colors/[slug] color stories = thin-content fix for the 12 highest-traffic named colors
+  - Reading-order intro = converts single-pillar visits into multi-pillar sessions
+  - Per-pillar OGs = each social share renders a tradition-correct branded card
+
+  Site state: complete editorial spine. All 5 historical/aesthetic traditions covered. Bidirectional cross-link graph between pillars / collections / colors / palettes. Random-palette utility for return-visit retention. llms.txt + RSS up-to-date with full surface map.

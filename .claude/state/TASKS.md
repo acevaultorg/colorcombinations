@@ -226,3 +226,27 @@ Session shipped 32 atomic ships, all live + Chrome MCP verified. Site went 603 �
 - User accounts + saved palettes
 - Figma plugin / Raycast extension
 - Pinterest integration for viral loop
+
+## Session log — 2026-04-25 endless-loop continuation (15 PRs)
+
+Operator's persistent "endless loop" directive ran 15 ships through PR-merge → deploy → Chrome-MCP-verify cycles:
+
+- [x] PR #54: PillarNav prev/next component on 3 pillars
+- [x] PR #55: Pillar callout on /colors/[slug] for 12 named colors
+- [x] PR #56: 4th pillar — /learn/scandinavian-color-theory/ (760 words)
+- [x] PR #57: /og/learn.svg 4-card layout
+- [x] PR #58: Color Story sections on 12 named-color pages
+- [x] PR #59: Per-pillar /og/learn/[slug].svg dynamic OG endpoint
+- [x] PR #60: 'More from this collection' siblings widget on /palettes/[slug]
+- [x] PR #61: 5th pillar — /learn/heian-court-color-theory/ (720 words, made first in ORDER)
+- [x] PR #62: /og/learn.svg 5-card layout
+- [x] PR #63: Expanded pillar callout map 6 → 18 collections
+- [x] PR #64: Suggested reading order intro on /learn/ index
+- [x] PR #65: /random/ permalink-shareable random palette
+- [x] PR #66: llms.txt refresh (5 pillars + /random + /methodology + /data)
+- [x] PR #67: /tools/ index 4th card for Random Palette
+- [x] PR #68: Site footer Tools column adds Random palette link
+
+Build trajectory: 1335 → 1339 pages. All visually verified live via Chrome MCP.
+
+Compounding installed: 5 pillars × bidirectional nav, 18 collection → pillar callouts, 12 color → pillar callouts, 12 named-color story sections, reading-order intro, /random/ utility.
