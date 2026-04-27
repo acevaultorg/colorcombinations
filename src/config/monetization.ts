@@ -370,12 +370,30 @@ export interface DesignTool {
 
 export const DESIGN_TOOLS: DesignTool[] = [
   {
+    name: "Adobe Creative Cloud",
+    category: "design",
+    description: "Industry-standard design suite: Photoshop, Illustrator, InDesign, XD.",
+    why: "Every Wada palette exports cleanly into Adobe color-book format. If you bill clients, Adobe is the default deliverable they expect.",
+    url: "https://prf.hn/click/camref:PLACEHOLDER_IMPACT_ADOBE",
+    affiliate: true,
+    commission: "$30-100 per conversion (Impact.com)",
+  },
+  {
     name: "Figma",
     category: "design",
     description: "The default design tool. Free tier is generous.",
-    why: "The tokens bundle includes a drag-in Figma file.",
+    why: "The tokens bundle includes a drag-in Figma file. Free tier handles most solo work.",
     url: "https://www.figma.com",
     affiliate: false,
+  },
+  {
+    name: "Canva",
+    category: "design",
+    description: "Drag-and-drop design for non-designers — social, presentations, brand kits.",
+    why: "Pair a Wada palette with a Canva brand kit and your client's marketing has a coherent visual identity in 20 minutes.",
+    url: "https://www.canva.com/?ref=PLACEHOLDER_CANVA_REFERRAL",
+    affiliate: true,
+    commission: "$36 per pro signup",
   },
   {
     name: "Framer",
@@ -387,11 +405,28 @@ export const DESIGN_TOOLS: DesignTool[] = [
     commission: "~$25 recurring",
   },
   {
+    name: "Tailwind UI",
+    category: "design",
+    description: "Premium component library by the Tailwind team. Production-ready blocks.",
+    why: "Drop a Wada palette into Tailwind UI's components and ship a brand-coherent site in a day. The CSS-vars export from this archive plugs straight into Tailwind config.",
+    url: "https://tailwindui.com/?ref=PLACEHOLDER_TAILWIND_REFERRAL",
+    affiliate: true,
+    commission: "30% recurring",
+  },
+  {
     name: "Coolors",
     category: "color",
     description: "Palette generator with contrast checker and exports.",
     why: "Complements this archive — use Coolors for iteration, use the archive for provenance.",
     url: "https://coolors.co",
+    affiliate: false,
+  },
+  {
+    name: "Khroma",
+    category: "color",
+    description: "AI-trained on your color preferences — generates palettes you would have picked.",
+    why: "Pair Khroma's per-user generation with the Wada archive's historical depth for a complete colour-picking workflow.",
+    url: "https://khroma.co",
     affiliate: false,
   },
 ];
@@ -400,5 +435,117 @@ export const DESIGN_TOOLS: DesignTool[] = [
 export function hasDesignToolAffiliate(): boolean {
   return DESIGN_TOOLS.some(
     (t) => t.affiliate && !t.url.includes("PLACEHOLDER"),
+  );
+}
+
+// ============================================================================
+// LEARN RESOURCES — design course affiliates (v19.37 Tier-S retrofit)
+// ============================================================================
+
+/**
+ * LearnResource — design-course affiliates. Per I-38 (no-Amazon-default),
+ * routed via Impact.com (Skillshare, Coursera) and direct referrals
+ * (Domestika). Higher commission ceiling than books since each enrolment
+ * pays $5-30 vs ~$1 for a book.
+ *
+ * Designers using a colour archive are buying ongoing skill development.
+ * Audience-fit is genuinely high — these are listed because they are
+ * useful, not just because they pay.
+ */
+export interface LearnResource {
+  name: string;
+  /** Course/platform tagline. */
+  tagline: string;
+  /** One-line audience fit — why a Wada-archive visitor cares. */
+  why: string;
+  /** Destination URL — placeholder until affiliate ID is pasted. */
+  url: string;
+  /** When true, append FTC disclosure. */
+  affiliate: boolean;
+  /** Commission structure (internal note for forecasting). */
+  commission?: string;
+  /** Topic tags for filtering / SEO. */
+  tags: ReadonlyArray<string>;
+}
+
+export const LEARN_RESOURCES: LearnResource[] = [
+  {
+    name: "Skillshare — Brand Identity Design",
+    tagline: "Practical brand-identity courses from working designers.",
+    why: "Pair a Wada palette with Skillshare's brand-identity tracks and you've got a complete client deliverable from canvas to brand book.",
+    url: "https://skl.sh/PLACEHOLDER_SKILLSHARE_IMPACT",
+    affiliate: true,
+    commission: "$7 per signup (Impact.com)",
+    tags: ["brand identity", "design fundamentals", "course"],
+  },
+  {
+    name: "Domestika — Color Theory Courses",
+    tagline: "Spanish-origin design platform with deep colour-theory catalogue.",
+    why: "Domestika's colour-theory courses go deeper than Skillshare's — closer to academic rigor without the academic price.",
+    url: "https://www.domestika.org/?ref=PLACEHOLDER_DOMESTIKA_REFERRAL",
+    affiliate: true,
+    commission: "20-30% per course",
+    tags: ["color theory", "course", "fine art"],
+  },
+  {
+    name: "Coursera — Google UX Design Certificate",
+    tagline: "Google's official UX Design Certificate — career credential level.",
+    why: "If you're a designer pivoting toward UX, the Google certificate carries actual hiring weight. Colour theory is one of its modules.",
+    url: "https://imp.i384100.net/PLACEHOLDER_COURSERA_IMPACT",
+    affiliate: true,
+    commission: "$15-45 per certificate enrolment (Impact.com)",
+    tags: ["UX design", "certificate", "career"],
+  },
+];
+
+/** True when LEARN_RESOURCES has at least one live affiliate link. */
+export function hasLearnAffiliate(): boolean {
+  return LEARN_RESOURCES.some(
+    (r) => r.affiliate && !r.url.includes("PLACEHOLDER"),
+  );
+}
+
+// ============================================================================
+// PRINT-ON-DEMAND — POD provider affiliates (v19.37 Tier-S retrofit)
+// ============================================================================
+
+/**
+ * POD provider — Printful + Printify. Color-matched merch is a real
+ * adjacency for designers using a colour archive (apparel, posters,
+ * stationery in a brand palette). Both pay per-sale commission via
+ * referral programs. No Amazon Associates per I-38.
+ */
+export interface PodProvider {
+  name: string;
+  tagline: string;
+  why: string;
+  url: string;
+  affiliate: boolean;
+  commission?: string;
+}
+
+export const POD_PROVIDERS: PodProvider[] = [
+  {
+    name: "Printful",
+    tagline: "Print-on-demand with no minimums. Apparel, accessories, home.",
+    why: "Take a Wada palette into Printful's design tool and produce brand-matched apparel/posters/stationery in a single afternoon. No inventory.",
+    url: "https://www.printful.com/a/PLACEHOLDER_PRINTFUL_REFERRAL",
+    affiliate: true,
+    commission: "10% of customer orders for 9 months",
+  },
+  {
+    name: "Printify",
+    tagline: "POD network with a wider catalogue + lower base prices.",
+    why: "Cheaper base costs than Printful — better margin if you're selling to clients. Same colour-matching workflow.",
+    url: "https://printify.com/?ref=PLACEHOLDER_PRINTIFY_REFERRAL",
+    affiliate: true,
+    commission: "5% of customer orders, lifetime",
+  },
+];
+
+/** True when POD_PROVIDERS has at least one live affiliate link. */
+export function hasPodAffiliate(): boolean {
+  return POD_PROVIDERS.some(
+    (p) => p.affiliate && !p.url.includes("PLACEHOLDER"),
   );
 }

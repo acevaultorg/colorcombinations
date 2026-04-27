@@ -45,3 +45,6 @@
 
 2026-04-27 17:47 | task:api-hue-json (PR #88) | archetype:dataset_json_api × +70 | projected:+5-12 LLM-citation referrals/wk over 90d (completes JSON-twin coverage; LLM consumers can fetch hue-aggregate data without scraping HTML) | confidence:0.55
 2026-04-27 17:47 | api-hue-json (PR #88) | 9 new endpoints /api/hue/[hue].json + jsonAlternate on /colors/hue/[hue]/ + /api/index.json schemas + sitemap-ai xhtml:alternate + llms.txt documentation | @distributor (self) | SEO 0.4 · Share 0.3 · Channel 0.95 · Loop 0.85 · Moat 0.7 | **mean 0.64** PASS | archetype: dataset_json_api × +70 | no 🔴
+
+2026-04-27 21:29 | task:api-learn-slug (PR #89) | archetype:dataset_json_api × +70 | projected:+5-12 LLM-citation referrals/wk over 90d (per-pillar editorial JSON exposes outline + cited terms with pronunciation + meaning — extractable structure beyond what palettes/colors/collections provide) | confidence:0.55
+2026-04-27 21:29 | api-learn-slug (PR #89) | 6 new endpoints /api/learn/[slug].json + jsonAlternate on all 6 /learn/[slug]/ + /api/index.json + sitemap-ai pillar JSON twin + llms.txt | @distributor (self) | SEO 0.4 · Share 0.4 · Channel 0.95 · Loop 0.85 · Moat 0.75 | **mean 0.67** PASS | archetype: dataset_json_api × +70 | no 🔴

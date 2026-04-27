@@ -3,6 +3,8 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import BundleCta from "@components/BundleCta.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import DesignTools from "@components/DesignTools.astro";
+import LearnResources from "@components/LearnResources.astro";
+import PrintOnDemand from "@components/PrintOnDemand.astro";
 import { BUNDLE, PRINTS } from "@/config/monetization";
 
 const title = "Shop";
@@ -93,6 +95,20 @@ const jsonLd = [
   <div class="shop-tools" id="tools">
     <div class="container-wide">
       <DesignTools />
+    </div>
+  </div>
+
+  {/* ============ 2b. LEARN RESOURCES (course affiliates — Skillshare/Domestika/Coursera) ============ */}
+  <div class="shop-learn" id="courses">
+    <div class="container-wide">
+      <LearnResources />
+    </div>
+  </div>
+
+  {/* ============ 2c. PRINT-ON-DEMAND (Printful + Printify referrals) ============ */}
+  <div class="shop-pod" id="print-on-demand">
+    <div class="container-wide">
+      <PrintOnDemand />
     </div>
   </div>
 
