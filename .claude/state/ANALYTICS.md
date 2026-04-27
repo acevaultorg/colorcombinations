@@ -169,6 +169,8 @@ Zero circuit breaker opens. Zero mistake loop entries. Clean session.
 2026-04-27 17:01 | auto-merge(maximum-auto-i42) | PR #86 | rebased post-conflict (force-push) MERGEABLE no-CI-gates | merged-squash | ok
 2026-04-27 17:35 | auto-accept(sovereign-auto) | share_by_design_result | reversible-component-extension+page-wirings | shipped | ok
 2026-04-27 17:36 | auto-merge(maximum-auto-i42) | PR #87 | rebased post-conflict (force-push) MERGEABLE no-CI-gates --admin override | merged-squash | ok
+2026-04-27 17:47 | auto-accept(sovereign-auto) | dataset_json_api | reversible-new-endpoints | shipped | ok
+2026-04-27 17:48 | auto-merge(maximum-auto-i42) | PR #88 | CLEAN MERGEABLE no-CI-gates | merged-squash | ok
 
 ## Specialist Log
 
@@ -184,6 +186,7 @@ Zero circuit breaker opens. Zero mistake loop entries. Clean session.
 2026-04-27 12:48 | @distributor (self) | sitemap-ai-xml | Fit 0.57 mean (SEO0.4 Share0.2 Ch0.95 Loop0.7 Moat0.6) | PASS (infrastructure) | archetype: sitemap_ai_xml_present × +20 + dataset_json_api × +70 | actionable=0
 2026-04-27 17:00 | @distributor (self) | hue-family-hub-pages | Fit 0.68 mean (SEO0.85 Share0.4 Ch0.7 Loop0.7 Moat0.75) | PASS (strong) | archetype: programmatic_page_with_unique_data × +55 + SEO_page_addition × +50 | actionable=0
 2026-04-27 17:35 | @distributor (self) | share-card-pillars-hue | Fit 0.79 mean (SEO0.5 Share0.95 Ch0.9 Loop0.85 Moat0.75) | PASS (strong) | archetype: share_by_design_result × +95 | actionable=0
+2026-04-27 17:47 | @distributor (self) | api-hue-json | Fit 0.64 mean (SEO0.4 Share0.3 Ch0.95 Loop0.85 Moat0.7) | PASS | archetype: dataset_json_api × +70 | actionable=0
 
 ## Cycle Times
 

@@ -60,7 +60,12 @@ export const GET: APIRoute = () => {
     "japanese-color-glossary",
   ];
   for (const slug of pillarSlugs) {
-    urls.push({ loc: `${SITE}/learn/${slug}/`, priority: "1.0", changefreq: "monthly" });
+    urls.push({
+      loc: `${SITE}/learn/${slug}/`,
+      priority: "1.0",
+      changefreq: "monthly",
+      jsonAlt: `${SITE}/api/learn/${slug}.json`,
+    });
   }
 
   // Tier 0.9 — per-palette + per-color (highest unique-data density)

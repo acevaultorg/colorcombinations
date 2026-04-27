@@ -45,6 +45,7 @@ export const GET: APIRoute = ({ site }) => {
       color: `${siteUrl}api/colors/{slug}.json`,
       collection: `${siteUrl}api/collections/{slug}.json`,
       hue: `${siteUrl}api/hue/{hue}.json`,
+      learn: `${siteUrl}api/learn/{slug}.json`,
     },
     bulkDownloads: {
       palettes_csv: `${siteUrl}data/palettes.csv`,
@@ -83,6 +84,7 @@ export const GET: APIRoute = ({ site }) => {
       "colorcombinations-collection/v1": "Per-collection detail",
       "colorcombinations-random/v1": "Random-discovery sample across all 3 datasets (reshuffles each build; HTML companion at /random/)",
       "colorcombinations-hue/v1": "Per-hue-family aggregate: every color in the hue + dominant-hue palettes + matching collections (HTML companion at /colors/hue/[hue]/)",
+      "colorcombinations-learn/v1": "Per-pillar editorial JSON: title + outline + cited terms (with pronunciation + meaning) + related slugs (HTML companion at /learn/[slug]/)",
     },
   };
 
