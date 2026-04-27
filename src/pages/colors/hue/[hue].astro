@@ -1,0 +1,455 @@
+---
+/**
+ * /colors/hue/[hue]/ — hue-family landing pages (9 routes).
+ *
+ * Programmatic SEO hub for "X color palettes" / "shades of X" / "[hue]
+ * color combinations" queries. Each page is a unique synthesis of every
+ * named color in that hue family + every palette dominant in that hue
+ * + WCAG specs at-a-glance + cross-link to /collections that match.
+ *
+ * Distribution archetype: programmatic_page_with_unique_data × +55 +
+ * SEO_page_addition × +50. Companion /og/hue/[hue].svg already shipped.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PaletteCard from "@components/PaletteCard.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+import { colorsByHue } from "@data/colors";
+import { allPalettes } from "@data/palettes";
+import { collections } from "@data/collections";
+import { bestTextColorOn, contrastRatio } from "@/lib/color";
+import type { DominantHue, HexColor } from "@/types/palette";
+import { FURTHER_READING } from "@/config/monetization";
+
+const HUE_ORDER: DominantHue[] = [
+  "red", "orange", "yellow", "brown", "pink",
+  "green", "blue", "purple", "neutral",
+];
+
+interface HueMeta {
+  title: string;
+  shortTitle: string;
+  lede: string;
+  accentHex: string;
+  description: string; // long-form for hero + meta
+}
+
+const HUE_META: Record<DominantHue, HueMeta> = {
+  red: {
+    title: "Red Color Combinations",
+    shortTitle: "Red",
+    lede: "Crimson, vermillion, madder — the most historically loaded reds in Japanese tradition.",
+    accentHex: "#9A2A2A",
+    description:
+      "Reds in the Sanzo Wada archive carry the full ceremonial weight of Japanese tradition: kurenai (the safflower red used for imperial robes and bridal kimono), aka (the elemental red of dawn and shrine gates), shu (cinnabar lacquer), and entan (lead-orange-red for armour and temples). This page collects every red in the dictionary plus every Wada plate where red is the dominant note.",
+  },
+  orange: {
+    title: "Orange Color Combinations",
+    shortTitle: "Orange",
+    lede: "Persimmon, tangerine, amber — Japanese orange between red ceremony and yellow sunlight.",
+    accentHex: "#C45C2A",
+    description:
+      "Orange in the Wada palette occupies the warm middle distance between red's ceremony and yellow's daylight: kakishibu (persimmon-tannin used to dye paper and cloth), daidai (bitter-orange new-year decoration), and akebono (dawn). Less culturally fixed than red, more emotionally direct than yellow — the working palette of autumn produce, sunset, and clay.",
+  },
+  yellow: {
+    title: "Yellow Color Combinations",
+    shortTitle: "Yellow",
+    lede: "Yamabuki, ukon, kariyasu — luminous yellows from mustard to pale gold.",
+    accentHex: "#D4A017",
+    description:
+      "Japanese yellow is a botanical record. Yamabuki names a flowering shrub. Kariyasu is the dye-grass that produces it. Ukon is turmeric. Kuchinashi is gardenia fruit. Each pigment carries its plant's name — meaning these yellows aren't abstractions but recipes, each tied to a specific season, soil, and dye process.",
+  },
+  brown: {
+    title: "Brown Color Combinations",
+    shortTitle: "Brown",
+    lede: "Tobi, kogecha, kuri — rich earth-tones from kite-brown to burnt cedar.",
+    accentHex: "#7B4A2A",
+    description:
+      "Browns in the Wada catalogue describe the working surfaces of pre-modern Japan: tatami matting, urushi lacquer, cypress timber, kuri chestnut. Where Western browns lean toward the indistinct, Japanese browns are unusually specific — tobi (kite-bird brown), tonocha (a courtier's tea), kogecha (scorched-tea), each anchored to a recognisable material world.",
+  },
+  pink: {
+    title: "Pink Color Combinations",
+    shortTitle: "Pink",
+    lede: "Sakura, nadeshiko, usubeni — the full nuanced range of Japanese pink.",
+    accentHex: "#E8A0A0",
+    description:
+      "The Japanese vocabulary for pink is among the world's largest, because the cultural attention paid to flowers — sakura (cherry), nadeshiko (wild pink), momo (peach), tsubaki (camellia) — produced a name for every shade. Wada's pinks are unusually pale by Western design standards; the saturated pinks of mid-20th-century Western fashion are absent. Most live in the usuiro (light, faint) register.",
+  },
+  green: {
+    title: "Green Color Combinations",
+    shortTitle: "Green",
+    lede: "Moegi, matsuba, tokiwa — botanical greens from young bamboo to evergreen.",
+    accentHex: "#3A6B45",
+    description:
+      "Greens in the dictionary are organised by season + plant + age: moegi (the just-budding green of new shoots), matcha (powdered tea), matsuba (pine needle), tokiwa (the dark constant green of evergreens), wakatake (young bamboo). Each name encodes a moment in a plant's life cycle, not an abstract hue.",
+  },
+  blue: {
+    title: "Blue Color Combinations",
+    shortTitle: "Blue",
+    lede: "Sora, asagi, hanada, ruri, kon — the full Japanese blue spectrum.",
+    accentHex: "#1A3C6B",
+    description:
+      "Japanese blue is dominated by indigo (ai), the dye that became so culturally central foreign visitors in the late-Edo period named it 'Japan blue'. The dictionary maps every register of indigo from sora (sky) at the lightest to kon (deep navy) at the darkest, with hanada, asagi, ruri, and aizome filling the gradient.",
+  },
+  purple: {
+    title: "Purple Color Combinations",
+    shortTitle: "Purple",
+    lede: "Murasaki, kikyo, fuji — purples from imperial robe to wisteria petal.",
+    accentHex: "#5A2A7A",
+    description:
+      "Purple was the highest-status colour of the Heian court. Murasaki, the dye-plant gromwell, produced a hue so labour-intensive to fix that the term kinjiki (forbidden colour) was created specifically to restrict it to the imperial family. The Wada plates carry that history forward in plates that pair murasaki with court gold and ink-black.",
+  },
+  neutral: {
+    title: "Neutral Color Combinations",
+    shortTitle: "Neutral",
+    lede: "Gofun, kinari, nezumi, sumi, gin — the chalk-to-ink spectrum of Japanese neutrals.",
+    accentHex: "#8A8A8A",
+    description:
+      "Japanese neutrals are mineralogically and behaviorally specific: gofun (oyster-shell white used as ground in nihonga painting), kinari (raw, unbleached silk), nezumi (rat-grey — itself subdivided into dozens of named shades), sumi (sumi-ink black), gin (silver). The 'grey' family alone contains more named shades than most full Western palettes.",
+  },
+};
+
+export function getStaticPaths() {
+  // getStaticPaths runs in its own isolated scope — top-level constants
+  // outside this function aren't accessible per Astro docs. Hue list is
+  // also declared in HUE_ORDER below for runtime use; keep both in sync.
+  const hues = ["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"];
+  return hues.map((hue) => ({ params: { hue } }));
+}
+
+const { hue } = Astro.params;
+if (!hue || !HUE_ORDER.includes(hue as DominantHue)) {
+  return Astro.redirect("/404");
+}
+const hueKey = hue as DominantHue;
+const meta = HUE_META[hueKey];
+
+// Pull all colors in this hue (already sorted by frequency)
+const huesMap = colorsByHue();
+const colors = huesMap.get(hueKey) ?? [];
+
+// Pull all palettes whose dominantHue matches
+const palettes = allPalettes().filter((p) => p.dominantHue === hueKey);
+
+// Pull collections that mention this hue family
+const matchingCollections = collections.filter((c) =>
+  c.slug === hueKey || c.keywords?.some((k) => k.toLowerCase().includes(hueKey))
+);
+
+// Cross-link to other hue family pages (top-level discovery)
+const otherHues = HUE_ORDER.filter((h) => h !== hueKey).map((h) => ({
+  hue: h,
+  short: HUE_META[h].shortTitle,
+  accent: HUE_META[h].accentHex,
+}));
+
+// Deterministic book rotation (same pattern as /colors/[slug])
+const bookOffset =
+  hueKey.split("").reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % FURTHER_READING.length;
+
+// Schema.org freshness (Aleyda #9)
+const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+
+const title = meta.title;
+const description = `${meta.lede} ${colors.length} named ${meta.shortTitle.toLowerCase()} colors and ${palettes.length} historical palettes from Sanzo Wada's 1933 Dictionary of Color Combinations, with hex specs and WCAG contrast.`;
+const keywords = [
+  `${meta.shortTitle.toLowerCase()} color palette`,
+  `${meta.shortTitle.toLowerCase()} color combinations`,
+  `shades of ${meta.shortTitle.toLowerCase()}`,
+  `Japanese ${meta.shortTitle.toLowerCase()} colors`,
+  "Sanzo Wada",
+  "Dictionary of Color Combinations",
+];
+
+const pageUrl = new URL(`/colors/hue/${hueKey}`, Astro.site).toString();
+const ogImage = `/og/hue/${hueKey}.svg`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: pageUrl,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "The Dictionary of Color Combinations",
+      url: Astro.site?.toString(),
+    },
+    numberOfItems: colors.length + palettes.length,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: "https://colorcombinations.org",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Colors", item: new URL("/colors", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: meta.shortTitle },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  image={ogImage}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <nav class="breadcrumb container-wide" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li aria-hidden="true">›</li>
+      <li><a href="/colors/">Colors</a></li>
+      <li aria-hidden="true">›</li>
+      <li aria-current="page">{meta.shortTitle}</li>
+    </ol>
+  </nav>
+
+  <section class="hue-hero">
+    <div class="container-narrow hue-hero__inner">
+      <div
+        class="hue-hero__accent"
+        style={`background-color:${meta.accentHex}`}
+        role="img"
+        aria-label={`${meta.shortTitle} hue accent`}
+      ></div>
+      <p class="eyebrow">Hue family · {colors.length} colors · {palettes.length} palettes</p>
+      <h1 class="display-hero text-balance">{meta.title}</h1>
+      <p class="hue-hero__lede">{meta.lede}</p>
+      <p class="hue-hero__description">{meta.description}</p>
+      <ShareActions
+        title={meta.title}
+        url={pageUrl}
+        image={new URL(ogImage, Astro.site).toString()}
+        description={meta.lede}
+        heading={`Share this ${meta.shortTitle.toLowerCase()} hue page`}
+      />
+    </div>
+  </section>
+
+  {colors.length > 0 && (
+    <section class="hue-colors section">
+      <div class="container-wide">
+        <h2 class="section-title">Every {meta.shortTitle.toLowerCase()} in the dictionary</h2>
+        <p class="hue-colors__intro">
+          Click any swatch to see the palette where it appears. Every color page lists hex, RGB, WCAG contrast, and cross-links to every Wada plate that uses it.
+        </p>
+        <div class="hue-colors__grid" role="list">
+          {colors.map((c) => {
+            const txt = bestTextColorOn(c.hex);
+            const onWhite = contrastRatio(c.hex, "#FFFFFF" as HexColor);
+            return (
+              <a
+                href={`/colors/${c.slug}/`}
+                class="hue-color-tile"
+                role="listitem"
+                style={`background-color:${c.hex}`}
+                aria-label={`${c.name} (${c.hex}) — ${c.paletteCount} palette${c.paletteCount === 1 ? "" : "s"}`}
+              >
+                <span class={`hue-color-tile__hex hue-color-tile__hex--${txt}`}>{c.hex}</span>
+                <span class={`hue-color-tile__name hue-color-tile__name--${txt}`}>{c.name}</span>
+                {c.nameJa && <span class={`hue-color-tile__ja hue-color-tile__ja--${txt}`}>{c.nameJa}</span>}
+                <span class={`hue-color-tile__count hue-color-tile__count--${txt}`}>
+                  {c.paletteCount}× &middot; {onWhite.toFixed(1)}:1 on white
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {palettes.length > 0 && (
+    <section class="hue-palettes section">
+      <div class="container-wide">
+        <h2 class="section-title">Palettes dominant in {meta.shortTitle.toLowerCase()}</h2>
+        <p class="hue-palettes__intro">
+          {palettes.length} historical combinations from the 1933 archive where {meta.shortTitle.toLowerCase()} carries the strongest visual weight. Each palette page exports as JSON, Tailwind config, CSS variables, or a downloadable share-card image.
+        </p>
+        <div class="palette-grid" role="list">
+          {palettes.slice(0, 24).map((palette) => (
+            <div role="listitem">
+              <PaletteCard palette={palette} headingLevel="h3" />
+            </div>
+          ))}
+        </div>
+        {palettes.length > 24 && (
+          <p class="hue-palettes__more">
+            <a href={`/browse/?hue=${hueKey}`}>Browse all {palettes.length} {meta.shortTitle.toLowerCase()} palettes →</a>
+          </p>
+        )}
+      </div>
+    </section>
+  )}
+
+  {matchingCollections.length > 0 && (
+    <section class="hue-collections section">
+      <div class="container-wide">
+        <h2 class="section-title">Curated {meta.shortTitle.toLowerCase()} collections</h2>
+        <ul class="hue-collections__list" role="list">
+          {matchingCollections.map((c) => (
+            <li>
+              <a href={`/collections/${c.slug}/`} class="hue-collection-link">
+                <span class="hue-collection-link__accent" style={`background-color:${c.accentHex}`} aria-hidden="true"></span>
+                <span class="hue-collection-link__title">{c.title}</span>
+                <span class="hue-collection-link__tagline">{c.tagline}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="hue-other section">
+    <div class="container-narrow">
+      <h2 class="section-title">Browse other hue families</h2>
+      <ul class="hue-other__list" role="list">
+        {otherHues.map((h) => (
+          <li>
+            <a href={`/colors/hue/${h.hue}/`} class="hue-other-link">
+              <span class="hue-other-link__swatch" style={`background-color:${h.accent}`} aria-hidden="true"></span>
+              <span class="hue-other-link__name">{h.short}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <aside class="hue-aside container-narrow">
+    <FurtherReading variant="sidebar" limit={2} offset={bookOffset} />
+    <BundleCta variant="medium" />
+  </aside>
+</BaseLayout>
+
+<style>
+  .hue-hero { padding: 3rem 0 2rem; }
+  .hue-hero__inner { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .hue-hero__accent {
+    width: 5rem; height: 5rem; border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+  }
+  .hue-hero .eyebrow { margin-top: 0.25rem; }
+  .hue-hero__lede {
+    font-family: var(--font-serif);
+    font-size: 1.25rem; line-height: 1.5;
+    color: var(--color-ink-700); margin: 0;
+  }
+  .hue-hero__description {
+    font-family: var(--font-sans);
+    font-size: 1rem; line-height: 1.65;
+    color: var(--color-ink-700); margin-top: 0.5rem;
+  }
+
+  .hue-colors__intro, .hue-palettes__intro {
+    font-family: var(--font-sans);
+    color: var(--color-ink-700);
+    margin: 0 0 1.5rem; max-width: 60ch;
+  }
+
+  .hue-colors__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 0.75rem;
+    list-style: none; padding: 0; margin: 0;
+  }
+  .hue-color-tile {
+    aspect-ratio: 4 / 3;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0.75rem; border-radius: 0.5rem;
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    transition: transform 150ms ease, box-shadow 150ms ease;
+    overflow: hidden;
+  }
+  .hue-color-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+  }
+  .hue-color-tile__hex {
+    font-family: 'Courier New', monospace;
+    font-weight: 600; font-size: 0.875rem;
+    margin-bottom: 0.5rem; opacity: 0.85;
+  }
+  .hue-color-tile__name {
+    font-family: var(--font-serif);
+    font-weight: 600; font-size: 1rem;
+  }
+  .hue-color-tile__ja {
+    font-family: var(--font-serif);
+    font-size: 0.875rem; opacity: 0.85;
+  }
+  .hue-color-tile__count {
+    font-family: var(--font-sans);
+    font-size: 0.75rem; opacity: 0.75;
+    margin-top: 0.25rem;
+  }
+  .hue-color-tile__hex--dark, .hue-color-tile__name--dark, .hue-color-tile__ja--dark, .hue-color-tile__count--dark { color: #1a1714; }
+  .hue-color-tile__hex--light, .hue-color-tile__name--light, .hue-color-tile__ja--light, .hue-color-tile__count--light { color: #faf9f7; }
+
+  .hue-palettes__more { margin-top: 1.5rem; font-family: var(--font-sans); }
+  .hue-palettes__more a { color: var(--color-accent-500); text-decoration: none; font-weight: 500; }
+  .hue-palettes__more a:hover { text-decoration: underline; }
+
+  .hue-collections__list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem; list-style: none; padding: 0; margin: 0;
+  }
+  .hue-collection-link {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    text-decoration: none; color: var(--color-ink-900);
+    transition: border-color 150ms ease;
+  }
+  .hue-collection-link:hover { border-color: var(--color-ink-900); }
+  .hue-collection-link__accent {
+    width: 1.5rem; height: 1.5rem; border-radius: 0.25rem; flex-shrink: 0;
+    border: 1px solid var(--color-border);
+  }
+  .hue-collection-link__title {
+    font-family: var(--font-serif); font-weight: 600;
+  }
+  .hue-collection-link__tagline {
+    font-family: var(--font-sans); font-size: 0.875rem;
+    color: var(--color-ink-700); margin-left: auto;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .hue-other__list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem; list-style: none; padding: 0; margin: 0;
+  }
+  .hue-other-link {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-border); border-radius: 999px;
+    text-decoration: none; color: var(--color-ink-900);
+    font-family: var(--font-sans); font-size: 0.875rem;
+    transition: border-color 150ms ease;
+  }
+  .hue-other-link:hover { border-color: var(--color-ink-900); }
+  .hue-other-link__swatch {
+    width: 1rem; height: 1rem; border-radius: 50%;
+    border: 1px solid var(--color-border); flex-shrink: 0;
+  }
+
+  .hue-aside { display: flex; flex-direction: column; gap: 1rem; padding: 2rem 0; }
+</style>

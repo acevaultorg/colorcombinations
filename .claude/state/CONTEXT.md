@@ -1,55 +1,77 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-27 12:00 -->
+<!-- handoff: 2026-04-27 13:00 -->
 
-**Mode:** auto (sovereign auto)
-**Objective:** share-card Canvas PNG download on /colors + /collections (compounds advocacy archetype across 275 surfaces).
+**Mode:** auto (sovereign auto, then auto c per operator follow-up directive)
+**Objective:** endless-loop reach + revenue ships; ColorCombinations primary focus + heybabel pivot mid-session.
 
-**STATUS — partial. PR #83 merged to main. Live deploy BLOCKED on operator wrangler re-auth.**
+**STATUS — 3 ColorCombinations PRs merged to main + 1 heybabel state commit pushed. Live deploy BLOCKED on operator wrangler re-auth.**
 
-### This session
+### This session — 3 ships + 1 cross-project pivot
 
-1. Extended `src/components/ShareActions.astro` with optional `download` prop (discriminated union: kind: 'color' | 'collection') + Canvas-drawn 1200×630 PNG handler.
-2. Wired `/colors/[slug]` (211) + `/collections/[slug]` (64) to pass download payload.
-3. Build verified: 1340 pages, 3.72s, 0 errors.
-4. Self-review: @craftsman Love 0.80 mean PASS, @distributor Fit 0.76 mean PASS, archetype `share_by_design_result × +95`.
-5. Commit a73b818 → PR #83 (CLEAN+MERGEABLE, no CI gates) → squash-merged.
-6. State-file log committed (a7fa293): DISTRIBUTION + ANALYTICS rows.
+**Ship 1 — PR [#83](https://github.com/acevaultorg/colorcombinations/pull/83): share-card Canvas PNG download on /colors + /collections**
+- Extended `src/components/ShareActions.astro` with optional `download` prop (discriminated union: kind: 'color' | 'collection') + Canvas-drawn 1200×630 PNG handler
+- Wired `/colors/[slug]` (211) + `/collections/[slug]` (64) to pass download payload
+- @craftsman Love 0.80 mean PASS · @distributor Fit 0.76 mean PASS
+- archetype `share_by_design_result × +95` · projected +30-80 referral/wk over 90d
+- 275 new shareable surfaces
 
-### BLOCKED ON OPERATOR
+**Ship 2 — PR [#84](https://github.com/acevaultorg/colorcombinations/pull/84): /api/random.json + HTML alternate twin**
+- New endpoint `src/pages/api/random.json.ts` — schema `colorcombinations-random/v1`, 20-sample-each across 3 datasets via xorshift32-seeded shuffle, plus full slug arrays for client-side randomness
+- Wired `<link rel="alternate" type="application/json" href="/api/random.json">` on `/random/` page
+- Updated `/api/index.json` discovery map + `public/llms.txt` documentation
+- @distributor Fit 0.63 mean PASS · archetype `dataset_json_api × +70`
 
-`wrangler whoami` → 400 Bad Request. OAuth token at `~/Library/Preferences/.wrangler/config/default.toml` expired 2026-04-26 (yesterday); refresh token also fails. Brain cannot deploy until operator runs `wrangler login` (30 sec, see TASKS.md ## Human Actions § "Re-auth wrangler").
+**Ship 3 — PR [#85](https://github.com/acevaultorg/colorcombinations/pull/85): /sitemap-ai.xml secondary sitemap**
+- New endpoint `src/pages/sitemap-ai.xml.ts` — 677 URLs hand-tiered for LLM crawl-budget allocation (1.0=homepage+6 pillars, 0.9=378 palettes+210 colors, 0.8=69 collections, 0.7=E-E-A-T+index hubs, 0.6=utilities, 0.5=commercial)
+- Per-record entries advertise JSON twins via `<xhtml:link rel="alternate" type="application/json">`
+- Wired `public/robots.txt` second `Sitemap:` line + `public/llms.txt` documentation
+- @distributor Fit 0.57 mean PASS (infrastructure-class) · archetype `sitemap_ai_xml_present × +20 + dataset_json_api × +70`
+- Implements `rules/bot-harvest.md` Lever 5 (Day-1 bot-readiness)
 
-### Next session deploy command
+**Cross-project pivot — heybabel.com GSC verification (commit [8c9d249](https://github.com/acevaultorg/heybabel-com/commit/8c9d249))**
+- Operator opened GSC `u/2` "not-verified" page for `sc-domain:heybabel.com`
+- Diagnosed: heybabel already DNS-verified for primary `u/0` (TXT `google-site-verification=w-xfprl...`); `u/2` needs sibling TXT (Google supports multiple, matched by exact value)
+- Brain blocked from autonomous fix (TXT value visible only in operator's GSC UI; CF DNS write blocked by same wrangler OAuth issue)
+- Wave 37 6-slot Clarity Card committed to heybabel TASKS.md with exact step-by-step
 
-After operator re-auth, brain (or operator) runs from project root:
+### BLOCKED ON OPERATOR — single action unblocks both deploys
+
+`wrangler whoami` → 400 Bad Request. OAuth token at `~/Library/Preferences/.wrangler/config/default.toml` expired 2026-04-26; refresh fails. **Run `wrangler login` once (~30 sec, browser pop)** — unblocks all 3 ColorCombinations deploys + future heybabel CF DNS writes if operator chooses brain-automated GSC fix.
+
+### Deploy command (post-wrangler-login)
 
 ```sh
-cd "[project root]"
+cd "[ColorCombinations project root]"
+npm run build  # rebuild to capture all 3 ships
 wrangler pages deploy dist --project-name=colorcombinations --branch=main --commit-dirty=true
 ```
-
-`dist/` is already built from this session's commit (a73b818) and matches `main` post-merge. No rebuild needed — wrangler uploads + propagates in ~60s.
 
 ### Verify live (post-deploy)
 
 ```sh
-# Color page should expose the new share-download button:
-curl -sS https://colorcombinations.org/colors/asagi/ | grep -c "data-share-download"  # → 1
-curl -sS https://colorcombinations.org/collections/japandi/ | grep -c "data-share-download"  # → 1
+curl -sI https://colorcombinations.org/sitemap-ai.xml | grep -E "200|application/xml"   # → both
+curl -s https://colorcombinations.org/api/random.json | head -c 80                      # → starts with {"schema":"colorcombinations-random/v1"
+curl -s https://colorcombinations.org/colors/asagi/ | grep -c "data-share-download"     # → 1
+curl -s https://colorcombinations.org/collections/japandi/ | grep -c "data-share-download" # → 1
+curl -s https://colorcombinations.org/robots.txt | grep -c sitemap-ai                   # → 1
 ```
 
-If both 1 → deploy verified. If 0 → CF edge cache; wait 60s + retry, or check `*.colorcombinations.pages.dev` preview.
+All 5 → deploy verified. Else: CF edge cache (60s wait) or check `*.colorcombinations.pages.dev` preview.
 
-### Numbers (cumulative this branch)
+### Numbers (cumulative this 3-ship branch)
 
 | Metric | Value |
 |---|---|
-| Build pages | 1340 (unchanged — pure component extension) |
-| New shareable surfaces (this ship) | 275 (211 colors + 64 collections) |
-| Distribution archetype | share_by_design_result × +95 |
-| Projected reach | +30-80 referral visitors/wk over 90d |
+| PRs merged to main | 3 (#83 + #84 + #85) |
+| Build pages | 1340 (unchanged — additive endpoints + component extension) |
+| New shareable surfaces | 275 (PR #83: 211 colors + 64 collections) |
+| New machine-readable endpoints | 2 (PR #84: /api/random.json + PR #85: /sitemap-ai.xml) |
+| Sitemap-AI URLs | 677 (priority-tiered for LLM crawlers) |
+| Distribution archetypes | share_by_design × +95 + dataset_json_api × +70 (×2) + sitemap_ai_xml_present × +20 |
+| Projected reach (combined) | +40-110 referral/citation visitors/wk over 90d |
+| Operator-action queue | 1 critical (wrangler login → unblocks 3 deploys) + 1 recommended (heybabel GSC u/2 TXT) |
 
 ---
 
