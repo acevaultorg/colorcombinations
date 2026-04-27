@@ -173,6 +173,9 @@ Zero circuit breaker opens. Zero mistake loop entries. Clean session.
 2026-04-27 17:48 | auto-merge(maximum-auto-i42) | PR #88 | CLEAN MERGEABLE no-CI-gates | merged-squash | ok
 2026-04-27 21:29 | auto-accept(sovereign-auto) | dataset_json_api | reversible-new-endpoints+wirings | shipped | ok
 2026-04-27 21:30 | auto-merge(maximum-auto-i42) | PR #89 | rebased post-conflict (force-push) MERGEABLE no-CI-gates --admin override | merged-squash | ok
+2026-04-27 23:14 | auto-accept(sovereign-auto) | affiliate_inventory_expansion + editorial_curation_depth | reversible-config-add+component-add | shipped | ok
+2026-04-27 23:15 | auto-merge(maximum-auto-i42) | PR #90 | rebased post-conflict (force-push) MERGEABLE no-CI-gates --admin override | merged-squash | ok
+2026-04-27 23:30 | deploy-truth-verify | colorcombinations.pages.dev | 8/8 ships live (3b324968 deploy, 2737 files / 722 new, no EPIPE) | curl-fingerprint-verified | ok
 
 ## Specialist Log
 

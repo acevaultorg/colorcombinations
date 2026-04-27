@@ -6,7 +6,7 @@
 **Mode:** auto (sovereign auto, then auto c per operator follow-up directive)
 **Objective:** endless-loop reach + revenue ships; ColorCombinations primary focus + heybabel pivot mid-session.
 
-**STATUS — 7 ColorCombinations PRs merged to main + 1 heybabel state commit pushed. Live deploy BLOCKED on operator wrangler re-auth.**
+**STATUS — 8 ColorCombinations PRs (#83-#90) merged + ALL DEPLOYED LIVE 2026-04-27 23:30 UTC (deploy 3b324968.colorcombinations.pages.dev → colorcombinations.org; 2737 files uploaded / 722 new, no EPIPE). All 8 ships fingerprint-verified live via curl. + 1 heybabel state commit pushed (Wave 37 GSC u/2). + 1 🔴 operator action remaining: paste 8 affiliate IDs in monetization.ts to unlock $300-700/mo (full Clarity Card in TASKS.md).**
 
 ### This session — 3 ships + 1 cross-project pivot
 
