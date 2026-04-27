@@ -161,6 +161,10 @@ Zero circuit breaker opens. Zero mistake loop entries. Clean session.
 2026-04-24 19:56 | auto-accept(sovereign-auto) | programmatic_page_with_unique_data | reversible-data-addition | shipped | ok
 2026-04-27 11:58 | auto-accept(sovereign-auto) | share_by_design_result | reversible-component-extension | shipped | ok
 2026-04-27 11:58 | auto-merge(maximum-auto-i42) | PR #83 | CLEAN MERGEABLE no-CI-gates | merged-squash | ok
+2026-04-27 12:16 | auto-accept(sovereign-auto) | dataset_json_api | reversible-new-endpoint | shipped | ok
+2026-04-27 12:16 | auto-merge(maximum-auto-i42) | PR #84 | CLEAN MERGEABLE no-CI-gates | merged-squash | ok
+2026-04-27 12:48 | auto-accept(sovereign-auto) | sitemap_ai_xml_present + dataset_json_api | reversible-new-endpoint+wiring | shipped | ok
+2026-04-27 12:49 | auto-merge(maximum-auto-i42) | PR #85 | rebased post-conflict (force-push) MERGEABLE no-CI-gates | merged-squash | ok
 
 ## Specialist Log
 
@@ -172,6 +176,8 @@ Zero circuit breaker opens. Zero mistake loop entries. Clean session.
 2026-04-24 19:56 | @distributor | collections-batch-v19 | Fit 0.62 mean (SEO0.8 Share0.4 Ch0.7 Loop0.5 Moat0.7) | PASS | archetype verified: programmatic_page_with_unique_data × +55 + SEO_page_addition × +50 | actionable=0
 2026-04-27 11:58 | @craftsman (self) | share-card-canvas-colors-collections | Love 0.80 mean (U0.85 D0.75 R0.85 C0.90 Un0.65) | PASS | actionable=0
 2026-04-27 11:58 | @distributor (self) | share-card-canvas-colors-collections | Fit 0.76 mean (SEO0.5 Share0.95 Ch0.85 Loop0.85 Moat0.65) | PASS (strong) | archetype: share_by_design_result × +95 | actionable=0
+2026-04-27 12:16 | @distributor (self) | api-random-json | Fit 0.63 mean (SEO0.5 Share0.4 Ch0.85 Loop0.7 Moat0.7) | PASS | archetype: dataset_json_api × +70 | actionable=0
+2026-04-27 12:48 | @distributor (self) | sitemap-ai-xml | Fit 0.57 mean (SEO0.4 Share0.2 Ch0.95 Loop0.7 Moat0.6) | PASS (infrastructure) | archetype: sitemap_ai_xml_present × +20 + dataset_json_api × +70 | actionable=0
 
 ## Cycle Times
 
