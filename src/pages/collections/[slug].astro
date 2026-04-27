@@ -23,6 +23,30 @@ if (!collection) {
 const palettes = paletteSetForCollection(collection);
 const total = palettes.length;
 
+/**
+ * Sample up to 6 representative hexes for the share-card canvas. Walk
+ * through the first ~3 palettes pulling 2 colors each so the strip
+ * reads as a coherent set rather than a single palette duplicated. Dedupe
+ * exact-match hexes so a 6-swatch strip never repeats.
+ */
+const downloadSwatches: { hex: string; name?: string }[] = [];
+const seenHex = new Set<string>();
+const targetCount = 6;
+outer: for (const p of palettes.slice(0, 6)) {
+  for (const c of p.colors) {
+    const key = c.hex.toLowerCase();
+    if (seenHex.has(key)) continue;
+    seenHex.add(key);
+    downloadSwatches.push({ hex: c.hex, name: c.nameRomaji ?? c.nameJa });
+    if (downloadSwatches.length >= targetCount) break outer;
+  }
+}
+// Always lead with the collection accent so the card carries the brand.
+if (downloadSwatches.length === 0 || downloadSwatches[0].hex.toLowerCase() !== collection.accentHex.toLowerCase()) {
+  downloadSwatches.unshift({ hex: collection.accentHex });
+  if (downloadSwatches.length > targetCount) downloadSwatches.length = targetCount;
+}
+
 // Pillar-article cross-link — when a collection has a matching /learn pillar,
 // surface it as a "From the editorial" callout. Compounds internal-link
 // density between thematic palettes and long-form context.
@@ -126,6 +150,14 @@ const jsonLd = [
         image={new URL(`/og/collections/${collection.slug}.svg`, Astro.site).toString()}
         description={`${collection.title} — ${collection.tagline}`}
         heading="Share this collection"
+        download={{
+          kind: "collection",
+          slug: collection.slug,
+          title: collection.title,
+          tagline: collection.tagline,
+          count: total,
+          swatches: downloadSwatches,
+        }}
       />
     </div>
   </section>
