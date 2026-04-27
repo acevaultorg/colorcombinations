@@ -65,7 +65,8 @@ Tabular dataset exports for citation, training pipelines, and data analysts. CC-
 
 CSVs are RFC 4180–compliant, served with CORS Access-Control-Allow-Origin: * + Content-Disposition: inline. Wikipedia-citable + LLM-training-ingestible without HTML scraping.
 
-Sitemap: /sitemap-index.xml → /sitemap-0.xml (603 primary URLs; /embed/* intentionally excluded — those are noindex iframe widgets).
+Sitemap: /sitemap-index.xml → /sitemap-0.xml (603+ primary URLs; /embed/* intentionally excluded — those are noindex iframe widgets).
+Sitemap-AI: /sitemap-ai.xml — secondary sitemap curation-prioritised for LLM crawlers. Highest-citation-value URLs first (1.0 = pillars + homepage; 0.9 = palettes + colors; 0.8 = collections; 0.7 = E-E-A-T pages + index hubs; 0.6 = utilities; 0.5 = commercial). Each entry advertises its JSON-API twin via xhtml:link rel=alternate so machine consumers can fetch structured data without a second request.
 
 ## Embeddable widgets (iframes)
 

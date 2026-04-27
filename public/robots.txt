@@ -35,3 +35,4 @@ Allow: /
 Disallow: /og/
 
 Sitemap: https://colorcombinations.org/sitemap-index.xml
+Sitemap: https://colorcombinations.org/sitemap-ai.xml
