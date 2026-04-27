@@ -9,6 +9,30 @@
  * if live; no external JS libraries.
  */
 
+/**
+ * Optional 1200×630 PNG share-card payload. When provided, ShareActions
+ * renders an extra "Save image" button. Canvas is drawn client-side at
+ * click time so build size stays flat regardless of how many pages opt
+ * in. Two kinds today; new kinds add a switch case in the script below.
+ */
+export type DownloadColor = {
+  kind: "color";
+  slug: string;
+  name: string;
+  nameJa?: string;
+  hex: string;
+  hue?: string;
+};
+export type DownloadCollection = {
+  kind: "collection";
+  slug: string;
+  title: string;
+  tagline?: string;
+  count: number;
+  swatches: { hex: string; name?: string }[];
+};
+export type Download = DownloadColor | DownloadCollection;
+
 export interface Props {
   /** Page title used in tweet text + Pinterest description */
   title: string;
@@ -20,9 +44,11 @@ export interface Props {
   description?: string;
   /** Optional eyebrow heading on the bar (defaults to "Share") */
   heading?: string;
+  /** Optional Canvas-drawn 1200×630 PNG payload — adds a "Save image" button */
+  download?: Download;
 }
 
-const { title, url, image, description, heading = "Share" } = Astro.props;
+const { title, url, image, description, heading = "Share", download } = Astro.props;
 
 const tweetText = `${title} — colorcombinations.org`;
 const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(url)}`;
@@ -79,6 +105,22 @@ const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURICo
       </svg>
       <span>X / Twitter</span>
     </a>
+
+    {download && (
+      <button
+        type="button"
+        class="share-actions__btn share-actions__btn--download"
+        data-share-download
+        data-payload={JSON.stringify(download)}
+        data-event="share_download"
+        aria-label="Download 1200×630 share card image"
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Save image</span>
+      </button>
+    )}
   </div>
 
   <p class="share-actions__status" aria-live="polite" role="status"></p>
@@ -105,6 +147,159 @@ const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURICo
       } catch {
         setStatus("Copy blocked — use Cmd/Ctrl+C");
       }
+    });
+
+    // Save image — Canvas-drawn 1200×630 PNG. Discriminated by `kind` so
+    // the same component composes color + collection share cards (and is
+    // straightforward to extend with new kinds later).
+    const downloadBtn = bar.querySelector<HTMLButtonElement>("[data-share-download]");
+    downloadBtn?.addEventListener("click", () => {
+      type ColorPayload = { kind: "color"; slug: string; name: string; nameJa?: string; hex: string; hue?: string };
+      type CollectionPayload = { kind: "collection"; slug: string; title: string; tagline?: string; count: number; swatches: { hex: string; name?: string }[] };
+      type Payload = ColorPayload | CollectionPayload;
+      let payload: Payload | null = null;
+      try { payload = JSON.parse(downloadBtn.dataset.payload ?? "null") as Payload; } catch { payload = null; }
+      if (!payload) { setStatus("Download unavailable"); return; }
+
+      const W = 1200, H = 630;
+      const canvas = document.createElement("canvas");
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { setStatus("Canvas unavailable"); return; }
+
+      const normalizeHex = (h: string): string => (h.startsWith("#") ? h : `#${h}`);
+      const upperHex = (h: string): string => normalizeHex(h).toUpperCase();
+
+      // Pick auto-contrast text color for any background hex (relative-luminance test).
+      const textOnHex = (hex: string): "#1a1714" | "#faf9f7" => {
+        const m = /^#?([0-9a-f]{6})$/i.exec(hex);
+        if (!m) return "#1a1714";
+        const v = m[1];
+        const r = parseInt(v.slice(0, 2), 16) / 255;
+        const g = parseInt(v.slice(2, 4), 16) / 255;
+        const b = parseInt(v.slice(4, 6), 16) / 255;
+        const lin = (c: number): number => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+        const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+        return L > 0.5 ? "#1a1714" : "#faf9f7";
+      };
+
+      let fileSlug = "share";
+      if (payload.kind === "color") {
+        const p = payload;
+        fileSlug = `color-${p.slug}`;
+
+        // Hero swatch (top 60%)
+        const swatchH = Math.round(H * 0.60);
+        ctx.fillStyle = normalizeHex(p.hex);
+        ctx.fillRect(0, 0, W, swatchH);
+
+        // Big hex value centred on the swatch, auto-contrast.
+        ctx.fillStyle = textOnHex(p.hex);
+        ctx.font = `600 84px 'Courier New', monospace`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(upperHex(p.hex), W / 2, swatchH / 2);
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+
+        // Separator + info area (bottom 40%)
+        ctx.fillStyle = "#e8e5e0";
+        ctx.fillRect(0, swatchH, W, 2);
+        ctx.fillStyle = "#faf9f7";
+        ctx.fillRect(0, swatchH + 2, W, H - swatchH - 2);
+
+        const infoY = swatchH + 2;
+        // Color name
+        ctx.fillStyle = "#1a1714";
+        ctx.font = `bold 38px 'Georgia', serif`;
+        ctx.fillText(p.name, 48, infoY + 60);
+
+        // Japanese name
+        if (p.nameJa) {
+          ctx.fillStyle = "#7a7066";
+          ctx.font = `24px 'Georgia', serif`;
+          ctx.fillText(p.nameJa, 48, infoY + 96);
+        }
+
+        // Hue family eyebrow
+        if (p.hue) {
+          const eyebrowY = p.nameJa ? infoY + 130 : infoY + 100;
+          ctx.fillStyle = "#a89a88";
+          ctx.font = `500 16px 'system-ui', sans-serif`;
+          ctx.fillText(p.hue.toUpperCase(), 48, eyebrowY);
+        }
+      } else {
+        const p = payload;
+        fileSlug = `collection-${p.slug}`;
+
+        // Swatch row (top 60%)
+        const swatchH = Math.round(H * 0.60);
+        const swatches = p.swatches.length > 0 ? p.swatches : [{ hex: "#e8e5e0" }];
+        const n = swatches.length;
+        const swatchW = Math.floor(W / n);
+        swatches.forEach((s, i) => {
+          const x = i * swatchW;
+          const w = i === n - 1 ? W - x : swatchW;
+          ctx.fillStyle = normalizeHex(s.hex);
+          ctx.fillRect(x, 0, w, swatchH);
+        });
+
+        // Separator + info area
+        ctx.fillStyle = "#e8e5e0";
+        ctx.fillRect(0, swatchH, W, 2);
+        const infoY = swatchH + 2;
+        ctx.fillStyle = "#faf9f7";
+        ctx.fillRect(0, infoY, W, H - infoY);
+
+        // Eyebrow: collection · N palettes
+        ctx.fillStyle = "#a89a88";
+        ctx.font = `500 14px 'system-ui', sans-serif`;
+        ctx.fillText(`COLLECTION · ${p.count} PALETTES`, 48, infoY + 38);
+
+        // Title (serif)
+        ctx.fillStyle = "#1a1714";
+        ctx.font = `bold 40px 'Georgia', serif`;
+        ctx.fillText(p.title, 48, infoY + 84);
+
+        // Tagline
+        if (p.tagline) {
+          ctx.fillStyle = "#5c5249";
+          ctx.font = `22px 'Georgia', serif`;
+          // Wrap to two lines if long.
+          const maxWidth = W - 96;
+          const words = p.tagline.split(/\s+/);
+          let line = "";
+          let y = infoY + 122;
+          let lines = 0;
+          for (const word of words) {
+            const test = line ? line + " " + word : word;
+            if (ctx.measureText(test).width > maxWidth && line) {
+              ctx.fillText(line, 48, y);
+              line = word;
+              y += 30;
+              lines += 1;
+              if (lines >= 1) break; // cap at 2 lines drawn total
+            } else {
+              line = test;
+            }
+          }
+          if (line) ctx.fillText(line, 48, y);
+        }
+      }
+
+      // Branding (bottom-right) — same anchor for every kind.
+      ctx.fillStyle = "#a89a88";
+      ctx.font = `500 15px 'system-ui', sans-serif`;
+      ctx.textAlign = "right";
+      ctx.fillText("colorcombinations.org", W - 48, H - 26);
+      ctx.textAlign = "left";
+
+      const link = document.createElement("a");
+      link.download = `colorcombinations-${fileSlug}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      setStatus("✓ Image saved");
     });
   });
 </script>
@@ -149,6 +344,11 @@ const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURICo
 
   .share-actions__btn:hover {
     border-color: var(--color-ink-900);
+  }
+
+  .share-actions__btn--download:hover {
+    border-color: var(--color-accent-500);
+    color: var(--color-accent-600, var(--color-accent-500));
   }
 
   .share-actions__btn svg {
