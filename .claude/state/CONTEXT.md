@@ -1,7 +1,59 @@
 # CONTEXT — ColorCombinations
 
 ## Session Handoff
-<!-- handoff: 2026-04-12 10:10 -->
+<!-- handoff: 2026-04-27 12:00 -->
+
+**Mode:** auto (sovereign auto)
+**Objective:** share-card Canvas PNG download on /colors + /collections (compounds advocacy archetype across 275 surfaces).
+
+**STATUS — partial. PR #83 merged to main. Live deploy BLOCKED on operator wrangler re-auth.**
+
+### This session
+
+1. Extended `src/components/ShareActions.astro` with optional `download` prop (discriminated union: kind: 'color' | 'collection') + Canvas-drawn 1200×630 PNG handler.
+2. Wired `/colors/[slug]` (211) + `/collections/[slug]` (64) to pass download payload.
+3. Build verified: 1340 pages, 3.72s, 0 errors.
+4. Self-review: @craftsman Love 0.80 mean PASS, @distributor Fit 0.76 mean PASS, archetype `share_by_design_result × +95`.
+5. Commit a73b818 → PR #83 (CLEAN+MERGEABLE, no CI gates) → squash-merged.
+6. State-file log committed (a7fa293): DISTRIBUTION + ANALYTICS rows.
+
+### BLOCKED ON OPERATOR
+
+`wrangler whoami` → 400 Bad Request. OAuth token at `~/Library/Preferences/.wrangler/config/default.toml` expired 2026-04-26 (yesterday); refresh token also fails. Brain cannot deploy until operator runs `wrangler login` (30 sec, see TASKS.md ## Human Actions § "Re-auth wrangler").
+
+### Next session deploy command
+
+After operator re-auth, brain (or operator) runs from project root:
+
+```sh
+cd "[project root]"
+wrangler pages deploy dist --project-name=colorcombinations --branch=main --commit-dirty=true
+```
+
+`dist/` is already built from this session's commit (a73b818) and matches `main` post-merge. No rebuild needed — wrangler uploads + propagates in ~60s.
+
+### Verify live (post-deploy)
+
+```sh
+# Color page should expose the new share-download button:
+curl -sS https://colorcombinations.org/colors/asagi/ | grep -c "data-share-download"  # → 1
+curl -sS https://colorcombinations.org/collections/japandi/ | grep -c "data-share-download"  # → 1
+```
+
+If both 1 → deploy verified. If 0 → CF edge cache; wait 60s + retry, or check `*.colorcombinations.pages.dev` preview.
+
+### Numbers (cumulative this branch)
+
+| Metric | Value |
+|---|---|
+| Build pages | 1340 (unchanged — pure component extension) |
+| New shareable surfaces (this ship) | 275 (211 colors + 64 collections) |
+| Distribution archetype | share_by_design_result × +95 |
+| Projected reach | +30-80 referral visitors/wk over 90d |
+
+---
+
+## Previous Handoff (2026-04-12 10:10)
 
 **Mode:** god
 **Objective:** color dictionary + RSS feed — 211 new SEO pages for long-tail search, content distribution channel

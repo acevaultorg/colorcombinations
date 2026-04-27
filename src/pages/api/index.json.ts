@@ -38,6 +38,7 @@ export const GET: APIRoute = ({ site }) => {
       colors: `${siteUrl}api/colors.json`,
       collections: `${siteUrl}api/collections.json`,
       learn: `${siteUrl}api/learn.json`,
+      random: `${siteUrl}api/random.json`,
     },
     perRecordTemplates: {
       palette: `${siteUrl}api/palettes/{slug}.json`,
@@ -79,6 +80,7 @@ export const GET: APIRoute = ({ site }) => {
       "colorcombinations-palette/v1": "Per-palette detail",
       "colorcombinations-color/v1": "Per-color detail",
       "colorcombinations-collection/v1": "Per-collection detail",
+      "colorcombinations-random/v1": "Random-discovery sample across all 3 datasets (reshuffles each build; HTML companion at /random/)",
     },
   };
 

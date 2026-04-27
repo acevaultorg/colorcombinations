@@ -46,6 +46,7 @@ Structured data endpoints (CORS-enabled, CC-BY-4.0) for bots, LLMs, and third-pa
 - /api/colors.json — list of all 210 named colors (slug, name, nameJa, hex, hue, paletteCount, urls). Schema: `colorcombinations-color-index/v1`.
 - /api/collections.json — list of all 69 collections (slug, title, tagline, accentHex, paletteCount, keywords, urls). Schema: `colorcombinations-collection-index/v1`.
 - /api/learn.json — list of all 6 /learn editorial articles (slug, type, readingOrder, title, blurb, tags, urls). Schema: `colorcombinations-learn-index/v1`.
+- /api/random.json — random-discovery sample across all 3 datasets (20 palettes + 20 colors + 20 collections, reshuffled each build) plus full slug arrays + cross-links to per-domain indexes. HTML companion: /random/. Schema: `colorcombinations-random/v1`.
 
 Per-record endpoints:
 - /api/palettes/[slug].json — 378 per-palette JSON documents. Schema: `colorcombinations-palette/v1`. Fields: slug, title, titleJa, summary, dominantHue, moods[], era, tags[], colors[{hex, nameRomaji, nameJa, meaning}], urls{canonical, embed, openGraph, api}, license, source.
