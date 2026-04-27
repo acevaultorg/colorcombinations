@@ -295,3 +295,60 @@ Compounding installed: 5 pillars × bidirectional nav, 18 collection → pillar 
 Build trajectory: 1339 → 1340 pages.
 
 Cumulative this resumed-session loop (PR #54 → #78): 25 PRs merged + deployed + Chrome-MCP-verified.
+
+## Queue — Tier-A monetization depth expansion (operator directive 2026-04-27)
+
+Tier-S retrofit shipped this session (Adobe + Canva + Tailwind UI + Khroma + Skillshare + Domestika + Coursera + Printful + Printify on /shop). Tier-A pages below are queued for future ships. Each is a substantial PR; pick by Oracle weight + dependency order:
+
+- [ ] `P0` BUILD `/trends/color-trends-2026/` annual report — PR-pitchable; brand-tool affiliate; press-bait [archetype:annual_report_state_of_x × +85] [oracle:high — viral potential]
+- [ ] `P1` BUILD `/compare/pantone-vs-ral/` + `/compare/hsl-vs-lch/` + `/compare/adobe-vs-coolors/` — color-tool comparison pages with structural Adobe + Coolors + Tailwind UI affiliate per page [archetype:comparison_vs_competitor_page × +60]
+- [ ] `P1` BUILD `/courses/` brand-identity course affiliate hub — uses LEARN_RESOURCES from monetization.ts [archetype:programmatic_page_with_unique_data × +55]
+- [ ] `P1` BUILD `/industry/[slug]/` programmatic — 8-12 pages: tech / finance / health / retail / hospitality / nonprofit / education / wellness — color theory by industry with brand-tool affiliate [archetype:programmatic_page_with_unique_data × +55]
+- [ ] `P1` BUILD `/pod/` print-on-demand landing — uses POD_PROVIDERS from monetization.ts; how-to guide for taking Wada palette into Printful/Printify [archetype:editorial_curation_depth × +50]
+- [ ] `P1` BUILD `/tailwind/` Tailwind color builder — interactive tool that converts Wada palette → Tailwind config; Tailwind UI affiliate [archetype:shareable_tool_calculator × +65]
+- [ ] `P1` BUILD `/wcag/` deep contrast calculator (separate from /tools/contrast-checker starter) — accessibility-tool affiliate [archetype:shareable_tool_calculator × +65]
+- [ ] `P1` BUILD `/names/` color-name database — LLM-citation magnet [archetype:programmatic_page_with_unique_data × +55]
+- [ ] `P1` BUILD `/color-psychology/` deep guide + design-course affiliate [archetype:editorial_curation_depth × +50]
+- [ ] `P1` BUILD `/material-design/` MD palette + Figma/Adobe affiliate [archetype:comparison_vs_competitor_page × +60]
+- [ ] `P2` BUILD `/brands/` favorite-colors-of-brands database — long-tail SEO [archetype:programmatic_page_with_unique_data × +55]
+- [ ] `P2` BUILD `/accessibility/color-blind-tools/` comparison [archetype:comparison_vs_competitor_page × +60]
+- [ ] `P2` BUILD `/glossary/` design-terminology DefinedTerm hub (different from /learn/japanese-color-glossary; this is design vocabulary) [archetype:llm_citation_quote_ready × +75]
+- [ ] `P2` BUILD `/color-by-emotion/` emotional color mapping — risky thin-content territory; needs editorial depth [archetype:editorial_curation_depth × +50]
+
+## Human Actions (TaskAssistant) — Tier-S affiliate IDs
+
+### 🔴 REQUIRED — Activate the 8 affiliate IDs in monetization.ts
+
+**WHAT:** PR #90 shipped 8 affiliate-link surfaces on `/shop` (Adobe Creative Cloud, Canva, Tailwind UI, Skillshare, Domestika, Coursera Design Certificate, Printful, Printify). Every URL today has `PLACEHOLDER_*` in `src/config/monetization.ts` — clicks work (no broken UX, all links go to the real platform homepage), but every conversion earns $0 because no affiliate ID is attached.
+
+**WHY:** Math on this single action: 2,750 visits/mo × 5% CTR × $30-100 per conversion (Impact.com Adobe alone is $30-100) = realistic **$300-700/mo** within 30 days of IDs going live. Today: $0. This is the single highest-$ operator action queued across the entire ColorCombinations work pipeline.
+
+**TIME:** ~30 minutes total signups + 5 minutes paste/redeploy. Some platforms approve instantly (Canva, Domestika, Printful, Printify); some review 1-5 business days (Adobe, Skillshare, Coursera).
+
+**HOW:**
+1. Adobe Creative Cloud (Impact.com) — apply at `https://creativecloud.adobe.com/affiliate-program/` → 2-5 business day review → replace `PLACEHOLDER_IMPACT_ADOBE` in `src/config/monetization.ts` (~line 377)
+2. Canva — apply at `https://www.canva.com/affiliates/` → instant → replace `PLACEHOLDER_CANVA_REFERRAL` (~line 388)
+3. Tailwind UI — apply at `https://tailwindui.com/affiliate-program` → ref ID at signup → replace `PLACEHOLDER_TAILWIND_REFERRAL` (~line 407)
+4. Skillshare (Impact.com) — apply via `https://app.impact.com/secure/skillshare-program` → 1-3 day review → replace `PLACEHOLDER_SKILLSHARE_IMPACT` (~line 451)
+5. Domestika — apply at `https://www.domestika.org/en/affiliate-program` → instant → replace `PLACEHOLDER_DOMESTIKA_REFERRAL` (~line 460)
+6. Coursera (Impact.com) — apply at `https://about.coursera.org/affiliates/` → 2-5 day review → replace `PLACEHOLDER_COURSERA_IMPACT` (~line 469)
+7. Printful — apply at `https://www.printful.com/affiliate-program` → instant → replace `PLACEHOLDER_PRINTFUL_REFERRAL` (~line 492)
+8. Printify — apply at `https://printify.com/affiliate-program/` → instant → replace `PLACEHOLDER_PRINTIFY_REFERRAL` (~line 498)
+
+After paste:
+```bash
+npm run build && wrangler pages deploy dist --project-name=colorcombinations --branch=main
+```
+
+**VERIFY:**
+```bash
+curl -sS "https://colorcombinations.org/shop/" | grep -oE 'href="[^"]*PLACEHOLDER[^"]*"' | head
+```
+→ expected: zero matches (every PLACEHOLDER replaced). If matches remain, those specific links are still earning $0.
+
+**IF STUCK:**
+- Application denied on first review (Adobe/Coursera/Skillshare): re-apply with site URL + visitor count + content vertical match. Most reapprovals succeed within a week.
+- Tailwind UI affiliate not visible: it's only available to existing Tailwind UI subscribers — start a subscription first if needed (or skip Tailwind UI if not worth subscribing for).
+- Wrangler `whoami` → 400 (auth expired): run `wrangler login` (browser pop, ~30 sec) before deploying.
+
+[id:tier-s-affiliate-ids] [score:14.0] 👤 — ESTIMATED +$300-700/MO once live

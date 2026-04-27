@@ -1,0 +1,189 @@
+---
+/**
+ * LearnResources — design-course affiliates (v19.37 Tier-S retrofit).
+ *
+ * Sibling to DesignTools.astro. Lists Skillshare / Domestika / Coursera
+ * Design Certificate per the affiliate stack. Per I-38 (no-Amazon-default),
+ * routed via Impact.com (Skillshare, Coursera) and direct referrals.
+ *
+ * Used on /shop. Falls back gracefully when affiliate links are placeholders
+ * (renders the editorial recommendation; commission inactive but link works).
+ */
+
+import { LEARN_RESOURCES } from "@/config/monetization";
+
+export interface Props {
+  title?: string;
+  intro?: string;
+}
+
+const {
+  title = "If you want to learn more",
+  intro = "Three platforms designers actually use for ongoing colour-and-craft skill. Listed because they're useful — the ones with a note earn a small commission, but the ones without earn nothing and are listed anyway.",
+} = Astro.props;
+---
+
+<section class="learn-resources">
+  <header class="learn-resources__head">
+    <p class="eyebrow">Courses</p>
+    <h2 class="text-balance">{title}</h2>
+    <p class="learn-resources__intro">{intro}</p>
+  </header>
+
+  <ul class="learn-resources__list" role="list">
+    {LEARN_RESOURCES.map((resource) => (
+      <li class="learn-resources__item">
+        <h3 class="learn-resources__name">
+          <a
+            href={resource.url}
+            target="_blank"
+            rel={resource.affiliate ? "noopener sponsored" : "noopener"}
+            data-event={resource.affiliate ? "learn_affiliate_click" : "learn_click"}
+            data-resource={resource.name}
+          >
+            {resource.name}
+            <span class="learn-resources__arrow" aria-hidden="true">↗</span>
+          </a>
+        </h3>
+        <p class="learn-resources__tagline">{resource.tagline}</p>
+        <p class="learn-resources__why">{resource.why}</p>
+        <ul class="learn-resources__tags" role="list">
+          {resource.tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+        {resource.affiliate && (
+          <p class="learn-resources__affiliate-note">
+            <span aria-hidden="true">→</span> affiliate link — commission at no cost to you
+          </p>
+        )}
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .learn-resources {
+    padding-block: var(--spacing-section);
+  }
+
+  .learn-resources__head {
+    max-width: 58ch;
+    margin-bottom: 2.5rem;
+  }
+
+  .learn-resources__head .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .learn-resources__head h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.5vw + 1rem, 2.25rem);
+    line-height: 1.15;
+    margin: 0 0 1rem;
+  }
+
+  .learn-resources__intro {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    line-height: 1.65;
+  }
+
+  .learn-resources__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .learn-resources__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .learn-resources__item {
+    padding: 1.5rem;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-plate);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .learn-resources__name {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+  }
+
+  .learn-resources__name a {
+    color: var(--color-ink-900);
+    text-decoration: none;
+  }
+
+  .learn-resources__name a:hover {
+    color: var(--color-accent-500);
+  }
+
+  .learn-resources__arrow {
+    display: inline-block;
+    margin-left: 0.25rem;
+    font-size: 0.75em;
+    opacity: 0.5;
+  }
+
+  .learn-resources__tagline {
+    font-size: 0.9375rem;
+    color: var(--color-ink-700);
+    line-height: 1.55;
+    margin: 0 0 0.75rem;
+  }
+
+  .learn-resources__why {
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-ink-500);
+    margin: 0 0 1rem;
+    font-style: italic;
+    flex-grow: 1;
+  }
+
+  .learn-resources__tags {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .learn-resources__tags li {
+    font-size: 0.6875rem;
+    padding: 0.1875rem 0.5rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-ink-700);
+    letter-spacing: 0.02em;
+  }
+
+  .learn-resources__affiliate-note {
+    font-size: 0.6875rem;
+    color: var(--color-ink-400);
+    margin: 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .learn-resources__affiliate-note span {
+    color: var(--color-accent-500);
+  }
+</style>

@@ -6,7 +6,7 @@
 **Mode:** auto (sovereign auto, then auto c per operator follow-up directive)
 **Objective:** endless-loop reach + revenue ships; ColorCombinations primary focus + heybabel pivot mid-session.
 
-**STATUS — 5 ColorCombinations PRs merged to main + 1 heybabel state commit pushed. Live deploy BLOCKED on operator wrangler re-auth.**
+**STATUS — 7 ColorCombinations PRs merged to main + 1 heybabel state commit pushed. Live deploy BLOCKED on operator wrangler re-auth.**
 
 ### This session — 3 ships + 1 cross-project pivot
 
@@ -43,6 +43,18 @@
 - 9 /colors/hue/[hue]/ wired with 6-swatch strip pulled from top hue colors + accentHex
 - @distributor Fit 0.79 mean PASS (strong) · archetype `share_by_design_result × +95`
 - 15 new shareable surfaces; build flat at 1349 pages
+
+**Ship 6 — PR [#88](https://github.com/acevaultorg/colorcombinations/pull/88): /api/hue/[hue].json × 9 — per-hue JSON twins**
+- New endpoint `src/pages/api/hue/[hue].json.ts` schema `colorcombinations-hue/v1` × 9 routes
+- Returns per-hue lede + counts + every color/palette/collection in that hue + cross-links to other 8 hue families' HTML+JSON
+- Wired `<link rel="alternate" type="application/json">` on /colors/hue/[hue]/ HTML pages + /api/index.json discovery + sitemap-ai xhtml:alternate + llms.txt
+- @distributor Fit 0.64 mean PASS · archetype `dataset_json_api × +70`
+
+**Ship 7 — PR [#89](https://github.com/acevaultorg/colorcombinations/pull/89): /api/learn/[slug].json × 6 — per-pillar editorial JSON twins**
+- New endpoint `src/pages/api/learn/[slug].json.ts` schema `colorcombinations-learn/v1` × 6 routes (5 pillars + glossary)
+- Per-article: outline (h2 sections), citedTerms (with pronunciation + meaning), relatedSlugs cross-link graph, full metadata
+- Wired `<link rel="alternate" type="application/json">` on all 6 /learn/[slug]/ HTML pages + /api/index.json + sitemap-ai pillar JSON twin + llms.txt
+- @distributor Fit 0.67 mean PASS · archetype `dataset_json_api × +70`
 
 **Cross-project pivot — heybabel.com GSC verification (commit [8c9d249](https://github.com/acevaultorg/heybabel-com/commit/8c9d249))**
 - Operator opened GSC `u/2` "not-verified" page for `sc-domain:heybabel.com`
