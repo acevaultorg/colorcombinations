@@ -91,6 +91,13 @@ export const GET: APIRoute = () => {
     });
   }
 
+  // Tier 0.8 — per-hue-family hub pages (9 routes; deep aggregation of
+  // all colors + palettes + collections within a hue family)
+  const HUE_SLUGS = ["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"];
+  for (const h of HUE_SLUGS) {
+    urls.push({ loc: `${SITE}/colors/hue/${h}/`, priority: "0.8", changefreq: "monthly" });
+  }
+
   // Tier 0.7 — high-trust E-E-A-T + index hubs
   urls.push({ loc: `${SITE}/about/`, priority: "0.7", changefreq: "monthly" });
   urls.push({ loc: `${SITE}/methodology/`, priority: "0.7", changefreq: "monthly" });
