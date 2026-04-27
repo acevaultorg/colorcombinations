@@ -60,6 +60,35 @@
 
 <!-- 2026-04-24: Clarity Card format per I-27 — surfaced by specialist audit on shop rail ship. -->
 
+### 🔴 REQUIRED — Re-auth wrangler so brain can keep deploys live
+
+**WHAT:** Run `wrangler login` once in your terminal. The Cloudflare OAuth token saved at `~/Library/Preferences/.wrangler/config/default.toml` expired 2026-04-26 and the refresh failed (400 from CF auth). Brain merged PR #83 to main but can't push the new build to Cloudflare Pages without a valid token.
+
+**WHY:** The share-card Canvas ship (PR #83) is queued for deploy — 275 new shareable surfaces (Pinterest/Twitter-ready PNGs across all `/colors/*` + `/collections/*`) sitting in `dist/`. Until token is fresh, every brain session ends with the same blocker. After this single one-time login, every future `/acepilot auto` ships live without asking. **Cost of skipping: every deploy from now on emits this Clarity Card; revenue/distribution improvements stall at "merged to main but not live."**
+
+**TIME:** ~30 seconds.
+
+**HOW:**
+1. Open Terminal anywhere on your laptop. Paste:
+   `wrangler login`
+   → expected: a browser window opens to `dash.cloudflare.com/oauth2/authorize?...`. Click "Allow" on the Cloudflare permissions page.
+2. Terminal then prints "Successfully logged in." → done.
+
+**VERIFY:**
+`wrangler whoami`
+→ expected: prints your CF account email + account ID. (If still "Not logged in," the OAuth Allow step didn't complete; redo step 1.)
+
+**IF STUCK:**
+- **Browser doesn't open:** copy the URL from the terminal output and paste it manually.
+- **"Failed to fetch auth token: 400":** delete the stale config first → `rm ~/Library/Preferences/.wrangler/config/default.toml` → re-run `wrangler login`.
+- **You'd rather use an API token:** run `export CLOUDFLARE_API_TOKEN=...` (paste a token from `dash.cloudflare.com → My Profile → API Tokens → Create → "Edit Cloudflare Workers" template`); brain reads this env var.
+
+[id:wrangler-reauth] [score:13.5] 👤 — UNBLOCKS PR #83 + EVERY FUTURE DEPLOY
+
+After this, `dist/` is already built and ready — brain on next session can deploy with one bash call. Or you can run the deploy yourself right after re-auth: `cd "[project root]" && wrangler pages deploy dist --project-name=colorcombinations --branch=main --commit-dirty=true` (~60 sec upload).
+
+---
+
 ### 🔴 REQUIRED — Activate the Bookshop.org affiliate ID
 
 **WHAT:** Paste your real Bookshop.org affiliate associate ID into the project config. Today the shop book rail renders `PLACEHOLDER_BOOKSHOP_ID` — every Bookshop link still fires click-tracking, but zero commission flows because the URL has no `aid=`. This is the single highest-$/week unlock.
