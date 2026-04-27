@@ -6,7 +6,7 @@
 **Mode:** auto (sovereign auto, then auto c per operator follow-up directive)
 **Objective:** endless-loop reach + revenue ships; ColorCombinations primary focus + heybabel pivot mid-session.
 
-**STATUS — 3 ColorCombinations PRs merged to main + 1 heybabel state commit pushed. Live deploy BLOCKED on operator wrangler re-auth.**
+**STATUS — 5 ColorCombinations PRs merged to main + 1 heybabel state commit pushed. Live deploy BLOCKED on operator wrangler re-auth.**
 
 ### This session — 3 ships + 1 cross-project pivot
 
@@ -29,6 +29,20 @@
 - Wired `public/robots.txt` second `Sitemap:` line + `public/llms.txt` documentation
 - @distributor Fit 0.57 mean PASS (infrastructure-class) · archetype `sitemap_ai_xml_present × +20 + dataset_json_api × +70`
 - Implements `rules/bot-harvest.md` Lever 5 (Day-1 bot-readiness)
+
+**Ship 4 — PR [#86](https://github.com/acevaultorg/colorcombinations/pull/86): /colors/hue/[hue]/ — 9 SEO hub pages**
+- New route `src/pages/colors/hue/[hue].astro` (red/orange/yellow/brown/pink/green/blue/purple/neutral)
+- Each page = per-hue editorial paragraph (kurenai/aka/shu cultural register on /red, indigo spectrum on /blue, kinjiki/murasaki on /purple, etc.) + tile grid of every color in the hue + 24 dominant-hue palettes + curated-collection cross-links + cross-nav
+- Wired `/colors/[slug]` "Hue family" cell → /colors/hue/{hue}/ + 9 entries to /sitemap-ai.xml at priority 0.8
+- @distributor Fit 0.68 mean PASS (strong) · archetype `programmatic_page_with_unique_data × +55 + SEO_page_addition × +50`
+- Build: 1340 → 1349 pages
+
+**Ship 5 — PR [#87](https://github.com/acevaultorg/colorcombinations/pull/87): Canvas share-card on 6 pillars + 9 hue hubs**
+- ShareActions discriminated union extended with 3rd variant `kind: "page"` — accepts swatchStrip OR accentHex OR plain-paper variant + eyebrow + serif title + word-wrapped subtitle
+- 6 /learn pillars wired with per-article accent (japandi=warm-grey, japanese-reds=kurenai, heian=imperial-purple, wabi-sabi=tea-tone, scandinavian=nordic-blue, glossary=sumi-ink)
+- 9 /colors/hue/[hue]/ wired with 6-swatch strip pulled from top hue colors + accentHex
+- @distributor Fit 0.79 mean PASS (strong) · archetype `share_by_design_result × +95`
+- 15 new shareable surfaces; build flat at 1349 pages
 
 **Cross-project pivot — heybabel.com GSC verification (commit [8c9d249](https://github.com/acevaultorg/heybabel-com/commit/8c9d249))**
 - Operator opened GSC `u/2` "not-verified" page for `sc-domain:heybabel.com`
@@ -64,14 +78,15 @@ All 5 → deploy verified. Else: CF edge cache (60s wait) or check `*.colorcombi
 
 | Metric | Value |
 |---|---|
-| PRs merged to main | 3 (#83 + #84 + #85) |
-| Build pages | 1340 (unchanged — additive endpoints + component extension) |
-| New shareable surfaces | 275 (PR #83: 211 colors + 64 collections) |
+| PRs merged to main | 5 (#83 + #84 + #85 + #86 + #87) |
+| Build pages | 1349 (was 1340 baseline; PR #86 added 9 hue routes) |
+| New shareable surfaces | 290 (PR #83: 275 colors+collections + PR #87: 15 pillars+hue-hubs) |
+| New SEO hub routes | 9 (PR #86: /colors/hue/[hue]/) |
 | New machine-readable endpoints | 2 (PR #84: /api/random.json + PR #85: /sitemap-ai.xml) |
-| Sitemap-AI URLs | 677 (priority-tiered for LLM crawlers) |
-| Distribution archetypes | share_by_design × +95 + dataset_json_api × +70 (×2) + sitemap_ai_xml_present × +20 |
-| Projected reach (combined) | +40-110 referral/citation visitors/wk over 90d |
-| Operator-action queue | 1 critical (wrangler login → unblocks 3 deploys) + 1 recommended (heybabel GSC u/2 TXT) |
+| Sitemap-AI URLs | 686 (priority-tiered for LLM crawlers; +9 hue routes from PR #86) |
+| Distribution archetypes | share_by_design × +95 (×2) + dataset_json_api × +70 (×2) + sitemap_ai_xml_present × +20 + programmatic_page_with_unique_data × +55 + SEO_page_addition × +50 |
+| Projected reach (combined) | +60-160 referral/citation visitors/wk over 90d |
+| Operator-action queue | 1 critical (wrangler login → unblocks 5 deploys) + 1 recommended (heybabel GSC u/2 TXT) |
 
 ---
 

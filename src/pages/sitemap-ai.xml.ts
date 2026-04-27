@@ -95,7 +95,12 @@ export const GET: APIRoute = () => {
   // all colors + palettes + collections within a hue family)
   const HUE_SLUGS = ["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"];
   for (const h of HUE_SLUGS) {
-    urls.push({ loc: `${SITE}/colors/hue/${h}/`, priority: "0.8", changefreq: "monthly" });
+    urls.push({
+      loc: `${SITE}/colors/hue/${h}/`,
+      priority: "0.8",
+      changefreq: "monthly",
+      jsonAlt: `${SITE}/api/hue/${h}.json`,
+    });
   }
 
   // Tier 0.7 — high-trust E-E-A-T + index hubs
