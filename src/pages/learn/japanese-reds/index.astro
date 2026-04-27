@@ -108,6 +108,14 @@ const jsonLd = [
           image={new URL("/og/learn/japanese-reds.svg", Astro.site).toString()}
           description={description}
           heading="Share this article"
+          download={{
+            kind: "page",
+            slug: "learn-japanese-reds",
+            title,
+            subtitle: "Kurenai, akane, shu, entan — four reds, four cultural registers, one working framework.",
+            eyebrow: "Color theory · Long read",
+            accentHex: "#9A2A2A",
+          }}
         />
       </div>
     </header>

@@ -106,6 +106,14 @@ const jsonLd = [
           image={new URL("/og/learn/scandinavian-color-theory.svg", Astro.site).toString()}
           description={description}
           heading="Share this article"
+          download={{
+            kind: "page",
+            slug: "learn-scandinavian-color-theory",
+            title,
+            subtitle: "Three principles + Nordic-reading Wada plates: the surprise crossover with Japanese restraint.",
+            eyebrow: "Color theory · Long read",
+            accentHex: "#6A89A7",
+          }}
         />
       </div>
     </header>

@@ -237,6 +237,15 @@ const jsonLd = [
         image={new URL(ogImage, Astro.site).toString()}
         description={meta.lede}
         heading={`Share this ${meta.shortTitle.toLowerCase()} hue page`}
+        download={{
+          kind: "page",
+          slug: `hue-${hueKey}`,
+          title: meta.title,
+          subtitle: meta.lede,
+          eyebrow: `Hue family · ${colors.length} colors · ${palettes.length} palettes`,
+          swatchStrip: colors.slice(0, 6).map((c) => ({ hex: c.hex, name: c.name })),
+          accentHex: meta.accentHex,
+        }}
       />
     </div>
   </section>

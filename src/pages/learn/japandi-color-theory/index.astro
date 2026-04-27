@@ -111,6 +111,14 @@ const jsonLd = [
           image={new URL("/og/learn/japandi-color-theory.svg", Astro.site).toString()}
           description={description}
           heading="Share this article"
+          download={{
+            kind: "page",
+            slug: "learn-japandi-color-theory",
+            title,
+            subtitle: "Where Japanese restraint meets Scandinavian clarity — a working guide.",
+            eyebrow: "Color theory · Long read",
+            accentHex: "#8A7E6F",
+          }}
         />
       </div>
     </header>

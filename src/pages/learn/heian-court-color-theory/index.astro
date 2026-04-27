@@ -107,6 +107,14 @@ const jsonLd = [
           image={new URL("/og/learn/heian-court-color-theory.svg", Astro.site).toString()}
           description={description}
           heading="Share this article"
+          download={{
+            kind: "page",
+            slug: "learn-heian-court-color-theory",
+            title,
+            subtitle: "Kasane no irome, kinjiki, and the seasonal calendar — Wada plates that hold the same logic.",
+            eyebrow: "Color theory · Long read",
+            accentHex: "#5A2A7A",
+          }}
         />
       </div>
     </header>
