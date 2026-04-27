@@ -31,7 +31,24 @@ export type DownloadCollection = {
   count: number;
   swatches: { hex: string; name?: string }[];
 };
-export type Download = DownloadColor | DownloadCollection;
+/**
+ * Generic "page" share card — used by /learn pillars, /colors/hue/[hue]/
+ * hubs, and any future content page that wants a 1200×630 PNG without
+ * justifying its own discriminated-union variant. Rendering rule:
+ *   - swatchStrip non-empty → render strip top 60% (like collection)
+ *   - accentHex only        → render solid accent block top 60% (like color)
+ *   - neither               → render plain paper background (no top region)
+ */
+export type DownloadPage = {
+  kind: "page";
+  slug: string;
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  accentHex?: string;
+  swatchStrip?: { hex: string; name?: string }[];
+};
+export type Download = DownloadColor | DownloadCollection | DownloadPage;
 
 export interface Props {
   /** Page title used in tweet text + Pinterest description */
@@ -156,7 +173,8 @@ const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURICo
     downloadBtn?.addEventListener("click", () => {
       type ColorPayload = { kind: "color"; slug: string; name: string; nameJa?: string; hex: string; hue?: string };
       type CollectionPayload = { kind: "collection"; slug: string; title: string; tagline?: string; count: number; swatches: { hex: string; name?: string }[] };
-      type Payload = ColorPayload | CollectionPayload;
+      type PagePayload = { kind: "page"; slug: string; title: string; subtitle?: string; eyebrow?: string; accentHex?: string; swatchStrip?: { hex: string; name?: string }[] };
+      type Payload = ColorPayload | CollectionPayload | PagePayload;
       let payload: Payload | null = null;
       try { payload = JSON.parse(downloadBtn.dataset.payload ?? "null") as Payload; } catch { payload = null; }
       if (!payload) { setStatus("Download unavailable"); return; }
@@ -228,6 +246,80 @@ const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURICo
           ctx.fillStyle = "#a89a88";
           ctx.font = `500 16px 'system-ui', sans-serif`;
           ctx.fillText(p.hue.toUpperCase(), 48, eyebrowY);
+        }
+      } else if (payload.kind === "page") {
+        const p = payload;
+        fileSlug = `page-${p.slug}`;
+
+        // Top region varies by what payload provides
+        const swatchH = Math.round(H * 0.60);
+        if (p.swatchStrip && p.swatchStrip.length > 0) {
+          const strip = p.swatchStrip;
+          const n = strip.length;
+          const swatchW = Math.floor(W / n);
+          strip.forEach((s, i) => {
+            const x = i * swatchW;
+            const w = i === n - 1 ? W - x : swatchW;
+            ctx.fillStyle = normalizeHex(s.hex);
+            ctx.fillRect(x, 0, w, swatchH);
+          });
+        } else if (p.accentHex) {
+          ctx.fillStyle = normalizeHex(p.accentHex);
+          ctx.fillRect(0, 0, W, swatchH);
+        } else {
+          // Pure paper variant — no top region; expand info to full height
+          ctx.fillStyle = "#faf9f7";
+          ctx.fillRect(0, 0, W, swatchH);
+          ctx.strokeStyle = "#e8e5e0";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(48, swatchH - 24);
+          ctx.lineTo(W - 48, swatchH - 24);
+          ctx.stroke();
+        }
+
+        // Separator + info area
+        ctx.fillStyle = "#e8e5e0";
+        ctx.fillRect(0, swatchH, W, 2);
+        const infoY = swatchH + 2;
+        ctx.fillStyle = "#faf9f7";
+        ctx.fillRect(0, infoY, W, H - infoY);
+
+        // Eyebrow (uppercase small caps)
+        if (p.eyebrow) {
+          ctx.fillStyle = "#a89a88";
+          ctx.font = `500 14px 'system-ui', sans-serif`;
+          ctx.fillText(p.eyebrow.toUpperCase(), 48, infoY + 38);
+        }
+
+        // Title (serif, generous size)
+        ctx.fillStyle = "#1a1714";
+        ctx.font = `bold 42px 'Georgia', serif`;
+        const titleY = p.eyebrow ? infoY + 84 : infoY + 64;
+        ctx.fillText(p.title, 48, titleY);
+
+        // Subtitle (serif, smaller; word-wrap to 2 lines max)
+        if (p.subtitle) {
+          ctx.fillStyle = "#5c5249";
+          ctx.font = `22px 'Georgia', serif`;
+          const maxWidth = W - 96;
+          const words = p.subtitle.split(/\s+/);
+          let line = "";
+          let y = titleY + 38;
+          let drawn = 0;
+          for (const word of words) {
+            const test = line ? line + " " + word : word;
+            if (ctx.measureText(test).width > maxWidth && line) {
+              ctx.fillText(line, 48, y);
+              line = word;
+              y += 30;
+              drawn += 1;
+              if (drawn >= 1) break;
+            } else {
+              line = test;
+            }
+          }
+          if (line) ctx.fillText(line, 48, y);
         }
       } else {
         const p = payload;

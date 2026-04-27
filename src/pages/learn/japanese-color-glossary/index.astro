@@ -204,6 +204,14 @@ const jsonLd = [
           image={new URL("/og/learn/japanese-color-glossary.svg", Astro.site).toString()}
           description={description}
           heading="Share this glossary"
+          download={{
+            kind: "page",
+            slug: "learn-japanese-color-glossary",
+            title,
+            subtitle: "20 traditional Japanese colors — name, history, working palette — in one citable reference.",
+            eyebrow: "Reference · Glossary",
+            accentHex: "#1a1714",
+          }}
         />
       </div>
     </header>

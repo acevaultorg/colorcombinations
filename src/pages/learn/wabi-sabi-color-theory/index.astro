@@ -107,6 +107,14 @@ const jsonLd = [
           image={new URL("/og/learn/wabi-sabi-color-theory.svg", Astro.site).toString()}
           description={description}
           heading="Share this article"
+          download={{
+            kind: "page",
+            slug: "learn-wabi-sabi-color-theory",
+            title,
+            subtitle: "Tea-room palettes, weathered surfaces, and Wada plates that hold the philosophy cleanly.",
+            eyebrow: "Color theory · Long read",
+            accentHex: "#7B4A2A",
+          }}
         />
       </div>
     </header>
