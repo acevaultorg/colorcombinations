@@ -5,18 +5,16 @@ import EmailCapture from "@components/EmailCapture.astro";
 import BundleCta from "@components/BundleCta.astro";
 import { featuredPalettes, allPalettes, wadaCatalog } from "@data/palettes";
 import { collections, paletteSetForCollection } from "@data/collections";
-import { AMAZON, BOOKSHOP } from "@/config/monetization";
+import { AMAZON } from "@/config/monetization";
 
 // Source-book affiliate link — Sanzo Wada's "A Dictionary of Color Combinations"
 // Vol. 1 (Seigensha 2010 republication of 1933 original, ASIN 4861522471).
-// AMAZON.link() returns the bare amazon URL when AMAZON.tag is still
-// PLACEHOLDER_AMAZON_TAG — link works without commission attribution until
-// operator pastes their Associates tag in src/config/monetization.ts.
+// Bookshop US doesn't stock this Japanese-publisher title (verified
+// 2026-05-12 — Bookshop search returns no Sanzo Wada hits), so the source-
+// book CTA uses Amazon only. AMAZON.link() returns a tagged URL because
+// AMAZON.tag = "colorcombinations-20" (operator's Associates console).
 const sourceBookAmazonUrl = AMAZON.link("4861522471");
-const sourceBookBookshopUrl = BOOKSHOP.link(
-  "/p/books/a-dictionary-of-color-combinations-vol-1-sanzo-wada/19108229"
-);
-const sourceBookShowDisclosure = AMAZON.isLive || BOOKSHOP.isLive;
+const sourceBookShowDisclosure = AMAZON.isLive;
 
 const featured = featuredPalettes();
 const totalCount = allPalettes().length;
@@ -80,22 +78,14 @@ const jsonLd = {
       <p class="hero__source-book">
         Want the original?
         <a
-          href={sourceBookBookshopUrl}
-          rel="sponsored noopener"
-          target="_blank"
-          data-event="bookshop_click"
-          data-event-surface="hero"
-        >Get it on Bookshop.org</a>
-        <span aria-hidden="true"> · </span>
-        <a
           href={sourceBookAmazonUrl}
           rel="sponsored noopener"
           target="_blank"
           data-event="amazon_click"
           data-event-surface="hero"
-        >or Amazon</a>
+        >Get Sanzo Wada's 1933 Dictionary on Amazon →</a>
         {sourceBookShowDisclosure && (
-          <span class="hero__disclosure"> — affiliate links; your price unchanged, small commission supports the archive.</span>
+          <span class="hero__disclosure"> — affiliate link; your price unchanged, small commission supports the archive.</span>
         )}
       </p>
     </div>

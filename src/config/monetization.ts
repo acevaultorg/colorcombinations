@@ -86,8 +86,11 @@ export const BUNDLE = {
  *   https://bookshop.org/pages/affiliate-program
  */
 export const BOOKSHOP = {
-  /** Your affiliate ID, e.g. "color-combinations" (shown after signup). */
-  affiliateId: "PLACEHOLDER_BOOKSHOP_ID",
+  /** Operator's Bookshop affiliate slug (Affiliate #124121, shop URL
+   *  https://bookshop.org/shop/readstacks). Verified live 2026-05-12 via
+   *  bookshop.org/p/books/...?aid=readstacks → renders "Read Stacks Powered
+   *  by Bookshop.org" header + 20% affiliate banner. */
+  affiliateId: "readstacks",
 
   /** True when ID has been pasted in. */
   get isLive(): boolean {
@@ -115,8 +118,8 @@ export const BOOKSHOP = {
  * to stay in the program. Only use when Bookshop is missing a title.
  */
 export const AMAZON = {
-  /** Your associate tag, e.g. "colorcombo-20". */
-  tag: "PLACEHOLDER_AMAZON_TAG",
+  /** Your associate tag — created 2026-05-12 via Amazon Associates console. */
+  tag: "colorcombinations-20",
 
   get isLive(): boolean {
     return !this.tag.startsWith("PLACEHOLDER");
@@ -248,12 +251,13 @@ export const FURTHER_READING: CuratedBook[] = [
   {
     title: "A Dictionary of Color Combinations",
     author: "Sanzo Wada",
-    note: "The 2010 Seigensha republication of the 1933 original.",
+    note: "The 2010 Seigensha republication of the 1933 original. Japanese import — US Bookshop doesn't stock it.",
     bookshopPath:
-      "/p/books/a-dictionary-of-color-combinations-vol-1-sanzo-wada/19108229",
+      "https://bookshop.org/beta-search?keywords=9784861522471",
     amazonAsin: "4861522471",
     isbn: "4861522471",
     coverUrl: "/book-covers/wada-vol-1.jpg",
+    primaryCta: "amazon",
     why: "The source tradition this archive draws from. Out of print for decades; Seigensha brought it back.",
   },
   {
