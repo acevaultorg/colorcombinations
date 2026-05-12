@@ -5,6 +5,18 @@ import EmailCapture from "@components/EmailCapture.astro";
 import BundleCta from "@components/BundleCta.astro";
 import { featuredPalettes, allPalettes, wadaCatalog } from "@data/palettes";
 import { collections, paletteSetForCollection } from "@data/collections";
+import { AMAZON, BOOKSHOP } from "@/config/monetization";
+
+// Source-book affiliate link — Sanzo Wada's "A Dictionary of Color Combinations"
+// Vol. 1 (Seigensha 2010 republication of 1933 original, ASIN 4861522471).
+// AMAZON.link() returns the bare amazon URL when AMAZON.tag is still
+// PLACEHOLDER_AMAZON_TAG — link works without commission attribution until
+// operator pastes their Associates tag in src/config/monetization.ts.
+const sourceBookAmazonUrl = AMAZON.link("4861522471");
+const sourceBookBookshopUrl = BOOKSHOP.link(
+  "/p/books/a-dictionary-of-color-combinations-vol-1-sanzo-wada/19108229"
+);
+const sourceBookShowDisclosure = AMAZON.isLive || BOOKSHOP.isLive;
 
 const featured = featuredPalettes();
 const totalCount = allPalettes().length;
@@ -65,6 +77,27 @@ const jsonLd = {
         <a href="/browse" class="btn btn-primary">Browse all {totalCount} combinations</a>
         <a href="#featured" class="btn btn-secondary">See editorial picks</a>
       </div>
+      <p class="hero__source-book">
+        Want the original?
+        <a
+          href={sourceBookBookshopUrl}
+          rel="sponsored noopener"
+          target="_blank"
+          data-event="bookshop_click"
+          data-event-surface="hero"
+        >Get it on Bookshop.org</a>
+        <span aria-hidden="true"> · </span>
+        <a
+          href={sourceBookAmazonUrl}
+          rel="sponsored noopener"
+          target="_blank"
+          data-event="amazon_click"
+          data-event-surface="hero"
+        >or Amazon</a>
+        {sourceBookShowDisclosure && (
+          <span class="hero__disclosure"> — affiliate links; your price unchanged, small commission supports the archive.</span>
+        )}
+      </p>
     </div>
   </section>
 
@@ -283,6 +316,31 @@ const jsonLd = {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+  }
+
+  .hero__source-book {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    color: var(--color-ink-500);
+    line-height: 1.55;
+    margin: 1.25rem 0 0;
+    max-width: 56ch;
+  }
+
+  .hero__source-book a {
+    color: var(--color-ink-800);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .hero__source-book a:hover {
+    color: var(--color-accent-500);
+  }
+
+  .hero__disclosure {
+    color: var(--color-ink-500);
+    font-size: 0.8125rem;
   }
 
   /* ========== SECTION HEADERS ========== */
