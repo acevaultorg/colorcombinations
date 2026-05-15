@@ -6,3 +6,4 @@
 
 # V2: if sumitome.com is later purchased as an alias, add:
 #   https://sumitome.com/*  https://colorcombinations.org/:splat  301
+/sitemap.xml /sitemap-index.xml 301
