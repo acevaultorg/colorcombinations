@@ -111,6 +111,52 @@ const jsonLd = [
       },
     ],
   },
+  // FAQPage + Speakable per rules/seo-geo-mastery.md Part 14.
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${new URL(`/collections/${collection.slug}`, Astro.site).toString()}#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `What is in the "${collection.title}" collection?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${collection.title} is a curated collection of ${total} historical color palettes from Sanzo Wada's "A Dictionary of Color Combinations" (1933). ${collection.tagline}`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `How was the "${collection.title}" collection curated?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Editorial curation by colorcombinations.org. ${description} Palettes are grouped by thematic resonance — mood, era, or visual language — not algorithmic similarity.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Can I embed or share the "${collection.title}" collection?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Yes. Use the embed iframe (560×320) shown on the page for blogs, Notion pages, or design reviews. Each embedded palette links back to its full detail page. Share image (1200×630) auto-generated per collection. License: CC BY 4.0.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Where does the "${collection.title}" source material come from?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Source: Sanzo Wada, "A Dictionary of Color Combinations" (1933, Seigensha Art Publishing 2010 reprint). The Wada catalog is in the public domain. Curation, descriptions, and groupings here are CC BY 4.0 licensed.`,
+        },
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${new URL(`/collections/${collection.slug}`, Astro.site).toString()}#speakable`,
+    speakable: { "@type": "SpeakableSpecification", cssSelector: [".cc-collection-intro"] },
+  },
 ];
 ---
 
@@ -142,7 +188,7 @@ const jsonLd = [
       ></div>
       <p class="eyebrow">Collection · {total} palettes</p>
       <h1 class="display-hero text-balance">{collection.title}</h1>
-      <p class="collection-hero__tagline">{collection.tagline}</p>
+      <p class="collection-hero__tagline cc-collection-intro">{collection.tagline}</p>
       <div class="collection-hero__description" set:html={collection.description}></div>
       <ShareActions
         title={collection.title}

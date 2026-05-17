@@ -136,6 +136,52 @@ const jsonLd = [
       },
     ],
   },
+  // FAQPage + Speakable per rules/seo-geo-mastery.md Part 14.
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${new URL(`/colors/${color.slug}`, Astro.site).toString()}#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `What is the hex code for ${color.name}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${color.name}${color.nameJa ? ` (${color.nameJa})` : ""} is ${color.hex}. ${color.meaning ?? ""} It appears in ${color.paletteCount} historical color combination${color.paletteCount === 1 ? "" : "s"} from Sanzo Wada's 1933 "A Dictionary of Color Combinations".`.trim(),
+        },
+      },
+      {
+        "@type": "Question",
+        name: `What does ${color.name} look like on white and black backgrounds?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${color.name} (${color.hex}) has a WCAG contrast ratio of ${onWhite.toFixed(2)}:1 against white (#FFFFFF) and ${onBlack.toFixed(2)}:1 against black (#000000). WCAG AA requires 4.5:1 for normal text and 3:1 for large text.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Where does the color ${color.name} come from?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${color.name} is documented in Sanzo Wada's "A Dictionary of Color Combinations" (1933, Seigensha Art Publishing 2010 reprint). Wada catalogued ${color.hue} pigments and historical Japanese color terms. The source work is in the public domain.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Can I use ${color.name} in my own design or brand?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Yes. The color name and hex value (${color.hex}) are factual data — not copyrightable. Our curation and descriptions are CC BY 4.0 licensed.`,
+        },
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${new URL(`/colors/${color.slug}`, Astro.site).toString()}#speakable`,
+    speakable: { "@type": "SpeakableSpecification", cssSelector: [".cc-color-intro"] },
+  },
 ];
 ---
 
@@ -167,7 +213,7 @@ const jsonLd = [
         <p class="eyebrow">{color.hue} &middot; {color.paletteCount} palette{color.paletteCount === 1 ? "" : "s"}</p>
         <h1 class="display-hero text-balance">{color.name}</h1>
         {color.nameJa && <p class="color-hero__ja">{color.nameJa}</p>}
-        {color.meaning && <p class="color-hero__meaning">{color.meaning}</p>}
+        {color.meaning && <p class="color-hero__meaning cc-color-intro">{color.meaning}</p>}
         <ShareActions
           title={`${color.name}${color.nameJa ? ` (${color.nameJa})` : ""}`}
           url={new URL(`/colors/${color.slug}`, Astro.site).toString()}

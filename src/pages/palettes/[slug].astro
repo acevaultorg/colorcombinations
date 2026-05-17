@@ -132,6 +132,52 @@ const jsonLd = [
       },
     ],
   },
+  // FAQPage + Speakable per rules/seo-geo-mastery.md Part 14.
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${new URL(`/palettes/${palette.slug}`, Astro.site).toString()}#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `What colors are in the "${palette.title}" palette?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${palette.title}${palette.titleJa ? ` (${palette.titleJa})` : ""} contains ${palette.colors.length} colors: ${palette.colors.map((c) => `${c.nameRomaji ?? c.hex} (${c.hex})`).join(", ")}. From Sanzo Wada's "A Dictionary of Color Combinations" (1933).`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `When was the "${palette.title}" palette created?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `This palette is from Sanzo Wada's 1933 reference work "A Dictionary of Color Combinations" (Seigensha Art Publishing 2010 reprint). Wada documented historical Japanese color combinations from the ${palette.era} era and earlier periods. The source work is in the public domain.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `What style or era does the "${palette.title}" palette belong to?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${palette.title} is associated with the ${palette.era} era and emphasizes ${palette.dominantHue} tones. ${palette.summary}`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Can I use the "${palette.title}" palette in my own design?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Yes. The source palette by Sanzo Wada (1933) is in the public domain. This page's curation and metadata are CC BY 4.0 licensed — attribution to colorcombinations.org appreciated but not required for the colors themselves.`,
+        },
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${new URL(`/palettes/${palette.slug}`, Astro.site).toString()}#speakable`,
+    speakable: { "@type": "SpeakableSpecification", cssSelector: [".cc-palette-intro"] },
+  },
 ];
 ---
 
@@ -169,7 +215,7 @@ const jsonLd = [
             <span class="palette-hero__ja title-ja">{palette.titleJa}</span>
           )}
         </h1>
-        <p class="palette-hero__summary">{palette.summary}</p>
+        <p class="palette-hero__summary cc-palette-intro">{palette.summary}</p>
       </div>
     </div>
   </section>
