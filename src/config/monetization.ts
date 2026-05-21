@@ -230,6 +230,7 @@ export const FURTHER_READING: CuratedBook[] = [
     note: "50th Anniversary Edition, Yale University Press.",
     amazonAsin: "0300179359",
     isbn: "0300179359",
+    olCoverId: 13011097,
     why: "The most important book on how colors behave next to each other. Still the default reference in art schools.",
   },
   {
@@ -238,6 +239,7 @@ export const FURTHER_READING: CuratedBook[] = [
     note: "Penguin, 2017.",
     amazonAsin: "0143131141",
     isbn: "0143131141",
+    olCoverId: 9431201,
     why: "Seventy-five individual colors, each with a short history. Reads like a cabinet of curiosities.",
   },
   {
@@ -246,6 +248,7 @@ export const FURTHER_READING: CuratedBook[] = [
     note: "Random House, 2004.",
     amazonAsin: "0812971426",
     isbn: "0812971426",
+    olCoverId: 210215,
     why: "Investigative travelogue through dye sources — indigo farms, lapis mines, safflower fields. The journey of kurenai.",
   },
   {
@@ -263,6 +266,7 @@ export const FURTHER_READING: CuratedBook[] = [
     note: "Abrams, 2017.",
     amazonAsin: "141972391X",
     isbn: "141972391X",
+    olCoverId: 12434476,
     why: "A practical, example-filled guide to thirty key colors and the way they behave together. Working-designer companion to Wada's historical archive.",
   },
   {
@@ -271,6 +275,7 @@ export const FURTHER_READING: CuratedBook[] = [
     note: "Chronicle Books, 2011.",
     amazonAsin: "0811877566",
     isbn: "0811877566",
+    // Open Library has no cover for this title; renders the "PT" fallback tile.
     why: "A decade-by-decade visual history of color in design, advertising, and culture from 1900 to 2000. The modern complement to Wada's pre-war record.",
   },
   {
@@ -279,6 +284,7 @@ export const FURTHER_READING: CuratedBook[] = [
     note: "Watson-Guptill, 2017.",
     amazonAsin: "0399579788",
     isbn: "0399579788",
+    olCoverId: 10359072,
     why: "1,100+ ready-to-apply palettes with CMYK + RGB formulas. The shelf-reference designers reach for on deadline.",
   },
   {
@@ -287,6 +293,7 @@ export const FURTHER_READING: CuratedBook[] = [
     note: "Yale University Press, 2018.",
     amazonAsin: "0300171870",
     isbn: "0300171870",
+    olCoverId: 14576277,
     why: "Ten essays — one per color — pairing cultural history with how each pigment came to mean what it does. Sits next to Finlay on a serious shelf.",
   },
   {
@@ -295,6 +302,7 @@ export const FURTHER_READING: CuratedBook[] = [
     note: "Thames & Hudson, 2017.",
     amazonAsin: "0500519331",
     isbn: "0500519331",
+    olCoverId: 13325619,
     why: "The story of paint and pigment in interiors from 1650 to 1960 — 600 historical swatches with provenance. The architectural-history companion to Wada's plates.",
   },
 ] as const;
