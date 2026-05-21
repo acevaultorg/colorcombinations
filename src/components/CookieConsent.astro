@@ -1,22 +1,24 @@
 ---
-// Cookie consent banner — shown on first visit for EU/UK/CA users.
-// Minimal, non-blocking, clearly labelled. No accept-only pattern.
-// Preference stored in localStorage: "cc_status" = "accepted" | "rejected"
+// Notice banner — shown once on first visit.
+// This site uses Plausible (cookieless analytics) and does not run display ads.
+// Book/tool links route via Bookshop.org and Amazon Associates; those domains
+// set their own cookies *after* you click through. The banner exists to be
+// transparent about that, not to gate consent for anything we ourselves set.
+// Preference stored in localStorage: "cc_status" = "acknowledged".
 ---
 
-<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie preferences" aria-live="polite" hidden>
+<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Site data notice" aria-live="polite" hidden>
   <div class="cookie-banner__inner">
     <p class="cookie-banner__text">
-      We use <strong>Google AdSense</strong> to serve ads, which may set cookies
-      on your device. Our own analytics (Plausible) are cookieless and need no
-      consent. <a href="/privacy" class="cookie-banner__link">Privacy policy</a>
+      <strong>About data on this site.</strong> We use Plausible (cookieless
+      analytics) and run no display-ad networks. Book links route through
+      Bookshop.org and Amazon Associates affiliate programs; those destinations
+      set their own cookies once you visit them. As an Amazon Associate we earn
+      from qualifying purchases. <a href="/privacy" class="cookie-banner__link">Privacy policy</a>
     </p>
     <div class="cookie-banner__actions">
-      <button id="cc-reject" class="cookie-banner__btn cookie-banner__btn--secondary">
-        Reject ads
-      </button>
       <button id="cc-accept" class="cookie-banner__btn cookie-banner__btn--primary">
-        Accept ads
+        Got it
       </button>
     </div>
   </div>
@@ -35,20 +37,18 @@
     }, 800);
   }
 
-  function dismiss(accepted) {
-    localStorage.setItem(STORAGE_KEY, accepted ? 'accepted' : 'rejected');
+  function dismiss() {
+    localStorage.setItem(STORAGE_KEY, 'acknowledged');
     var banner = document.getElementById('cookie-banner');
     if (banner) banner.hidden = true;
-    if (accepted && window.plausible) {
-      window.plausible('cookie_consent', { props: { choice: 'accept' } });
+    if (window.plausible) {
+      window.plausible('site_notice_acknowledged');
     }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     var acceptBtn = document.getElementById('cc-accept');
-    var rejectBtn = document.getElementById('cc-reject');
-    if (acceptBtn) acceptBtn.addEventListener('click', function () { dismiss(true); });
-    if (rejectBtn) rejectBtn.addEventListener('click', function () { dismiss(false); });
+    if (acceptBtn) acceptBtn.addEventListener('click', dismiss);
   });
 })();
 </script>
