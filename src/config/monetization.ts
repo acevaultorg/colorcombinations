@@ -308,8 +308,8 @@ export const FURTHER_READING: CuratedBook[] = [
     note: "Phaidon, 2017.",
     bookshopPath:
       "/p/books/chromaphilia-the-story-of-color-in-art-stella-paul/6944849",
-    amazonAsin: "0714873934",
-    isbn: "0714873934",
+    amazonAsin: "0714873896",
+    isbn: "0714873896",
     olCoverId: 12410845,
     why: "240 artworks organized by color. A visual counterpart to Wada's dictionary.",
   },

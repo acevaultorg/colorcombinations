@@ -68,6 +68,13 @@ const year = new Date().getFullYear();
         <button id="cc-reopen" class="site-footer__cc-btn">Cookie Preferences</button>
       </nav>
     </div>
+    <div class="container-wide site-footer__affiliate-disclosure">
+      <p>
+        Book links use Bookshop.org and Amazon Associates affiliate programs. As an Amazon
+        Associate we earn from qualifying purchases. Your price is unchanged; a small commission
+        supports the archive.
+      </p>
+    </div>
   </div>
 </footer>
 
@@ -201,6 +208,20 @@ const year = new Date().getFullYear();
 
   .site-footer__cc-btn:hover {
     color: var(--color-ink-700);
+  }
+
+  .site-footer__affiliate-disclosure {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .site-footer__affiliate-disclosure p {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-ink-500);
+    max-width: 80ch;
   }
 </style>
 
