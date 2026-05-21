@@ -313,6 +313,61 @@ export const FURTHER_READING: CuratedBook[] = [
     olCoverId: 12410845,
     why: "240 artworks organized by color. A visual counterpart to Wada's dictionary.",
   },
+  {
+    title: "The Designer's Dictionary of Color",
+    author: "Sean Adams",
+    note: "Abrams, 2017.",
+    bookshopPath:
+      "https://bookshop.org/beta-search?keywords=9781419723919",
+    amazonAsin: "141972391X",
+    isbn: "141972391X",
+    primaryCta: "amazon",
+    why: "A practical, example-filled guide to thirty key colors and the way they behave together. Working-designer companion to Wada's historical archive.",
+  },
+  {
+    title: "Pantone: The Twentieth Century in Color",
+    author: "Leatrice Eiseman & Keith Recker",
+    note: "Chronicle Books, 2011.",
+    bookshopPath:
+      "https://bookshop.org/beta-search?keywords=9780811877565",
+    amazonAsin: "0811877566",
+    isbn: "0811877566",
+    primaryCta: "amazon",
+    why: "A decade-by-decade visual history of color in design, advertising, and culture from 1900 to 2000. The modern complement to Wada's pre-war record.",
+  },
+  {
+    title: "Color Index XL",
+    author: "Jim Krause",
+    note: "Watson-Guptill, 2017.",
+    bookshopPath:
+      "https://bookshop.org/beta-search?keywords=9780399579783",
+    amazonAsin: "0399579788",
+    isbn: "0399579788",
+    primaryCta: "amazon",
+    why: "1,100+ ready-to-apply palettes with CMYK + RGB formulas. The shelf-reference designers reach for on deadline.",
+  },
+  {
+    title: "On Color",
+    author: "David Scott Kastan with Stephen Farthing",
+    note: "Yale University Press, 2018.",
+    bookshopPath:
+      "https://bookshop.org/beta-search?keywords=9780300171877",
+    amazonAsin: "0300171870",
+    isbn: "0300171870",
+    primaryCta: "amazon",
+    why: "Ten essays — one per color — pairing cultural history with how each pigment came to mean what it does. Sits next to Finlay on a serious shelf.",
+  },
+  {
+    title: "The Anatomy of Color",
+    author: "Patrick Baty",
+    note: "Thames & Hudson, 2017.",
+    bookshopPath:
+      "https://bookshop.org/beta-search?keywords=9780500519332",
+    amazonAsin: "0500519331",
+    isbn: "0500519331",
+    primaryCta: "amazon",
+    why: "The story of paint and pigment in interiors from 1650 to 1960 — 600 historical swatches with provenance. The architectural-history companion to Wada's plates.",
+  },
 ] as const;
 
 /**
