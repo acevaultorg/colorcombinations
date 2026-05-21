@@ -4,11 +4,12 @@
  * Replace the `PLACEHOLDER_*` values after signing up for each platform.
  * Everything is build-time baked, so a redeploy is required after edits.
  *
- * V1.1 revenue strategy (ColorCombinations):
+ * V1.2 revenue strategy (ColorCombinations) — 2026-05-21:
  *
- *  1. PRIMARY REALISTIC RAIL — Affiliate. Book covers + in-context embeds
- *     on palette pages + design-tool affiliate (higher commission than books).
- *     Bookshop.org wins on 30-day cookie vs Amazon's 24h.
+ *  1. PRIMARY — Amazon Associates (tag colorcombinations-20). Book covers +
+ *     in-context embeds on palette pages + design-tool affiliate (higher
+ *     commission than books). Operator directive 2026-05-21: Bookshop.org
+ *     retired; Amazon is the sole storefront.
  *  2. SECONDARY — "Support the archive" tip jar via Gumroad. Pay-what-you-want,
  *     $3 minimum, suggests $5. Reframed from "product" to "thank-you with a
  *     bundle attached" — stops overselling the free data on the site.
@@ -22,7 +23,8 @@
  *  - No dark patterns, no fake urgency, no inflated price anchors.
  *
  * See DECISIONS.md 2026-04-10 ("Monetization V1.1 reality check") for the
- * reasoning behind every line in this file.
+ * reasoning behind every line in this file. 2026-05-21 entry documents
+ * the Bookshop retirement.
  */
 
 // ============================================================================
@@ -76,46 +78,13 @@ export const BUNDLE = {
 } as const;
 
 // ============================================================================
-// BOOKSHOP.ORG — primary affiliate (10% commission, 30-day cookie)
+// AMAZON ASSOCIATES — sole book affiliate (4% commission, 24h cookie)
 // ============================================================================
 
 /**
- * Bookshop.org affiliate — indie bookstore network, 10% commission,
- * 30-day cookie window (vs Amazon's 24h), fits the museum-plate brand better
- * than Amazon. Instant signup at:
- *   https://bookshop.org/pages/affiliate-program
- */
-export const BOOKSHOP = {
-  /** Operator's Bookshop affiliate slug (Affiliate #124121, shop URL
-   *  https://bookshop.org/shop/readstacks). Verified live 2026-05-12 via
-   *  bookshop.org/p/books/...?aid=readstacks → renders "Read Stacks Powered
-   *  by Bookshop.org" header + 20% affiliate banner. */
-  affiliateId: "readstacks",
-
-  /** True when ID has been pasted in. */
-  get isLive(): boolean {
-    return !this.affiliateId.startsWith("PLACEHOLDER");
-  },
-
-  /** Build an affiliate link for a given book path or URL. */
-  link(path: string): string {
-    const clean = path.startsWith("http")
-      ? path
-      : `https://bookshop.org/${path.replace(/^\//, "")}`;
-    if (!this.isLive) return clean;
-    const sep = clean.includes("?") ? "&" : "?";
-    return `${clean}${sep}aid=${this.affiliateId}`;
-  },
-} as const;
-
-// ============================================================================
-// AMAZON ASSOCIATES — fallback affiliate (4% commission, 24h cookie)
-// ============================================================================
-
-/**
- * Amazon Associates — fallback affiliate for books not on Bookshop.org.
+ * Amazon Associates — sole book affiliate as of 2026-05-21.
  * 4% commission on books, 24-hour cookie. Requires 3 sales in 180 days
- * to stay in the program. Only use when Bookshop is missing a title.
+ * to stay in the program. Bookshop.org retired per operator directive.
  */
 export const AMAZON = {
   /** Your associate tag — created 2026-05-12 via Amazon Associates console. */
@@ -207,10 +176,9 @@ export interface CuratedBook {
   title: string;
   author: string;
   note: string;
-  /** Bookshop.org slug or full URL. */
-  bookshopPath: string;
-  /** Amazon ASIN fallback (also used for Open Library cover lookup). */
-  amazonAsin?: string;
+  /** Amazon ASIN — required. Used to build affiliate URL via AMAZON.link()
+   *  and also as a fallback identifier for Open Library cover lookup. */
+  amazonAsin: string;
   /**
    * ISBN-10 or ISBN-13 for cover image lookup. If omitted, falls back to
    * amazonAsin. If both missing, we try `olCoverId` next.
@@ -233,16 +201,6 @@ export interface CuratedBook {
    * `/public/...` at build time.
    */
   coverUrl?: string;
-  /**
-   * Which storefront takes the primary CTA slot. Default: `"bookshop"`
-   * (10% commission, 30-day cookie, indie-bookstore-supporting).
-   * Override to `"amazon"` ONLY when Bookshop.org US genuinely doesn't
-   * stock the title and the Bookshop link would dead-end in a search
-   * page — e.g. imported Japanese publishers. Sending a buyer to a
-   * search page with no results costs more trust than the commission
-   * difference is worth.
-   */
-  primaryCta?: "bookshop" | "amazon";
   /** Pull-quote reason for inclusion — shown inline on listings. */
   why: string;
 }
@@ -251,33 +209,25 @@ export const FURTHER_READING: CuratedBook[] = [
   {
     title: "A Dictionary of Color Combinations",
     author: "Sanzo Wada",
-    note: "The 2010 Seigensha republication of the 1933 original. Japanese import — US Bookshop doesn't stock it.",
-    bookshopPath:
-      "https://bookshop.org/beta-search?keywords=9784861522471",
+    note: "The 2010 Seigensha republication of the 1933 original. Japanese import.",
     amazonAsin: "4861522471",
     isbn: "4861522471",
     coverUrl: "/book-covers/wada-vol-1.jpg",
-    primaryCta: "amazon",
     why: "The source tradition this archive draws from. Out of print for decades; Seigensha brought it back.",
   },
   {
     title: "A Dictionary of Color Combinations Vol. 2",
     author: "Sanzo Wada",
-    note: "Seigensha, 2020. Japanese import — US Bookshop doesn't stock it.",
-    bookshopPath:
-      "https://bookshop.org/beta-search?keywords=9784861527722",
+    note: "Seigensha, 2020. Japanese import.",
     amazonAsin: "4861527724",
     isbn: "4861527724",
     coverUrl: "/book-covers/wada-vol-2.jpg",
-    primaryCta: "amazon",
     why: "Wada's 1935–1938 follow-ups: 72 plates on the Japanese seasons and 165 drawn from early-century fashion, interior, and graphic design. Not in Vol. 1. Not in this archive. The book itself is a design object — Japanese binding, matte pages, zero captions.",
   },
   {
     title: "Interaction of Color",
     author: "Josef Albers",
     note: "50th Anniversary Edition, Yale University Press.",
-    bookshopPath:
-      "/p/books/interaction-of-color-50th-anniversary-edition-josef-albers/8991996",
     amazonAsin: "0300179359",
     isbn: "0300179359",
     why: "The most important book on how colors behave next to each other. Still the default reference in art schools.",
@@ -286,8 +236,6 @@ export const FURTHER_READING: CuratedBook[] = [
     title: "The Secret Lives of Color",
     author: "Kassia St. Clair",
     note: "Penguin, 2017.",
-    bookshopPath:
-      "/p/books/the-secret-lives-of-color-kassia-st-clair/13527731",
     amazonAsin: "0143131141",
     isbn: "0143131141",
     why: "Seventy-five individual colors, each with a short history. Reads like a cabinet of curiosities.",
@@ -296,8 +244,6 @@ export const FURTHER_READING: CuratedBook[] = [
     title: "Color: A Natural History of the Palette",
     author: "Victoria Finlay",
     note: "Random House, 2004.",
-    bookshopPath:
-      "/p/books/color-a-natural-history-of-the-palette-victoria-finlay/8065810",
     amazonAsin: "0812971426",
     isbn: "0812971426",
     why: "Investigative travelogue through dye sources — indigo farms, lapis mines, safflower fields. The journey of kurenai.",
@@ -306,8 +252,6 @@ export const FURTHER_READING: CuratedBook[] = [
     title: "Chromaphilia",
     author: "Stella Paul",
     note: "Phaidon, 2017.",
-    bookshopPath:
-      "/p/books/chromaphilia-the-story-of-color-in-art-stella-paul/6944849",
     amazonAsin: "0714873896",
     isbn: "0714873896",
     olCoverId: 12410845,
@@ -317,55 +261,40 @@ export const FURTHER_READING: CuratedBook[] = [
     title: "The Designer's Dictionary of Color",
     author: "Sean Adams",
     note: "Abrams, 2017.",
-    bookshopPath:
-      "https://bookshop.org/beta-search?keywords=9781419723919",
     amazonAsin: "141972391X",
     isbn: "141972391X",
-    primaryCta: "amazon",
     why: "A practical, example-filled guide to thirty key colors and the way they behave together. Working-designer companion to Wada's historical archive.",
   },
   {
     title: "Pantone: The Twentieth Century in Color",
     author: "Leatrice Eiseman & Keith Recker",
     note: "Chronicle Books, 2011.",
-    bookshopPath:
-      "https://bookshop.org/beta-search?keywords=9780811877565",
     amazonAsin: "0811877566",
     isbn: "0811877566",
-    primaryCta: "amazon",
     why: "A decade-by-decade visual history of color in design, advertising, and culture from 1900 to 2000. The modern complement to Wada's pre-war record.",
   },
   {
     title: "Color Index XL",
     author: "Jim Krause",
     note: "Watson-Guptill, 2017.",
-    bookshopPath:
-      "https://bookshop.org/beta-search?keywords=9780399579783",
     amazonAsin: "0399579788",
     isbn: "0399579788",
-    primaryCta: "amazon",
     why: "1,100+ ready-to-apply palettes with CMYK + RGB formulas. The shelf-reference designers reach for on deadline.",
   },
   {
     title: "On Color",
     author: "David Scott Kastan with Stephen Farthing",
     note: "Yale University Press, 2018.",
-    bookshopPath:
-      "https://bookshop.org/beta-search?keywords=9780300171877",
     amazonAsin: "0300171870",
     isbn: "0300171870",
-    primaryCta: "amazon",
     why: "Ten essays — one per color — pairing cultural history with how each pigment came to mean what it does. Sits next to Finlay on a serious shelf.",
   },
   {
     title: "The Anatomy of Color",
     author: "Patrick Baty",
     note: "Thames & Hudson, 2017.",
-    bookshopPath:
-      "https://bookshop.org/beta-search?keywords=9780500519332",
     amazonAsin: "0500519331",
     isbn: "0500519331",
-    primaryCta: "amazon",
     why: "The story of paint and pigment in interiors from 1650 to 1960 — 600 historical swatches with provenance. The architectural-history companion to Wada's plates.",
   },
 ] as const;

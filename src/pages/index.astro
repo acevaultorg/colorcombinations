@@ -9,10 +9,9 @@ import { AMAZON } from "@/config/monetization";
 
 // Source-book affiliate link — Sanzo Wada's "A Dictionary of Color Combinations"
 // Vol. 1 (Seigensha 2010 republication of 1933 original, ASIN 4861522471).
-// Bookshop US doesn't stock this Japanese-publisher title (verified
-// 2026-05-12 — Bookshop search returns no Sanzo Wada hits), so the source-
-// book CTA uses Amazon only. AMAZON.link() returns a tagged URL because
-// AMAZON.tag = "colorcombinations-20" (operator's Associates console).
+// Amazon Associates is the sole book affiliate as of 2026-05-21 (operator
+// directive). AMAZON.link() returns a tagged URL because AMAZON.tag =
+// "colorcombinations-20" (operator's Associates console).
 const sourceBookAmazonUrl = AMAZON.link("4861522471");
 const sourceBookShowDisclosure = AMAZON.isLive;
 

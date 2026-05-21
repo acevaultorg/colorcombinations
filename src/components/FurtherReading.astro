@@ -1,22 +1,21 @@
 ---
 /**
- * FurtherReading — editorial book list with affiliate links and cover images.
+ * FurtherReading — editorial book list with Amazon affiliate links + cover images.
  *
  * Covers are pulled from the Open Library CDN (free, no auth) via ISBN.
  * Open Library returns a transparent 1x1 PNG on misses, so the `onerror`
  * handler swaps in a serif fallback tile — no broken-image glyphs.
  *
  * Used on:
- *  - /about (full 5-book list with covers)
+ *  - /about (full book list with covers)
  *  - /shop (curated selection as a shop section)
  *  - /palettes/[slug] (compact variant with 2 rotating picks — sidebar)
  *
- * Primary affiliate: Bookshop.org (10% commission, 30-day cookie).
- * Fallback: Amazon Associates (4% commission, 24h cookie).
- * FTC disclosure rendered only when at least one affiliate is live.
+ * Affiliate: Amazon Associates only (tag colorcombinations-20). Operator
+ * directive 2026-05-21: Bookshop.org retired; Amazon is the sole storefront.
  */
 
-import { BOOKSHOP, AMAZON, FURTHER_READING, bookCover } from "@/config/monetization";
+import { AMAZON, FURTHER_READING, bookCover } from "@/config/monetization";
 
 export interface Props {
   title?: string;
@@ -44,11 +43,9 @@ const books = (() => {
   return typeof limit === "number" ? rotated.slice(0, limit) : rotated;
 })();
 
-// FTC disclosure is shown unconditionally on non-sidebar listings: affiliate
-// click-tracking fires on link click regardless of whether an affiliate ID is
-// pasted in yet, so the disclosure is an always-on compliance surface — not
-// gated by `isLive`. (Prior bug: disclosure only rendered once IDs were real,
-// meaning every pre-activation page load was an undisclosed affiliate rail.)
+// FTC + Amazon Associates disclosure is shown unconditionally on non-sidebar
+// listings. Click-tracking fires regardless of whether an affiliate tag is
+// pasted in yet, so the disclosure is an always-on compliance surface.
 const showDisclosure = true;
 ---
 
@@ -69,36 +66,22 @@ const showDisclosure = true;
         .join("")
         .toUpperCase();
 
-      // Most books primary-CTA to Bookshop.org (higher commission, indie support).
-      // A few — e.g. Japanese imports not stocked by Bookshop US — flip so the
-      // primary button goes to Amazon (the place the visitor can actually buy).
-      // Sending a buyer to a dead-end search page costs more trust than the
-      // commission difference is worth.
-      const amazonFirst = book.primaryCta === "amazon" && !!book.amazonAsin;
-      const primaryHref = amazonFirst
-        ? AMAZON.link(book.amazonAsin!)
-        : BOOKSHOP.link(book.bookshopPath);
-      const primaryLabel = amazonFirst ? "Amazon" : "Bookshop.org";
-      const primaryNote = amazonFirst ? "ships faster" : null;
-      const primaryEvent = amazonFirst ? "amazon_click" : "bookshop_click";
-      const secondaryHref = amazonFirst
-        ? BOOKSHOP.link(book.bookshopPath)
-        : (book.amazonAsin ? AMAZON.link(book.amazonAsin) : null);
-      const secondaryLabel = amazonFirst
-        ? "or search Bookshop.org"
-        : "or Amazon (ships faster)";
-      const secondaryEvent = amazonFirst ? "bookshop_click" : "amazon_click";
+      // Every book routes to Amazon via the affiliate-tagged URL. Books
+      // without an ASIN fall back to an internal anchor (#) so the layout
+      // doesn't break, but the FURTHER_READING dataset should have an ASIN
+      // for every entry — this branch is defensive only.
+      const amazonHref = book.amazonAsin ? AMAZON.link(book.amazonAsin) : "#";
 
       return (
         <li class="further-reading__item">
           <a
-            href={primaryHref}
+            href={amazonHref}
             rel="noopener sponsored"
             target="_blank"
             class="further-reading__cover"
-            data-event={primaryEvent}
+            data-event="amazon_click"
             data-book={book.title}
-            aria-label={`${book.title} on ${primaryLabel}`}
+            aria-label={`${book.title} on Amazon`}
           >
             {coverUrl ? (
               <img
@@ -124,10 +107,10 @@ const showDisclosure = true;
             <p class="further-reading__by">{book.author}</p>
             <h3 class="further-reading__title">
               <a
-                href={primaryHref}
+                href={amazonHref}
                 rel="noopener sponsored"
                 target="_blank"
-                data-event={primaryEvent}
+                data-event="amazon_click"
                 data-book={book.title}
               >
                 {book.title}
@@ -141,27 +124,15 @@ const showDisclosure = true;
             )}
             <div class="further-reading__links">
               <a
-                href={primaryHref}
+                href={amazonHref}
                 rel="noopener sponsored"
                 target="_blank"
                 class="btn btn-secondary further-reading__link"
-                data-event={primaryEvent}
+                data-event="amazon_click"
                 data-book={book.title}
               >
-                {primaryLabel} <span aria-hidden="true">↗</span>
+                View on Amazon <span aria-hidden="true">↗</span>
               </a>
-              {secondaryHref && variant !== "sidebar" && (
-                <a
-                  href={secondaryHref}
-                  rel="noopener sponsored"
-                  target="_blank"
-                  class="further-reading__amazon"
-                  data-event={secondaryEvent}
-                  data-book={book.title}
-                >
-                  {secondaryLabel}
-                </a>
-              )}
             </div>
           </div>
         </li>
@@ -171,9 +142,9 @@ const showDisclosure = true;
 
   {showDisclosure && variant !== "sidebar" && (
     <p class="further-reading__disclosure">
-      Links to Bookshop.org and Amazon earn a small commission at no cost to
-      you. Bookshop.org's share supports independent bookstores. As an Amazon
-      Associate we earn from qualifying purchases.
+      Book links are Amazon Associates affiliate links. Your price is unchanged;
+      a small commission supports the archive. As an Amazon Associate we earn
+      from qualifying purchases.
     </p>
   )}
 </section>
