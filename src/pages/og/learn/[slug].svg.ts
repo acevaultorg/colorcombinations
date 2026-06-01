@@ -70,6 +70,30 @@ const PILLARS: ReadonlyArray<PillarSpec> = [
       "Kurenai, akane, ai, murasaki, seiji, gofun, tobi, sumi, yamabuki, kon and more — pigment origin, cultural register, and modern usage.",
     swatches: ["#9A2A2A", "#1B2A4E", "#5C2D5C", "#A8B2A6"],
   },
+  {
+    slug: "color-data-analysis",
+    title: "Data Analysis of the Dictionary",
+    subtitle: "What 348 palettes reveal",
+    blurb:
+      "Most-used colors, hue distribution, combination size, and a WCAG contrast survey across all 348 historical plates.",
+    swatches: ["#C04B3A", "#4C5D3F", "#1B2A4E", "#D4AF37"],
+  },
+  {
+    slug: "accessible-palettes",
+    title: "Accessible Japanese Palettes",
+    subtitle: "The text-safe combinations",
+    blurb:
+      "The Wada combinations that hold a WCAG-AA contrast pair strong enough for body text — sorted by contrast.",
+    swatches: ["#1B1814", "#F1ECDF", "#1B2A4E", "#F4EEE0"],
+  },
+  {
+    slug: "wada-palettes-web-design",
+    title: "Wada Palettes in Web Design",
+    subtitle: "A working method",
+    blurb:
+      "Pick for the medium, assign color roles, pass contrast, and ship a historical palette as CSS tokens.",
+    swatches: ["#4C5D3F", "#F1ECDF", "#1B2A4E", "#C04B3A"],
+  },
 ];
 
 export function getStaticPaths() {

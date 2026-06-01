@@ -114,8 +114,9 @@ const jsonLd = [
   title={title}
   description={description}
   keywords={keywords}
-  image="/og/learn.svg"
+  image="/og/learn/wada-palettes-web-design.svg"
   type="article"
+  jsonAlternate="/api/learn/wada-palettes-web-design.json"
   jsonLd={jsonLd}
 >
   <article class="article">
@@ -140,7 +141,7 @@ const jsonLd = [
         <ShareActions
           title={title}
           url={articleUrl}
-          image={new URL("/og/learn.svg", Astro.site).toString()}
+          image={new URL("/og/learn/wada-palettes-web-design.svg", Astro.site).toString()}
           description={description}
           heading="Share this guide"
           download={{

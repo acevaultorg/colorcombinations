@@ -107,8 +107,9 @@ const jsonLd = [
   title={title}
   description={description}
   keywords={keywords}
-  image="/og/learn.svg"
+  image="/og/learn/accessible-palettes.svg"
   type="article"
+  jsonAlternate="/api/learn/accessible-palettes.json"
   jsonLd={jsonLd}
 >
   <article class="article">
@@ -134,7 +135,7 @@ const jsonLd = [
         <ShareActions
           title={title}
           url={articleUrl}
-          image={new URL("/og/learn.svg", Astro.site).toString()}
+          image={new URL("/og/learn/accessible-palettes.svg", Astro.site).toString()}
           description={description}
           heading="Share this list"
           download={{

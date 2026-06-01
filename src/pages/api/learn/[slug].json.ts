@@ -204,6 +204,81 @@ const PILLARS: ReadonlyArray<Pillar> = [
       "scandinavian-color-theory",
     ],
   },
+  {
+    slug: "color-data-analysis",
+    type: "reference",
+    readingOrder: null,
+    title: "What 348 Palettes Reveal: A Data Analysis of Sanzo Wada's Dictionary",
+    description:
+      "A build-time statistical analysis of all 348 historical combinations: most-used colors, dominant-hue distribution, combination size, and a WCAG contrast survey.",
+    eyebrow: "Original research · Data",
+    readingTime: "6 min",
+    tags: ["Data", "Original research", "Accessibility"],
+    wordCount: 960,
+    datePublished: "2026-06-01T00:00:00Z",
+    outline: [
+      "How many colors are in a Wada combination?",
+      "The most-used colors in the dictionary",
+      "Which hues dominate?",
+      "Are Wada's palettes legible enough for text?",
+      "Method",
+    ],
+    citedTerms: [
+      { term: "WCAG AA", meaning: "4.5:1 minimum contrast ratio for body text." },
+      { term: "dominant hue", meaning: "The hue family a combination reads as overall." },
+    ],
+    relatedSlugs: ["accessible-palettes", "wada-palettes-web-design", "japanese-color-glossary"],
+  },
+  {
+    slug: "accessible-palettes",
+    type: "reference",
+    readingOrder: null,
+    title: "Accessible Japanese Palettes: Which Wada Combinations Work for Text",
+    description:
+      "The curated list of the historical Wada combinations (of 348) that hold a WCAG-AA contrast pair strong enough for body text, sorted by contrast, with the exact pair to use.",
+    eyebrow: "Original research · Accessibility",
+    readingTime: "5 min",
+    tags: ["Accessibility", "WCAG", "Original research"],
+    wordCount: 2450,
+    datePublished: "2026-06-01T00:00:00Z",
+    outline: [
+      "The text-safe Wada combinations",
+      "How to use a Wada palette for text safely",
+      "Method",
+    ],
+    citedTerms: [
+      { term: "WCAG AA", meaning: "4.5:1 minimum contrast for body text." },
+      { term: "WCAG AAA", meaning: "7:1 contrast; passes for any text size." },
+      { term: "contrast ratio", meaning: "Relative luminance ratio between two colors, 1:1 to 21:1." },
+    ],
+    relatedSlugs: ["color-data-analysis", "wada-palettes-web-design"],
+  },
+  {
+    slug: "wada-palettes-web-design",
+    type: "pillar",
+    readingOrder: null,
+    title: "How to Use Sanzo Wada Palettes in Web Design",
+    description:
+      "A working method for using a 1933 historical color combination in a real interface: pick for the medium, assign color roles, pass contrast, and ship it as CSS tokens.",
+    eyebrow: "Working guide · Web design",
+    readingTime: "6 min",
+    tags: ["Web design", "Working guide", "CSS"],
+    wordCount: 1020,
+    datePublished: "2026-06-01T00:00:00Z",
+    outline: [
+      "Pick for the medium, not just the mood",
+      "Assign color roles",
+      "Respect contrast — verify, don't assume",
+      "A worked example",
+      "Ship it as tokens",
+      "When not to use a Wada palette",
+    ],
+    citedTerms: [
+      { term: "CSS custom properties", meaning: "Reusable variables (--name) holding design tokens." },
+      { term: "color role", meaning: "Background, text, or accent assignment for a palette member." },
+    ],
+    relatedSlugs: ["accessible-palettes", "color-data-analysis"],
+  },
 ];
 
 export function getStaticPaths() {
@@ -215,6 +290,9 @@ export function getStaticPaths() {
     "japandi-color-theory",
     "scandinavian-color-theory",
     "japanese-color-glossary",
+    "color-data-analysis",
+    "accessible-palettes",
+    "wada-palettes-web-design",
   ];
   return slugs.map((slug) => ({ params: { slug } }));
 }
