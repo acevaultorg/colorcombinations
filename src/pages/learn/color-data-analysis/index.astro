@@ -1,0 +1,345 @@
+---
+/**
+ * /learn/color-data-analysis/ — original-research pillar.
+ *
+ * A statistical analysis of all 348 historical combinations in Sanzo Wada's
+ * 1933 Dictionary, computed at build time from the archive itself: most-used
+ * colors, dominant-hue distribution, combination size, and a WCAG contrast
+ * survey. Genuinely original (the public-domain mirrors don't analyse the
+ * set) → maximally citation-worthy (GEO/AEO) and the strongest "value-add"
+ * signal the site has. Every number derives from the dataset; nothing invented.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+import { wadaCatalog } from "@data/palettes";
+import { allColors } from "@data/colors";
+import { contrastRatio } from "@/lib/color";
+import type { HexColor } from "@/types/palette";
+
+// ---- The dataset: the 348 historical plates (the dictionary proper) ----
+const dict = wadaCatalog();
+const N = dict.length;
+
+// hex → {name, slug} for naming + internal links
+const colorMeta = new Map<string, { name: string; slug: string }>();
+for (const c of allColors()) colorMeta.set(c.hex.toLowerCase(), { name: c.name, slug: c.slug });
+
+// 1. Combination size
+const sizeCounts = new Map<number, number>();
+for (const p of dict) sizeCounts.set(p.colors.length, (sizeCounts.get(p.colors.length) ?? 0) + 1);
+const totalSlots = dict.reduce((s, p) => s + p.colors.length, 0);
+const avgSize = (totalSlots / N).toFixed(1);
+const sizeRows = [...sizeCounts.entries()].sort((a, b) => a[0] - b[0]);
+const commonSize = [...sizeCounts.entries()].sort((a, b) => b[1] - a[1])[0];
+
+// 2. Most-used colors across the 348
+const freq = new Map<string, number>();
+for (const p of dict) for (const c of p.colors) freq.set(c.hex.toLowerCase(), (freq.get(c.hex.toLowerCase()) ?? 0) + 1);
+const uniqueColors = freq.size;
+const topColors = [...freq.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 10)
+  .map(([hex, n]) => ({ hex, n, ...(colorMeta.get(hex) ?? { name: hex, slug: "" }) }));
+
+// 3. Dominant-hue distribution across the 348
+const hueCounts = new Map<string, number>();
+for (const p of dict) hueCounts.set(p.dominantHue, (hueCounts.get(p.dominantHue) ?? 0) + 1);
+const hueRows = [...hueCounts.entries()].sort((a, b) => b[1] - a[1]);
+const topHue = hueRows[0];
+
+// 4. Accessibility — strongest contrast pair per combination
+let aa = 0, aaLargeOnly = 0, none = 0;
+for (const p of dict) {
+  let best = 0;
+  for (let i = 0; i < p.colors.length; i++)
+    for (let j = i + 1; j < p.colors.length; j++) {
+      const r = contrastRatio(p.colors[i].hex as HexColor, p.colors[j].hex as HexColor);
+      if (r > best) best = r;
+    }
+  if (best >= 4.5) aa++;
+  else if (best >= 3) aaLargeOnly++;
+  else none++;
+}
+const aaPct = Math.round((100 * aa) / N);
+const nonePct = Math.round((100 * none) / N);
+
+const title = "What 348 Palettes Reveal: A Data Analysis of Sanzo Wada's Dictionary";
+const description =
+  `An original statistical breakdown of all ${N} historical combinations in Sanzo Wada's 1933 Dictionary of Color Combinations — the most-used colors, which hues dominate, how many colors a combination holds, and how many are actually legible enough for screen text.`;
+
+const keywords = [
+  "most used colors sanzo wada",
+  "sanzo wada dictionary analysis",
+  "japanese color statistics",
+  "colors per wada combination",
+  "are wada palettes accessible",
+  "wada dictionary of color combinations data",
+  "dominant hues japanese palettes",
+  "Sanzo Wada",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-06-01T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/color-data-analysis/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Original research",
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Data Analysis of the Dictionary" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/learn.svg"
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Data Analysis of the Dictionary</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Original research · Data</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          Everyone reproduces Sanzo Wada's 348 historical combinations. Almost
+          no one measures them. We ran the numbers on the full set — how big a
+          combination is, which colors and hues recur, and how many of these
+          revered palettes are actually legible enough to set text in. Here is
+          what the archive looks like in aggregate.
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/learn.svg", Astro.site).toString()}
+          description={description}
+          heading="Share this analysis"
+          download={{
+            kind: "page",
+            slug: "learn-color-data-analysis",
+            title,
+            subtitle: `${N} historical combinations, measured: most-used colors, hue split, and a WCAG contrast survey.`,
+            eyebrow: "Original research · Data",
+            accentHex: "#4C5D3F",
+          }}
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        The 1933 <em>Dictionary of Color Combinations</em> is one of the most
+        reproduced color references on the web — its plates are mirrored on
+        dozens of sites and GitHub repositories. What none of those mirrors do
+        is treat the set as a dataset. With all {N} historical combinations and
+        their {uniqueColors} distinct named colors structured here, a few
+        questions become answerable for the first time. The figures below are
+        computed directly from the archive at build time, so they update
+        whenever the data does.
+      </p>
+
+      <h2 id="combination-size">How many colors are in a Wada combination?</h2>
+      <p>
+        Across the {N} historical plates, the average combination holds
+        <strong>{avgSize} colors</strong>. The most common size is
+        {commonSize[0]} colors ({commonSize[1]} of {N} combinations). The full
+        breakdown:
+      </p>
+      <ul class="data-stats">
+        {sizeRows.map((r) => (
+          <li><strong>{r[0]} colors</strong> — {r[1]} combinations ({Math.round((100 * r[1]) / N)}%)</li>
+        ))}
+      </ul>
+      <p>
+        This is the practical takeaway for anyone borrowing from the
+        dictionary: Wada's groupings are small. They are built to be used whole,
+        not sampled from — a {avgSize}-color set is a complete scheme, not a
+        swatch library to cherry-pick.
+      </p>
+
+      <h2 id="most-used-colors">The most-used colors in the dictionary</h2>
+      <p>
+        A handful of colors recur far more than the rest. These are the ten that
+        appear in the most combinations across the historical set — the workhorses
+        of Wada's palette:
+      </p>
+      <ol class="data-colors">
+        {topColors.map((c) => (
+          <li>
+            <span class="data-swatch" style={`background:${c.hex}`} aria-hidden="true"></span>
+            {c.slug ? <a href={`/colors/${c.slug}/`}>{c.name}</a> : <span>{c.name}</span>}
+            <span class="data-colors__hex"><code>{c.hex}</code></span>
+            <span class="data-colors__count">{c.n} combinations</span>
+          </li>
+        ))}
+      </ol>
+      <p>
+        Each links to its own page, where you can see every combination it
+        appears in and the colors it most often sits beside.
+      </p>
+
+      <h2 id="hue-distribution">Which hues dominate?</h2>
+      <p>
+        Classified by dominant hue, the most common family is
+        <strong>{topHue[0]}</strong> ({topHue[1]} of {N} combinations,
+        {Math.round((100 * topHue[1]) / N)}%). The full distribution:
+      </p>
+      <ul class="data-stats">
+        {hueRows.map((r) => (
+          <li>
+            <a href={`/colors/hue/${r[0]}/`}>{r[0]}</a> — {r[1]} combinations ({Math.round((100 * r[1]) / N)}%)
+          </li>
+        ))}
+      </ul>
+
+      <h2 id="accessibility">Are Wada's palettes legible enough for text?</h2>
+      <p>
+        This is the question modern designers most need answered, and it is the
+        one the dictionary never set out to address — these are pigment
+        combinations chosen for harmony on cloth and paper, decades before
+        screens existed. We measured the strongest WCAG contrast pair inside
+        every combination:
+      </p>
+      <ul class="data-stats">
+        <li><strong>{aaPct}%</strong> ({aa} of {N}) contain at least one pair that meets WCAG AA (4.5:1) — usable for body text.</li>
+        <li><strong>{Math.round((100 * aaLargeOnly) / N)}%</strong> ({aaLargeOnly}) reach 3:1 only — large headings, not body copy.</li>
+        <li><strong>{nonePct}%</strong> ({none}) have no pair above 3:1 — fully decorative.</li>
+      </ul>
+      <p>
+        The lesson is not that the palettes are flawed — it is that they were
+        composed for a different medium. If you are using a Wada combination in
+        an interface, do not assume any two members will pass contrast. Pull the
+        lightest and darkest colors of the set for text and background, check the
+        exact pair, and treat the remaining colors as accents and fills. Every
+        per-color page on this site lists its contrast against white and black so
+        you can do this in seconds.
+      </p>
+
+      <h2 id="method">Method</h2>
+      <p>
+        All figures are computed at build time from the {N} historical
+        combinations in this archive (the 30 modern editorial palettes are
+        excluded so the numbers describe Wada's original work). Color frequency
+        counts how many combinations each hex value appears in; hue is each
+        combination's dominant-hue classification; contrast uses the WCAG 2.1
+        relative-luminance formula on every color pair within a combination. The
+        source palette data is public domain; this analysis is
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC&nbsp;BY&nbsp;4.0</a>.
+      </p>
+
+      <p class="article-related">
+        Keep reading: <a href="/learn/japanese-reds/">The Four Reds</a> ·
+        <a href="/learn/wabi-sabi-color-theory/">Wabi-Sabi Color Theory</a> ·
+        <a href="/browse/">browse all {N} combinations</a> ·
+        <a href="/colors/">every named color</a>.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .data-stats {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+  .data-stats li {
+    margin-bottom: 0.5rem;
+  }
+  .data-colors {
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    max-width: 65ch;
+  }
+  .data-colors li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .data-swatch {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    flex: none;
+  }
+  .data-colors__hex {
+    color: var(--color-ink-500);
+    font-size: 0.875rem;
+  }
+  .data-colors__count {
+    margin-left: auto;
+    color: var(--color-ink-500);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .article-related {
+    margin-top: 2rem;
+    font-size: 0.9375rem;
+  }
+  .article-related a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>
