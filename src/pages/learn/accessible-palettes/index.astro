@@ -1,0 +1,307 @@
+---
+/**
+ * /learn/accessible-palettes/ — original-research pillar (companion to
+ * /learn/color-data-analysis/). Computes the strongest WCAG contrast pair in
+ * every one of the 348 historical combinations and publishes the curated list
+ * of the text-legible ones (AA+), sorted by contrast, with the exact pair to
+ * use. Genuinely original + high-utility → citation-worthy (GEO/AEO) and a
+ * strong value-add signal. Every figure derives from the archive; nothing invented.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+import { wadaCatalog } from "@data/palettes";
+import { contrastRatio } from "@/lib/color";
+import type { HexColor } from "@/types/palette";
+
+const dict = wadaCatalog();
+const N = dict.length;
+
+// Strongest contrast pair in every combination.
+const scored = dict.map((p) => {
+  let best = { ratio: 0, a: p.colors[0], b: p.colors[0] };
+  for (let i = 0; i < p.colors.length; i++)
+    for (let j = i + 1; j < p.colors.length; j++) {
+      const r = contrastRatio(p.colors[i].hex as HexColor, p.colors[j].hex as HexColor);
+      if (r > best.ratio) best = { ratio: r, a: p.colors[i], b: p.colors[j] };
+    }
+  return {
+    slug: p.slug,
+    title: p.title,
+    ratio: best.ratio,
+    aName: best.a.nameRomaji ?? best.a.hex,
+    aHex: best.a.hex,
+    bName: best.b.nameRomaji ?? best.b.hex,
+    bHex: best.b.hex,
+  };
+});
+
+const textSafe = scored.filter((s) => s.ratio >= 4.5).sort((a, b) => b.ratio - a.ratio);
+const aaaCount = textSafe.filter((s) => s.ratio >= 7).length;
+const aaCount = textSafe.length;
+const largeOnly = scored.filter((s) => s.ratio >= 3 && s.ratio < 4.5).length;
+const decorative = scored.filter((s) => s.ratio < 3).length;
+const safePct = Math.round((100 * aaCount) / N);
+
+const title = "Accessible Japanese Palettes: Which Wada Combinations Work for Text";
+const description =
+  `Most of Sanzo Wada's ${N} historical palettes were composed for cloth and paper, not screens — only ${aaCount} hold a WCAG-AA contrast pair strong enough for body text. Here is the full list, sorted by contrast, with the exact pair to use.`;
+
+const keywords = [
+  "accessible japanese color palettes",
+  "wada palette contrast",
+  "wcag japanese colors",
+  "text-safe color combinations",
+  "accessible historical palettes",
+  "high contrast japanese palette",
+  "Sanzo Wada accessibility",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-06-01T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/accessible-palettes/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Original research",
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Accessible Palettes" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/learn.svg"
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Accessible Palettes</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Original research · Accessibility</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          Sanzo Wada chose these combinations for harmony on cloth and paper,
+          decades before screens. So most of them fail modern text-contrast
+          standards — beautiful, but decorative. We measured every one and
+          pulled out the {aaCount} that actually hold a WCAG-AA pair you can set
+          body text in. Use this as your shortlist when a Wada palette has to
+          survive an interface.
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/learn.svg", Astro.site).toString()}
+          description={description}
+          heading="Share this list"
+          download={{
+            kind: "page",
+            slug: "learn-accessible-palettes",
+            title,
+            subtitle: `${aaCount} of ${N} Wada combinations hold a WCAG-AA text pair. The full, contrast-sorted shortlist.`,
+            eyebrow: "Original research · Accessibility",
+            accentHex: "#1B2A4E",
+          }}
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        Across the {N} historical combinations in the dictionary, only
+        <strong>{aaCount} ({safePct}%)</strong> contain a colour pair that meets
+        WCAG AA (4.5:1) — the bar for body text. Of those, {aaaCount} clear AAA
+        (7:1). A further {largeOnly} reach 3:1, usable for large headings only,
+        and {decorative} have no pair above 3:1 at all. That last group is not
+        broken — it is simply decorative, meant for fills and backgrounds rather
+        than legible type.
+      </p>
+      <p>
+        The takeaway is practical: do not assume a Wada palette is screen-ready.
+        When you need text, reach for one of the combinations below, set your
+        text and background to the named pair, and keep the rest of the palette
+        for accents. (Need the reverse — palettes for atmosphere, not legibility?
+        Most of the archive qualifies. See the
+        <a href="/learn/color-data-analysis/">full data analysis</a>.)
+      </p>
+
+      <h2 id="text-safe">The {aaCount} text-safe Wada combinations</h2>
+      <p>
+        Sorted by the strongest available contrast. The pair listed is the one
+        to use for text-on-background; AAA passes for any text size, AA for
+        normal body text.
+      </p>
+      <ol class="contrast-list">
+        {textSafe.map((s) => (
+          <li>
+            <span class="pair-swatches" aria-hidden="true">
+              <span class="data-swatch" style={`background:${s.aHex}`}></span>
+              <span class="data-swatch" style={`background:${s.bHex}`}></span>
+            </span>
+            <a href={`/palettes/${s.slug}/`}>{s.title}</a>
+            <span class="contrast-list__pair">{s.aName} + {s.bName}</span>
+            <span class="contrast-list__ratio">
+              {s.ratio.toFixed(1)}:1 <span class="contrast-tag">{s.ratio >= 7 ? "AAA" : "AA"}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+
+      <h2 id="how-to">How to use a Wada palette for text safely</h2>
+      <ol>
+        <li>Open the combination and read its contrast matrix — every <a href="/palettes/">palette page</a> lists the ratio for each pair.</li>
+        <li>Use the highest-contrast pair for text and background. The shortlist above already names it for the {aaCount} that pass.</li>
+        <li>Reserve the remaining colours for borders, fills, icons, and decorative blocks — never for small text on a low-contrast neighbour.</li>
+        <li>Check your final pairing at the real font size. 4.5:1 is the floor for body copy; 3:1 is acceptable for text 18px+ or 14px+ bold.</li>
+      </ol>
+
+      <h2 id="method">Method</h2>
+      <p>
+        Contrast is computed with the WCAG 2.1 relative-luminance formula on
+        every colour pair within each of the {N} historical combinations; a
+        combination is "text-safe" if its strongest pair reaches 4.5:1. Figures
+        are generated at build time from the archive. The 30 modern editorial
+        palettes are excluded so the list describes Wada's original work. Source
+        data is public domain; this analysis is
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC&nbsp;BY&nbsp;4.0</a>.
+      </p>
+
+      <p class="article-related">
+        Keep reading: <a href="/learn/color-data-analysis/">A Data Analysis of the Dictionary</a> ·
+        <a href="/tools/contrast-checker/">contrast checker tool</a> ·
+        <a href="/browse/">browse all {N} combinations</a>.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .contrast-list {
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    max-width: 70ch;
+  }
+  .contrast-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .pair-swatches {
+    display: inline-flex;
+    flex: none;
+  }
+  .data-swatch {
+    width: 1.4rem;
+    height: 1.4rem;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .pair-swatches .data-swatch:first-child {
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+  }
+  .pair-swatches .data-swatch:last-child {
+    border-radius: 0 4px 4px 0;
+  }
+  .contrast-list a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 500;
+  }
+  .contrast-list__pair {
+    color: var(--color-ink-500);
+    font-size: 0.875rem;
+  }
+  .contrast-list__ratio {
+    margin-left: auto;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink-700);
+  }
+  .contrast-tag {
+    display: inline-block;
+    padding: 0.05rem 0.4rem;
+    border-radius: 4px;
+    background: var(--color-ink-900);
+    color: #fff;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    vertical-align: middle;
+  }
+  .article-body ol:not(.contrast-list) {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+  .article-body ol:not(.contrast-list) li {
+    margin-bottom: 0.6rem;
+  }
+  .article-related {
+    margin-top: 2rem;
+    font-size: 0.9375rem;
+  }
+  .article-related a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>
