@@ -1,0 +1,315 @@
+---
+/**
+ * /learn/wada-palettes-web-design/ — practical working guide.
+ *
+ * How to take a historical Wada combination and use it in a real interface:
+ * picking for the medium, assigning colour roles, respecting contrast, and
+ * shipping it as CSS custom properties. High search intent; heavy internal
+ * linking into the accessible-palettes shortlist, collections, tools, and the
+ * data analysis. Includes a worked example computed from the archive (the
+ * highest-contrast ≥3-colour combination) so the advice is concrete, not generic.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+import { wadaCatalog } from "@data/palettes";
+import { contrastRatio } from "@/lib/color";
+import type { HexColor, PaletteColor } from "@/types/palette";
+
+// Worked example: the highest-contrast combination with >=3 colours, so it has
+// a text-safe pair AND accent colours to demonstrate role assignment.
+const dict = wadaCatalog();
+let ex: { slug: string; title: string; ratio: number; bg: PaletteColor; text: PaletteColor; accents: PaletteColor[] } | null = null;
+let bestRatio = 0;
+for (const p of dict) {
+  if (p.colors.length < 3) continue;
+  let best = { ratio: 0, a: p.colors[0], b: p.colors[0] };
+  for (let i = 0; i < p.colors.length; i++)
+    for (let j = i + 1; j < p.colors.length; j++) {
+      const r = contrastRatio(p.colors[i].hex as HexColor, p.colors[j].hex as HexColor);
+      if (r > best.ratio) best = { ratio: r, a: p.colors[i], b: p.colors[j] };
+    }
+  if (best.ratio > bestRatio) {
+    bestRatio = best.ratio;
+    // lighter of the pair = background, darker = text
+    const aLight = contrastRatio(best.a.hex as HexColor, "#000000" as HexColor);
+    const bLight = contrastRatio(best.b.hex as HexColor, "#000000" as HexColor);
+    const bg = aLight >= bLight ? best.a : best.b;
+    const text = aLight >= bLight ? best.b : best.a;
+    const accents = p.colors.filter((c) => c.hex !== bg.hex && c.hex !== text.hex);
+    ex = { slug: p.slug, title: p.title, ratio: best.ratio, bg, text, accents };
+  }
+}
+
+const exName = (c: { nameRomaji?: string; hex: string }) => c.nameRomaji ?? c.hex;
+const cssExample = ex
+  ? `:root {
+  --bg:     ${ex.bg.hex};   /* ${exName(ex.bg)} — page background */
+  --text:   ${ex.text.hex};   /* ${exName(ex.text)} — body text (${ex.ratio.toFixed(1)}:1 on --bg) */
+${ex.accents.map((c, i) => `  --accent-${i + 1}: ${c.hex};   /* ${exName(c)} — accents, fills, borders */`).join("\n")}
+}`
+  : "";
+
+const title = "How to Use Sanzo Wada Palettes in Web Design";
+const description =
+  "A working guide to taking a historical color combination from Sanzo Wada's 1933 dictionary and using it in a real interface — picking for the medium, assigning color roles, passing contrast, and shipping it as CSS. With a worked example.";
+
+const keywords = [
+  "sanzo wada palette web design",
+  "how to use japanese color palette",
+  "historical color palette css",
+  "japanese colors in web design",
+  "wada palette css variables",
+  "traditional japanese palette website",
+  "Sanzo Wada",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-06-01T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/wada-palettes-web-design/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Working guide",
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Wada Palettes in Web Design" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/learn.svg"
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Wada Palettes in Web Design</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Working guide · Web design</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          A Wada combination can carry a website's whole identity — but you
+          can't drop a 1933 pigment palette into a UI and expect it to behave.
+          These were composed for cloth and paper, not screens. Here is the
+          working method: pick for the medium, assign roles, respect contrast,
+          ship as CSS.
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/learn.svg", Astro.site).toString()}
+          description={description}
+          heading="Share this guide"
+          download={{
+            kind: "page",
+            slug: "learn-wada-palettes-web-design",
+            title,
+            subtitle: "Pick for the medium, assign roles, pass contrast, ship as CSS — the working method.",
+            eyebrow: "Working guide · Web design",
+            accentHex: "#4C5D3F",
+          }}
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        The appeal is obvious: a Wada palette gives a site an identity that a
+        generated five-swatch scheme never will — centuries of cultural meaning,
+        a coherent story, and colors that already work together. The risk is
+        equally real. Most of these combinations were never meant to hold text.
+        Of the 348 historical plates, only about a third contain a pair legible
+        enough for body copy (see <a href="/learn/color-data-analysis/">the
+        data</a>). So the method matters. Four steps.
+      </p>
+
+      <h2 id="step-1">1. Pick for the medium, not just the mood</h2>
+      <p>
+        Decide what the palette has to do. If it's setting <em>atmosphere</em> —
+        a hero image, a brand mark, a marketing page with large display type and
+        few text blocks — almost any combination in the dictionary will work;
+        browse by <a href="/collections/">collection</a> or
+        <a href="/colors/">dominant color</a> and choose on feeling. If it has to
+        run a <em>working interface</em> — dashboards, forms, dense text — start
+        from the <a href="/learn/accessible-palettes/">accessible shortlist</a>:
+        the combinations that already hold a WCAG-AA pair. Picking the wrong
+        kind of palette for the job is the single most common mistake.
+      </p>
+
+      <h2 id="step-2">2. Assign color roles</h2>
+      <p>
+        A palette is not a set of equals — it's a hierarchy. Map each color to a
+        role before you write a line of CSS:
+      </p>
+      <ul>
+        <li><strong>Background</strong> — usually the lightest, lowest-saturation member. The color you'll see most.</li>
+        <li><strong>Text</strong> — the member with the highest contrast against your background. This is non-negotiable; if no member clears 4.5:1, the palette can't carry body text (use it for atmosphere instead).</li>
+        <li><strong>Accent(s)</strong> — the saturated, characterful colors. Links, buttons, highlights, borders. Used sparingly — roughly the classic 60 / 30 / 10 split of background / surface / accent.</li>
+      </ul>
+      <p>
+        Every <a href="/colors/">color page</a> lists its contrast against white
+        and black, so you can sort members into "text-capable" and
+        "decorative-only" in seconds.
+      </p>
+
+      <h2 id="step-3">3. Respect contrast — verify, don't assume</h2>
+      <p>
+        Two beautiful colors side by side in a plate tell you nothing about
+        whether one can sit as text on the other. Check the exact pair you plan
+        to use with the <a href="/tools/contrast-checker/">contrast checker</a>.
+        The floor is 4.5:1 for body text, 3:1 for large text (18px+, or 14px+
+        bold). Anything below 3:1 is decoration only — fills, dividers,
+        backgrounds behind imagery. Never put small text on a low-contrast
+        neighbor because the plate "looks balanced." Balanced and legible are
+        different problems.
+      </p>
+
+      {ex && (
+        <>
+          <h2 id="worked-example">A worked example</h2>
+          <p>
+            Take <a href={`/palettes/${ex.slug}/`}>{ex.title}</a> — the
+            highest-contrast multi-color combination in the dictionary, at
+            {" "}{ex.ratio.toFixed(1)}:1. Assigning roles: {exName(ex.bg)} is the
+            lightest member, so it becomes the background; {exName(ex.text)} has
+            the strongest contrast against it, so it carries text; the rest
+            become accents. As CSS custom properties:
+          </p>
+          <pre class="code-block"><code>{cssExample}</code></pre>
+          <p>
+            That's a complete, accessible foundation from a 1933 plate — body
+            text passes AA, and the accents are reserved for the moments that
+            should draw the eye.
+          </p>
+        </>
+      )}
+
+      <h2 id="step-4">4. Ship it as tokens</h2>
+      <p>
+        Don't scatter hex values through your stylesheet. Define the palette once
+        as custom properties (or design tokens) and reference them everywhere —
+        it keeps the scheme coherent and makes it trivial to swap. Every palette
+        on this site exports ready-made <strong>CSS variables, Tailwind config,
+        and W3C design tokens</strong> with one click from its page, so you never
+        retype a hex.
+      </p>
+
+      <h2 id="when-not">When not to use a Wada palette</h2>
+      <p>
+        Be honest about fit. Skip the dictionary when your interface needs
+        <em>many</em> independent accessible text pairs (complex data tables,
+        charting with labelled series, dense admin tools) — historical pigment
+        palettes rarely supply more than one strong pair, and forcing it
+        produces illegible UI. Skip it too when the brief demands a specific
+        brand hue you must match exactly. Wada is for projects where a coherent,
+        meaningful, slightly-imperfect palette is an asset — editorial sites,
+        portfolios, hospitality, publishing, packaging, considered product
+        marketing.
+      </p>
+
+      <p class="article-related">
+        Keep reading: <a href="/learn/accessible-palettes/">the text-safe shortlist</a> ·
+        <a href="/learn/color-data-analysis/">what the archive looks like in aggregate</a> ·
+        <a href="/collections/">browse by theme</a> ·
+        <a href="/tools/contrast-checker/">contrast checker</a>.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-body ul,
+  .article-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+  .article-body li {
+    margin-bottom: 0.6rem;
+  }
+  .article-body p a,
+  .article-body li a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .code-block {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-ink-900);
+    color: #f4eee0;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+  .code-block code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    white-space: pre;
+  }
+  .article-related {
+    margin-top: 2rem;
+    font-size: 0.9375rem;
+  }
+  .article-related a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>
