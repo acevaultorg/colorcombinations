@@ -1,0 +1,392 @@
+---
+/**
+ * FurtherReading — editorial book list with affiliate links and cover images.
+ *
+ * Covers are pulled from the Open Library CDN (free, no auth) via ISBN.
+ * Open Library returns a transparent 1x1 PNG on misses, so the `onerror`
+ * handler swaps in a serif fallback tile — no broken-image glyphs.
+ *
+ * Used on:
+ *  - /about (full 5-book list with covers)
+ *  - /shop (curated selection as a shop section)
+ *  - /palettes/[slug] (compact variant with 2 rotating picks — sidebar)
+ *
+ * Primary affiliate: Bookshop.org (10% commission, 30-day cookie).
+ * Fallback: Amazon Associates (4% commission, 24h cookie).
+ * FTC disclosure rendered only when at least one affiliate is live.
+ */
+
+import { BOOKSHOP, AMAZON, FURTHER_READING, bookCover } from "@/config/monetization";
+
+export interface Props {
+  title?: string;
+  intro?: string;
+  /** Limit number of books shown. */
+  limit?: number;
+  /** Offset into the book list — used to rotate picks on palette pages. */
+  offset?: number;
+  /** Layout variant. */
+  variant?: "full" | "compact" | "sidebar";
+}
+
+const {
+  title = "Further reading",
+  intro,
+  limit,
+  offset = 0,
+  variant = "full",
+} = Astro.props;
+
+// Rotate + slice. Keeps the rendered set stable per-URL (no random) while
+// giving different palette pages different book picks for impression variety.
+const books = (() => {
+  const rotated = [...FURTHER_READING.slice(offset), ...FURTHER_READING.slice(0, offset)];
+  return typeof limit === "number" ? rotated.slice(0, limit) : rotated;
+})();
+
+const hasAffiliate = BOOKSHOP.isLive || AMAZON.isLive;
+---
+
+<section class:list={["further-reading", `further-reading--${variant}`]}>
+  <header class="further-reading__head">
+    <p class="eyebrow">Library</p>
+    <h2 class="text-balance">{title}</h2>
+    {intro && <p class="further-reading__intro">{intro}</p>}
+  </header>
+
+  <ul class="further-reading__list" role="list">
+    {books.map((book) => {
+      const coverUrl = bookCover(book, variant === "sidebar" ? "M" : "L");
+      const initials = book.title
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((w) => w[0])
+        .join("")
+        .toUpperCase();
+      return (
+        <li class="further-reading__item">
+          <a
+            href={BOOKSHOP.link(book.bookshopPath)}
+            rel="noopener sponsored"
+            target="_blank"
+            class="further-reading__cover"
+            data-event="bookshop_click"
+            data-book={book.title}
+            aria-label={`${book.title} on Bookshop.org`}
+          >
+            {coverUrl ? (
+              <img
+                src={coverUrl}
+                alt={`${book.title} by ${book.author} — book cover`}
+                loading="lazy"
+                decoding="async"
+                data-cover-img
+                onerror="this.classList.add('is-missing')"
+                onload="if (this.naturalWidth < 10) this.classList.add('is-missing')"
+              />
+            ) : (
+              <span class="further-reading__cover-fallback" aria-hidden="true">
+                {initials}
+              </span>
+            )}
+            <span class="further-reading__cover-fallback fallback-layer" aria-hidden="true">
+              {initials}
+            </span>
+          </a>
+
+          <div class="further-reading__meta">
+            <p class="further-reading__by">{book.author}</p>
+            <h3 class="further-reading__title">
+              <a
+                href={BOOKSHOP.link(book.bookshopPath)}
+                rel="noopener sponsored"
+                target="_blank"
+                data-event="bookshop_click"
+                data-book={book.title}
+              >
+                {book.title}
+              </a>
+            </h3>
+            {variant !== "sidebar" && (
+              <p class="further-reading__note">{book.note}</p>
+            )}
+            {variant !== "sidebar" && (
+              <p class="further-reading__why">{book.why}</p>
+            )}
+            <div class="further-reading__links">
+              <a
+                href={BOOKSHOP.link(book.bookshopPath)}
+                rel="noopener sponsored"
+                target="_blank"
+                class="btn btn-secondary further-reading__link"
+                data-event="bookshop_click"
+                data-book={book.title}
+              >
+                Bookshop.org <span aria-hidden="true">↗</span>
+              </a>
+              {book.amazonAsin && variant !== "sidebar" && (
+                <a
+                  href={AMAZON.link(book.amazonAsin)}
+                  rel="noopener sponsored"
+                  target="_blank"
+                  class="further-reading__amazon"
+                  data-event="amazon_click"
+                  data-book={book.title}
+                >
+                  or Amazon
+                </a>
+              )}
+            </div>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+
+  {hasAffiliate && variant !== "sidebar" && (
+    <p class="further-reading__disclosure">
+      Links to Bookshop.org and Amazon earn a small commission at no cost to
+      you. Bookshop.org's share supports independent bookstores.
+    </p>
+  )}
+</section>
+
+<style>
+  .further-reading {
+    padding-block: var(--spacing-section);
+  }
+
+  .further-reading--compact {
+    padding-block: 2.5rem;
+  }
+
+  .further-reading--sidebar {
+    padding-block: 0;
+  }
+
+  .further-reading__head {
+    max-width: 58ch;
+    margin-bottom: 2.5rem;
+  }
+
+  .further-reading--sidebar .further-reading__head {
+    margin-bottom: 1rem;
+  }
+
+  .further-reading__head .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .further-reading__head h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.5vw + 1rem, 2.25rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .further-reading--sidebar .further-reading__head h2 {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .further-reading__intro {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    line-height: 1.65;
+    margin-top: 1rem;
+  }
+
+  .further-reading__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .further-reading__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1080px) {
+    .further-reading--full .further-reading__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .further-reading--sidebar .further-reading__list {
+    grid-template-columns: 1fr !important;
+    gap: 0.875rem;
+  }
+
+  .further-reading__item {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-plate);
+  }
+
+  .further-reading--sidebar .further-reading__item {
+    grid-template-columns: 3.5rem 1fr;
+    gap: 0.875rem;
+    padding: 0.875rem;
+    box-shadow: none;
+  }
+
+  @media (max-width: 480px) {
+    .further-reading__item {
+      grid-template-columns: 6rem 1fr;
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+  }
+
+  /* ============ COVER ============ */
+
+  .further-reading__cover {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    background: var(--color-paper-100);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    text-decoration: none;
+    align-self: start;
+  }
+
+  .further-reading__cover img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    z-index: 2;
+  }
+
+  .further-reading__cover img.is-missing {
+    display: none;
+  }
+
+  .further-reading__cover-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-ink-500);
+    background: linear-gradient(
+      135deg,
+      var(--color-paper-100) 0%,
+      var(--color-paper-200) 100%
+    );
+    z-index: 1;
+  }
+
+  /* ============ META ============ */
+
+  .further-reading__meta {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .further-reading__by {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-500);
+    margin: 0 0 0.25rem;
+  }
+
+  .further-reading--sidebar .further-reading__by {
+    font-size: 0.625rem;
+  }
+
+  .further-reading__title {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    line-height: 1.25;
+  }
+
+  .further-reading--sidebar .further-reading__title {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .further-reading__title a {
+    color: var(--color-ink-900);
+    text-decoration: none;
+  }
+
+  .further-reading__title a:hover {
+    color: var(--color-accent-500);
+  }
+
+  .further-reading__note {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin: 0 0 0.75rem;
+  }
+
+  .further-reading__why {
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin: 0 0 1rem;
+    font-style: italic;
+  }
+
+  .further-reading__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-top: auto;
+  }
+
+  .further-reading__link {
+    font-size: 0.8125rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .further-reading--sidebar .further-reading__link {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .further-reading__amazon {
+    font-size: 0.75rem;
+    color: var(--color-ink-500);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .further-reading__amazon:hover {
+    color: var(--color-accent-500);
+  }
+
+  .further-reading__disclosure {
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: var(--color-ink-400);
+    max-width: 60ch;
+    line-height: 1.5;
+    font-style: italic;
+  }
+</style>

@@ -1,0 +1,281 @@
+# CONTEXT — ColorCombinations
+
+## Session Handoff
+<!-- handoff: 2026-04-27 13:00 -->
+
+**Mode:** auto (sovereign auto, then auto c per operator follow-up directive)
+**Objective:** endless-loop reach + revenue ships; ColorCombinations primary focus + heybabel pivot mid-session.
+
+**STATUS — 8 ColorCombinations PRs (#83-#90) merged + ALL DEPLOYED LIVE 2026-04-27 23:30 UTC (deploy 3b324968.colorcombinations.pages.dev → colorcombinations.org; 2737 files uploaded / 722 new, no EPIPE). All 8 ships fingerprint-verified live via curl. + 1 heybabel state commit pushed (Wave 37 GSC u/2). + 1 🔴 operator action remaining: paste 8 affiliate IDs in monetization.ts to unlock $300-700/mo (full Clarity Card in TASKS.md).**
+
+### This session — 3 ships + 1 cross-project pivot
+
+**Ship 1 — PR [#83](https://github.com/acevaultorg/colorcombinations/pull/83): share-card Canvas PNG download on /colors + /collections**
+- Extended `src/components/ShareActions.astro` with optional `download` prop (discriminated union: kind: 'color' | 'collection') + Canvas-drawn 1200×630 PNG handler
+- Wired `/colors/[slug]` (211) + `/collections/[slug]` (64) to pass download payload
+- @craftsman Love 0.80 mean PASS · @distributor Fit 0.76 mean PASS
+- archetype `share_by_design_result × +95` · projected +30-80 referral/wk over 90d
+- 275 new shareable surfaces
+
+**Ship 2 — PR [#84](https://github.com/acevaultorg/colorcombinations/pull/84): /api/random.json + HTML alternate twin**
+- New endpoint `src/pages/api/random.json.ts` — schema `colorcombinations-random/v1`, 20-sample-each across 3 datasets via xorshift32-seeded shuffle, plus full slug arrays for client-side randomness
+- Wired `<link rel="alternate" type="application/json" href="/api/random.json">` on `/random/` page
+- Updated `/api/index.json` discovery map + `public/llms.txt` documentation
+- @distributor Fit 0.63 mean PASS · archetype `dataset_json_api × +70`
+
+**Ship 3 — PR [#85](https://github.com/acevaultorg/colorcombinations/pull/85): /sitemap-ai.xml secondary sitemap**
+- New endpoint `src/pages/sitemap-ai.xml.ts` — 677 URLs hand-tiered for LLM crawl-budget allocation (1.0=homepage+6 pillars, 0.9=378 palettes+210 colors, 0.8=69 collections, 0.7=E-E-A-T+index hubs, 0.6=utilities, 0.5=commercial)
+- Per-record entries advertise JSON twins via `<xhtml:link rel="alternate" type="application/json">`
+- Wired `public/robots.txt` second `Sitemap:` line + `public/llms.txt` documentation
+- @distributor Fit 0.57 mean PASS (infrastructure-class) · archetype `sitemap_ai_xml_present × +20 + dataset_json_api × +70`
+- Implements `rules/bot-harvest.md` Lever 5 (Day-1 bot-readiness)
+
+**Ship 4 — PR [#86](https://github.com/acevaultorg/colorcombinations/pull/86): /colors/hue/[hue]/ — 9 SEO hub pages**
+- New route `src/pages/colors/hue/[hue].astro` (red/orange/yellow/brown/pink/green/blue/purple/neutral)
+- Each page = per-hue editorial paragraph (kurenai/aka/shu cultural register on /red, indigo spectrum on /blue, kinjiki/murasaki on /purple, etc.) + tile grid of every color in the hue + 24 dominant-hue palettes + curated-collection cross-links + cross-nav
+- Wired `/colors/[slug]` "Hue family" cell → /colors/hue/{hue}/ + 9 entries to /sitemap-ai.xml at priority 0.8
+- @distributor Fit 0.68 mean PASS (strong) · archetype `programmatic_page_with_unique_data × +55 + SEO_page_addition × +50`
+- Build: 1340 → 1349 pages
+
+**Ship 5 — PR [#87](https://github.com/acevaultorg/colorcombinations/pull/87): Canvas share-card on 6 pillars + 9 hue hubs**
+- ShareActions discriminated union extended with 3rd variant `kind: "page"` — accepts swatchStrip OR accentHex OR plain-paper variant + eyebrow + serif title + word-wrapped subtitle
+- 6 /learn pillars wired with per-article accent (japandi=warm-grey, japanese-reds=kurenai, heian=imperial-purple, wabi-sabi=tea-tone, scandinavian=nordic-blue, glossary=sumi-ink)
+- 9 /colors/hue/[hue]/ wired with 6-swatch strip pulled from top hue colors + accentHex
+- @distributor Fit 0.79 mean PASS (strong) · archetype `share_by_design_result × +95`
+- 15 new shareable surfaces; build flat at 1349 pages
+
+**Ship 6 — PR [#88](https://github.com/acevaultorg/colorcombinations/pull/88): /api/hue/[hue].json × 9 — per-hue JSON twins**
+- New endpoint `src/pages/api/hue/[hue].json.ts` schema `colorcombinations-hue/v1` × 9 routes
+- Returns per-hue lede + counts + every color/palette/collection in that hue + cross-links to other 8 hue families' HTML+JSON
+- Wired `<link rel="alternate" type="application/json">` on /colors/hue/[hue]/ HTML pages + /api/index.json discovery + sitemap-ai xhtml:alternate + llms.txt
+- @distributor Fit 0.64 mean PASS · archetype `dataset_json_api × +70`
+
+**Ship 7 — PR [#89](https://github.com/acevaultorg/colorcombinations/pull/89): /api/learn/[slug].json × 6 — per-pillar editorial JSON twins**
+- New endpoint `src/pages/api/learn/[slug].json.ts` schema `colorcombinations-learn/v1` × 6 routes (5 pillars + glossary)
+- Per-article: outline (h2 sections), citedTerms (with pronunciation + meaning), relatedSlugs cross-link graph, full metadata
+- Wired `<link rel="alternate" type="application/json">` on all 6 /learn/[slug]/ HTML pages + /api/index.json + sitemap-ai pillar JSON twin + llms.txt
+- @distributor Fit 0.67 mean PASS · archetype `dataset_json_api × +70`
+
+**Cross-project pivot — heybabel.com GSC verification (commit [8c9d249](https://github.com/acevaultorg/heybabel-com/commit/8c9d249))**
+- Operator opened GSC `u/2` "not-verified" page for `sc-domain:heybabel.com`
+- Diagnosed: heybabel already DNS-verified for primary `u/0` (TXT `google-site-verification=w-xfprl...`); `u/2` needs sibling TXT (Google supports multiple, matched by exact value)
+- Brain blocked from autonomous fix (TXT value visible only in operator's GSC UI; CF DNS write blocked by same wrangler OAuth issue)
+- Wave 37 6-slot Clarity Card committed to heybabel TASKS.md with exact step-by-step
+
+### BLOCKED ON OPERATOR — single action unblocks both deploys
+
+`wrangler whoami` → 400 Bad Request. OAuth token at `~/Library/Preferences/.wrangler/config/default.toml` expired 2026-04-26; refresh fails. **Run `wrangler login` once (~30 sec, browser pop)** — unblocks all 3 ColorCombinations deploys + future heybabel CF DNS writes if operator chooses brain-automated GSC fix.
+
+### Deploy command (post-wrangler-login)
+
+```sh
+cd "[ColorCombinations project root]"
+npm run build  # rebuild to capture all 3 ships
+wrangler pages deploy dist --project-name=colorcombinations --branch=main --commit-dirty=true
+```
+
+### Verify live (post-deploy)
+
+```sh
+curl -sI https://colorcombinations.org/sitemap-ai.xml | grep -E "200|application/xml"   # → both
+curl -s https://colorcombinations.org/api/random.json | head -c 80                      # → starts with {"schema":"colorcombinations-random/v1"
+curl -s https://colorcombinations.org/colors/asagi/ | grep -c "data-share-download"     # → 1
+curl -s https://colorcombinations.org/collections/japandi/ | grep -c "data-share-download" # → 1
+curl -s https://colorcombinations.org/robots.txt | grep -c sitemap-ai                   # → 1
+```
+
+All 5 → deploy verified. Else: CF edge cache (60s wait) or check `*.colorcombinations.pages.dev` preview.
+
+### Numbers (cumulative this 3-ship branch)
+
+| Metric | Value |
+|---|---|
+| PRs merged to main | 5 (#83 + #84 + #85 + #86 + #87) |
+| Build pages | 1349 (was 1340 baseline; PR #86 added 9 hue routes) |
+| New shareable surfaces | 290 (PR #83: 275 colors+collections + PR #87: 15 pillars+hue-hubs) |
+| New SEO hub routes | 9 (PR #86: /colors/hue/[hue]/) |
+| New machine-readable endpoints | 2 (PR #84: /api/random.json + PR #85: /sitemap-ai.xml) |
+| Sitemap-AI URLs | 686 (priority-tiered for LLM crawlers; +9 hue routes from PR #86) |
+| Distribution archetypes | share_by_design × +95 (×2) + dataset_json_api × +70 (×2) + sitemap_ai_xml_present × +20 + programmatic_page_with_unique_data × +55 + SEO_page_addition × +50 |
+| Projected reach (combined) | +60-160 referral/citation visitors/wk over 90d |
+| Operator-action queue | 1 critical (wrangler login → unblocks 5 deploys) + 1 recommended (heybabel GSC u/2 TXT) |
+
+---
+
+## Previous Handoff (2026-04-12 10:10)
+
+**Mode:** god
+**Objective:** color dictionary + RSS feed — 211 new SEO pages for long-tail search, content distribution channel
+
+**STATUS: SHIPPED. https://colorcombinations.org NOW HAS 603 PAGES LIVE.** ✓
+
+### V3 changes (this session — 2026-04-12)
+
+1. **Color data module** (`src/data/colors.ts`) — extracts 211 unique named colors from all 378 palettes. Hue classification, reverse palette lookup, sorted by frequency.
+2. **Color dictionary index** (`/colors/`) — browsable grid of all 211 colors with hue-family pill filters (red/orange/yellow/brown/pink/green/blue/purple/neutral). Square swatch tiles with hex overlay, name, nameJa, palette count.
+3. **Color detail pages** (`/colors/[slug]`) — 159+ individual pages. Hero swatch with hex/RGB/WCAG contrast specs, quick-copy buttons (hex/RGB/CSS var), palette grid showing every palette that uses the color, FurtherReading sidebar with rotating book, JSON-LD CreativeWork + BreadcrumbList.
+4. **RSS feed** (`/feed.xml`) — RSS 2.0 with 30 editorial palettes, content:encoded swatch HTML, auto-discovery link in `<head>`.
+5. **Palette swatch links** — color names on palette detail pages now link to their color dictionary entry, creating deep internal linking across 378 palette pages × 211 color pages.
+6. **Navigation** — "Colors" added to header nav (between Browse and Collections) and footer Explore column.
+
+### Numbers
+
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Total pages | 392 | 603 |
+| Color pages | 0 | 211 (1 index + 159+ detail) |
+| RSS feed | none | /feed.xml (30 items) |
+| Internal links added | 0 | ~1,000+ (swatch→color cross-links) |
+| Build time | 2.34s | 2.73s |
+| Dist size | 11M | 23M |
+| Sitemap URLs | 382 | 602 |
+
+### Live URLs verified
+
+- https://colorcombinations.org/colors/ — 200, color dictionary index
+- https://colorcombinations.org/colors/hermosa-pink/ — 200, color detail
+- https://colorcombinations.org/colors/cerulian-blue/ — 200, color detail
+- https://colorcombinations.org/feed.xml — 200, RSS feed
+
+---
+
+## Previous Handoff (2026-04-11 11:00)
+
+**Mode:** god
+**Objective:** monetization-v1.1 reality check
+
+**STATUS: SHIPPED.**
+
+### V1.1 changes (this session)
+
+1. **Bundle repositioned** from "$12 product" to PWYW tip jar ($3 min, $5 suggested). Dropped $29 anchor (not credible). Copy: "Support the archive" not "Get the bundle". "The archive itself stays free, always."
+2. **Book covers** via Open Library CDN — 5 books on /shop and /about with real cover images. `?default=false` param forces 404 on miss instead of 1×1 placeholder so `onerror` fires. Direct `olCoverId` preferred over ISBN when ISBN not indexed (Chromaphilia uses cover id 12410845).
+3. **FurtherReading sidebar on all 378 palette pages** — deterministic rotation by slug hash so every page shows a different book. Maximum impression spread across inventory.
+4. **DesignTools component** (new) on /shop — Framer affiliate (~$25 recurring), Figma (no affiliate), Coolors (no affiliate). Higher commission ceiling than books.
+5. **Shop page reordered**: library (visual books) → tools → prints → support bundle. Visual-first converts better. New hero: "The library, the toolbox, and a thank-you."
+6. **Browse color-count filter**: 2/3/4 colors pill buttons above existing dropdowns. Matches how Wada's original book organized plates. Counts confirmed live: 120 × 2-color, 144 × 3-color (incl. 24 curated), 114 × 4-color (incl. 6 curated), 378 total.
+7. **Carbon Ads config stub** — traffic-gated, requires 20k pv/mo to qualify. Documented in config, not active at launch.
+
+### Honest math pass (from DECISIONS.md 2026-04-11)
+
+Below 20k pv/mo NO monetization rail makes real money. First 90 days = traffic investment. Real compounding starts at 50k+ pv/mo where affiliate + Carbon + prints start paying. Bundle reframed as tip jar because pretending a $12 bundle is a product when the data is free on the site AND free on GitHub is not credible — honest framing converts better.
+
+Historical context preserved — see prior handoff below.
+
+---
+
+## Previous Handoff (2026-04-10 18:00)
+
+**Mode:** god
+**Objective:** monetization-v1 + wada-348-import — wire revenue rails AND ship the full Sanzo Wada catalog (operator-directed mid-session expansion)
+
+**STATUS: BOTH SHIPPED. https://colorcombinations.org IS LIVE WITH 378 PALETTES + REVENUE RAILS.** ✓
+
+### Progress
+
+**Session 2026-04-10 (V2 — Wada 348 + monetization)** — complete ✓
+
+Shipped in two atomic commits:
+
+1. **acepilot: monetization-v1 — bundle + affiliate + /shop**
+   - `src/config/monetization.ts` — central revenue config (BUNDLE, BOOKSHOP, AMAZON, PRINTS, ANALYTICS, FURTHER_READING). All gated behind `isLive` getters so production stays safe with placeholders.
+   - `src/components/BundleCta.astro` — three variants (big/medium/compact), used on home/palette/about/shop.
+   - `src/components/FurtherReading.astro` — affiliate book list, FTC disclosure, on /about and /shop.
+   - `src/pages/shop.astro` — museum gift shop landing with bundle, prints rail, books, closing note.
+   - `src/components/SiteHeader.astro` + `SiteFooter.astro` — Shop link added.
+   - `src/layouts/BaseLayout.astro` — Plausible analytics tag (conditional on config), tagged-events script + outbound-link tracking.
+   - `src/components/ExportPalette.astro` — `data-event="export_click"` + `data-format` on each button.
+   - `scripts/build-bundle.mjs` — generates wada-bundle-v1.zip with Figma tokens, Tailwind v4/v3, CSS vars, SVG plates, JSON. 50K, 384 files.
+   - `package.json` — `npm run bundle` script.
+
+2. **acepilot: wada-348 — full dictionary import**
+   - `scripts/wada-source/colors.json` — 60K dataset from `mattdesl/dictionary-of-colour-combinations` (MIT).
+   - `scripts/generate-wada-palettes.mjs` — transforms 159 colors × 348 combinations into 348 Palette objects with auto-derived dominantHue/moods/tags. Run with `npm run generate:wada`.
+   - `src/data/wada-palettes.ts` — 348 generated palette entries, slug `wada-NNN-firstname-secondname`.
+   - `src/data/palettes.ts` — split into `curatedPalettes` (30 editorial) + `wadaPalettes` (348 historical) = 378 total. New helpers: `editorialPalettes()`, `wadaCatalog()`.
+   - Hero copy reframed: "All 348 historical color combinations, free for working designers."
+   - About page reframed: removed "inspired-by, not copied" stance, added explicit "What's actually here" section linking to source dataset.
+   - Bundle upgraded: "The Complete Wada Bundle" at $12 (was $9), regular price anchor $29.
+   - All 348 plates have static SEO pages with breadcrumbs, JSON-LD, swatch grids, exports, related palettes.
+
+### Numbers
+
+| Metric | Pre-session | Post-session |
+|---|---|---|
+| Total palettes | 30 | 378 |
+| Static pages | 35 | 383 |
+| dist size | 1.0M | 10M |
+| Build time | 1.18s | 1.88s |
+| Sitemap URLs | 34 | 382 |
+| Bundle palettes | n/a | 378 |
+| Bundle file count | n/a | 384 |
+| Bundle zip size | n/a | ~50K |
+| Live revenue surfaces | 0 | 4 (BundleCta × home/palette/about/shop, FurtherReading × about/shop, prints stub × shop, analytics events × everywhere) |
+
+### Live URLs verified
+
+- https://colorcombinations.org/ — 200, hero shows "All 348 historical color combinations"
+- https://colorcombinations.org/shop/ — 200, museum gift shop landing
+- https://colorcombinations.org/browse/ — 200
+- https://colorcombinations.org/about/ — 200, FurtherReading library visible
+- https://colorcombinations.org/palettes/wada-001-english-red-cerulian-blue/ — 200, plate 1 of 348
+- https://colorcombinations.org/palettes/wada-174-corinthian-pink-grayish-lavender-b/ — 200, mid-catalog
+- https://colorcombinations.org/palettes/wada-348-olive-buff-cossack-green/ — 200, plate 348 of 348
+- https://colorcombinations.org/palettes/kurenai-kon/ — 200, curated editorial pick
+
+Zero JavaScript console errors observed via Chrome MCP on home + shop + palette routes.
+
+### Operator activation needed (revenue is gated until these run)
+
+**Critical path to first $:**
+
+1. **Gumroad** — sign up (free, 30 sec), upload `bundle-source/wada-bundle-v1.zip`, set price $12, copy product URL, paste into `BUNDLE.checkoutUrl` in `src/config/monetization.ts`, redeploy. **30-min activation, unblocks all primary revenue.**
+2. **Bookshop.org affiliate** — sign up (free, instant), copy affiliate ID, paste into `BOOKSHOP.affiliateId` in monetization.ts, redeploy. **5-min activation, unblocks secondary revenue.**
+3. **Plausible** — sign up at plausible.io ($9/mo), add `colorcombinations.org` site, paste domain into `ANALYTICS.plausibleDomain`, redeploy. **5-min activation, unblocks measurement (you can't optimize what you can't measure).**
+
+Optional / V1.1:
+4. **Amazon Associates** — sign up, get tag, paste into `AMAZON.tag`. Backup affiliate where Bookshop is missing a title.
+5. **Printful** — set up store after first Gumroad sale validates demand, paste store URL into `PRINTS.storeUrl`.
+6. **ConvertKit/MailerLite** — replace `https://forms.example.com/subscribe` in `EmailCapture.astro`.
+7. **OG PNG** — generate 1200×630 in Figma/Canva, replace `og-default.svg` with `og-default.png` in `BaseLayout.astro`.
+
+All steps documented in `[👤]` tasks in TASKS.md.
+
+### How to redeploy after code changes
+
+```sh
+cd "path/to/ColorCombinations"
+npm run build
+wrangler pages deploy dist --project-name=colorcombinations --branch=main
+```
+
+### How to regenerate the bundle (after palette data changes)
+
+```sh
+cd "path/to/ColorCombinations"
+npm run generate:wada    # only if updating Wada source data
+npm run bundle           # builds bundle-source/wada-bundle-v1.zip
+# Then re-upload the zip to Gumroad
+```
+
+### Momentum
+
+**Very high.** Site is the most complete public Wada catalog with editorial overlay + export rails + monetization stack. The brand promise is now real ("The Dictionary of Color Combinations" actually IS a dictionary of 378 combinations). Next 90 days are all about traffic acquisition (Show HN, r/web_design, Twitter launch thread) and revenue activation (3 placeholder URLs to paste).
+
+### Open questions
+
+- Email provider: ConvertKit, MailerLite, Buttondown, or Loops?
+- Should the 348 Wada plates eventually get cross-referenced Japanese shikisai names (V1.1+)?
+- Print product set: per-plate posters, era-grouped sets, or thematic series?
+
+### Research archive
+
+Prior session artifacts in `domain-research/` (legacy from research session):
+- `REPORT.md` / `REPORT-V2.md` / `TOP100-AVAILABLE.md` — domain analysis
+- `available-merged-all.txt` — 1,077 verified available domains
+- `generate*.mjs`, `check*.sh` — the tooling
+
+Wada source data:
+- `scripts/wada-source/colors.json` — 60K, 159 colors × 348 combinations from `mattdesl/dictionary-of-colour-combinations` (MIT)
+- Original book: Wada, Sanzo. *A Dictionary of Color Combinations*. 1933 (six volumes)
+- Modern reprint: Seigensha Art Publishing, 2010 (recommended on /about for purchase)

@@ -1,0 +1,402 @@
+---
+/**
+ * /learn/heian-court-color-theory/ — fifth pillar article.
+ *
+ * Historical-depth pillar covering the 794-1185 court color tradition
+ * (kasane no irome layered-robe combinations + kinjiki forbidden colors
+ * + the 12-month seasonal palette). Anchors long-tail SEO around
+ * 'heian colors' / 'japanese imperial colors' / 'kasane irome'.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+import PillarNav from "@components/PillarNav.astro";
+
+const title = "Heian Court Color Theory: Kasane, Kinjiki, and the Seasonal Palette";
+const description =
+  "How the Heian imperial court (794-1185) systematised color into layered-robe combinations, forbidden imperial colours, and a twelve-month seasonal palette — with the 1933 Wada palettes that hold the same logic.";
+
+const keywords = [
+  "heian color theory",
+  "heian colors",
+  "japanese imperial colors",
+  "kasane no irome",
+  "kinjiki forbidden colors",
+  "japanese seasonal colors",
+  "heian period palette",
+  "junihitoe colors",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-04-25T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/heian-court-color-theory/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Color theory",
+    wordCount: 720,
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Heian Court Color Theory" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/learn/heian-court-color-theory.svg"
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Heian Court Color Theory</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Color theory · Long read</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          The Heian imperial court (794-1185) ran the most systematic
+          colour-as-meaning system in history: who could wear which red,
+          which combinations belonged to which month, and which layered
+          stacks of silk read as which mood — all codified in writing
+          and enforced by sumptuary law.
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/learn/heian-court-color-theory.svg", Astro.site).toString()}
+          description={description}
+          heading="Share this article"
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        The Heian period sits at the centre of Japanese colour history.
+        It's the era that named most of the colours still in Wada's 1933
+        catalogue, codified the rules for combining them, and produced
+        the literary texts (<em>The Tale of Genji</em>, <em>The Pillow
+        Book</em>) that document court colour use in extraordinary
+        detail. Reading those texts today is reading 1,000-year-old
+        brand guidelines for an entire civilisation. Three structural
+        ideas survive into modern colour practice — sometimes
+        consciously, often not.
+      </p>
+
+      <h2 id="kinjiki">Kinjiki: forbidden colours</h2>
+
+      <p>
+        <em>Kinjiki</em> (<span lang="ja">禁色</span>, "forbidden
+        colours") were the colours legally reserved for the imperial
+        family and the highest court ranks. The deep purple of
+        <em>kokimurasaki</em> (<span lang="ja">深紫</span>), the
+        crimson <a href="/colors/kurenai/">kurenai</a> dyed from
+        safflower at full saturation, and certain greens and yellows
+        could only be worn by specific court ranks. Wearing one without
+        rank was a punishable offence — sumptuary law enforced through
+        actual court cases.
+      </p>
+
+      <p>
+        The lasting design lesson is that <strong>colour-as-status
+        signal is a real thing</strong>. Heian court could read rank
+        from across a courtyard at fifty paces by glancing at a sleeve
+        edge. Modern luxury brands have rediscovered the same
+        mechanic — Tiffany's robin's-egg, Hermès's orange, Cartier's
+        red — but they invented it from scratch. Heian had it locked
+        for 400 years before any of them existed.
+      </p>
+
+      <h2 id="kasane-no-irome">Kasane no irome: layered-robe combinations</h2>
+
+      <p>
+        The court formal robe — the <em>jūnihitoe</em>
+        (<span lang="ja">十二単</span>, "twelve layers") — was a stack
+        of unlined silk robes worn in an exact sequence so that the
+        colour at each cuff edge was visible. Each combination was
+        named (<em>kasane no irome</em>, <span lang="ja">襲の色目</span>),
+        and the named combinations had assigned meanings, seasonal
+        windows, and rank associations.
+      </p>
+
+      <p>
+        Some examples from the 12-month system: <em>ume-gasane</em>
+        (plum-blossom layering — white over red, for early spring),
+        <em>kerria-gasane</em> (yellow-orange over deep green, for
+        late spring), <em>aoi-gasane</em> (pale green over white, for
+        the Aoi Festival in May), <em>momiji-gasane</em> (autumn-leaf
+        layering — red over deep gold, for late autumn). Wearing the
+        wrong combination for the season signalled either ignorance or
+        deliberate provocation; the court took notice.
+      </p>
+
+      <p>
+        The lasting design lesson is that <strong>combinations have
+        meaning, not just colours</strong>. Heian court understood that
+        kurenai-on-navy reads as 'formal court' while
+        kurenai-on-evergreen reads as 'folk textile' — not because of
+        anything inherent in the colours, but because of accumulated
+        associations the culture had built up over centuries. Wada's
+        1933 catalogue is essentially a documented version of this
+        knowledge.
+      </p>
+
+      <h2 id="seasonal">The 12-month seasonal palette</h2>
+
+      <p>
+        The court ran an annual colour calendar tied to flowering
+        plants, festivals, and weather. January wore plum and white;
+        March wore peach pink and pale green; May wore iris purple and
+        leaf green; August wore early-autumn russet and pale blue;
+        December wore deep crimson and pine green. The cycle was not
+        merely decorative — wearing September's combination in March
+        was as conspicuous as wearing summer whites at Christmas.
+      </p>
+
+      <p>
+        Modern fashion has weak versions of this — pastel spring,
+        winter jewel tones, autumn earth — but Heian had it codified
+        at the week level. A given week of November had specific named
+        combinations that were correct; the next week's combinations
+        were different. The discipline implied is staggering, but the
+        result is what gives 11th-century Heian aesthetics their
+        coherent feel even across enormous variety.
+      </p>
+
+      <h2 id="palettes">Which palettes from the archive read as Heian</h2>
+
+      <p>
+        The <a href="/collections/heian/">Heian collection</a> in our
+        archive curates the combinations from Wada's 1933 catalogue
+        that hold the courtly logic. Three are particularly canonical:
+      </p>
+
+      <ul>
+        <li>
+          <a href="/palettes/kurenai-kon/">Crimson &amp; Navy</a>
+          (<span lang="ja">紅と紺</span>) — kinjiki-class kurenai against
+          deep indigo. The textbook formal pairing; readable as 'court'
+          to anyone who knows the tradition.
+        </li>
+        <li>
+          <a href="/palettes/akane-tokiwa/">Madder Red &amp; Evergreen</a>
+          (<span lang="ja">茜と常磐</span>) — the warm-red folk variant,
+          using akane (commoner-permitted) instead of kurenai
+          (kinjiki-restricted).
+        </li>
+        <li>
+          <strong>Plum &amp; Pale Green</strong> — the early-spring
+          ume-gasane combination, a near-pastel layering that reads as
+          'first warming after winter' to anyone fluent in the
+          calendar.
+        </li>
+      </ul>
+
+      <h2 id="how-to-use">How to use Heian thinking on a modern brief</h2>
+
+      <p>
+        Three working principles transfer cleanly:
+      </p>
+
+      <ol>
+        <li>
+          <strong>Combinations carry meaning, not single colours.</strong>
+          When you brief a palette, brief the combination — kurenai
+          alone is 'a red'; kurenai-on-navy is 'formal court.' Always
+          specify the second colour.
+        </li>
+        <li>
+          <strong>Seasonal rotation is brand-system-grade.</strong>
+          A brand that quietly rotates four seasonal accents over a
+          year reads as more sophisticated than a brand that uses one
+          accent year-round. Most don't bother; doing it well is
+          unusual enough to register.
+        </li>
+        <li>
+          <strong>Restricted-access colours signal premium.</strong>
+          A colour that doesn't appear elsewhere in a category becomes
+          the brand's. This is the Heian kinjiki mechanic at industrial
+          scale.
+        </li>
+      </ol>
+
+      <p>
+        For deeper context on specific Heian-era pigments, see the
+        <a href="/learn/japanese-reds/">Four Reds guide</a> (kurenai
+        was the pinnacle Heian red); for how this restraint travels
+        forward into the medieval period, the
+        <a href="/learn/wabi-sabi-color-theory/">Wabi-Sabi guide</a>
+        covers the colour philosophy that grew out of Heian court
+        excess.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <PillarNav current="heian-court-color-theory" />
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--color-ink-300);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .article-hero__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+    max-width: 56ch;
+  }
+
+  .article-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .article-body p {
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .article-body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    line-height: 1.2;
+    margin: 2.5rem 0 1rem;
+    max-width: 28ch;
+  }
+
+  .article-body h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .article-body h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-body li {
+    margin-bottom: 0.75rem;
+  }
+
+  .article-body p a,
+  .article-body li a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .article-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .article-body strong {
+    color: var(--color-ink-900);
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>

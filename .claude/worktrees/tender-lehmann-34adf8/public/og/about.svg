@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#FAF7EF"/>
+
+  <g transform="translate(80, 64)">
+    <rect x="0" y="-14" width="14" height="14" fill="#9A2A2A"/>
+    <rect x="16" y="-14" width="14" height="14" fill="#1B2A4E"/>
+    <rect x="32" y="-14" width="14" height="14" fill="#F4EEE0" stroke="#d9d6ce" stroke-width="0.5"/>
+    <text x="58" y="0" font-family="EB Garamond, Garamond, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
+  </g>
+
+  <text x="80" y="135" font-family="Inter, sans-serif" font-size="14" fill="#9A2A2A" letter-spacing="0.14em">ABOUT</text>
+  <text x="80" y="220" font-family="EB Garamond, Garamond, serif" font-size="84" font-weight="500" fill="#141414">Sanzo Wada's</text>
+  <text x="80" y="305" font-family="EB Garamond, Garamond, serif" font-size="84" font-weight="500" fill="#141414">1933 archive,</text>
+  <text x="80" y="385" font-family="EB Garamond, Garamond, serif" font-size="60" font-weight="500" font-style="italic" fill="#6b6b6b">digitised in full.</text>
+
+  <line x1="80" y1="445" x2="1120" y2="445" stroke="#d9d6ce" stroke-width="1"/>
+
+  <!-- Wada credit panel -->
+  <g>
+    <rect x="80" y="475" width="510" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
+    <text x="100" y="510" font-family="Inter, sans-serif" font-size="10" fill="#9a9a9a" letter-spacing="0.12em">SOURCE AUTHOR</text>
+    <text x="100" y="538" font-family="EB Garamond, Garamond, serif" font-size="22" fill="#141414">Sanzo Wada</text>
+    <text x="100" y="558" font-family="EB Garamond, Garamond, serif" font-size="14" font-style="italic" fill="#6b6b6b">和田三造 · 1883–1967</text>
+    <text x="100" y="582" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">Painter, costume designer, color theorist.</text>
+  </g>
+
+  <!-- This site panel -->
+  <g>
+    <rect x="610" y="475" width="510" height="120" fill="#fff" stroke="#d9d6ce" stroke-width="1" rx="4"/>
+    <text x="630" y="510" font-family="Inter, sans-serif" font-size="10" fill="#9a9a9a" letter-spacing="0.12em">THIS ARCHIVE</text>
+    <text x="630" y="538" font-family="EB Garamond, Garamond, serif" font-size="22" fill="#141414">378 palettes · 210 colors</text>
+    <text x="630" y="558" font-family="EB Garamond, Garamond, serif" font-size="14" font-style="italic" fill="#6b6b6b">All 348 historical plates + 30 editorial</text>
+    <text x="630" y="582" font-family="EB Garamond, Garamond, serif" font-size="12" fill="#6b6b6b">Free, browseable, exportable. CC-BY-4.0.</text>
+  </g>
+
+  <text x="1120" y="615" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#8a8a8a" letter-spacing="0.08em">colorcombinations.org/about</text>
+</svg>

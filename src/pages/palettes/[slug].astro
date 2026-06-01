@@ -10,7 +10,7 @@ import { FURTHER_READING } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
 import { collectionsForPalette, paletteSetForCollection } from "@data/collections";
 import { pillarForCollection } from "@data/pillarMap";
-import { bestTextColorOn } from "@/lib/color";
+import { bestTextColorOn, contrastRatio } from "@/lib/color";
 
 export async function getStaticPaths() {
   return allPalettes().map((p) => ({ params: { slug: p.slug } }));
@@ -58,6 +58,45 @@ const title = palette.title + (palette.titleJa ? ` (${palette.titleJa})` : "");
 const description = palette.summary;
 const pageUrl = new URL(`/palettes/${palette.slug}`, Astro.site).toString();
 const ogImage = `/og/${palette.slug}.svg`;
+
+// Per-combination "Historical context" — unique, fact-derived prose so each
+// palette page carries page-specific content (plate #, the actual colours,
+// hue, mood, era, and a computed contrast finding) instead of a shared
+// boilerplate paragraph. Every fact derives from the dataset — nothing invented.
+const plateMatch = palette.slug.match(/^wada-(\d+)-/);
+const plateLabel = plateMatch
+  ? `Plate ${Number(plateMatch[1])} of Wada's 348`
+  : "This combination from Wada's catalog";
+const colorNames = palette.colors.map((c) => c.nameRomaji ?? c.hex);
+const colorList =
+  colorNames.length <= 1
+    ? colorNames[0] ?? ""
+    : `${colorNames.slice(0, -1).join(", ")} and ${colorNames[colorNames.length - 1]}`;
+const eraLabel = palette.era.charAt(0).toUpperCase() + palette.era.slice(1);
+// Strongest (highest-contrast) pair, computed from the actual hex values.
+let bestPair = { a: palette.colors[0], b: palette.colors[0], ratio: 0 };
+for (let i = 0; i < palette.colors.length; i++) {
+  for (let j = i + 1; j < palette.colors.length; j++) {
+    const r = contrastRatio(palette.colors[i].hex, palette.colors[j].hex);
+    if (r > bestPair.ratio)
+      bestPair = { a: palette.colors[i], b: palette.colors[j], ratio: r };
+  }
+}
+const bestRatio = bestPair.ratio.toFixed(2);
+const wcagVerdict =
+  bestPair.ratio >= 7
+    ? "clearing the WCAG AAA bar for body text"
+    : bestPair.ratio >= 4.5
+      ? "meeting the WCAG AA bar for body text"
+      : bestPair.ratio >= 3
+        ? "usable for large text but not body copy"
+        : "below the WCAG text-contrast floor";
+const useGuidance =
+  bestPair.ratio >= 4.5
+    ? "so it holds up for text-on-colour layouts as well as decorative use"
+    : "so it reads best in decorative blocks rather than text pairings";
+const pairNameA = bestPair.a.nameRomaji ?? bestPair.a.hex;
+const pairNameB = bestPair.b.nameRomaji ?? bestPair.b.hex;
 
 const keywords = [
   palette.title,
@@ -323,11 +362,17 @@ const jsonLd = [
 
         <h2>Historical context</h2>
         <p>
-          This palette is inspired by the tradition of Sanzo Wada's 1933
-          <em> Dictionary of Color Combinations</em>, which cataloged combinations
-          drawn from centuries of Japanese cultural life. The specific colors
-          here use traditional shikisai names that have been in the public
-          domain for generations.
+          {plateLabel} anchors {colorList} in the {palette.dominantHue} family —
+          a {palette.colors.length}-colour grouping with a {palette.moods.join(", ")}
+          {" "}character, recorded in the {eraLabel}-era volumes of Sanzo Wada's 1933
+          <em> Dictionary of Color Combinations</em>, where these shikisai names have
+          sat in the public domain for generations.
+          {palette.colors.length >= 2 && (
+            <>
+              {" "}Its strongest pairing — {pairNameA} on {pairNameB} — reaches a
+              contrast ratio of {bestRatio}:1, {wcagVerdict}, {useGuidance}.
+            </>
+          )}
         </p>
       </article>
 

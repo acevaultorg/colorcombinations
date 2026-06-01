@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#FAF7EF"/>
+
+  <!-- Site mark -->
+  <g transform="translate(80, 64)">
+    <rect x="0" y="-14" width="14" height="14" fill="#9A2A2A"/>
+    <rect x="16" y="-14" width="14" height="14" fill="#1B2A4E"/>
+    <rect x="32" y="-14" width="14" height="14" fill="#F4EEE0" stroke="#d9d6ce" stroke-width="0.5"/>
+    <text x="58" y="0" font-family="EB Garamond, Garamond, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
+  </g>
+
+  <!-- Title block -->
+  <text x="80" y="135" font-family="Inter, sans-serif" font-size="14" fill="#9A2A2A" letter-spacing="0.14em">COLLECTIONS</text>
+  <text x="80" y="220" font-family="EB Garamond, Garamond, serif" font-size="84" font-weight="500" fill="#141414">64 thematic</text>
+  <text x="80" y="305" font-family="EB Garamond, Garamond, serif" font-size="84" font-weight="500" fill="#141414">collections.</text>
+  <text x="80" y="365" font-family="EB Garamond, Garamond, serif" font-size="26" font-style="italic" fill="#6b6b6b">Curated palette sets for every brief — websites,</text>
+  <text x="80" y="400" font-family="EB Garamond, Garamond, serif" font-size="26" font-style="italic" fill="#6b6b6b">branding, japandi, kitchen, y2k, wabi-sabi…</text>
+
+  <line x1="80" y1="445" x2="1120" y2="445" stroke="#d9d6ce" stroke-width="1"/>
+
+  <!-- Mini-grid: 8 collection accent swatches in a row, each labeled -->
+  <g>
+    <rect x="80" y="475" width="125" height="80" fill="#1B2A4E"/>
+    <text x="142" y="585" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#6b6b6b">Websites</text>
+
+    <rect x="215" y="475" width="125" height="80" fill="#9A2A2A"/>
+    <text x="277" y="585" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#6b6b6b">Branding</text>
+
+    <rect x="350" y="475" width="125" height="80" fill="#A8B2A6"/>
+    <text x="412" y="585" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#6b6b6b">Japandi</text>
+
+    <rect x="485" y="475" width="125" height="80" fill="#7A9473"/>
+    <text x="547" y="585" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#6b6b6b">Kitchen</text>
+
+    <rect x="620" y="475" width="125" height="80" fill="#E27AB4"/>
+    <text x="682" y="585" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#6b6b6b">Y2K</text>
+
+    <rect x="755" y="475" width="125" height="80" fill="#7E6B4E"/>
+    <text x="817" y="585" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#6b6b6b">Wabi-Sabi</text>
+
+    <rect x="890" y="475" width="125" height="80" fill="#5A8B5A"/>
+    <text x="952" y="585" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#6b6b6b">Biophilic</text>
+
+    <rect x="1025" y="475" width="95" height="80" fill="#C4982A"/>
+    <text x="1072" y="585" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#6b6b6b">Mid-century</text>
+  </g>
+
+  <text x="1120" y="615" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#8a8a8a" letter-spacing="0.08em">colorcombinations.org</text>
+</svg>

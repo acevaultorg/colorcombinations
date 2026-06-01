@@ -1,0 +1,154 @@
+---
+// Cookie consent banner — shown on first visit for EU/UK/CA users.
+// Minimal, non-blocking, clearly labelled. No accept-only pattern.
+// Preference stored in localStorage: "cc_status" = "accepted" | "rejected"
+---
+
+<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie preferences" aria-live="polite" hidden>
+  <div class="cookie-banner__inner">
+    <p class="cookie-banner__text">
+      We use <strong>Google AdSense</strong> to serve ads, which may set cookies
+      on your device. Our own analytics (Plausible) are cookieless and need no
+      consent. <a href="/privacy" class="cookie-banner__link">Privacy policy</a>
+    </p>
+    <div class="cookie-banner__actions">
+      <button id="cc-reject" class="cookie-banner__btn cookie-banner__btn--secondary">
+        Reject ads
+      </button>
+      <button id="cc-accept" class="cookie-banner__btn cookie-banner__btn--primary">
+        Accept ads
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function () {
+  var STORAGE_KEY = 'cc_status';
+  var status = localStorage.getItem(STORAGE_KEY);
+
+  if (!status) {
+    // Show after a brief delay so it doesn't flash during page load
+    setTimeout(function () {
+      var banner = document.getElementById('cookie-banner');
+      if (banner) banner.hidden = false;
+    }, 800);
+  }
+
+  function dismiss(accepted) {
+    localStorage.setItem(STORAGE_KEY, accepted ? 'accepted' : 'rejected');
+    var banner = document.getElementById('cookie-banner');
+    if (banner) banner.hidden = true;
+    if (accepted && window.plausible) {
+      window.plausible('cookie_consent', { props: { choice: 'accept' } });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var acceptBtn = document.getElementById('cc-accept');
+    var rejectBtn = document.getElementById('cc-reject');
+    if (acceptBtn) acceptBtn.addEventListener('click', function () { dismiss(true); });
+    if (rejectBtn) rejectBtn.addEventListener('click', function () { dismiss(false); });
+  });
+})();
+</script>
+
+<style>
+  .cookie-banner {
+    position: fixed;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: calc(100% - 2rem);
+    max-width: 680px;
+    background: var(--color-bg-elevated, #fff);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 24px rgba(20, 20, 20, 0.12);
+    padding: 1rem 1.25rem;
+  }
+
+  .cookie-banner[hidden] {
+    display: none;
+  }
+
+  .cookie-banner__inner {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .cookie-banner__text {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--color-ink-700);
+    line-height: 1.55;
+    margin: 0;
+    min-width: 200px;
+  }
+
+  .cookie-banner__link {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .cookie-banner__actions {
+    display: flex;
+    gap: 0.625rem;
+    flex-shrink: 0;
+  }
+
+  .cookie-banner__btn {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.4375rem 0.875rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+
+  .cookie-banner__btn--secondary {
+    background: transparent;
+    border-color: var(--color-border);
+    color: var(--color-ink-700);
+  }
+
+  .cookie-banner__btn--secondary:hover {
+    background: var(--color-paper-100);
+    border-color: var(--color-ink-400);
+  }
+
+  .cookie-banner__btn--primary {
+    background: var(--color-ink-900);
+    border-color: var(--color-ink-900);
+    color: var(--color-paper-50);
+  }
+
+  .cookie-banner__btn--primary:hover {
+    background: var(--color-ink-700);
+    border-color: var(--color-ink-700);
+  }
+
+  @media (max-width: 480px) {
+    .cookie-banner__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.875rem;
+    }
+
+    .cookie-banner__actions {
+      width: 100%;
+    }
+
+    .cookie-banner__btn {
+      flex: 1;
+      text-align: center;
+    }
+  }
+</style>

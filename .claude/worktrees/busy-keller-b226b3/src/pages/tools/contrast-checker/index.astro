@@ -1,0 +1,665 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "WCAG Contrast Checker";
+const description =
+  "Check the WCAG 2.1 contrast ratio between any two colors. Get instant AA and AAA pass/fail grades for normal text, large text, and UI components. Free, no login, no ads.";
+
+const keywords = [
+  "wcag contrast checker",
+  "color contrast ratio",
+  "accessibility contrast",
+  "wcag aa aaa",
+  "contrast ratio calculator",
+  "color accessibility tool",
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "WCAG Contrast Checker",
+    description,
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    url: new URL("/tools/contrast-checker/", Astro.site).toString(),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: "Contrast Checker" },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd}>
+  <section class="tool-hero">
+    <div class="container-wide tool-hero__inner">
+      <p class="eyebrow">
+        <a href="/tools">Tools</a> / Contrast Checker
+      </p>
+      <h1>WCAG Contrast Checker.</h1>
+      <p class="tool-hero__lede">
+        Pick two colors, get the contrast ratio and WCAG AA/AAA grades instantly.
+        Grounded in the same color library that powers the 378 Wada combinations.
+      </p>
+    </div>
+  </section>
+
+  <section class="tool-body section">
+    <div class="container-wide">
+      <div class="checker-layout">
+
+        <!-- Inputs -->
+        <div class="inputs-row">
+          <div class="color-input-group">
+            <label class="color-input-label" for="color-fg">Foreground (text)</label>
+            <div class="color-input-row">
+              <input type="color" id="color-fg-picker" value="#1B2A4E" class="color-swatch-input" aria-label="Foreground color picker" />
+              <input type="text" id="color-fg" value="#1B2A4E" class="hex-input" maxlength="7" placeholder="#000000" aria-label="Foreground color hex" spellcheck="false" />
+            </div>
+          </div>
+
+          <button id="swap-btn" class="swap-btn" aria-label="Swap foreground and background colors" title="Swap colors">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 8l-3 3 3 3M15 12l3-3-3-3M2 11h16M2 9h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div class="color-input-group">
+            <label class="color-input-label" for="color-bg">Background</label>
+            <div class="color-input-row">
+              <input type="color" id="color-bg-picker" value="#F4EEE0" class="color-swatch-input" aria-label="Background color picker" />
+              <input type="text" id="color-bg" value="#F4EEE0" class="hex-input" maxlength="7" placeholder="#ffffff" aria-label="Background color hex" spellcheck="false" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview-block" id="preview-block" style="background-color:#F4EEE0; color:#1B2A4E">
+          <div class="preview-inner">
+            <p class="preview-label">Normal text (16px)</p>
+            <p class="preview-normal">The quick brown fox jumps over the lazy dog.</p>
+            <p class="preview-label" style="margin-top:1rem">Large text (24px bold) — threshold ÷ by 1.5</p>
+            <p class="preview-large">Wada, 1933 — shikisai no jiten.</p>
+            <p class="preview-label" style="margin-top:1rem">UI component (button)</p>
+            <button class="preview-btn" id="preview-btn" type="button">Sample button</button>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="results-grid" id="results-grid" aria-live="polite">
+          <div class="ratio-display">
+            <span class="ratio-number" id="ratio-number">—</span>
+            <span class="ratio-label">contrast ratio</span>
+          </div>
+          <div class="grades-grid">
+            <div class="grade-cell" id="grade-aa-normal">
+              <span class="grade-badge" id="badge-aa-normal">—</span>
+              <span class="grade-name">AA — Normal text</span>
+              <span class="grade-req">≥ 4.5 : 1</span>
+            </div>
+            <div class="grade-cell" id="grade-aa-large">
+              <span class="grade-badge" id="badge-aa-large">—</span>
+              <span class="grade-name">AA — Large text</span>
+              <span class="grade-req">≥ 3 : 1</span>
+            </div>
+            <div class="grade-cell" id="grade-aaa-normal">
+              <span class="grade-badge" id="badge-aaa-normal">—</span>
+              <span class="grade-name">AAA — Normal text</span>
+              <span class="grade-req">≥ 7 : 1</span>
+            </div>
+            <div class="grade-cell" id="grade-aaa-large">
+              <span class="grade-badge" id="badge-aaa-large">—</span>
+              <span class="grade-name">AAA — Large text</span>
+              <span class="grade-req">≥ 4.5 : 1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wada suggestions -->
+        <div class="suggestions-block">
+          <p class="eyebrow">Try a Wada classic</p>
+          <div class="suggestions-row" role="list">
+            <button class="suggestion-pill" data-fg="#9A2A2A" data-bg="#F4EEE0" type="button" role="listitem">
+              <span style="background:#9A2A2A" class="pill-swatch"></span>
+              <span style="background:#F4EEE0" class="pill-swatch"></span>
+              Crimson on Gofun
+            </button>
+            <button class="suggestion-pill" data-fg="#F4EEE0" data-bg="#1B2A4E" type="button" role="listitem">
+              <span style="background:#F4EEE0" class="pill-swatch"></span>
+              <span style="background:#1B2A4E" class="pill-swatch"></span>
+              Gofun on Navy
+            </button>
+            <button class="suggestion-pill" data-fg="#141414" data-bg="#faf7ef" type="button" role="listitem">
+              <span style="background:#141414" class="pill-swatch"></span>
+              <span style="background:#faf7ef" class="pill-swatch"></span>
+              Sumi on Kinari
+            </button>
+            <button class="suggestion-pill" data-fg="#1B2A4E" data-bg="#D4A76A" type="button" role="listitem">
+              <span style="background:#1B2A4E" class="pill-swatch"></span>
+              <span style="background:#D4A76A" class="pill-swatch"></span>
+              Navy on Kogane
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="explainer section">
+    <div class="container-wide explainer-inner">
+      <h2 class="explainer-title">How WCAG contrast works</h2>
+      <div class="explainer-body">
+        <div class="explainer-col">
+          <h3>The formula</h3>
+          <p>
+            WCAG 2.1 defines contrast as the ratio of the relative luminances of
+            two colors, where luminance accounts for how the human eye perceives
+            brightness differently in red, green, and blue channels
+            (0.2126R + 0.7152G + 0.0722B, after gamma correction).
+            The result ranges from 1:1 (identical) to 21:1 (black on white).
+          </p>
+        </div>
+        <div class="explainer-col">
+          <h3>The grades</h3>
+          <p>
+            <strong>AA</strong> is the minimum required by most legal accessibility
+            standards (WCAG 2.1 level AA). Normal text needs 4.5:1; large text
+            (18px+ or 14px+ bold) and UI components need 3:1.
+          </p>
+          <p>
+            <strong>AAA</strong> is enhanced — 7:1 for normal text, 4.5:1 for
+            large text. It is not required by law in most jurisdictions but
+            significantly improves readability for users with low vision.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // ── Utilities ────────────────────────────────────────────────────────────
+  function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+    const clean = hex.replace(/^#/, "").trim();
+    if (clean.length === 3) {
+      return {
+        r: parseInt(clean[0] + clean[0], 16),
+        g: parseInt(clean[1] + clean[1], 16),
+        b: parseInt(clean[2] + clean[2], 16),
+      };
+    }
+    if (clean.length !== 6) return null;
+    return {
+      r: parseInt(clean.slice(0, 2), 16),
+      g: parseInt(clean.slice(2, 4), 16),
+      b: parseInt(clean.slice(4, 6), 16),
+    };
+  }
+
+  function linearize(c: number): number {
+    const s = c / 255;
+    return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  }
+
+  function luminance(hex: string): number | null {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return null;
+    return (
+      0.2126 * linearize(rgb.r) +
+      0.7152 * linearize(rgb.g) +
+      0.0722 * linearize(rgb.b)
+    );
+  }
+
+  function contrastRatio(hex1: string, hex2: string): number | null {
+    const l1 = luminance(hex1);
+    const l2 = luminance(hex2);
+    if (l1 === null || l2 === null) return null;
+    const lighter = Math.max(l1, l2);
+    const darker = Math.min(l1, l2);
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+
+  function toDisplayHex(hex: string): string {
+    const clean = hex.replace(/^#/, "");
+    if (clean.length === 3) {
+      return (
+        "#" +
+        clean[0] + clean[0] +
+        clean[1] + clean[1] +
+        clean[2] + clean[2]
+      ).toUpperCase();
+    }
+    return ("#" + clean).toUpperCase();
+  }
+
+  // ── DOM refs ────────────────────────────────────────────────────────────
+  const fgPicker = document.getElementById("color-fg-picker") as HTMLInputElement;
+  const bgPicker = document.getElementById("color-bg-picker") as HTMLInputElement;
+  const fgHex = document.getElementById("color-fg") as HTMLInputElement;
+  const bgHex = document.getElementById("color-bg") as HTMLInputElement;
+  const preview = document.getElementById("preview-block") as HTMLElement;
+  const previewBtn = document.getElementById("preview-btn") as HTMLButtonElement;
+  const ratioNum = document.getElementById("ratio-number") as HTMLElement;
+  const badgeAaN = document.getElementById("badge-aa-normal") as HTMLElement;
+  const badgeAaL = document.getElementById("badge-aa-large") as HTMLElement;
+  const badgeAaaN = document.getElementById("badge-aaa-normal") as HTMLElement;
+  const badgeAaaL = document.getElementById("badge-aaa-large") as HTMLElement;
+  const swapBtn = document.getElementById("swap-btn") as HTMLButtonElement;
+
+  // ── Update logic ─────────────────────────────────────────────────────────
+  function setBadge(el: HTMLElement, passes: boolean) {
+    el.textContent = passes ? "Pass" : "Fail";
+    el.setAttribute("data-pass", passes ? "true" : "false");
+  }
+
+  function update() {
+    const fg = fgHex.value;
+    const bg = bgHex.value;
+    const ratio = contrastRatio(fg, bg);
+
+    preview.style.backgroundColor = bg;
+    preview.style.color = fg;
+    previewBtn.style.backgroundColor = fg;
+    previewBtn.style.color = bg;
+    previewBtn.style.borderColor = fg;
+
+    if (ratio === null) {
+      ratioNum.textContent = "—";
+      [badgeAaN, badgeAaL, badgeAaaN, badgeAaaL].forEach((b) => {
+        b.textContent = "—";
+        b.removeAttribute("data-pass");
+      });
+      return;
+    }
+
+    ratioNum.textContent = ratio.toFixed(2) + " : 1";
+    setBadge(badgeAaN, ratio >= 4.5);
+    setBadge(badgeAaL, ratio >= 3);
+    setBadge(badgeAaaN, ratio >= 7);
+    setBadge(badgeAaaL, ratio >= 4.5);
+  }
+
+  // ── Sync picker ↔ hex field ──────────────────────────────────────────────
+  fgPicker.addEventListener("input", () => {
+    fgHex.value = fgPicker.value.toUpperCase();
+    update();
+  });
+  bgPicker.addEventListener("input", () => {
+    bgHex.value = bgPicker.value.toUpperCase();
+    update();
+  });
+
+  function onHexInput(hexEl: HTMLInputElement, pickerEl: HTMLInputElement) {
+    const val = hexEl.value.trim();
+    const display = toDisplayHex(val);
+    const rgb = hexToRgb(val);
+    if (rgb) {
+      pickerEl.value =
+        "#" +
+        rgb.r.toString(16).padStart(2, "0") +
+        rgb.g.toString(16).padStart(2, "0") +
+        rgb.b.toString(16).padStart(2, "0");
+    }
+    update();
+  }
+
+  fgHex.addEventListener("input", () => onHexInput(fgHex, fgPicker));
+  bgHex.addEventListener("input", () => onHexInput(bgHex, bgPicker));
+
+  // Auto-prefix '#' if user types without it
+  [fgHex, bgHex].forEach((el) => {
+    el.addEventListener("blur", () => {
+      if (el.value && !el.value.startsWith("#")) {
+        el.value = "#" + el.value;
+      }
+      el.value = el.value.toUpperCase();
+    });
+  });
+
+  // ── Swap button ───────────────────────────────────────────────────────────
+  swapBtn.addEventListener("click", () => {
+    const tmpHex = fgHex.value;
+    const tmpPicker = fgPicker.value;
+    fgHex.value = bgHex.value;
+    fgPicker.value = bgPicker.value;
+    bgHex.value = tmpHex;
+    bgPicker.value = tmpPicker;
+    update();
+  });
+
+  // ── Suggestion pills ──────────────────────────────────────────────────────
+  document.querySelectorAll<HTMLButtonElement>(".suggestion-pill").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const fg = btn.dataset.fg!;
+      const bg = btn.dataset.bg!;
+      fgHex.value = fg.toUpperCase();
+      bgHex.value = bg.toUpperCase();
+      fgPicker.value = fg;
+      bgPicker.value = bg;
+      update();
+    });
+  });
+
+  // Initial render
+  update();
+</script>
+
+<style>
+  /* ── Hero ────────────────────────────────────────────────────────────── */
+  .tool-hero {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+  }
+  .tool-hero__inner {
+    max-width: 62rem;
+  }
+  .tool-hero__inner .eyebrow a {
+    color: var(--color-accent-500);
+    text-decoration: none;
+  }
+  .tool-hero__inner .eyebrow a:hover {
+    text-decoration: underline;
+  }
+  .tool-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.2vw + 0.75rem, 1.3125rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin-top: 1.25rem;
+    max-width: 56ch;
+  }
+
+  /* ── Layout ──────────────────────────────────────────────────────────── */
+  .checker-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 52rem;
+  }
+
+  /* ── Inputs row ──────────────────────────────────────────────────────── */
+  .inputs-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .color-input-group {
+    flex: 1;
+    min-width: 10rem;
+  }
+  .color-input-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    margin-bottom: 0.5rem;
+  }
+  .color-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-elevated);
+    padding: 0.375rem 0.625rem;
+  }
+  .color-swatch-input {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0;
+    cursor: pointer;
+    background: none;
+    flex-shrink: 0;
+  }
+  .color-swatch-input::-webkit-color-swatch-wrapper { padding: 0; }
+  .color-swatch-input::-webkit-color-swatch { border: none; border-radius: 2px; }
+  .hex-input {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    border: none;
+    background: none;
+    outline: none;
+    width: 100%;
+  }
+
+  .swap-btn {
+    align-self: flex-end;
+    padding: 0.625rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-500);
+    cursor: pointer;
+    transition: color 150ms, border-color 150ms;
+    flex-shrink: 0;
+    margin-bottom: 0;
+    height: 2.875rem;
+    display: flex;
+    align-items: center;
+  }
+  .swap-btn:hover {
+    color: var(--color-ink-900);
+    border-color: var(--color-ink-900);
+  }
+
+  /* ── Preview ─────────────────────────────────────────────────────────── */
+  .preview-block {
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .preview-inner {
+    padding: 1.75rem 2rem;
+  }
+  .preview-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    opacity: 0.55;
+    margin: 0 0 0.375rem;
+    font-family: var(--font-sans);
+  }
+  .preview-normal {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .preview-large {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 0;
+  }
+  .preview-btn {
+    margin-top: 0.25rem;
+    padding: 0.5rem 1.25rem;
+    border: 2px solid currentColor;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: default;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  }
+
+  /* ── Results ─────────────────────────────────────────────────────────── */
+  .results-grid {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .ratio-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 9rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+  .ratio-number {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    line-height: 1;
+  }
+  .ratio-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-400);
+    margin-top: 0.375rem;
+  }
+
+  .grades-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    min-width: 18rem;
+  }
+  .grade-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.875rem 1rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+  .grade-badge {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    padding: 0.1875rem 0.5rem;
+    border-radius: 3px;
+    align-self: flex-start;
+    background: var(--color-paper-200);
+    color: var(--color-ink-500);
+  }
+  .grade-badge[data-pass="true"] {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .grade-badge[data-pass="false"] {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  .grade-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-900);
+    margin-top: 0.25rem;
+  }
+  .grade-req {
+    font-size: 0.75rem;
+    color: var(--color-ink-400);
+    font-family: var(--font-mono);
+  }
+
+  /* ── Suggestion pills ────────────────────────────────────────────────── */
+  .suggestions-block {
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .suggestions-row {
+    display: flex;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+  }
+  .suggestion-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 100px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink-700);
+    cursor: pointer;
+    transition: border-color 150ms, color 150ms;
+  }
+  .suggestion-pill:hover {
+    border-color: var(--color-ink-900);
+    color: var(--color-ink-900);
+  }
+  .pill-swatch {
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* ── Explainer ───────────────────────────────────────────────────────── */
+  .explainer {
+    border-top: 1px solid var(--color-border);
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+  }
+  .explainer-inner {
+    max-width: 52rem;
+  }
+  .explainer-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2vw + 0.75rem, 2rem);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+  .explainer-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+  @media (max-width: 640px) {
+    .explainer-body { grid-template-columns: 1fr; }
+  }
+  .explainer-col h3 {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    margin-bottom: 0.75rem;
+  }
+  .explainer-col p {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    margin-bottom: 0.75rem;
+  }
+  .explainer-col p strong {
+    font-weight: 600;
+    color: var(--color-ink-900);
+  }
+</style>

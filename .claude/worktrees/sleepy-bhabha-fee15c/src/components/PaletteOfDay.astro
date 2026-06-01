@@ -1,0 +1,227 @@
+---
+import { getPaletteOfTheDay, formatLongDate } from "@data/palette-of-the-day";
+
+const palette = getPaletteOfTheDay();
+const today = formatLongDate(new Date());
+const paletteHref = `/palettes/${palette.slug}/`;
+const archiveHref = "/palette-of-the-day/";
+---
+
+<section class="potd section" aria-labelledby="potd-heading">
+  <div class="container-wide potd__inner">
+    <header class="potd__head">
+      <p class="eyebrow">Palette of the day — {today}</p>
+      <h2 id="potd-heading" class="text-balance">
+        Today: <em>{palette.title}</em>
+        {palette.titleJa && <span class="potd__title-ja">— {palette.titleJa}</span>}
+      </h2>
+      <p class="potd__lede">{palette.summary}</p>
+    </header>
+
+    <a href={paletteHref} class="potd__card" aria-label={`Open the ${palette.title} palette detail page`}>
+      <div class="potd__swatches" role="img" aria-label={`${palette.colors.length} color palette`}>
+        {palette.colors.map((color) => (
+          <span class="potd__swatch" style={`background-color: ${color.hex}`}>
+            <span class="potd__swatch-label">
+              {color.nameRomaji && <span class="potd__swatch-name">{color.nameRomaji}</span>}
+              <span class="potd__swatch-hex">{color.hex.toUpperCase()}</span>
+            </span>
+          </span>
+        ))}
+      </div>
+
+      <div class="potd__meta">
+        <div class="potd__meta-row">
+          <span class="potd__meta-label">Era</span>
+          <span class="potd__meta-value">{palette.era.charAt(0).toUpperCase() + palette.era.slice(1)}</span>
+        </div>
+        <div class="potd__meta-row">
+          <span class="potd__meta-label">Mood</span>
+          <span class="potd__meta-value">{palette.moods.slice(0, 2).join(" · ")}</span>
+        </div>
+        <div class="potd__meta-row">
+          <span class="potd__meta-label">Colors</span>
+          <span class="potd__meta-value">{palette.colors.length}</span>
+        </div>
+        <span class="potd__open">Open palette →</span>
+      </div>
+    </a>
+
+    <p class="potd__footer">
+      Every day a different historical combination. <a href={archiveHref}>See the archive →</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .potd {
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .potd__head {
+    max-width: 62ch;
+    margin-bottom: 2rem;
+  }
+
+  .potd__head h2 {
+    margin-bottom: 0.75rem;
+  }
+
+  .potd__head h2 em {
+    font-style: italic;
+    color: var(--color-accent-500);
+  }
+
+  .potd__title-ja {
+    font-size: 0.7em;
+    font-weight: 400;
+    color: var(--color-ink-500);
+    font-style: normal;
+  }
+
+  .potd__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.0625rem, 1vw + 0.875rem, 1.25rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    max-width: 58ch;
+  }
+
+  .potd__card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    background-color: var(--color-paper-50, #fff);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .potd__card:hover,
+  .potd__card:focus-visible {
+    border-color: var(--color-ink-900);
+    box-shadow: 0 6px 24px -14px rgba(0, 0, 0, 0.22);
+  }
+
+  .potd__card:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 3px;
+  }
+
+  .potd__swatches {
+    display: grid;
+    grid-auto-flow: row;
+    grid-auto-rows: 1fr;
+    min-height: 16rem;
+  }
+
+  @media (min-width: 720px) {
+    .potd__swatches {
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      min-height: 22rem;
+    }
+  }
+
+  .potd__swatch {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 1rem;
+    min-height: 5rem;
+  }
+
+  .potd__swatch-label {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(255, 255, 255, 0.92);
+    color: var(--color-ink-900);
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+
+  .potd__swatch-name {
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+
+  .potd__swatch-hex {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    color: var(--color-ink-500);
+  }
+
+  .potd__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2.25rem;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-paper-100);
+  }
+
+  .potd__meta-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .potd__meta-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-500);
+  }
+
+  .potd__meta-value {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--color-ink-900);
+  }
+
+  .potd__open {
+    margin-left: auto;
+    font-size: 0.9375rem;
+    color: var(--color-accent-500);
+    font-weight: 500;
+  }
+
+  @media (max-width: 520px) {
+    .potd__open {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+  .potd__card:hover .potd__open {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .potd__footer {
+    margin-top: 1.25rem;
+    font-size: 0.9375rem;
+    color: var(--color-ink-500);
+  }
+
+  .potd__footer a {
+    color: var(--color-ink-900);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .potd__footer a:hover {
+    color: var(--color-accent-500);
+    border-bottom-color: var(--color-accent-500);
+  }
+</style>

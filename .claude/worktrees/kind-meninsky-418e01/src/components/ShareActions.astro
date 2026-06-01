@@ -1,0 +1,457 @@
+---
+/**
+ * ShareActions — generic share row for non-palette detail pages.
+ *
+ * Mirrors ShareBar (palette-specific) but takes generic title/url/image so
+ * collection + color pages get the same Copy / Pinterest / Twitter actions
+ * without dragging in palette-typed props. Pinterest pin uses the explicit
+ * og:image (the per-page custom OG SVG). All events tracked via Plausible
+ * if live; no external JS libraries.
+ */
+
+/**
+ * Optional 1200×630 PNG share-card payload. When provided, ShareActions
+ * renders an extra "Save image" button. Canvas is drawn client-side at
+ * click time so build size stays flat regardless of how many pages opt
+ * in. Two kinds today; new kinds add a switch case in the script below.
+ */
+export type DownloadColor = {
+  kind: "color";
+  slug: string;
+  name: string;
+  nameJa?: string;
+  hex: string;
+  hue?: string;
+};
+export type DownloadCollection = {
+  kind: "collection";
+  slug: string;
+  title: string;
+  tagline?: string;
+  count: number;
+  swatches: { hex: string; name?: string }[];
+};
+/**
+ * Generic "page" share card — used by /learn pillars, /colors/hue/[hue]/
+ * hubs, and any future content page that wants a 1200×630 PNG without
+ * justifying its own discriminated-union variant. Rendering rule:
+ *   - swatchStrip non-empty → render strip top 60% (like collection)
+ *   - accentHex only        → render solid accent block top 60% (like color)
+ *   - neither               → render plain paper background (no top region)
+ */
+export type DownloadPage = {
+  kind: "page";
+  slug: string;
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  accentHex?: string;
+  swatchStrip?: { hex: string; name?: string }[];
+};
+export type Download = DownloadColor | DownloadCollection | DownloadPage;
+
+export interface Props {
+  /** Page title used in tweet text + Pinterest description */
+  title: string;
+  /** Absolute URL of the current page */
+  url: string;
+  /** Absolute URL of the OG image used as Pinterest media */
+  image: string;
+  /** One-line description for the Pinterest pin (defaults to title) */
+  description?: string;
+  /** Optional eyebrow heading on the bar (defaults to "Share") */
+  heading?: string;
+  /** Optional Canvas-drawn 1200×630 PNG payload — adds a "Save image" button */
+  download?: Download;
+}
+
+const { title, url, image, description, heading = "Share", download } = Astro.props;
+
+const tweetText = `${title} — colorcombinations.org`;
+const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(url)}`;
+const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(image)}&description=${encodeURIComponent(description ?? title)}`;
+---
+
+<div class="share-actions" data-share-actions data-url={url}>
+  <h3 class="share-actions__heading">{heading}</h3>
+  <div class="share-actions__row" role="group" aria-label="Share options">
+    <button
+      type="button"
+      class="share-actions__btn"
+      data-share-copy
+      data-event="share_copy"
+      aria-label="Copy link to this page"
+    >
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          d="M10 2H4v10h8V4l-2-2z M7 2v3h3"
+          stroke="currentColor"
+          stroke-width="1.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"
+        />
+      </svg>
+      <span>Copy link</span>
+    </button>
+
+    <a
+      href={pinterestUrl}
+      class="share-actions__btn"
+      target="_blank"
+      rel="noopener"
+      data-event="share_pinterest"
+      aria-label="Save to Pinterest"
+    >
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0a8 8 0 0 0-2.9 15.4c-.1-.6-.1-1.6 0-2.3l1-4.2s-.3-.5-.3-1.3c0-1.2.7-2.1 1.6-2.1.8 0 1.1.6 1.1 1.3 0 .8-.5 2-.8 3.1-.2.9.5 1.7 1.4 1.7 1.7 0 2.9-2.1 2.9-4.6 0-1.9-1.3-3.3-3.6-3.3-2.6 0-4.3 2-4.3 4.1 0 .7.2 1.3.6 1.8.1.1.1.2 0 .3 0 .1-.1.5-.2.6 0 .2-.1.3-.3.2-1-.5-1.6-1.9-1.6-3.1 0-2.5 1.8-4.8 5.3-4.8 2.8 0 4.9 2 4.9 4.6 0 2.7-1.8 5-4.2 5-.8 0-1.6-.4-1.9-.9l-.5 2c-.2.7-.7 1.5-1 2A8 8 0 1 0 8 0z" />
+      </svg>
+      <span>Pinterest</span>
+    </a>
+
+    <a
+      href={twitterUrl}
+      class="share-actions__btn"
+      target="_blank"
+      rel="noopener"
+      data-event="share_twitter"
+      aria-label="Share on Twitter/X"
+    >
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M12.3 2h2.1l-4.6 5.3L15 14h-4.2L7.5 9.7 3.7 14H1.6l4.9-5.6L1.3 2h4.3l3 4 3.7-4zm-.7 10.7h1.2L4.6 3.2H3.3l8.3 9.5z" />
+      </svg>
+      <span>X / Twitter</span>
+    </a>
+
+    {download && (
+      <button
+        type="button"
+        class="share-actions__btn share-actions__btn--download"
+        data-share-download
+        data-payload={JSON.stringify(download)}
+        data-event="share_download"
+        aria-label="Download 1200×630 share card image"
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Save image</span>
+      </button>
+    )}
+  </div>
+
+  <p class="share-actions__status" aria-live="polite" role="status"></p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-share-actions]").forEach((bar) => {
+    const url = bar.dataset.url ?? window.location.href;
+    const copyBtn = bar.querySelector<HTMLButtonElement>("[data-share-copy]");
+    const status = bar.querySelector<HTMLParagraphElement>(".share-actions__status");
+
+    const setStatus = (msg: string): void => {
+      if (!status) return;
+      status.textContent = msg;
+      window.setTimeout(() => {
+        if (status.textContent === msg) status.textContent = "";
+      }, 2000);
+    };
+
+    copyBtn?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+        setStatus("✓ Link copied");
+      } catch {
+        setStatus("Copy blocked — use Cmd/Ctrl+C");
+      }
+    });
+
+    // Save image — Canvas-drawn 1200×630 PNG. Discriminated by `kind` so
+    // the same component composes color + collection share cards (and is
+    // straightforward to extend with new kinds later).
+    const downloadBtn = bar.querySelector<HTMLButtonElement>("[data-share-download]");
+    downloadBtn?.addEventListener("click", () => {
+      type ColorPayload = { kind: "color"; slug: string; name: string; nameJa?: string; hex: string; hue?: string };
+      type CollectionPayload = { kind: "collection"; slug: string; title: string; tagline?: string; count: number; swatches: { hex: string; name?: string }[] };
+      type PagePayload = { kind: "page"; slug: string; title: string; subtitle?: string; eyebrow?: string; accentHex?: string; swatchStrip?: { hex: string; name?: string }[] };
+      type Payload = ColorPayload | CollectionPayload | PagePayload;
+      let payload: Payload | null = null;
+      try { payload = JSON.parse(downloadBtn.dataset.payload ?? "null") as Payload; } catch { payload = null; }
+      if (!payload) { setStatus("Download unavailable"); return; }
+
+      const W = 1200, H = 630;
+      const canvas = document.createElement("canvas");
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { setStatus("Canvas unavailable"); return; }
+
+      const normalizeHex = (h: string): string => (h.startsWith("#") ? h : `#${h}`);
+      const upperHex = (h: string): string => normalizeHex(h).toUpperCase();
+
+      // Pick auto-contrast text color for any background hex (relative-luminance test).
+      const textOnHex = (hex: string): "#1a1714" | "#faf9f7" => {
+        const m = /^#?([0-9a-f]{6})$/i.exec(hex);
+        if (!m) return "#1a1714";
+        const v = m[1];
+        const r = parseInt(v.slice(0, 2), 16) / 255;
+        const g = parseInt(v.slice(2, 4), 16) / 255;
+        const b = parseInt(v.slice(4, 6), 16) / 255;
+        const lin = (c: number): number => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+        const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+        return L > 0.5 ? "#1a1714" : "#faf9f7";
+      };
+
+      let fileSlug = "share";
+      if (payload.kind === "color") {
+        const p = payload;
+        fileSlug = `color-${p.slug}`;
+
+        // Hero swatch (top 60%)
+        const swatchH = Math.round(H * 0.60);
+        ctx.fillStyle = normalizeHex(p.hex);
+        ctx.fillRect(0, 0, W, swatchH);
+
+        // Big hex value centred on the swatch, auto-contrast.
+        ctx.fillStyle = textOnHex(p.hex);
+        ctx.font = `600 84px 'Courier New', monospace`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(upperHex(p.hex), W / 2, swatchH / 2);
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+
+        // Separator + info area (bottom 40%)
+        ctx.fillStyle = "#e8e5e0";
+        ctx.fillRect(0, swatchH, W, 2);
+        ctx.fillStyle = "#faf9f7";
+        ctx.fillRect(0, swatchH + 2, W, H - swatchH - 2);
+
+        const infoY = swatchH + 2;
+        // Color name
+        ctx.fillStyle = "#1a1714";
+        ctx.font = `bold 38px 'Georgia', serif`;
+        ctx.fillText(p.name, 48, infoY + 60);
+
+        // Japanese name
+        if (p.nameJa) {
+          ctx.fillStyle = "#7a7066";
+          ctx.font = `24px 'Georgia', serif`;
+          ctx.fillText(p.nameJa, 48, infoY + 96);
+        }
+
+        // Hue family eyebrow
+        if (p.hue) {
+          const eyebrowY = p.nameJa ? infoY + 130 : infoY + 100;
+          ctx.fillStyle = "#a89a88";
+          ctx.font = `500 16px 'system-ui', sans-serif`;
+          ctx.fillText(p.hue.toUpperCase(), 48, eyebrowY);
+        }
+      } else if (payload.kind === "page") {
+        const p = payload;
+        fileSlug = `page-${p.slug}`;
+
+        // Top region varies by what payload provides
+        const swatchH = Math.round(H * 0.60);
+        if (p.swatchStrip && p.swatchStrip.length > 0) {
+          const strip = p.swatchStrip;
+          const n = strip.length;
+          const swatchW = Math.floor(W / n);
+          strip.forEach((s, i) => {
+            const x = i * swatchW;
+            const w = i === n - 1 ? W - x : swatchW;
+            ctx.fillStyle = normalizeHex(s.hex);
+            ctx.fillRect(x, 0, w, swatchH);
+          });
+        } else if (p.accentHex) {
+          ctx.fillStyle = normalizeHex(p.accentHex);
+          ctx.fillRect(0, 0, W, swatchH);
+        } else {
+          // Pure paper variant — no top region; expand info to full height
+          ctx.fillStyle = "#faf9f7";
+          ctx.fillRect(0, 0, W, swatchH);
+          ctx.strokeStyle = "#e8e5e0";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(48, swatchH - 24);
+          ctx.lineTo(W - 48, swatchH - 24);
+          ctx.stroke();
+        }
+
+        // Separator + info area
+        ctx.fillStyle = "#e8e5e0";
+        ctx.fillRect(0, swatchH, W, 2);
+        const infoY = swatchH + 2;
+        ctx.fillStyle = "#faf9f7";
+        ctx.fillRect(0, infoY, W, H - infoY);
+
+        // Eyebrow (uppercase small caps)
+        if (p.eyebrow) {
+          ctx.fillStyle = "#a89a88";
+          ctx.font = `500 14px 'system-ui', sans-serif`;
+          ctx.fillText(p.eyebrow.toUpperCase(), 48, infoY + 38);
+        }
+
+        // Title (serif, generous size)
+        ctx.fillStyle = "#1a1714";
+        ctx.font = `bold 42px 'Georgia', serif`;
+        const titleY = p.eyebrow ? infoY + 84 : infoY + 64;
+        ctx.fillText(p.title, 48, titleY);
+
+        // Subtitle (serif, smaller; word-wrap to 2 lines max)
+        if (p.subtitle) {
+          ctx.fillStyle = "#5c5249";
+          ctx.font = `22px 'Georgia', serif`;
+          const maxWidth = W - 96;
+          const words = p.subtitle.split(/\s+/);
+          let line = "";
+          let y = titleY + 38;
+          let drawn = 0;
+          for (const word of words) {
+            const test = line ? line + " " + word : word;
+            if (ctx.measureText(test).width > maxWidth && line) {
+              ctx.fillText(line, 48, y);
+              line = word;
+              y += 30;
+              drawn += 1;
+              if (drawn >= 1) break;
+            } else {
+              line = test;
+            }
+          }
+          if (line) ctx.fillText(line, 48, y);
+        }
+      } else {
+        const p = payload;
+        fileSlug = `collection-${p.slug}`;
+
+        // Swatch row (top 60%)
+        const swatchH = Math.round(H * 0.60);
+        const swatches = p.swatches.length > 0 ? p.swatches : [{ hex: "#e8e5e0" }];
+        const n = swatches.length;
+        const swatchW = Math.floor(W / n);
+        swatches.forEach((s, i) => {
+          const x = i * swatchW;
+          const w = i === n - 1 ? W - x : swatchW;
+          ctx.fillStyle = normalizeHex(s.hex);
+          ctx.fillRect(x, 0, w, swatchH);
+        });
+
+        // Separator + info area
+        ctx.fillStyle = "#e8e5e0";
+        ctx.fillRect(0, swatchH, W, 2);
+        const infoY = swatchH + 2;
+        ctx.fillStyle = "#faf9f7";
+        ctx.fillRect(0, infoY, W, H - infoY);
+
+        // Eyebrow: collection · N palettes
+        ctx.fillStyle = "#a89a88";
+        ctx.font = `500 14px 'system-ui', sans-serif`;
+        ctx.fillText(`COLLECTION · ${p.count} PALETTES`, 48, infoY + 38);
+
+        // Title (serif)
+        ctx.fillStyle = "#1a1714";
+        ctx.font = `bold 40px 'Georgia', serif`;
+        ctx.fillText(p.title, 48, infoY + 84);
+
+        // Tagline
+        if (p.tagline) {
+          ctx.fillStyle = "#5c5249";
+          ctx.font = `22px 'Georgia', serif`;
+          // Wrap to two lines if long.
+          const maxWidth = W - 96;
+          const words = p.tagline.split(/\s+/);
+          let line = "";
+          let y = infoY + 122;
+          let lines = 0;
+          for (const word of words) {
+            const test = line ? line + " " + word : word;
+            if (ctx.measureText(test).width > maxWidth && line) {
+              ctx.fillText(line, 48, y);
+              line = word;
+              y += 30;
+              lines += 1;
+              if (lines >= 1) break; // cap at 2 lines drawn total
+            } else {
+              line = test;
+            }
+          }
+          if (line) ctx.fillText(line, 48, y);
+        }
+      }
+
+      // Branding (bottom-right) — same anchor for every kind.
+      ctx.fillStyle = "#a89a88";
+      ctx.font = `500 15px 'system-ui', sans-serif`;
+      ctx.textAlign = "right";
+      ctx.fillText("colorcombinations.org", W - 48, H - 26);
+      ctx.textAlign = "left";
+
+      const link = document.createElement("a");
+      link.download = `colorcombinations-${fileSlug}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      setStatus("✓ Image saved");
+    });
+  });
+</script>
+
+<style>
+  .share-actions {
+    margin: 1.5rem 0;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .share-actions__heading {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 0.875rem;
+    color: var(--color-ink-900);
+  }
+
+  .share-actions__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .share-actions__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid var(--color-ink-300);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-900);
+    border-radius: 999px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 150ms ease, color 150ms ease;
+  }
+
+  .share-actions__btn:hover {
+    border-color: var(--color-ink-900);
+  }
+
+  .share-actions__btn--download:hover {
+    border-color: var(--color-accent-500);
+    color: var(--color-accent-600, var(--color-accent-500));
+  }
+
+  .share-actions__btn svg {
+    flex-shrink: 0;
+    opacity: 0.85;
+  }
+
+  .share-actions__status {
+    font-size: 0.8125rem;
+    color: var(--color-accent-500);
+    margin: 0.5rem 0 0;
+    min-height: 1em;
+  }
+</style>

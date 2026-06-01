@@ -1,0 +1,8 @@
+# Cloudflare Pages _redirects file
+# https://developers.cloudflare.com/pages/configuration/redirects/
+
+# Trailing-slash normalization is handled by Astro (trailingSlash: "never")
+# No redirects currently needed for V1.
+
+# V2: if sumitome.com is later purchased as an alias, add:
+#   https://sumitome.com/*  https://colorcombinations.org/:splat  301

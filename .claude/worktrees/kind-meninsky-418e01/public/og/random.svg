@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#FAF7EF"/>
+
+  <g transform="translate(80, 64)">
+    <rect x="0" y="-14" width="14" height="14" fill="#9A2A2A"/>
+    <rect x="16" y="-14" width="14" height="14" fill="#1B2A4E"/>
+    <rect x="32" y="-14" width="14" height="14" fill="#F4EEE0" stroke="#d9d6ce" stroke-width="0.5"/>
+    <text x="58" y="0" font-family="EB Garamond, Garamond, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
+  </g>
+
+  <text x="80" y="155" font-family="Inter, sans-serif" font-size="14" fill="#9A2A2A" letter-spacing="0.14em">UTILITY · PERMALINK</text>
+  <text x="80" y="240" font-family="EB Garamond, Garamond, serif" font-size="84" font-weight="500" fill="#141414">A random palette,</text>
+  <text x="80" y="325" font-family="EB Garamond, Garamond, serif" font-size="84" font-weight="500" fill="#141414">every visit.</text>
+  <text x="80" y="385" font-family="EB Garamond, Garamond, serif" font-size="26" font-style="italic" fill="#6b6b6b">Bookmark /random and reload for a different one of</text>
+  <text x="80" y="420" font-family="EB Garamond, Garamond, serif" font-size="26" font-style="italic" fill="#6b6b6b">378 historical color combinations.</text>
+
+  <line x1="80" y1="465" x2="1120" y2="465" stroke="#d9d6ce" stroke-width="1"/>
+
+  <!-- Random-feeling swatch strip — 8 different traditions in one row -->
+  <g transform="translate(80, 495)">
+    <rect x="0"   y="0" width="120" height="80" fill="#9A2A2A" rx="2"/>
+    <rect x="130" y="0" width="120" height="80" fill="#1B2A4E" rx="2"/>
+    <rect x="260" y="0" width="120" height="80" fill="#7E6B4E" rx="2"/>
+    <rect x="390" y="0" width="120" height="80" fill="#A8B2A6" rx="2"/>
+    <rect x="520" y="0" width="120" height="80" fill="#5C2D5C" rx="2"/>
+    <rect x="650" y="0" width="120" height="80" fill="#D4A76A" rx="2"/>
+    <rect x="780" y="0" width="120" height="80" fill="#3F5874" rx="2"/>
+    <rect x="910" y="0" width="120" height="80" fill="#F4EEE0" stroke="#d9d6ce" stroke-width="1" rx="2"/>
+  </g>
+
+  <text x="1120" y="612" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#8a8a8a" letter-spacing="0.08em">colorcombinations.org/random</text>
+</svg>

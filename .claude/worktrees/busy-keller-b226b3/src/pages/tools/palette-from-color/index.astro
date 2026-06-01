@@ -1,0 +1,505 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { allPalettes } from "@data/palettes";
+
+const title = "Palette Finder — Start from one color";
+const description =
+  "Pick any color and find the closest Sanzo Wada palettes from the full 378-combination archive. The fastest way to anchor a brand, illustration, or UI in a historical tradition.";
+
+const keywords = [
+  "sanzo wada palette finder",
+  "color palette from color",
+  "find color palette",
+  "historical color palette",
+  "wada color combinations",
+  "japanese color palette",
+];
+
+// Build-time: collect all palettes and their colors for client-side search.
+// We embed a compact index (slug, title, colors) into the page as JSON so the
+// client can calculate color distances without a round-trip.
+const palettes = allPalettes();
+const paletteIndex = palettes.map((p) => ({
+  slug: p.slug,
+  title: p.title,
+  titleJa: p.titleJa,
+  summary: p.summary,
+  colors: p.colors.map((c) => ({ hex: c.hex, name: c.nameRomaji ?? c.nameJa ?? "" })),
+}));
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Palette Finder",
+    description,
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    url: new URL("/tools/palette-from-color/", Astro.site).toString(),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: "Palette Finder" },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd}>
+  <!-- Palette index embedded for client-side search (no extra fetch) -->
+  <script id="palette-data" type="application/json" set:html={JSON.stringify(paletteIndex)} />
+
+  <section class="tool-hero">
+    <div class="container-wide tool-hero__inner">
+      <p class="eyebrow">
+        <a href="/tools">Tools</a> / Palette Finder
+      </p>
+      <h1>Find a Wada palette.</h1>
+      <p class="tool-hero__lede">
+        Start with a color you already have. We'll find the closest matches
+        across all 378 historical combinations from Sanzo Wada's 1933 archive.
+      </p>
+    </div>
+  </section>
+
+  <section class="tool-body section">
+    <div class="container-wide">
+      <div class="finder-layout">
+
+        <!-- Input -->
+        <div class="finder-input-wrap">
+          <label class="finder-label" for="seed-hex">Your color</label>
+          <div class="finder-input-row">
+            <input type="color" id="seed-picker" value="#4f6ae6" class="color-swatch-input" aria-label="Color picker" />
+            <input type="text" id="seed-hex" value="#4F6AE6" class="hex-input" maxlength="7" placeholder="#000000" aria-label="Hex color input" spellcheck="false" />
+          </div>
+          <p class="finder-hint">
+            Results update as you type. Sorted by closest color distance in the Wada archive.
+          </p>
+        </div>
+
+        <!-- Quick presets -->
+        <div class="preset-row" role="list" aria-label="Quick color presets">
+          <button class="preset-btn" data-hex="#9A2A2A" style="background:#9A2A2A" type="button" role="listitem" aria-label="Kurenai crimson #9A2A2A"></button>
+          <button class="preset-btn" data-hex="#1B2A4E" style="background:#1B2A4E" type="button" role="listitem" aria-label="Kon navy #1B2A4E"></button>
+          <button class="preset-btn" data-hex="#4E6C50" style="background:#4E6C50" type="button" role="listitem" aria-label="Midori green #4E6C50"></button>
+          <button class="preset-btn" data-hex="#D4A76A" style="background:#D4A76A" type="button" role="listitem" aria-label="Kogane gold #D4A76A"></button>
+          <button class="preset-btn" data-hex="#F4EEE0" style="background:#F4EEE0;border-color:#d9d6ce" type="button" role="listitem" aria-label="Gofun white #F4EEE0"></button>
+          <button class="preset-btn" data-hex="#8B5E3C" style="background:#8B5E3C" type="button" role="listitem" aria-label="Cha brown #8B5E3C"></button>
+          <button class="preset-btn" data-hex="#3B6EA8" style="background:#3B6EA8" type="button" role="listitem" aria-label="Hanada blue #3B6EA8"></button>
+          <button class="preset-btn" data-hex="#7A6E94" style="background:#7A6E94" type="button" role="listitem" aria-label="Fuji purple #7A6E94"></button>
+        </div>
+
+        <!-- Results -->
+        <div class="results-section">
+          <p class="results-meta" id="results-meta" aria-live="polite">Enter a color above to find matching palettes.</p>
+          <div class="results-grid" id="results-grid" role="list" aria-label="Matching palettes"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="explainer section">
+    <div class="container-wide explainer-inner">
+      <h2 class="explainer-title">How it works</h2>
+      <div class="explainer-body">
+        <div class="explainer-col">
+          <h3>The matching</h3>
+          <p>
+            We compare your input color against every individual swatch in the
+            full 378-palette archive using Euclidean distance in RGB space.
+            Each palette is scored by its closest color match, then sorted —
+            palettes with a color very close to yours appear first.
+          </p>
+        </div>
+        <div class="explainer-col">
+          <h3>Why historical palettes</h3>
+          <p>
+            Sanzo Wada's 1933 dictionary distilled centuries of Japanese textile
+            and lacquerwork tradition into a systematic catalog. These aren't
+            computer-generated harmonies — they're combinations that survived
+            because they work. Anchoring a modern design in one of them is the
+            fastest path to a palette with historical coherence.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // ── Types ───────────────────────────────────────────────────────────────
+  interface PaletteEntry {
+    slug: string;
+    title: string;
+    titleJa?: string;
+    summary?: string;
+    colors: { hex: string; name: string }[];
+  }
+
+  interface ScoredPalette extends PaletteEntry {
+    minDistance: number;
+    closestHex: string;
+    closestName: string;
+  }
+
+  // ── Data ────────────────────────────────────────────────────────────────
+  const raw = document.getElementById("palette-data")?.textContent ?? "[]";
+  const paletteIndex: PaletteEntry[] = JSON.parse(raw);
+
+  // ── Color math ──────────────────────────────────────────────────────────
+  function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+    const clean = hex.replace(/^#/, "").trim();
+    if (clean.length === 3) {
+      return {
+        r: parseInt(clean[0] + clean[0], 16),
+        g: parseInt(clean[1] + clean[1], 16),
+        b: parseInt(clean[2] + clean[2], 16),
+      };
+    }
+    if (clean.length !== 6) return null;
+    return {
+      r: parseInt(clean.slice(0, 2), 16),
+      g: parseInt(clean.slice(2, 4), 16),
+      b: parseInt(clean.slice(4, 6), 16),
+    };
+  }
+
+  // Weighted RGB distance — perception-aware approximation (redmean method)
+  function colorDist(hex1: string, hex2: string): number {
+    const c1 = hexToRgb(hex1);
+    const c2 = hexToRgb(hex2);
+    if (!c1 || !c2) return Infinity;
+    const rmean = (c1.r + c2.r) / 2;
+    const dr = c1.r - c2.r;
+    const dg = c1.g - c2.g;
+    const db = c1.b - c2.b;
+    return Math.sqrt(
+      (2 + rmean / 256) * dr * dr +
+        4 * dg * dg +
+        (2 + (255 - rmean) / 256) * db * db
+    );
+  }
+
+  function scoreAndSort(seedHex: string, limit = 18): ScoredPalette[] {
+    return paletteIndex
+      .map((palette) => {
+        let minDistance = Infinity;
+        let closestHex = palette.colors[0]?.hex ?? "#000";
+        let closestName = palette.colors[0]?.name ?? "";
+        for (const color of palette.colors) {
+          const d = colorDist(seedHex, color.hex);
+          if (d < minDistance) {
+            minDistance = d;
+            closestHex = color.hex;
+            closestName = color.name;
+          }
+        }
+        return { ...palette, minDistance, closestHex, closestName };
+      })
+      .sort((a, b) => a.minDistance - b.minDistance)
+      .slice(0, limit);
+  }
+
+  // ── Render ───────────────────────────────────────────────────────────────
+  const grid = document.getElementById("results-grid") as HTMLElement;
+  const meta = document.getElementById("results-meta") as HTMLElement;
+
+  function renderResults(results: ScoredPalette[]) {
+    if (results.length === 0) {
+      grid.innerHTML = "";
+      meta.textContent = "No results — try a different color.";
+      return;
+    }
+    meta.textContent = `Top ${results.length} palettes by closest match.`;
+    grid.innerHTML = results
+      .map(
+        (p) => `
+      <a href="/palettes/${p.slug}/" class="result-card" role="listitem" aria-label="${p.title}">
+        <div class="result-swatches">
+          ${p.colors.map((c) => `<span style="background:${c.hex}" title="${c.name || c.hex}"></span>`).join("")}
+        </div>
+        <div class="result-body">
+          <p class="result-title">${p.title}</p>
+          ${p.titleJa ? `<p class="result-ja">${p.titleJa}</p>` : ""}
+          <p class="result-match">
+            Closest: <span class="match-swatch" style="background:${p.closestHex}"></span>
+            <span class="match-hex">${p.closestHex}</span>
+            ${p.closestName ? `— ${p.closestName}` : ""}
+          </p>
+        </div>
+      </a>
+    `
+      )
+      .join("");
+  }
+
+  // ── DOM wiring ───────────────────────────────────────────────────────────
+  const picker = document.getElementById("seed-picker") as HTMLInputElement;
+  const hexInput = document.getElementById("seed-hex") as HTMLInputElement;
+
+  let debounceTimer: ReturnType<typeof setTimeout>;
+
+  function search(hex: string) {
+    if (!hexToRgb(hex)) return;
+    const results = scoreAndSort(hex);
+    renderResults(results);
+  }
+
+  function onPickerChange() {
+    hexInput.value = picker.value.toUpperCase();
+    search(picker.value);
+  }
+
+  function onHexChange() {
+    const val = hexInput.value.trim();
+    const rgb = hexToRgb(val);
+    if (rgb) {
+      picker.value =
+        "#" +
+        rgb.r.toString(16).padStart(2, "0") +
+        rgb.g.toString(16).padStart(2, "0") +
+        rgb.b.toString(16).padStart(2, "0");
+    }
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => search(val), 120);
+  }
+
+  picker.addEventListener("input", onPickerChange);
+  hexInput.addEventListener("input", onHexChange);
+
+  hexInput.addEventListener("blur", () => {
+    if (hexInput.value && !hexInput.value.startsWith("#")) {
+      hexInput.value = "#" + hexInput.value;
+    }
+    hexInput.value = hexInput.value.toUpperCase();
+  });
+
+  // Preset color buttons
+  document.querySelectorAll<HTMLButtonElement>(".preset-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const hex = btn.dataset.hex!;
+      hexInput.value = hex.toUpperCase();
+      picker.value = hex;
+      search(hex);
+    });
+  });
+
+  // Initial search with default value
+  search(picker.value);
+</script>
+
+<style>
+  /* ── Hero ────────────────────────────────────────────────────────────── */
+  .tool-hero {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+  }
+  .tool-hero__inner { max-width: 62rem; }
+  .tool-hero__inner .eyebrow a {
+    color: var(--color-accent-500);
+    text-decoration: none;
+  }
+  .tool-hero__inner .eyebrow a:hover { text-decoration: underline; }
+  .tool-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.2vw + 0.75rem, 1.3125rem);
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin-top: 1.25rem;
+    max-width: 52ch;
+  }
+
+  /* ── Layout ──────────────────────────────────────────────────────────── */
+  .finder-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  /* ── Input ───────────────────────────────────────────────────────────── */
+  .finder-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    margin-bottom: 0.5rem;
+  }
+  .finder-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-elevated);
+    padding: 0.375rem 0.75rem;
+    max-width: 22rem;
+  }
+  .color-swatch-input {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0;
+    cursor: pointer;
+    background: none;
+    flex-shrink: 0;
+  }
+  .color-swatch-input::-webkit-color-swatch-wrapper { padding: 0; }
+  .color-swatch-input::-webkit-color-swatch { border: none; border-radius: 2px; }
+  .hex-input {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    border: none;
+    background: none;
+    outline: none;
+  }
+  .finder-hint {
+    font-size: 0.8125rem;
+    color: var(--color-ink-400);
+    margin-top: 0.5rem;
+  }
+
+  /* ── Presets ─────────────────────────────────────────────────────────── */
+  .preset-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .preset-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.12);
+    cursor: pointer;
+    transition: transform 150ms, border-color 150ms;
+    flex-shrink: 0;
+  }
+  .preset-btn:hover {
+    transform: scale(1.15);
+    border-color: var(--color-ink-900);
+  }
+
+  /* ── Results ─────────────────────────────────────────────────────────── */
+  .results-meta {
+    font-size: 0.875rem;
+    color: var(--color-ink-400);
+    margin-bottom: 1rem;
+  }
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 1rem;
+  }
+  .result-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 1rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms, box-shadow 150ms, transform 150ms;
+  }
+  .result-card:hover {
+    border-color: var(--color-ink-900);
+    box-shadow: var(--shadow-plate);
+    transform: translateY(-2px);
+  }
+  .result-swatches {
+    display: flex;
+    height: 4.5rem;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .result-swatches span {
+    flex: 1;
+  }
+  .result-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .result-title {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin: 0;
+  }
+  .result-ja {
+    font-size: 0.8125rem;
+    color: var(--color-ink-400);
+    margin: 0;
+  }
+  .result-match {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+    margin: 0.25rem 0 0;
+  }
+  .match-swatch {
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.12);
+    flex-shrink: 0;
+  }
+  .match-hex {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  /* ── Explainer ───────────────────────────────────────────────────────── */
+  .explainer {
+    border-top: 1px solid var(--color-border);
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+  }
+  .explainer-inner { max-width: 52rem; }
+  .explainer-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2vw + 0.75rem, 2rem);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+  .explainer-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+  @media (max-width: 640px) { .explainer-body { grid-template-columns: 1fr; } }
+  .explainer-col h3 {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-ink-500);
+    margin-bottom: 0.75rem;
+  }
+  .explainer-col p {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+  }
+</style>

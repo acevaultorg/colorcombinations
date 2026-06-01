@@ -1,0 +1,322 @@
+---
+/**
+ * ContrastMatrix — WCAG contrast ratios between every color pair in the palette.
+ *
+ * Real designer value (not fluff): every shipping palette needs to pass
+ * accessibility checks before a client buys off on it. Rather than making
+ * designers run a separate tool, we bake the matrix into every palette page.
+ *
+ * Bonus: this turns the auto-generated Wada plates from "thin content"
+ * into rich, query-differentiated pages that Google treats as substantive.
+ * 378 pages × unique-per-palette contrast data = SEO-safe scale.
+ *
+ * Grading:
+ *   - AAA large (≥4.5) ✓ — passes for large text AA + large text AAA
+ *   - AA normal (≥4.5) ✓ — passes for normal-size text
+ *   - AAA normal (≥7)  ✓ — passes the strictest AAA bar for small text
+ */
+
+import type { Palette } from "@/types/palette";
+import { contrastRatio } from "@/lib/color";
+
+export interface Props {
+  palette: Palette;
+}
+
+const { palette } = Astro.props;
+
+const colors = palette.colors;
+const pairs: Array<{
+  i: number;
+  j: number;
+  a: (typeof colors)[number];
+  b: (typeof colors)[number];
+  ratio: number;
+  level: "AAA" | "AA" | "AA_LARGE" | "FAIL";
+}> = [];
+
+for (let i = 0; i < colors.length; i += 1) {
+  for (let j = i + 1; j < colors.length; j += 1) {
+    const a = colors[i];
+    const b = colors[j];
+    if (!a || !b) continue;
+    const ratio = contrastRatio(a.hex, b.hex);
+    const level: "AAA" | "AA" | "AA_LARGE" | "FAIL" =
+      ratio >= 7
+        ? "AAA"
+        : ratio >= 4.5
+          ? "AA"
+          : ratio >= 3
+            ? "AA_LARGE"
+            : "FAIL";
+    pairs.push({ i, j, a, b, ratio, level });
+  }
+}
+
+const LEVEL_LABEL: Record<typeof pairs[number]["level"], string> = {
+  AAA: "AAA",
+  AA: "AA",
+  AA_LARGE: "AA Large",
+  FAIL: "Fail",
+};
+
+const LEVEL_DESC: Record<typeof pairs[number]["level"], string> = {
+  AAA: "Passes WCAG 2.1 AAA for normal text — the highest accessibility bar.",
+  AA: "Passes WCAG 2.1 AA for normal text. Standard production requirement.",
+  AA_LARGE:
+    "Passes WCAG 2.1 AA for large text only (18pt+ or 14pt+ bold). Avoid for body copy.",
+  FAIL: "Below WCAG 2.1 AA. Fine for decorative use — not for text.",
+};
+
+const bestPair = pairs.reduce<typeof pairs[number] | null>(
+  (best, p) => (!best || p.ratio > best.ratio ? p : best),
+  null,
+);
+---
+
+{pairs.length > 0 && (
+  <section class="contrast plate" aria-labelledby="contrast-heading">
+    <h2 id="contrast-heading">Accessibility</h2>
+    <p class="contrast__intro">
+      WCAG contrast ratios between every color pair. Use the strongest combinations
+      for text; the weakest ones make good decorative backgrounds.
+    </p>
+
+    {bestPair && (
+      <p class="contrast__best">
+        Strongest pair: <strong>{bestPair.a.nameRomaji ?? bestPair.a.hex}</strong>
+        {" on "}
+        <strong>{bestPair.b.nameRomaji ?? bestPair.b.hex}</strong>
+        {" — "}
+        <span class="contrast__ratio">{bestPair.ratio.toFixed(2)}:1</span>
+        {" ("}
+        {LEVEL_LABEL[bestPair.level]}
+        {")"}
+      </p>
+    )}
+
+    <ul class="contrast__list" role="list">
+      {pairs.map((p) => (
+        <li class={`contrast__row contrast__row--${p.level.toLowerCase()}`}>
+          <span class="contrast__chips" aria-hidden="true">
+            <span class="contrast__chip" style={`background:${p.a.hex}`} />
+            <span class="contrast__chip" style={`background:${p.b.hex}`} />
+          </span>
+          <span class="contrast__names">
+            <span class="contrast__name">{p.a.nameRomaji ?? p.a.hex}</span>
+            <span class="contrast__sep">·</span>
+            <span class="contrast__name">{p.b.nameRomaji ?? p.b.hex}</span>
+          </span>
+          <span class="contrast__meta">
+            <span class="contrast__ratio">{p.ratio.toFixed(2)}:1</span>
+            <span
+              class={`contrast__badge contrast__badge--${p.level.toLowerCase()}`}
+              title={LEVEL_DESC[p.level]}
+            >
+              {LEVEL_LABEL[p.level]}
+            </span>
+          </span>
+        </li>
+      ))}
+    </ul>
+
+    <details class="contrast__legend">
+      <summary>How to read this</summary>
+      <dl>
+        <dt>AAA</dt>
+        <dd>{LEVEL_DESC.AAA}</dd>
+        <dt>AA</dt>
+        <dd>{LEVEL_DESC.AA}</dd>
+        <dt>AA Large</dt>
+        <dd>{LEVEL_DESC.AA_LARGE}</dd>
+        <dt>Fail</dt>
+        <dd>{LEVEL_DESC.FAIL}</dd>
+      </dl>
+    </details>
+  </section>
+)}
+
+<style>
+  .contrast {
+    padding: 1.5rem;
+  }
+
+  .contrast h2 {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin: 0 0 0.75rem;
+  }
+
+  .contrast__intro {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin: 0 0 1rem;
+    line-height: 1.55;
+    max-width: none;
+  }
+
+  .contrast__best {
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin: 0 0 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    max-width: none;
+  }
+
+  .contrast__best strong {
+    color: var(--color-ink-900);
+    font-weight: 500;
+  }
+
+  .contrast__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .contrast__row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 0.8125rem;
+  }
+
+  .contrast__chips {
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  .contrast__chip {
+    display: block;
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
+  }
+
+  .contrast__names {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    font-size: 0.8125rem;
+    color: var(--color-ink-700);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .contrast__sep {
+    color: var(--color-ink-400);
+  }
+
+  .contrast__meta {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .contrast__ratio {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-700);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .contrast__badge {
+    font-family: var(--font-sans);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.1875rem 0.4375rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+  }
+
+  .contrast__badge--aaa {
+    background: #e8f3ec;
+    color: #16653b;
+    border-color: #bbdfc6;
+  }
+
+  .contrast__badge--aa {
+    background: #eef2f8;
+    color: #2a4a7a;
+    border-color: #cad8ea;
+  }
+
+  .contrast__badge--aa_large {
+    background: #fbf3e2;
+    color: #7a561a;
+    border-color: #ebdbb3;
+  }
+
+  .contrast__badge--fail {
+    background: #f8eaea;
+    color: #8a2424;
+    border-color: #e8c6c6;
+  }
+
+  .contrast__legend {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1rem;
+  }
+
+  .contrast__legend summary {
+    font-size: 0.75rem;
+    color: var(--color-ink-500);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .contrast__legend summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .contrast__legend summary::before {
+    content: "+ ";
+    font-family: var(--font-mono);
+    color: var(--color-ink-400);
+  }
+
+  .contrast__legend[open] summary::before {
+    content: "− ";
+  }
+
+  .contrast__legend summary:hover {
+    color: var(--color-ink-900);
+  }
+
+  .contrast__legend dl {
+    margin: 0.875rem 0 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.375rem 0.875rem;
+    font-size: 0.75rem;
+  }
+
+  .contrast__legend dt {
+    color: var(--color-ink-900);
+    font-weight: 600;
+    font-family: var(--font-sans);
+  }
+
+  .contrast__legend dd {
+    margin: 0;
+    color: var(--color-ink-500);
+    line-height: 1.5;
+    max-width: none;
+  }
+</style>

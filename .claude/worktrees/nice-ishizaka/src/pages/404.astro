@@ -1,0 +1,106 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PaletteCard from "@components/PaletteCard.astro";
+import { featuredPalettes } from "@data/palettes";
+
+const suggestions = featuredPalettes().slice(0, 3);
+
+const title = "Page not found";
+const description =
+  "The page you're looking for doesn't exist. Try the featured palettes below, or browse the full archive.";
+---
+
+<BaseLayout title={title} description={description} noIndex>
+  <section class="notfound section">
+    <div class="container-wide notfound__inner">
+      <div class="notfound__header">
+        <p class="eyebrow">404 — not found</p>
+        <h1 class="display-hero text-balance">
+          This combination isn't in the dictionary.
+        </h1>
+        <p class="notfound__lede">
+          The URL you requested doesn't match anything in the archive. It may
+          have been moved, renamed, or never existed. Here are a few ways to
+          keep exploring:
+        </p>
+        <div class="notfound__actions">
+          <a href="/" class="btn btn-primary">Go home</a>
+          <a href="/browse" class="btn btn-secondary">Browse all palettes</a>
+        </div>
+      </div>
+
+      {suggestions.length > 0 && (
+        <div class="notfound__suggestions">
+          <header class="section-head">
+            <p class="eyebrow">Try these instead</p>
+            <h2>Three featured combinations.</h2>
+          </header>
+          <div class="palette-grid" role="list">
+            {suggestions.map((p) => (
+              <div role="listitem">
+                <PaletteCard palette={p} headingLevel="h3" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-top: clamp(3rem, 6vw, 5rem);
+  }
+
+  .notfound__inner {
+    max-width: 62rem;
+  }
+
+  .notfound__header {
+    margin-bottom: 4rem;
+  }
+
+  .notfound__header .eyebrow {
+    margin-bottom: 1rem;
+    color: var(--color-accent-500);
+  }
+
+  .notfound__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.2vw + 0.75rem, 1.3125rem);
+    line-height: 1.6;
+    color: var(--color-ink-700);
+    margin-top: 1.5rem;
+    margin-bottom: 2.25rem;
+    max-width: 58ch;
+  }
+
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .notfound__suggestions .section-head {
+    margin-bottom: 2rem;
+  }
+
+  .palette-grid {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .palette-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .palette-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

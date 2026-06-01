@@ -1,0 +1,180 @@
+---
+/**
+ * ShareBar — compact share actions for palette pages.
+ *
+ * Three actions:
+ *  - Copy link (clipboard) — single most-used action
+ *  - Pinterest — visual, exact-match audience for palettes
+ *  - Twitter/X — text-first, good for dev/design crowd
+ *
+ * All events are tracked via Plausible if live. No external JS libraries —
+ * share intents use the official web intent URLs so no tracking scripts
+ * leak into the museum identity.
+ */
+
+import type { Palette } from "@/types/palette";
+
+export interface Props {
+  palette: Palette;
+  /** Absolute URL of this page, for sharing. */
+  url: string;
+}
+
+const { palette, url } = Astro.props;
+
+const title = palette.titleJa
+  ? `${palette.title} (${palette.titleJa})`
+  : palette.title;
+
+// Tweet text — concise, links the page, adds site hashtag
+const tweetText = `${title} — ${palette.colors.map((c) => c.hex).join(" ")}`;
+const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(url)}`;
+
+// Pinterest needs `media` for the image — use the OG image on the page
+const pinterestMedia = new URL(`/og/${palette.slug}.svg`, url).toString();
+const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(pinterestMedia)}&description=${encodeURIComponent(title + " — from the Dictionary of Color Combinations")}`;
+---
+
+<div class="share plate" data-share-bar data-url={url}>
+  <h3>Share</h3>
+  <div class="share__buttons" role="group" aria-label="Share options">
+    <button
+      type="button"
+      class="share__btn"
+      data-share-copy
+      data-event="share_copy"
+      aria-label="Copy link to this palette"
+    >
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          d="M10 2H4v10h8V4l-2-2z M7 2v3h3"
+          stroke="currentColor"
+          stroke-width="1.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"
+        />
+      </svg>
+      <span class="share__label">Copy link</span>
+    </button>
+
+    <a
+      href={twitterUrl}
+      class="share__btn"
+      target="_blank"
+      rel="noopener"
+      data-event="share_twitter"
+      aria-label="Share on Twitter/X"
+    >
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M12.3 2h2.1l-4.6 5.3L15 14h-4.2L7.5 9.7 3.7 14H1.6l4.9-5.6L1.3 2h4.3l3 4 3.7-4zm-.7 10.7h1.2L4.6 3.2H3.3l8.3 9.5z" />
+      </svg>
+      <span class="share__label">X / Twitter</span>
+    </a>
+
+    <a
+      href={pinterestUrl}
+      class="share__btn"
+      target="_blank"
+      rel="noopener"
+      data-event="share_pinterest"
+      aria-label="Save to Pinterest"
+    >
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0a8 8 0 0 0-2.9 15.4c-.1-.6-.1-1.6 0-2.3l1-4.2s-.3-.5-.3-1.3c0-1.2.7-2.1 1.6-2.1.8 0 1.1.6 1.1 1.3 0 .8-.5 2-.8 3.1-.2.9.5 1.7 1.4 1.7 1.7 0 2.9-2.1 2.9-4.6 0-1.9-1.3-3.3-3.6-3.3-2.6 0-4.3 2-4.3 4.1 0 .7.2 1.3.6 1.8.1.1.1.2 0 .3 0 .1-.1.5-.2.6 0 .2-.1.3-.3.2-1-.5-1.6-1.9-1.6-3.1 0-2.5 1.8-4.8 5.3-4.8 2.8 0 4.9 2 4.9 4.6 0 2.7-1.8 5-4.2 5-.8 0-1.6-.4-1.9-.9l-.5 2c-.2.7-.7 1.5-1 2A8 8 0 1 0 8 0z" />
+      </svg>
+      <span class="share__label">Pinterest</span>
+    </a>
+  </div>
+
+  <p class="share__status" aria-live="polite" role="status"></p>
+</div>
+
+<script>
+  // Copy-to-clipboard handler. No framework.
+  document.querySelectorAll<HTMLElement>("[data-share-bar]").forEach((bar) => {
+    const url = bar.dataset.url ?? window.location.href;
+    const copyBtn = bar.querySelector<HTMLButtonElement>("[data-share-copy]");
+    const status = bar.querySelector<HTMLParagraphElement>(".share__status");
+
+    const setStatus = (msg: string): void => {
+      if (!status) return;
+      status.textContent = msg;
+      window.setTimeout(() => {
+        if (status.textContent === msg) status.textContent = "";
+      }, 2000);
+    };
+
+    copyBtn?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+        setStatus("✓ Link copied");
+      } catch {
+        // Fallback: select input
+        setStatus("Copy blocked by browser — use Cmd/Ctrl+C");
+      }
+    });
+  });
+</script>
+
+<style>
+  .share {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .share h3 {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin: 0 0 1rem;
+  }
+
+  .share__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .share__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-ink-300);
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-900);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .share__btn:hover {
+    border-color: var(--color-ink-900);
+    color: var(--color-accent-500);
+  }
+
+  .share__btn:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+  }
+
+  .share__btn svg {
+    flex-shrink: 0;
+    opacity: 0.75;
+  }
+
+  .share__status {
+    min-height: 1rem;
+    margin: 0.75rem 0 0;
+    font-size: 0.75rem;
+    color: var(--color-accent-500);
+    font-weight: 500;
+    max-width: none;
+  }
+</style>

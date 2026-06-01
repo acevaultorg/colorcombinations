@@ -1,0 +1,209 @@
+# GROWTH — ColorCombinations
+
+State file for the Growth Engine. Read on creation directives and `god --launch`.
+
+## Positioning
+
+**Product:** The Dictionary of Color Combinations
+**Target users:** Designers (primary), developers, artists, brand agencies
+**Wedge:** The complete Wada 1933 catalog (348 plates) + 30 editorial deep-dives — historically grounded, free to browse, exportable in five formats. The other tribute sites stop at displaying the catalog; we add the editorial layer + the export rails + the bundle.
+**Cost to use:** Free (browse, copy, export). Optional $12 bundle for the "I want it all in one download" workflow.
+
+## Channels
+
+| Channel | Status | Why | Owner |
+|---|---|---|---|
+| Organic SEO (EMD + per-palette pages) | 🟢 ready | 30 indexable landing pages, JSON-LD, sitemap | [automated] |
+| Hacker News (Show HN) | 🔴 pending | Heritage angle + free tool — strong HN fit | [👤 human] |
+| Designer communities (r/Design, r/web_design) | 🔴 pending | Visual content + niche reference | [👤 human] |
+| Twitter / Threads / Mastodon | 🔴 pending | Palette-per-day content loop | [👤 human] |
+| Newsletter (weekly palette) | 🔴 not wired | EmailCapture component ready, needs provider | [👤 human] |
+| Print-on-demand affiliate | 🔴 deferred V2 | Printful/Gelato for palette posters | [deferred] |
+| Pinterest | 🔴 deferred V2 | Each palette is a pinnable image | [deferred] |
+| Guest posts on design blogs | 🔴 pending | Smashing, CSS-Tricks, Css Weekly | [👤 human] |
+
+## Funnel (target)
+
+```
+Organic search
+  ↓
+Landing on a palette page (/palettes/[slug])
+  ↓
+Browse 2-3 more (related palettes, browse page)
+  ↓
+Export action (copy hex / Tailwind / CSS vars / JSON)
+  ↓
+Email signup (weekly palette newsletter)
+  ↓
+[Y2] Pro subscription OR print affiliate click
+```
+
+## V1 launch sequence (when domain is live)
+
+1. **Technical**: buy `colorcombinations.org`, deploy to Vercel, verify SSL, submit sitemap to Google Search Console + Bing Webmaster
+2. **Content**: write 1 launch blog post "Why I built a color dictionary in 2026" + 3 pillar articles (Wada biography, Japanese color theory, how to use historical palettes)
+3. **Seeding**: Post Show HN with "Free: 30 curated color combinations from Sanzo Wada's 1933 dictionary tradition"
+4. **Communities**: r/web_design, r/graphic_design, r/Design (1 per week, not all at once — mod rules)
+5. **Newsletter**: Soft launch via personal contacts, promise 1 palette per week
+6. **Measurement**: Plausible analytics, track RPU, bounce, export clicks, newsletter conversion
+
+## Primary KPI
+
+**Revenue Per Unique Visitor (RPU)** — per `REVENUE_MODEL.md`.
+
+V1 baseline target (months 1-3):
+- 500 uniques/mo from organic + seeding
+- 10% export rate
+- 3% newsletter signup rate
+- Revenue: ~$0 (foundation, no monetization wired yet)
+
+V1 goal (months 4-12):
+- 5,000 uniques/mo from organic SEO maturity
+- 15% export rate
+- 5% newsletter signup rate
+- $50-100/mo from affiliate + early Pro tier beta
+
+Full revenue projections in DECISIONS.md 2026-04-08 (Y1 €4.5k-€15k, Y3 MRR €3.5k-€8k with Config X).
+
+## Content engine (post-launch)
+
+- Weekly: 1 new palette added + 1 newsletter issue
+- Monthly: 1 pillar blog post (color theory / Japanese color history / palette usage)
+- Quarterly: retrospective on usage patterns, republish top palettes with case studies
+- As available: source full Wada 348 catalog, import in batches
+
+## Viral loops
+
+- **Export embed**: when exporting, include optional `/* colorcombinations.org/p/slug */` comment in the Tailwind/CSS output
+- **OG image per palette**: every detail page shares its own colors in the preview (currently SVG default, PNG per-palette as a V2 task)
+- **Share button**: add `navigator.share()` to palette-detail in V2
+- **Iteration**: track which palettes get the most exports and promote them in newsletter
+
+## Ship Log
+
+_Growth-relevant ships from this session:_
+
+- 2026-04-10: V1 static site built. 30 palettes, 34 pages, clean build. Deploy pending domain purchase.
+- 2026-04-10: V1 SHIPPED to colorcombinations.org via Cloudflare Pages. All 11 routes 200, security headers applied at edge.
+- 2026-04-10: Monetization V1 — `/shop` landing, BundleCta integrated on home/palette/about, FurtherReading affiliate on /about, Plausible event hooks wired, footer + header Shop link added. All revenue surfaces production-safe behind `isLive` getters until operator pastes real Gumroad/Bookshop/Plausible IDs.
+- 2026-04-10: **WADA 348 IMPORTED.** Full Sanzo Wada 1933 catalog (348 historical combinations) now lives at /palettes/wada-NNN-*. Total archive: 378 palettes (30 editorial + 348 historical). Hero copy reframed around "complete dictionary." Bundle upgraded to "The Complete Wada Bundle" at $12 (was $9 for 30). Build: 383 pages, 1.88s, 10M dist. Source: mattdesl/dictionary-of-colour-combinations (MIT).
+- 2026-04-24: **+6 SEO COLLECTIONS** (japandi, kitchen, bedroom, y2k, forest, maximalist). Targets high-volume commercial-intent designer queries at the intersection of the existing 378-plate catalog. Total collections 54→60. Build: 1042 pages, 2.52s, 0 errors. Archetype: `programmatic_page_with_unique_data × +55 + SEO_page_addition × +50`. Oracle projection: +12-36 visitors/wk cumulative, $0.30-1.20/wk post-affiliate-activation. @craftsman PASS (mean 0.70). @distributor PASS (mean 0.62). Replays proven 54-collection playbook.
+- 2026-04-24: **EMBEDDABLE COLLECTION WIDGETS.** Per-collection iframe embed at /embed/collection/[slug] (560×320, 6 palette strips) + "Embed this collection" section on all 60 collection detail pages with copy-code button + live preview. Collections are higher-intent embed targets than single palettes — blog posts about "japandi color palette" will embed the collection gallery, each placement = permanent discovery channel for colorcombinations.org. Also: sitemap filter added to exclude /embed/* (removes 438 noindex URL leaks from sitemap). Build: 1102 pages, 3.84s, 0 errors. Archetype: `embeddable_widget × +80`. @craftsman PASS (mean 0.74). @distributor PASS strong (mean 0.76).
+
+- 2026-04-24/25 (endless-loop session, 32 ships): SHIPPED IN ATOMIC PRs:
+  - `/embed/*` X-Frame-Options + CSP fix — Chrome MCP-caught silent breakage; both palette and collection embeds were 200 but iframe-blocked. Two-commit fix (`! X-Frame-Options` then `! Content-Security-Policy` to unset inherited CSP before override). Without this fix every embed widget was unusable on third-party sites.
+  - **Complete API surface (648 JSON endpoints):** /api/palettes/[slug].json (378), /api/collections/[slug].json (60), /api/colors/[slug].json (210). Versioned schemas (`colorcombinations-{palette,collection,color}/v1`), CORS, CC-BY-4.0, deep-link urls{canonical,embed,openGraph,api} per record. BaseLayout jsonAlternate prop emits `<link rel="alternate" type="application/json">` so LLM crawlers discover the data graph without scraping.
+  - **Complete OG matrix (673 SVGs):** /og/[slug] palette OGs (already shipped) + /og/collections/[slug].svg (60 new) + /og/colors/[slug].svg (210 new) + /og/hue/[hue].svg (9 new) + 7 hand-crafted index OGs (/og/{index,collections,tools,browse,colors,shop,data}.svg). Every shareable URL on the site now serves a branded preview.
+  - **Complete embed surface (648 iframe routes):** /embed/[slug] (existed) + /embed/collection/[slug] (60) + /embed/colors/[slug] (210). Three differently-sized cards optimized for different blog contexts (320×80 / 560×320 / 360×180).
+  - Pinterest Article rich-pin meta + og:image dimensions on all 648 detail pages: og:type=article, article:published_time/modified_time/author/section, og:image:width/height/alt — Pinterest reads these for Article rich pins.
+  - ShareActions component (Copy/Pinterest/X-Twitter) on collection + color detail pages, mirroring palette ShareBar.
+  - Site-wide Organization JSON-LD with stable @id, knowsAbout topical entities, sameAs (GitHub), ContactPoint. WebSite schema gains SearchAction (sitelinks-search-box). Aleyda Solis #3 Recognizable.
+  - Person schema for Sanzo Wada on /about with sameAs (Wikipedia + Wikidata Q1407928), Academy Award metadata, AboutPage cross-link to Organization. Aleyda #7 Credible — entity disambiguation for LLMs.
+  - Freshness signals (datePublished/dateModified/license/publisher/isBasedOn-Wada-Book) on all 648 detail-page JSON-LD. Aleyda #9 Fresh + Google QDF.
+  - 3 CSV bulk downloads (palettes 378 / colors 210 / collections 60) at /data/*.csv — RFC 4180, CORS, CC-BY-4.0. Wikipedia citation + LLM training pipeline ingestible without HTML scraping.
+  - /data hub landing page with Schema.org DataCatalog + 3 nested Dataset entries — Knowledge-Graph-eligible as a data catalog.
+  - /data wired into footer + /tools index card + stale "two tools" copy fixed.
+  - Updated /llms.txt with full surface map (JSON API + Embed widgets + CSV downloads + 64-then-69 collection taxonomy).
+  - SEO collections batch 2 (4): modernist, hygge, wabi-sabi, biophilic.
+  - SEO collections batch 3 (5): gothic, art-nouveau, victorian, vaporwave, coquette.
+  - Total collections 54 → 69.
+  - **First /learn/ pillar article:** /learn/japandi-color-theory/ — ~720 words, 4 H2 sections, 17 internal links to relevant collections/palettes/colors/tools, full Article schema with isBasedOn Wada Book + author Organization + datePublished/Modified. Establishes /learn/ section for future pillars.
+
+  Build: 603 → 1332 pages (+729). All 32 ships verified live + Chrome MCP visual verification on each user-facing surface. PRs #4 through #37 all squash-merged to main. Wrangler deploys all green (one EPIPE retry on PR #17 per known rules/cloudflare-pages-epipe.md).
+
+  Specialist passes (self-review, archetype-aware):
+  - @craftsman Love avg ~0.72 across all public ships, no 🔴 blocks
+  - @distributor Fit avg ~0.69, archetypes verified per ship
+  - Zero I-23 / I-26 violations
+  - Zero dark-pattern incidents
+
+  Archetype distribution: 23 ships with `dataset_json_api × +70` / `embeddable_widget × +80` / `programmatic_page_with_unique_data × +55` / `share_by_design_result × +95` / `original_research_with_dataset × +90` (the pillar). Heavy compound on autonomous-distribution archetypes.
+
+- 2026-04-25 (loop continuation, +12 ships beyond initial 32): the back half of the endless-loop session pushed the site from "complete infrastructure" to "complete editorial + UX cross-linking":
+  - **/learn section established**: 3 pillar articles shipped (japandi-color-theory, wabi-sabi-color-theory, japanese-reds — kurenai/akane/shu/entan deep-dive). Each ~720 words, full Article schema with isBasedOn Wada Book + author Organization, Pinterest article rich-pin meta, ShareActions row. Combined: ~2200 words of original editorial covering the three highest-search-volume Japanese-color queries.
+  - **/learn/ section landing page** with Schema.org Blog + nested BlogPosting array — Knowledge-Graph-eligible recurring publication.
+  - **Header nav + footer wired** to /learn/ — visible from every page. Header now 7 links (Browse · Colors · Collections · Tools · Learn · About · Shop).
+  - **Final 2 index OGs** (/og/learn.svg + /og/about.svg) — total index OG matrix complete: 9 hand-crafted static SVGs covering /, /browse/, /collections/, /tools/, /colors/, /shop/, /data/, /learn/, /about/.
+  - **9 hue-family OGs** at /og/hue/[hue].svg — parameterized endpoint pulling top swatches from live data per hue (red/orange/yellow/brown/pink/green/blue/purple/neutral). Wires /colors/[hue]/ pages to use them with type=article so they also get Pinterest article meta.
+  - **5 SEO collections batch 3** (gothic / art-nouveau / victorian / vaporwave / coquette). Total taxonomy 64 → 69.
+  - **Person schema for Sanzo Wada on /about** with sameAs (Wikipedia + Wikidata Q1407928), Academy Award metadata, AboutPage cross-link to Organization. 4 schemas now stack on /about: Organization + WebSite + AboutPage + Person.
+  - **RSS feed extended** to include /learn/ pillar articles at the top of the item list — subscribers via Feedly/Inoreader/RSS-to-email tools now get notified when a new pillar ships. Item count 30 → 33.
+  - **Homepage Learn feature section** — 3-card pillar showcase between how-it-works and bundle CTA, with "All articles →" link to /learn/. Converts homepage traffic into pillar-article reads.
+  - **Pillar cross-link callouts** on /collections/japandi/, /collections/wabi-sabi/, /collections/red/ → matching /learn/ pillar. Compounds internal-link density between thematic palette pages and long-form context.
+  - **Final state files batch** (this commit) ensures all 44 session ships are logged.
+
+  Build trajectory across both halves of the session: **603 → 1335 pages (+732)**. Total PRs merged: 48 (PR #4 → PR #48). All Chrome-MCP visually verified live. One Chrome-MCP-caught silent bug fixed (X-Frame-Options + CSP doubled appending blocking iframes globally — discovered + remediated within 5 minutes).
+
+  Site reached complete-surface state: 3 API matrices (palettes 378 / collections 69 / colors 210 = 657 JSON), 4 OG matrices (palettes 378 + collections 69 + colors 210 + hue 9 = 666 dynamic + 9 static index = 675 SVGs), 3 embed matrices (palettes 378 / collections 69 / colors 210 = 657 iframes), 3 CSV downloads, /data hub with DataCatalog, /learn/ section with 3 pillars + Blog schema, full Pinterest Article rich-pin meta everywhere, Wikipedia+Wikidata sameAs on /about, llms.txt fully updated, sitemap clean (no noindex leaks). Next strategic ship: when fleet reaches threshold for new acquisition channel (Mediavine 1k sessions/mo, Show HN launch, etc.) — current state is launch-ready.
+
+- 2026-04-25 (resumed-session continuation, +15 ships beyond v45): operator's persistent "endless loop" directive ran a second wave of compounding ships focused on /learn editorial expansion + cross-link density:
+  - **PillarNav component** with prev/next nav between pillars. Operator reading-order discovery: japanese-reds → wabi-sabi → japandi (then expanded).
+  - **Pillar callouts on the 12 named-color detail pages** — kurenai/akane/shu/entan → /learn/japanese-reds/#anchor (with section anchors); tobi/kogecha/sumi/gofun → /learn/wabi-sabi-color-theory/; seiji/hanada/kaki/kinari → /learn/japandi-color-theory/. Reverse direction of pillar-to-color links, compounding /colors → /learn discovery.
+  - **4th pillar /learn/scandinavian-color-theory/** — 760 words, three-axis Nordic palette + hygge divergence + 3 fitting palettes + 3 anti-patterns. Closes Japanese-pigments → wabi-sabi → japandi → Scandinavian arc.
+  - **/og/learn.svg 4-card layout** then 5-card after Heian — every fleet-shareable surface rendered correctly with all pillars.
+  - **Color Story sections on 12 named-color pages** — each ~150-200 words of editorial context (pigment origin, traditional use, modern application) + optional Working Note. Boosts thin-content profile + LLM citation-fit (Aleyda #2 Useful · #4 Extractable · #7 Credible).
+  - **Per-pillar /og/learn/[slug].svg dynamic OG endpoint** — each pillar gets its own article-shaped 1200×630 card with tradition-specific 4-swatch strip (kurenai-derived for japanese-reds, tea-room palette for wabi-sabi, three-axis for japandi, cool gofun + persimmon for scandinavian, deep-purple imperial for heian). Replaces fallback to /og/collections/[matched].svg. Wired into BaseLayout image prop AND ShareActions across all pillars.
+  - **Collection-siblings widget on /palettes/[slug]** — shows up to 6 sibling palettes from primary collection, different axis from existing relatedPalettes (hue similarity). Compounds thematic browsing.
+  - **5th pillar /learn/heian-court-color-theory/** — 720 words on kasane no irome (layered-robe combinations) + kinjiki (forbidden colours) + 12-month seasonal palette. Anchors long-tail "heian colors" / "kasane irome" / "japanese imperial colors" SEO. Made FIRST in PillarNav ORDER (the deepest historical foundation).
+  - **Expanded callout map 6 → 18 collections** — refactored learnLinkMap into PILLAR_LINKS + COLLECTION_TO_PILLAR. New mappings: terracotta+maximalist → japanese-reds; earth-tones+minimalist+monochromatic+muted → wabi-sabi; modernist+mid-century → scandinavian; spring+summer+autumn+winter → heian (the seasonal palette is the Heian 12-month system generalised).
+  - **Suggested reading order intro on /learn/ index** — aside block at top showing 5-pillar canonical reading order with hyperlinks, compounds engagement (multi-pillar sessions).
+  - **/random/ permalink-shareable** random palette redirect — JS-only client-side picker from full 378 archive, replace() so back button doesn't bounce. Surface for discovery + returning-visitor compounding.
+  - **/random/ surfaced on /tools/ index as 4th tool card** + footer Tools column updated. SoftwareApplication schema auto-extends.
+  - **llms.txt refreshed** for all 5 pillars + /random/ + /methodology + /data + 18-collection callout map. New Pillar Articles section + revised Best-pages-to-cite (pillars now lead).
+
+  Build trajectory: 1335 → 1339 pages (+4 net new pages: scandinavian + heian pillars + random + 12 named-color story sections). Total PRs merged this session: 15 (PR #54 → PR #68). All Chrome-MCP visually verified live. /og/learn.svg redesigned twice (4-card → 5-card). Per-pillar OGs verified individually with screenshots showing tradition-correct swatch strips.
+
+  Compounding mechanics installed:
+  - 5 pillars × 4 navigation points each (prev/next/all-articles/share) = full bidirectional graph between /learn pieces
+  - 18 /collections/[slug] → /learn pillar callouts = compounds /collections traffic into /learn
+  - 12 /colors/[slug] → /learn pillar callouts (anchored where applicable) = compounds /colors traffic into /learn  
+  - 12 /colors/[slug] color stories = thin-content fix for the 12 highest-traffic named colors
+  - Reading-order intro = converts single-pillar visits into multi-pillar sessions
+  - Per-pillar OGs = each social share renders a tradition-correct branded card
+
+  Site state: complete editorial spine. All 5 historical/aesthetic traditions covered. Bidirectional cross-link graph between pillars / collections / colors / palettes. Random-palette utility for return-visit retention. llms.txt + RSS up-to-date with full surface map.
+
+- 2026-04-26 (continuation, +9 ships beyond the v15 batch — PR #70 → #78): closed the cross-link triangle and shipped editorial reference layer:
+  - **Pillar callout on /palettes/[slug]** — extracts pillar mapping into shared `@data/pillarMap` module (DRY); 271/378 palettes (72%) surface a `/learn` callout via their primary collection's pillar mapping. Closes the cross-link triangle (collections + colors + palettes all → pillars).
+  - **Color stories expanded 12 → 20** — adds editorial Color Story sections for murasaki, ai, asagi, ruri, tokiwa, kon, kuro, yamabuki. The 20 are now the canonical Japanese named-colour set.
+  - **/learn/japanese-color-glossary/** — single-page reference aggregating all 20 storied colours into 6 thematic sections with hex swatch + 80-150 word entry + CTA to full /colors/[slug]. Schema.org DefinedTermSet with 20 DefinedTerm children. Different angle from /colors/ (hue-grid) and /colors/[slug] (deep editorial). Wired into /learn/ index, RSS feed, homepage Learn cards (now 6), per-pillar OG endpoint.
+  - **Per-glossary OG card** — multi-tradition swatch strip (kurenai + kon + murasaki + seiji) at /og/learn/japanese-color-glossary.svg. BaseLayout image prop + ShareActions image prop both wired.
+  - **'See in Glossary' CTA on /colors/[slug]** — inline link from each of the 20 storied color detail pages to their matching glossary anchor (#slug). Closes bidirectional link.
+  - **Glossary banner on /colors/ index** — Reference aside in the hero pointing visitors at the glossary. Compounds /colors → /learn discovery.
+  - **llms.txt updated** — date stamp 2026-04-26, 12 → 20 storied color list, new 'For named-colour definitions' section pointing at glossary anchors.
+  - **/api/learn.json endpoint** — schema `colorcombinations-learn-index/v1`. Programmatic mirror of /learn/ with all 6 articles' metadata (slug, type, readingOrder, title, description, eyebrow, readingTime, tags, wordCount, url, openGraph, datePublished) + top-level publisher / counts / suggested reading order. CORS-enabled. /learn/ HTML advertises via `<link rel="alternate" type="application/json">`.
+  - **State-files batch (this commit)** ensures all 9 ships are logged.
+
+  Build trajectory: 1339 → 1340 pages (+1 net new — glossary article). Total PRs merged this segment: 9 (PR #70 → #78). All Chrome-MCP visually verified live.
+
+  Compounding architecture now complete:
+  - 5 pillars + 1 glossary = 6 /learn articles
+  - 20 named-color stories (was 12)
+  - Cross-link triangle: /collections (18 mapped) + /colors (12 storied with anchors) + /palettes (271 via collection mapping) → /learn pillars
+  - /api/learn.json + /api/palettes/[slug].json + /api/collections/[slug].json + /api/colors/[slug].json — 4 API matrices
+  - 5 dynamic per-pillar OGs + 1 dynamic glossary OG + 657 per-record dynamic OGs across palette/collection/color = 663 dynamic OGs total
+  - Cross-pillar callouts everywhere they should be
+
+  Site state: editorial-spine compound-complete. Every entry surface (homepage, /colors, /colors/[slug], /collections, /collections/[slug], /palettes/[slug], /random, /tools) routes visitors toward /learn. Every /learn article links back to specific palette/collection/color pages. Every shared URL renders a tradition-correct OG card. Every machine surface (sitemap.xml, llms.txt, /api/*, /data/*.csv, /feed.xml) is up-to-date. Total 25 PRs shipped in resumed-session continuation (PR #54 → #78).
+
+- 2026-04-26 (audit segment 3, +3 ships beyond v79 — PR #80 → #81): operator directive `/acepilot auto [chrome mcp, check if all live that should be live or could be live best choises]` triggered comprehensive Chrome-MCP + curl audit of every shipped surface + gap-closure ships:
+
+  **Audit results (all 200 OK or correct redirect):**
+  - 7 /learn pages (5 pillars + glossary + index) — all live with article-shaped OGs
+  - 4 /api/* per-record templates (palettes/colors/collections/learn) — all live
+  - 3 /data/*.csv bulk downloads — all live
+  - 3 /embed/* templates — all live
+  - 6 hub pages (/, /colors, /collections, /tools, /random, /data) — all live
+  - 9 /og/*.svg static index OGs — all live
+  - 6 /og/learn/[slug].svg per-pillar dynamic OGs — all live
+  - sitemap-0.xml has 682 URLs (full coverage)
+  - llms.txt up-to-date (re-verified date stamp 2026-04-26)
+  - robots.txt + ads.txt + Twitter card meta + Pinterest article meta + canonical URLs all comprehensive
+
+  **🟡 Gaps identified + shipped (closed audit-cycle):**
+  - **PR #80 — API index endpoints** — site had per-record /api/{palettes,colors,collections}/[slug].json but NO list-of-all index endpoints. Shipped 4 new endpoints: /api/index.json (top-level discoverability map), /api/palettes.json (378 palettes), /api/colors.json (210 colors), /api/collections.json (69 collections). Each schema-versioned (`colorcombinations-{thing}-index/v1`), CORS-enabled, CC-BY-4.0, 1h cache. llms.txt updated to advertise.
+  - **PR #81 — /og/random.svg** — /random/ permalink-shareable page was using og-default.svg fallback. Shipped dedicated 8-tradition swatch card (kurenai red · kon navy · wabi-sabi brown · japandi sage · murasaki purple · yamabuki gold · scandinavian indigo · gofun cream).
+
+  **Cumulative this resumed-session loop (PR #54 → #81): 28 PRs merged + deployed + Chrome-MCP-verified.**
+
+  Site state post-audit: every public-facing surface has dedicated branded OG card (no og-default.svg fallback anywhere reachable from primary nav). Every machine surface has structured-data shape with schema versioning. Every shareable URL renders tradition-correct preview. Site is API-discoverable end-to-end via /api/index.json single fetch.

@@ -1,0 +1,341 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PaletteCard from "@components/PaletteCard.astro";
+import BundleCta from "@components/BundleCta.astro";
+import {
+  collections,
+  collectionBySlug,
+  paletteSetForCollection,
+} from "@/data/collections";
+
+export function getStaticPaths() {
+  return collections.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const collection = collectionBySlug(slug ?? "");
+
+if (!collection) {
+  return Astro.redirect("/404");
+}
+
+const palettes = paletteSetForCollection(collection);
+const total = palettes.length;
+
+const title = collection.title;
+const description = collection.description.replace(/<[^>]+>/g, "");
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: new URL(`/collections/${collection.slug}`, Astro.site).toString(),
+    isPartOf: {
+      "@type": "WebSite",
+      name: "The Dictionary of Color Combinations",
+      url: Astro.site?.toString(),
+    },
+    numberOfItems: total,
+    hasPart: palettes.map((p) => ({
+      "@type": "CreativeWork",
+      name: p.title,
+      url: new URL(`/palettes/${p.slug}`, Astro.site).toString(),
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: new URL("/", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Collections",
+        item: new URL("/collections", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: collection.title,
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={collection.keywords}
+  jsonLd={jsonLd}
+>
+  <nav class="breadcrumb container-wide" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li aria-hidden="true">›</li>
+      <li><a href="/collections">Collections</a></li>
+      <li aria-hidden="true">›</li>
+      <li aria-current="page">{collection.title}</li>
+    </ol>
+  </nav>
+
+  <section class="collection-hero">
+    <div class="container-wide collection-hero__inner">
+      <div
+        class="collection-hero__accent"
+        style={`background-color:${collection.accentHex}`}
+        aria-hidden="true"
+      ></div>
+      <p class="eyebrow">Collection · {total} palettes</p>
+      <h1 class="display-hero text-balance">{collection.title}</h1>
+      <p class="collection-hero__tagline">{collection.tagline}</p>
+      <div class="collection-hero__description" set:html={collection.description}></div>
+    </div>
+  </section>
+
+  <section class="collection-grid-section">
+    <div class="container-wide">
+      <div class="palette-grid" role="list">
+        {palettes.map((palette) => (
+          <div role="listitem">
+            <PaletteCard palette={palette} headingLevel="h2" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Other collections — cross-linking for SEO + navigation */}
+  <section class="collection-related section">
+    <div class="container-wide">
+      <header class="section-head">
+        <p class="eyebrow">Continue exploring</p>
+        <h2>Other collections</h2>
+      </header>
+      <ul class="collection-related__list" role="list">
+        {collections
+          .filter((c) => c.slug !== collection.slug)
+          .slice(0, 4)
+          .map((c) => (
+            <li>
+              <a href={`/collections/${c.slug}`} class="collection-related__link">
+                <span
+                  class="collection-related__dot"
+                  style={`background-color:${c.accentHex}`}
+                  aria-hidden="true"
+                ></span>
+                <span class="collection-related__meta">
+                  <span class="collection-related__title">{c.title}</span>
+                  <span class="collection-related__tagline">{c.tagline}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+      </ul>
+    </div>
+  </section>
+
+  <BundleCta variant="medium" />
+</BaseLayout>
+
+<style>
+  .breadcrumb {
+    padding-top: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+  }
+
+  .breadcrumb a {
+    color: var(--color-ink-500);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .breadcrumb li[aria-current="page"] {
+    color: var(--color-ink-900);
+  }
+
+  /* ============ HERO ============ */
+
+  .collection-hero {
+    padding-top: 2rem;
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+    position: relative;
+  }
+
+  .collection-hero__inner {
+    max-width: 62rem;
+    position: relative;
+  }
+
+  .collection-hero__accent {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 2rem;
+    border: 1px solid var(--color-border);
+  }
+
+  .collection-hero .eyebrow {
+    margin-bottom: 1rem;
+  }
+
+  .collection-hero__tagline {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.4vw + 0.75rem, 1.375rem);
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin-top: 1.5rem;
+    max-width: 58ch;
+  }
+
+  .collection-hero__description {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    margin-top: 1.5rem;
+    max-width: 58ch;
+  }
+
+  .collection-hero__description em {
+    font-style: italic;
+    color: var(--color-ink-900);
+  }
+
+  /* ============ GRID ============ */
+
+  .collection-grid-section {
+    padding-bottom: 4rem;
+  }
+
+  .palette-grid {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .palette-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .palette-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .palette-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ============ OTHER COLLECTIONS ============ */
+
+  .collection-related {
+    background-color: var(--color-paper-100);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .section-head {
+    max-width: 58ch;
+    margin-bottom: 2rem;
+  }
+
+  .section-head .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .section-head h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2vw + 1rem, 2rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .collection-related__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .collection-related__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .collection-related__link {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.25rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms ease;
+  }
+
+  .collection-related__link:hover {
+    border-color: var(--color-ink-900);
+  }
+
+  .collection-related__dot {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .collection-related__meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .collection-related__title {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+  }
+
+  .collection-related__tagline {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-top: 0.125rem;
+    font-style: italic;
+    font-family: var(--font-serif);
+  }
+</style>

@@ -1,0 +1,199 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Contact";
+const description =
+  "Get in touch with the team behind The Dictionary of Color Combinations — questions, feedback, licensing, or press inquiries.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: title,
+  description,
+  url: new URL("/contact", Astro.site).toString(),
+  isPartOf: {
+    "@type": "WebSite",
+    name: "The Dictionary of Color Combinations",
+    url: Astro.site?.toString(),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="contact-page section">
+    <div class="container-prose">
+      <header class="contact-page__header">
+        <p class="eyebrow">Contact</p>
+        <h1>Get in touch</h1>
+        <p class="contact-page__lede">
+          Questions, corrections, licensing, or just a note about a favourite
+          palette — we'd love to hear from you.
+        </p>
+      </header>
+
+      <div class="contact-page__grid">
+        <div class="contact-card">
+          <h2>General enquiries</h2>
+          <p>
+            For questions about the archive, palette data, design tools, or
+            anything else on the site:
+          </p>
+          <a
+            href="mailto:hello@colorcombinations.org"
+            class="contact-card__email"
+            data-event="contact_email_click"
+            data-variant="general"
+          >
+            hello@colorcombinations.org
+          </a>
+        </div>
+
+        <div class="contact-card">
+          <h2>Press &amp; editorial</h2>
+          <p>
+            For press coverage, editorial features, or collaborations — please
+            include a brief description of your publication and timeline.
+          </p>
+          <a
+            href="mailto:hello@colorcombinations.org?subject=Press+inquiry"
+            class="contact-card__email"
+            data-event="contact_email_click"
+            data-variant="press"
+          >
+            hello@colorcombinations.org
+          </a>
+        </div>
+
+        <div class="contact-card">
+          <h2>Licensing &amp; permissions</h2>
+          <p>
+            The 348 Wada plates are derived from MIT-licensed open data. The 30
+            editorial palettes and all site copy are &copy; The Dictionary of
+            Color Combinations. For commercial licensing enquiries:
+          </p>
+          <a
+            href="mailto:hello@colorcombinations.org?subject=Licensing+inquiry"
+            class="contact-card__email"
+            data-event="contact_email_click"
+            data-variant="licensing"
+          >
+            hello@colorcombinations.org
+          </a>
+        </div>
+
+        <div class="contact-card">
+          <h2>Privacy &amp; data requests</h2>
+          <p>
+            To exercise your data rights under GDPR, UK GDPR, or CCPA, or to
+            report a privacy concern:
+          </p>
+          <a
+            href="mailto:hello@colorcombinations.org?subject=Privacy+request"
+            class="contact-card__email"
+            data-event="contact_email_click"
+            data-variant="privacy"
+          >
+            hello@colorcombinations.org
+          </a>
+          <p class="contact-card__note">
+            See our <a href="/privacy">Privacy Policy</a> for full details.
+          </p>
+        </div>
+      </div>
+
+      <div class="contact-page__response">
+        <p>We aim to respond within 2 business days.</p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .contact-page {
+    padding-block: var(--spacing-section);
+  }
+
+  .contact-page__header {
+    margin-bottom: 3rem;
+  }
+
+  .contact-page__header h1 {
+    font-family: var(--font-serif);
+    font-size: var(--text-display-xl);
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin: 0.5rem 0 1rem;
+  }
+
+  .contact-page__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.7;
+    max-width: 55ch;
+  }
+
+  .contact-page__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (max-width: 640px) {
+    .contact-page__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contact-card {
+    background: var(--color-paper-100);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+  }
+
+  .contact-card h2 {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin: 0 0 0.75rem;
+  }
+
+  .contact-card p {
+    color: var(--color-ink-700);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    margin-bottom: 1rem;
+  }
+
+  .contact-card a {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .contact-card a:hover {
+    color: var(--color-link-hover);
+  }
+
+  .contact-card__email {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    word-break: break-all;
+  }
+
+  .contact-card__note {
+    font-size: 0.875rem !important;
+    color: var(--color-ink-500) !important;
+    margin-top: 0.5rem;
+  }
+
+  .contact-page__response {
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>

@@ -1,0 +1,174 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { palettes } from "@data/palettes";
+
+const title = "Developer API";
+const description =
+  "Free JSON API + embeddable palette widgets for the 378-plate Wada archive. No auth, no rate limits, MIT-friendly license.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "APIReference",
+  name: title,
+  description,
+  url: new URL("/api/", Astro.site).toString(),
+};
+
+// Pick a stable example slug that we know exists
+const example = palettes.find((p) => p.slug === "kurenai-kon") ?? palettes[0];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <section class="api section">
+    <div class="container-prose">
+      <header class="api__header">
+        <p class="eyebrow">Developer API</p>
+        <h1 class="text-balance">378 Wada palettes, as JSON or as an embeddable widget.</h1>
+        <p class="api__lede">
+          The whole archive is available programmatically — no auth, no
+          rate limits, nothing to sign up for. Use it for your own palette
+          picker, a Figma plugin, a design-tokens file, or a blog post
+          that embeds a plate inline.
+        </p>
+      </header>
+
+      <div class="prose">
+        <h2>The catalog</h2>
+        <p>
+          <code>GET <a href="/api/palettes.json">/api/palettes.json</a></code>
+        </p>
+        <p>
+          Returns all {palettes.length} palettes in one JSON document.
+          Each entry includes the slug, titles (English + Japanese),
+          summary, era, moods, dominant hue, colors (hex + Japanese name
+          + romaji + meaning), tags, and the canonical URL.
+        </p>
+        <p>
+          Cache-Control is <code>immutable</code> — the file regenerates
+          only on site deploys, so it's safe to pin in your build.
+        </p>
+
+        <h2>Per-palette fetch</h2>
+        <p>
+          <code>GET /api/palettes/[slug].json</code>
+        </p>
+        <p>
+          Per-palette payload. Drops the envelope and returns a single
+          plate with its full structure including the long-form
+          description and usage suggestions.
+        </p>
+        <p>Example:
+          <code><a href={`/api/palettes/${example.slug}.json`}>/api/palettes/{example.slug}.json</a></code>
+        </p>
+
+        <h2>Embeddable widgets</h2>
+        <p>
+          <code>GET /embed/[slug]</code>
+        </p>
+        <p>
+          A minimal HTML page rendering a single palette as a self-
+          contained card. CSP <code>frame-ancestors *</code> is set so
+          the page is embeddable in an <code>&lt;iframe&gt;</code> on
+          any origin — Notion, Ghost, Medium, personal blogs, docs.
+        </p>
+        <p>Example:
+          <code><a href={`/embed/${example.slug}`} target="_blank" rel="noopener">/embed/{example.slug}</a></code>
+        </p>
+        <p>Drop-in snippet:</p>
+        <pre><code>{`<iframe
+  src="https://colorcombinations.org/embed/${example.slug}"
+  width="100%"
+  height="300"
+  frameborder="0"
+  title="${example.title} palette">
+</iframe>`}</code></pre>
+
+        <h2>License</h2>
+        <ul>
+          <li><strong>Hex values:</strong> public-domain (colors are facts, not copyrightable).</li>
+          <li><strong>Traditional Japanese color names:</strong> cultural commons.</li>
+          <li><strong>Underlying dataset:</strong> MIT-licensed
+            <a href="https://github.com/mattdesl/dictionary-of-colour-combinations" rel="noopener" target="_blank">mattdesl/dictionary-of-colour-combinations</a>.
+          </li>
+          <li><strong>Editorial descriptions + usage notes:</strong> ©
+            The Dictionary of Color Combinations. Feel free to quote in
+            design docs or blog posts; a link back to
+            colorcombinations.org is appreciated but not required.</li>
+        </ul>
+
+        <h2>Stability + schema</h2>
+        <p>
+          The JSON schema follows the v1 shape documented in the
+          <code>$schema</code> field of the catalog endpoint. Fields
+          only ever get added (never removed or renamed) without a
+          version bump; consumers can pin to v1 safely.
+        </p>
+        <p>
+          The archive regenerates on every site deploy. If you need
+          a pinned snapshot, save the JSON locally — the archive is
+          small (~150 KB gzipped).
+        </p>
+
+        <h2>What counts as good citizenship</h2>
+        <ul>
+          <li>If you build something cool on this API, tell me — I'd
+            love to feature it on <a href="/blog/">the Journal</a>.</li>
+          <li>If your tool renders palettes at scale (thousands per
+            page), consider bundling the JSON rather than hammering
+            the endpoint on every view. It's immutable anyway.</li>
+          <li>If you spot a hex value that looks off, open an issue
+            upstream on
+            <a href="https://github.com/mattdesl/dictionary-of-colour-combinations" rel="noopener" target="_blank">the dataset repo</a>
+            — corrections there flow back here on the next deploy.</li>
+        </ul>
+
+        <p class="api__cta">
+          <a href="/api/palettes.json" class="btn btn-primary">Open the catalog →</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .api {
+    padding-top: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .api__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .api__header .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .api__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.0625rem, 1vw + 0.75rem, 1.1875rem);
+    line-height: 1.65;
+    color: var(--color-ink-700);
+    max-width: 60ch;
+    margin-top: 1.5rem;
+  }
+
+  .prose pre {
+    background-color: var(--color-paper-100);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 4px);
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  .prose .api__cta {
+    margin-top: 2.5rem;
+  }
+</style>
