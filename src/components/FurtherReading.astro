@@ -140,11 +140,11 @@ const showDisclosure = true;
     })}
   </ul>
 
-  {showDisclosure && variant !== "sidebar" && (
+  {showDisclosure && (
     <p class="further-reading__disclosure">
-      Book links are Amazon Associates affiliate links. Your price is unchanged;
-      a small commission supports the archive. As an Amazon Associate we earn
-      from qualifying purchases.
+      {variant === "sidebar"
+        ? "Affiliate links — as an Amazon Associate we earn from qualifying purchases."
+        : "Book links are Amazon Associates affiliate links. Your price is unchanged; a small commission supports the archive. As an Amazon Associate we earn from qualifying purchases."}
     </p>
   )}
 </section>
@@ -386,5 +386,12 @@ const showDisclosure = true;
     max-width: 60ch;
     line-height: 1.5;
     font-style: italic;
+  }
+
+  /* Compact FTC disclosure for the sidebar variant on /palettes/[slug] —
+     affiliate links there must carry the disclosure too (FTC 16 CFR 255). */
+  .further-reading--sidebar .further-reading__disclosure {
+    margin-top: 1rem;
+    font-size: 0.6875rem;
   }
 </style>
