@@ -28,7 +28,8 @@ const links = [
     </a>
 
     <nav class="site-header__nav" aria-label="Primary">
-      <ul>
+      {/* Desktop (≥768px): the 7 links inline. */}
+      <ul class="site-header__nav-desktop">
         {links.map(({ href, label }) => (
           <li>
             <a
@@ -41,6 +42,26 @@ const links = [
           </li>
         ))}
       </ul>
+      {/* Mobile (<768px): zero-JS <details> collapse. The 7 links are a
+          nowrap flex row (~700px) that overflows a 375px header; this
+          collapses them behind a "Menu" toggle. Open = an absolutely-
+          positioned dropdown (overlays, no reflow → no CLS). */}
+      <details class="site-header__nav-mobile">
+        <summary class="site-header__nav-toggle" aria-label="Browse navigation">Menu</summary>
+        <ul>
+          {links.map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                class={`site-header__link ${isActive(href) ? "is-active" : ""}`}
+                aria-current={isActive(href) ? "page" : undefined}
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
     </nav>
   </div>
 </header>
@@ -104,13 +125,69 @@ const links = [
     }
   }
 
-  .site-header__nav ul {
+  .site-header__nav-desktop {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     align-items: center;
     gap: 1.75rem;
+  }
+
+  /* Mobile nav collapse (zero-JS). The 7 nowrap links (~700px) overflow a
+     375px header; below 768px they collapse behind a <details> "Menu" toggle
+     and the inline rail is hidden. The 768px media query flips it. */
+  .site-header__nav-mobile {
+    position: relative;
+    display: none;
+  }
+  .site-header__nav-toggle {
+    list-style: none;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-ink-700);
+    padding: 0.3rem 0.65rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    user-select: none;
+  }
+  .site-header__nav-toggle::-webkit-details-marker {
+    display: none;
+  }
+  .site-header__nav-mobile[open] .site-header__nav-toggle {
+    color: var(--color-ink-900);
+    border-color: var(--color-ink-900);
+  }
+  .site-header__nav-mobile ul {
+    list-style: none;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 11rem;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--color-paper-50);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(20, 20, 20, 0.12);
+    z-index: 50;
+  }
+  .site-header__nav-mobile .site-header__link {
+    padding-block: 0.4rem;
+  }
+
+  @media (max-width: 767px) {
+    .site-header__nav-desktop {
+      display: none;
+    }
+    .site-header__nav-mobile {
+      display: block;
+    }
   }
 
   .site-header__link {
