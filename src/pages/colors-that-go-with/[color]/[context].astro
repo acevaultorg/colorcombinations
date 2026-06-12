@@ -1,0 +1,237 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import BundleCta from "@components/BundleCta.astro";
+import { bestTextColorOn, contrastRatio } from "@/lib/color";
+import type { HexColor } from "@/types/palette";
+import {
+  commonColors,
+  commonColorBySlug,
+  contexts,
+  contextBySlug,
+  palettesFor,
+  pairingPaths,
+} from "@data/pairings";
+
+export function getStaticPaths() {
+  return pairingPaths().map((p) => ({ params: { color: p.color, context: p.context } }));
+}
+
+const { color: colorSlug, context: ctxSlug } = Astro.params;
+const color = commonColorBySlug(colorSlug ?? "");
+const ctx = contextBySlug(ctxSlug ?? "");
+if (!color || !ctx) return Astro.redirect("/404");
+
+const matches = palettesFor(color.hex, ctx).slice(0, 8);
+
+// ---- Partner families derived from the ACTUAL archive (the citable moat) ----
+function hsl(hex: string) {
+  const h = hex.replace("#", "");
+  let [r, g, b] = [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)].map((v) => v / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  const l = (max + min) / 2;
+  let hue = 0, s = 0;
+  if (d !== 0) {
+    s = d / (1 - Math.abs(2 * l - 1));
+    if (max === r) hue = ((g - b) / d) % 6;
+    else if (max === g) hue = (b - r) / d + 2;
+    else hue = (r - g) / d + 4;
+    hue = Math.round(hue * 60); if (hue < 0) hue += 360;
+  }
+  return { hue, s, l };
+}
+function family(hex: string): string {
+  const { hue, s, l } = hsl(hex);
+  if (l > 0.82 && s < 0.22) return "soft cream & off-white";
+  if (l < 0.2) return "deep charcoal";
+  if (s < 0.14) return "warm greige & grey";
+  if ((hue >= 20 && hue < 45) && l < 0.45 && s < 0.55) return "soft brown";
+  if (hue < 18 || hue >= 340) return "muted red";
+  if (hue < 45) return "terracotta & clay";
+  if (hue < 70) return "ochre & gold";
+  if (hue < 160) return "green";
+  if (hue < 200) return "teal";
+  if (hue < 255) return "slate & blue";
+  if (hue < 292) return "muted violet";
+  return "dusty rose";
+}
+const famCount = new Map<string, number>();
+for (const m of matches) {
+  for (const p of m.partners) {
+    const f = family(p);
+    famCount.set(f, (famCount.get(f) ?? 0) + 1);
+  }
+}
+const topFamilies = [...famCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map((e) => e[0]);
+const partnerSentence =
+  topFamilies.length >= 2
+    ? `${topFamilies.slice(0, -1).join(", ")}, and ${topFamilies[topFamilies.length - 1]}`
+    : topFamilies[0] ?? "warm neutrals";
+
+// ---- SEO ----
+const h1 = `Colors that go with ${color.name} for ${ctx.label}`;
+const title = `Colors That Go With ${color.name} for ${ctx.label.replace(/^(a|an) /, "")}`;
+const answer = `${color.name} (${color.hex}) — ${color.descriptor} — pairs best with ${partnerSentence}. ${ctx.tip} ${topFamilies[0] ?? "a warm neutral"}, drawn from ${matches.length} historically-grounded combinations below.`;
+const description = `What colors go with ${color.name.toLowerCase()} for ${ctx.label}? ${color.name} pairs with ${partnerSentence}. ${matches.length} curated combinations from the 1933 Dictionary of Color Combinations, with hex codes.`;
+
+const canonical = `/colors-that-go-with/${color.slug}/${ctx.slug}/`;
+const siblings = contexts.filter((c) => c.slug !== ctx.slug);
+const otherColors = commonColors.filter((c) => c.slug !== color.slug).slice(0, 7);
+
+const faq = [
+  { q: `What colors go with ${color.name.toLowerCase()} for ${ctx.label}?`, a: answer },
+  { q: `What is the hex code for ${color.name.toLowerCase()}?`, a: `${color.name} is ${color.hex} — ${color.descriptor}.` },
+  { q: `Does ${color.name.toLowerCase()} go with white?`, a: `Yes. ${color.name} reads clean against soft white and cream; for contrast, add one of: ${topFamilies.join(", ")}.` },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://colorcombinations.org/" },
+      { "@type": "ListItem", position: 2, name: `Colors that go with ${color.name}`, item: `https://colorcombinations.org/colors-that-go-with/${color.slug}/` },
+      { "@type": "ListItem", position: 3, name: ctx.label, item: `https://colorcombinations.org${canonical}` },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: h1,
+    numberOfItems: matches.length,
+    itemListElement: matches.map((m, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://colorcombinations.org/palettes/${m.palette.slug}/`,
+      name: m.palette.title,
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    speakable: { "@type": "SpeakableSpecification", cssSelector: [".answer"] },
+    url: `https://colorcombinations.org${canonical}`,
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  type="article"
+  keywords={[`colors that go with ${color.name.toLowerCase()}`, `${color.name.toLowerCase()} ${ctx.label}`, `${color.name.toLowerCase()} color combinations`, `what goes with ${color.name.toLowerCase()}`]}
+  jsonLd={jsonLd}
+>
+  <main class="mx-auto max-w-4xl px-5 py-10">
+    <nav class="mb-6 text-sm text-stone-500">
+      <a href="/" class="hover:underline">Home</a> ›
+      <a href={`/colors-that-go-with/${color.slug}/`} class="hover:underline">Colors that go with {color.name}</a> ›
+      <span>{ctx.label}</span>
+    </nav>
+
+    <header class="mb-8">
+      <div class="flex items-center gap-4">
+        <span
+          class="inline-block h-16 w-16 shrink-0 rounded-xl shadow-inner ring-1 ring-black/10"
+          style={`background:${color.hex}`}
+          aria-hidden="true"
+        ></span>
+        <div>
+          <h1 class="text-3xl font-semibold tracking-tight text-stone-900">{h1}</h1>
+          <p class="mt-1 font-mono text-sm text-stone-500">{color.name} · {color.hex}</p>
+        </div>
+      </div>
+      <p class="answer mt-5 text-lg leading-relaxed text-stone-700">{answer}</p>
+      <p class="mt-3 text-sm text-stone-500">{ctx.lens}</p>
+    </header>
+
+    <!-- Partner families: the direct "what goes with" answer -->
+    <section class="mb-10">
+      <h2 class="mb-3 text-lg font-semibold text-stone-900">What {color.name.toLowerCase()} pairs with</h2>
+      <ul class="flex flex-wrap gap-2">
+        {topFamilies.map((f) => (
+          <li class="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-sm text-stone-700">{f}</li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- Curated combinations from the archive -->
+    <section>
+      <h2 class="mb-4 text-lg font-semibold text-stone-900">
+        {matches.length} combinations with {color.name.toLowerCase()}, from the 1933 Dictionary
+      </h2>
+      <div class="grid gap-5 sm:grid-cols-2">
+        {matches.map((m) => {
+          const all = [m.matchHex, ...m.partners] as HexColor[];
+          return (
+            <a
+              href={`/palettes/${m.palette.slug}/`}
+              class="group block overflow-hidden rounded-xl border border-stone-200 transition hover:shadow-md"
+            >
+              <div class="flex h-20">
+                {all.map((hx) => (
+                  <span
+                    class="relative flex-1"
+                    style={`background:${hx}`}
+                    title={hx}
+                  >
+                    {hx === m.matchHex && (
+                      <span
+                        class="absolute inset-x-0 bottom-0 text-center text-[9px] font-semibold uppercase tracking-wide"
+                        style={`color:${bestTextColorOn(hx) === "dark" ? "#1c1917" : "#fafaf9"}`}
+                      >{color.name}</span>
+                    )}
+                  </span>
+                ))}
+              </div>
+              <div class="p-3">
+                <p class="text-sm font-medium text-stone-900 group-hover:underline">{m.palette.title}</p>
+                <p class="mt-0.5 line-clamp-2 text-xs text-stone-500">{m.palette.summary}</p>
+                <p class="mt-1 font-mono text-[10px] text-stone-400">{all.join("  ")}</p>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Sibling contexts: same color, other uses (internal linking engine) -->
+    <section class="mt-12 border-t border-stone-200 pt-6">
+      <h2 class="mb-3 text-base font-semibold text-stone-900">{color.name} in other settings</h2>
+      <div class="flex flex-wrap gap-2">
+        {siblings.map((c) => (
+          <a
+            href={`/colors-that-go-with/${color.slug}/${c.slug}/`}
+            class="rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
+          >{color.name} for {c.label}</a>
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="mb-3 text-base font-semibold text-stone-900">Other colors</h2>
+      <div class="flex flex-wrap gap-2">
+        {otherColors.map((c) => (
+          <a
+            href={`/colors-that-go-with/${c.slug}/${ctx.slug}/`}
+            class="flex items-center gap-2 rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
+          >
+            <span class="inline-block h-3 w-3 rounded-full" style={`background:${c.hex}`}></span>
+            {c.name} for {ctx.label}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <div class="mt-10">
+      <BundleCta />
+      <FurtherReading />
+    </div>
+  </main>
+</BaseLayout>

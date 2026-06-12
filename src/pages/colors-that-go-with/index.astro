@@ -1,0 +1,55 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { commonColors, contexts, palettesFor, MIN_PALETTES } from "@data/pairings";
+
+// Group available context pages under each color (quality-guarded).
+const groups = commonColors
+  .map((color) => ({
+    color,
+    ctxs: contexts.filter((ctx) => palettesFor(color.hex, ctx).length >= MIN_PALETTES),
+  }))
+  .filter((g) => g.ctxs.length > 0);
+
+const title = "Colors That Go With — pairing guides by color & setting";
+const description =
+  "What goes with sage green, navy, terracotta, mustard and more — paired with curated combinations from the 1933 Dictionary of Color Combinations, by setting: walls, weddings, clothes, kitchens.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: title,
+  url: "https://colorcombinations.org/colors-that-go-with/",
+};
+---
+
+<BaseLayout title={title} description={description} canonical="/colors-that-go-with/" jsonLd={jsonLd}>
+  <main class="mx-auto max-w-4xl px-5 py-10">
+    <header class="mb-8">
+      <h1 class="text-3xl font-semibold tracking-tight text-stone-900">Colors that go with…</h1>
+      <p class="mt-2 max-w-2xl text-stone-600">
+        Practical pairing guides — pick a color and a setting. Every page answers it with real,
+        historically-grounded combinations from Sanzo Wada's 1933 <em>Dictionary of Color
+        Combinations</em>, with copyable hex codes.
+      </p>
+    </header>
+
+    <div class="space-y-8">
+      {groups.map(({ color, ctxs }) => (
+        <section>
+          <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold text-stone-900">
+            <span class="inline-block h-5 w-5 rounded-md ring-1 ring-black/10" style={`background:${color.hex}`}></span>
+            Colors that go with {color.name}
+          </h2>
+          <div class="flex flex-wrap gap-2">
+            {ctxs.map((ctx) => (
+              <a
+                href={`/colors-that-go-with/${color.slug}/${ctx.slug}/`}
+                class="rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
+              >{color.name} for {ctx.label}</a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </main>
+</BaseLayout>
