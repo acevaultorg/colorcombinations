@@ -239,6 +239,10 @@ const jsonLdArray = jsonLd
     </script>
     <a href="#main" class="skip-link">Skip to content</a>
     <SiteHeader />
+    <div class="cc-search">
+      <input id="cc-q" type="search" role="combobox" aria-expanded="false" aria-controls="cc-results" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search palettes, colors, collections…" aria-label="Search the dictionary of color combinations" />
+      <div id="cc-results" role="listbox" aria-label="Search results" hidden></div>
+    </div>
     <main id="main" class="site-main">
       <slot />
     </main>
@@ -271,5 +275,38 @@ const jsonLdArray = jsonLd
         min-height: calc(100dvh - 200px);
       }
     </style>
+
+    <!-- Fleet Search Standard v1.0 — instant search + monitored zero-result signal -->
+    <style is:global>
+      .cc-search{position:relative;max-width:560px;margin:0 auto;padding:.75rem 1rem 0}
+      .cc-search input{width:100%;padding:.7rem 1rem;font-size:1rem;border:1px solid var(--color-ink-200,#d8d2c4);border-radius:var(--radius-md,8px);background:var(--color-paper-50,#fff);color:var(--color-ink-900,#1a1714);-webkit-appearance:none}
+      .cc-search input:focus{outline:2px solid var(--color-accent,#b8860b);outline-offset:1px}
+      #cc-results{position:absolute;left:1rem;right:1rem;top:100%;z-index:60;background:var(--color-paper-50,#fff);border:1px solid var(--color-ink-200,#d8d2c4);border-radius:var(--radius-md,8px);box-shadow:0 8px 28px rgba(0,0,0,.12);max-height:60vh;overflow-y:auto}
+      #cc-results a{display:flex;justify-content:space-between;gap:10px;padding:.6rem 1rem;text-decoration:none;color:var(--color-ink-900,#1a1714);border-bottom:1px solid var(--color-ink-100,#eee)}
+      #cc-results a:last-child{border-bottom:0}
+      #cc-results a[aria-selected=true],#cc-results a:hover{background:var(--color-paper-100,#f7f4ee)}
+      #cc-results .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--color-ink-500,#8a8378);align-self:center;white-space:nowrap}
+      .cc-none{padding:.75rem 1rem;color:var(--color-ink-500,#8a8378);font-size:.9rem}
+      .cc-none a{color:var(--color-accent,#b8860b)}
+    </style>
+
+    <script is:inline>
+      (function(){
+      var q=document.getElementById("cc-q"),box=document.getElementById("cc-results");if(!q||!box)return;
+      var idx=null,idxP=null,items=[],sel=-1,last="",lt;
+      function load(){if(idxP)return idxP;idxP=fetch("/search-index.json").then(function(r){return r.json()}).then(function(j){idx=j;return j}).catch(function(){idx=[];return[]});return idxP}
+      function norm(s){return (s||"").toLowerCase().replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim()}
+      function esc(s){return (s||"").replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+      function scrub(s){return s.replace(/\S+@\S+/g,"").replace(/\d{6,}/g,"").slice(0,60).trim()}
+      function srch(raw){var qn=norm(raw);if(!qn||!idx)return[];var tk=qn.split(" "),o=[];for(var i=0;i<idx.length;i++){var e=idx[i],tn=norm(e.t),hay=norm(e.t+" "+(e.x||"")),sc=0;if(tn.indexOf(qn)===0)sc=100;else if(tn.indexOf(qn)>=0)sc=70;else if(hay.indexOf(qn)>=0)sc=40;else{var all=1;for(var k=0;k<tk.length;k++)if(hay.indexOf(tk[k])<0){all=0;break}if(all)sc=20}if(sc)o.push([sc,e])}o.sort(function(a,b){return b[0]-a[0]||a[1].t.length-b[1].t.length});return o.slice(0,8).map(function(x){return x[1]})}
+      function render(raw){items=srch(raw);if(!raw.trim()){box.hidden=true;box.innerHTML="";q.setAttribute("aria-expanded","false");return}if(items.length){box.innerHTML=items.map(function(e,i){return "<a role='option' id='cc-o"+i+"' href='"+e.s+"'><span>"+esc(e.t)+"</span><span class='k'>"+esc(e.k)+"</span></a>"}).join("")}else{box.innerHTML="<div class='cc-none'>No match for “"+esc(raw)+"” yet. <a href='/browse/'>Browse all palettes →</a></div>"}box.hidden=false;q.setAttribute("aria-expanded","true");sel=-1}
+      function log(){var raw=q.value.trim();if(!raw||raw===last)return;last=raw;var sq=scrub(raw);if(!sq||!window.plausible)return;if(items.length)window.plausible("Search",{props:{q:sq,results:items.length}});else window.plausible("SearchNoResults",{props:{q:sq}})}
+      q.addEventListener("focus",load);
+      q.addEventListener("input",function(){load().then(function(){render(q.value);clearTimeout(lt);lt=setTimeout(log,900)})});
+      q.addEventListener("keydown",function(e){if(e.key==="Escape"){box.hidden=true;q.blur();return}if(e.key==="Enter"){clearTimeout(lt);log();var t=sel>=0&&items[sel]?items[sel]:items[0];if(t)location.href=t.s;return}if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();if(!items.length)return;sel=(sel+(e.key==="ArrowDown"?1:-1)+items.length)%items.length;for(var i=0;i<items.length;i++){var o=document.getElementById("cc-o"+i);if(o)o.setAttribute("aria-selected",i===sel?"true":"false")}q.setAttribute("aria-activedescendant",sel>=0?"cc-o"+sel:"")}});
+      document.addEventListener("keydown",function(e){if(e.key==="/"&&document.activeElement!==q){var tn=(document.activeElement||{}).tagName||"";if(!/INPUT|TEXTAREA|SELECT/.test(tn)){e.preventDefault();q.focus()}}});
+      document.addEventListener("click",function(e){if(!e.target.closest||!e.target.closest(".cc-search"))box.hidden=true});
+      })();
+    </script>
   </body>
 </html>
