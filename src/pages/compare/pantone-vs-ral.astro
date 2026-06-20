@@ -1,0 +1,431 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+
+const title = "Pantone vs RAL — which color system to use, and why";
+const description =
+  "Pantone and RAL are the two color systems designers and makers reach for — but for different jobs. A plain-language comparison: what each one is, how the codes work, how many colors they hold, and which to use for branding vs. coatings.";
+
+const pageUrl = new URL("/compare/pantone-vs-ral", Astro.site).toString();
+
+const faq = [
+  {
+    q: "What is the difference between Pantone and RAL?",
+    a: "Pantone is a US, ink-based spot-color system built for print, packaging, and brand design. RAL is a European system built for paints, powder coatings, plastics, and architectural or industrial surfaces. They serve different media, so they are not directly interchangeable.",
+  },
+  {
+    q: "Can you convert Pantone to RAL?",
+    a: "Only approximately. Pantone is mixed ink printed on paper; RAL is pigment in a coating on a physical surface. Cross-reference charts give the nearest visual match, not an exact equivalent — always confirm against a physical sample before committing to production.",
+  },
+  {
+    q: "How many colors does each system have?",
+    a: "RAL Classic holds around 213 colors, and RAL Design System+ adds roughly 1,800 more arranged by hue, lightness, and chroma. Pantone's solid (spot) guides cover more than 2,000 colors, with thousands more across its fashion, textile, and interiors (TCX) libraries.",
+  },
+  {
+    q: "Which is better for a logo or branding?",
+    a: "Pantone. It is the global standard for print and packaging, so specifying a Pantone spot color means a logo reproduces consistently across different printers and materials anywhere in the world.",
+  },
+  {
+    q: "Which is better for painting a building, fence, or machine?",
+    a: "RAL. It is the European standard for architectural and industrial coatings, so a code like RAL 9005 tells any powder-coater or paint supplier exactly which black to mix and apply.",
+  },
+  {
+    q: "Is RAL or Pantone free to use?",
+    a: "RAL codes are a widely published, de-facto open standard you can reference freely, though official RAL fan decks are sold. Pantone is proprietary: the matching system is licensed and the physical guides — and some software color libraries — must be purchased.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: "Pantone vs RAL — which color system to use, and why",
+    description,
+    url: pageUrl,
+    datePublished: "2026-06-20",
+    dateModified: "2026-06-20",
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    about: [
+      { "@type": "Thing", name: "Pantone Matching System" },
+      { "@type": "Thing", name: "RAL color standard" },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: new URL("/", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Compare",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Pantone vs RAL",
+        item: pageUrl,
+      },
+    ],
+  },
+];
+
+const rows = [
+  { dim: "Origin", pantone: "United States — Pantone Inc., 1963", ral: "Germany — the RAL institute, 1927" },
+  { dim: "Built for", pantone: "Print, packaging, graphic & brand design, textiles", ral: "Paints, powder coatings, plastics, architecture, industry" },
+  { dim: "Medium", pantone: "Mixed spot ink, printed on paper", ral: "Pigment in a coating, applied to a surface" },
+  { dim: "Core collection", pantone: "2,000+ solid spot colors (plus fashion/textile TCX)", ral: "RAL Classic ~213 (Design System+ adds ~1,800)" },
+  { dim: "Code format", pantone: "Number + finish, e.g. PANTONE 185 C (coated)", ral: "Four-digit group code, e.g. RAL 3020 Traffic Red" },
+  { dim: "Licensing", pantone: "Proprietary — guides & libraries are licensed/sold", ral: "Open de-facto standard; official fan decks are sold" },
+  { dim: "Use it for", pantone: "Logos, packaging, print runs, brand consistency", ral: "Buildings, fences, machinery, signage, safety colors" },
+];
+---
+
+<BaseLayout title={title} description={description} image="/og-default.svg" jsonLd={jsonLd}>
+  {/* ============ HERO ============ */}
+  <section class="cmp-hero">
+    <div class="container-wide cmp-hero__inner">
+      <p class="eyebrow">Color systems</p>
+      <h1 class="display-hero text-balance">Pantone vs RAL</h1>
+      <p class="cmp-hero__lede">
+        Two of the most-used color systems in the world — and people mix them up
+        constantly. The short version: <strong>Pantone is for ink, RAL is for
+        coatings.</strong> Pantone keeps a logo or a print run consistent across
+        printers; RAL tells a factory or a painter exactly which colour to put on
+        a wall, a window frame, or a machine. Here is the full picture.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ AT-A-GLANCE TABLE ============ */}
+  <section class="cmp-table-wrap section">
+    <div class="container-wide">
+      <h2 class="cmp-h2">At a glance</h2>
+      <div class="cmp-table-scroll">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th scope="col">&nbsp;</th>
+              <th scope="col">Pantone (PMS)</th>
+              <th scope="col">RAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <th scope="row">{r.dim}</th>
+                <td>{r.pantone}</td>
+                <td>{r.ral}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  {/* ============ PROSE ============ */}
+  <section class="cmp-prose section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">What Pantone is</h2>
+      <p>
+        The <strong>Pantone Matching System (PMS)</strong> was introduced in 1963
+        by Pantone Inc. in the United States. It is a <em>spot-color</em> system:
+        instead of building a colour from cyan, magenta, yellow and black dots, a
+        printer mixes a single, pre-defined ink from a recipe of base inks. That
+        is why a Pantone colour looks the same whether it is printed in Tokyo or
+        Toronto — everyone is mixing from the same formula.
+      </p>
+      <p>
+        Pantone codes are a number plus a finish suffix — <strong>PANTONE 185 C</strong>
+        for the coated version, <strong>185 U</strong> for uncoated paper. The
+        solid guides cover more than two thousand colours, and separate libraries
+        (notably the TCX cotton standards) extend the system into fashion,
+        textiles and interiors. Pantone is what brand guidelines mean when they
+        say &ldquo;the logo is PMS 286.&rdquo; The trade-off is that it is
+        proprietary: the fan decks, formula guides and some software libraries are
+        licensed products you buy.
+      </p>
+
+      <h2 class="cmp-h2">What RAL is</h2>
+      <p>
+        <strong>RAL</strong> began in 1927 in Germany, created by the national
+        institute for quality assurance to standardise the colours of varnishes
+        and coatings. It is built for <em>physical surfaces</em> — powder coating,
+        wet paint, plastics — rather than for ink on a page. When an architect
+        specifies a window frame or a manufacturer specifies a machine housing,
+        they reach for RAL.
+      </p>
+      <p>
+        The core collection, <strong>RAL Classic</strong>, holds roughly 213
+        colours. Each carries a four-digit code where the first digit names the
+        colour family — 1 yellow, 2 orange, 3 red, 4 violet, 5 blue, 6 green, 7
+        grey, 8 brown, 9 white/black — so <strong>RAL 5010</strong> is a blue
+        (Gentian Blue) and <strong>RAL 9005</strong> is a black (Jet Black). Two
+        larger systems extend it: <strong>RAL Design System+</strong>, with around
+        1,800 colours arranged by hue, lightness and chroma, and <strong>RAL
+        Effect</strong>, which adds metallics. RAL also defines the standard
+        safety and signal colours used across European industry.
+      </p>
+
+      <h2 class="cmp-h2">The real difference</h2>
+      <p>
+        The two systems are not competitors so much as tools for different jobs.
+        Pantone lives in the world of <strong>print and brand</strong> — graphic
+        design, packaging, marketing. RAL lives in the world of <strong>made
+        objects and built spaces</strong> — coatings, architecture, manufacturing.
+        Because one is ink on paper and the other is pigment on a surface, the
+        same name in each system rarely describes an identical colour, and the
+        ranges are sized to their purpose: Pantone is broad because brands want
+        nuance; RAL Classic is deliberately small because a coatings supplier
+        wants a tight, repeatable, orderable set.
+      </p>
+
+      <h2 class="cmp-h2">Which should you use?</h2>
+      <ul class="cmp-list">
+        <li>
+          <strong>Designing a logo, packaging or a print piece?</strong> Use
+          Pantone. A spot colour is the most reliable way to keep a brand colour
+          consistent across printers and materials.
+        </li>
+        <li>
+          <strong>Specifying paint, powder coating or a building element —
+          especially in Europe?</strong> Use RAL. A code like RAL 7016 (Anthracite
+          Grey) is understood by every coater and supplier on the continent.
+        </li>
+        <li>
+          <strong>Working digitally — web, UI, screen?</strong> Neither, strictly.
+          Both are physical standards; for screen work you want HEX, RGB or a
+          perceptual model. (We compare those in our color-model guides.)
+        </li>
+      </ul>
+
+      <h2 class="cmp-h2">Can you convert between them?</h2>
+      <p>
+        Approximately, yes — there are published cross-reference charts that pair a
+        Pantone colour with its nearest RAL match and vice versa. But treat them as
+        a starting point, never a guarantee. Different media, different pigments
+        and different gamuts mean the &ldquo;equivalent&rdquo; can shift in person.
+        Before any production run, sign off on a <strong>physical sample</strong> in
+        the actual material and finish.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ FAQ ============ */}
+  <section class="cmp-faq section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">Questions, answered</h2>
+      <dl class="cmp-faq__list">
+        {faq.map((item) => (
+          <div class="cmp-faq__item">
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  {/* ============ AFFILIATE (Amazon books — compliant rail) ============ */}
+  <div class="cmp-books">
+    <div class="container-wide">
+      <FurtherReading
+        title="Go deeper on colour"
+        intro="Systems like Pantone and RAL are the practical surface. These are the books on the theory, history and craft of colour underneath them."
+        limit={6}
+      />
+    </div>
+  </div>
+
+  {/* ============ RELATED ============ */}
+  <section class="cmp-related section">
+    <div class="container-prose">
+      <p class="eyebrow">Keep exploring</p>
+      <p class="cmp-related__lede">
+        Looking for colours that actually work together, not just a matching code?
+        Browse <a href="/browse">the palette archive</a>, explore individual
+        <a href="/colors">colours and their pairings</a>, or read
+        <a href="/methodology">how the archive is built</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cmp-hero {
+    padding-top: clamp(3rem, 8vw, 7rem);
+    padding-bottom: clamp(1.5rem, 5vw, 3.5rem);
+  }
+
+  .cmp-hero__inner {
+    max-width: 62rem;
+  }
+
+  .cmp-hero .eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .cmp-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.4vw + 0.75rem, 1.375rem);
+    line-height: 1.6;
+    color: var(--color-ink-700);
+    max-width: 60ch;
+    margin-top: 1.5rem;
+  }
+
+  .cmp-h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.2vw + 1rem, 2.125rem);
+    line-height: 1.2;
+    margin: 0 0 1.25rem;
+  }
+
+  /* ---- table ---- */
+  .cmp-table-wrap {
+    background-color: var(--color-paper-50);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .cmp-table-scroll {
+    overflow-x: auto;
+  }
+
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    min-width: 38rem;
+  }
+
+  .cmp-table th,
+  .cmp-table td {
+    text-align: left;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .cmp-table thead th {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    border-bottom: 2px solid var(--color-ink-900);
+  }
+
+  .cmp-table tbody th {
+    font-weight: 600;
+    color: var(--color-ink-900);
+    white-space: nowrap;
+  }
+
+  .cmp-table tbody td {
+    color: var(--color-ink-700);
+  }
+
+  /* ---- prose ---- */
+  .cmp-prose .cmp-h2 {
+    margin-top: 2.5rem;
+  }
+
+  .cmp-prose .cmp-h2:first-child {
+    margin-top: 0;
+  }
+
+  .cmp-prose p,
+  .cmp-list li {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    margin-bottom: 1.25rem;
+    max-width: 68ch;
+  }
+
+  .cmp-list {
+    padding-left: 1.25rem;
+  }
+
+  .cmp-list li {
+    margin-bottom: 0.875rem;
+  }
+
+  /* ---- faq ---- */
+  .cmp-faq {
+    background-color: var(--color-paper-50);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .cmp-faq__list {
+    margin: 0;
+  }
+
+  .cmp-faq__item {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-border);
+    max-width: 70ch;
+  }
+
+  .cmp-faq__item dt {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin-bottom: 0.5rem;
+  }
+
+  .cmp-faq__item dd {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-700);
+  }
+
+  /* ---- books wrapper ---- */
+  .cmp-books {
+    background-color: var(--color-paper-100);
+    border-block: 1px solid var(--color-border);
+  }
+
+  /* ---- related ---- */
+  .cmp-related .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .cmp-related__lede {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    max-width: 64ch;
+  }
+
+  .cmp-related__lede a {
+    color: var(--color-accent-500);
+    text-underline-offset: 3px;
+  }
+</style>
