@@ -1,0 +1,436 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+
+const title = "HSL vs LCH — which color model to use, and why";
+const description =
+  "HSL and LCH (and OKLCH) both describe color by hue, but they behave very differently. A plain-language comparison: what each is, why HSL lightness looks wrong, perceptual uniformity, wide-gamut, and which to reach for in modern CSS.";
+
+const pageUrl = new URL("/compare/hsl-vs-lch", Astro.site).toString();
+
+const faq = [
+  {
+    q: "What is the difference between HSL and LCH?",
+    a: "HSL is a simple cylindrical transform of the sRGB color space — intuitive, but not perceptually uniform and limited to the sRGB gamut. LCH is built on the perceptually-uniform CIELAB space: equal lightness values look equally bright across hues, and it can describe wide-gamut colors HSL cannot.",
+  },
+  {
+    q: "Is LCH better than HSL?",
+    a: "For modern, accessible, perceptually-even palettes and wide-gamut displays, yes. HSL is still fine for quick tweaks and universal legacy support. Many designers now prefer OKLCH, a refined version of LCH.",
+  },
+  {
+    q: "What is OKLCH?",
+    a: "OKLCH is a refined LCH built on the OKLab color space. It keeps LCH's perceptual uniformity but fixes hue shifts (such as the blue-to-purple drift), so gradients and palette ramps stay clean. It is supported in current CSS via the oklch() function.",
+  },
+  {
+    q: "Why does HSL lightness look wrong?",
+    a: "HSL 'lightness' is a geometric value in sRGB, not a perceptual one. HSL yellow at 50% lightness looks far brighter than HSL blue at 50% lightness, so equal numbers don't mean equal perceived brightness. LCH lightness is perceptual, so it behaves predictably across hues.",
+  },
+  {
+    q: "Can browsers display LCH colors?",
+    a: "Yes. The lch() and oklch() functions are part of CSS Color 4 and work in current browsers. Provide an sRGB fallback (hex or HSL) for older browsers that don't support them.",
+  },
+  {
+    q: "Can you convert HSL to LCH?",
+    a: "Yes — through the color math (sRGB → CIELAB → LCH), and tools do it automatically. But it isn't a clean 1:1 mapping: they parametrize different spaces, and LCH can express colors outside HSL's sRGB range.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: "HSL vs LCH — which color model to use, and why",
+    description,
+    url: pageUrl,
+    datePublished: "2026-06-20",
+    dateModified: "2026-06-20",
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    about: [
+      { "@type": "Thing", name: "HSL color model" },
+      { "@type": "Thing", name: "LCH color model" },
+      { "@type": "Thing", name: "OKLCH" },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: new URL("/", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Compare",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "HSL vs LCH",
+        item: pageUrl,
+      },
+    ],
+  },
+];
+
+const rows = [
+  { dim: "Full name", hsl: "Hue · Saturation · Lightness", lch: "Lightness · Chroma · Hue" },
+  { dim: "Based on", hsl: "sRGB (a cylindrical transform of it)", lch: "CIELAB — the CIE 1976 perceptual space" },
+  { dim: "Perceptually uniform", hsl: "No — equal numbers ≠ equal change", lch: "Yes — equal lightness looks equally bright" },
+  { dim: "Gamut", hsl: "sRGB only", lch: "Wide-gamut (Display P3, Rec.2020, beyond)" },
+  { dim: "What 'lightness' means", hsl: "Geometric, not perceptual", lch: "Perceived brightness" },
+  { dim: "CSS function", hsl: "hsl() — universal support", lch: "lch() / oklch() — CSS Color 4, modern browsers" },
+  { dim: "Best for", hsl: "Quick tweaks, legacy support", lch: "Accessible palettes, even gradients, wide gamut" },
+];
+---
+
+<BaseLayout title={title} description={description} image="/og-default.svg" jsonLd={jsonLd}>
+  {/* ============ HERO ============ */}
+  <section class="cmp-hero">
+    <div class="container-wide cmp-hero__inner">
+      <p class="eyebrow">Color models</p>
+      <h1 class="display-hero text-balance">HSL vs LCH</h1>
+      <p class="cmp-hero__lede">
+        Both describe a color by its hue — but they sit on completely different
+        foundations. The short version: <strong>HSL is easy but lies about
+        brightness; LCH (and its successor OKLCH) tells the truth.</strong> If
+        you've ever wondered why a row of HSL colors at the same "lightness"
+        looks wildly uneven, this is why — and what to use instead.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ AT-A-GLANCE TABLE ============ */}
+  <section class="cmp-table-wrap section">
+    <div class="container-wide">
+      <h2 class="cmp-h2">At a glance</h2>
+      <div class="cmp-table-scroll">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th scope="col">&nbsp;</th>
+              <th scope="col">HSL</th>
+              <th scope="col">LCH (&amp; OKLCH)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <th scope="row">{r.dim}</th>
+                <td>{r.hsl}</td>
+                <td>{r.lch}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  {/* ============ PROSE ============ */}
+  <section class="cmp-prose section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">What HSL is</h2>
+      <p>
+        <strong>HSL</strong> — Hue, Saturation, Lightness — is the color model
+        most designers meet first, because it's intuitive and built into CSS
+        (<code>hsl(210 100% 50%)</code>). Under the hood it's just a different
+        way of slicing the same <em>sRGB</em> space your screen already uses:
+        spin the hue around a wheel, push saturation in or out, slide lightness
+        up or down. That familiarity is its strength — and the source of its one
+        big flaw.
+      </p>
+      <p>
+        Because HSL is a purely geometric transform of sRGB, its numbers don't
+        match how your eye actually works. HSL yellow at 50% lightness looks
+        almost luminous; HSL blue at the same 50% looks dark and heavy. Build a
+        palette by holding "lightness" constant and you get a row of swatches
+        that jump around in brightness. HSL also can't describe any color
+        outside sRGB, so it has nothing to say about the wider gamuts modern
+        displays can show.
+      </p>
+
+      <h2 class="cmp-h2">What LCH is</h2>
+      <p>
+        <strong>LCH</strong> — Lightness, Chroma, Hue — is built on
+        <strong>CIELAB</strong>, a color space the CIE designed in 1976 to be
+        <em>perceptually uniform</em>: a given step in a value should look like
+        the same-sized step to a human eye, regardless of hue. So in LCH,
+        lightness is real perceived brightness, chroma is perceived colorfulness,
+        and hue is hue. Hold lightness constant across a palette and the swatches
+        actually look evenly bright.
+      </p>
+      <p>
+        LCH is also device-independent and wide-gamut: it can describe colors
+        beyond sRGB — into Display P3, Rec.2020 and further — which matters as
+        more screens render them. In CSS it appears as <code>lch()</code> and,
+        better, <strong>OKLCH</strong> (<code>oklch()</code>): a refinement built
+        on Björn Ottosson's OKLab that keeps the perceptual uniformity while
+        fixing LCH's hue shifts — most famously the blue that drifts toward
+        purple as it lightens. For modern work, OKLCH is usually the one to reach
+        for.
+      </p>
+
+      <h2 class="cmp-h2">The real difference</h2>
+      <p>
+        HSL answers "where is this color in sRGB?"; LCH answers "how does this
+        color <em>look</em>?" That's the whole story. HSL is convenient and
+        universally supported, but its lightness and saturation are
+        mathematical, not perceptual, so palettes built in it need eyeballing and
+        manual correction. LCH/OKLCH bakes the perception in, so even ramps,
+        predictable contrast, and clean gradients fall out almost for free — at
+        the cost of needing a modern browser (with an sRGB fallback for old ones).
+      </p>
+
+      <h2 class="cmp-h2">Which should you use?</h2>
+      <ul class="cmp-list">
+        <li>
+          <strong>Quick tweak, a legacy codebase, or maximum support?</strong>
+          HSL is fine. It works everywhere and everyone reads it.
+        </li>
+        <li>
+          <strong>Designing a real palette, a lightness ramp, or accessible
+          contrast?</strong> Use <strong>OKLCH</strong> (or LCH). Equal lightness
+          actually looks equal, so your scale is honest.
+        </li>
+        <li>
+          <strong>Targeting wide-gamut screens (P3) or smooth gradients?</strong>
+          LCH/OKLCH only — HSL can't express those colors, and HSL gradients dip
+          through muddy grey midpoints that OKLCH avoids.
+        </li>
+      </ul>
+
+      <h2 class="cmp-h2">Can you convert between them?</h2>
+      <p>
+        Yes — the math runs sRGB → CIELAB → LCH, and any modern color tool does
+        it for you. But it isn't a clean one-to-one swap: HSL and LCH parametrize
+        different spaces, so the "same" hue number won't land on the same color,
+        and LCH can describe colors that simply have no HSL equivalent. Convert
+        when you need to, but design in the model that fits the job.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ FAQ ============ */}
+  <section class="cmp-faq section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">Questions, answered</h2>
+      <dl class="cmp-faq__list">
+        {faq.map((item) => (
+          <div class="cmp-faq__item">
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  {/* ============ AFFILIATE (Amazon books — compliant rail) ============ */}
+  <div class="cmp-books">
+    <div class="container-wide">
+      <FurtherReading
+        title="Go deeper on color"
+        intro="Color models are the practical surface. These are the books on the theory, perception and history of color underneath them."
+        limit={6}
+      />
+    </div>
+  </div>
+
+  {/* ============ RELATED ============ */}
+  <section class="cmp-related section">
+    <div class="container-prose">
+      <p class="eyebrow">Keep exploring</p>
+      <p class="cmp-related__lede">
+        More color reference: <a href="/compare/pantone-vs-ral">Pantone vs RAL</a>,
+        browse <a href="/browse">the palette archive</a>, explore individual
+        <a href="/colors">colors and their pairings</a>, or read
+        <a href="/methodology">how the archive is built</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cmp-hero {
+    padding-top: clamp(3rem, 8vw, 7rem);
+    padding-bottom: clamp(1.5rem, 5vw, 3.5rem);
+  }
+
+  .cmp-hero__inner {
+    max-width: 62rem;
+  }
+
+  .cmp-hero .eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .cmp-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.4vw + 0.75rem, 1.375rem);
+    line-height: 1.6;
+    color: var(--color-ink-700);
+    max-width: 60ch;
+    margin-top: 1.5rem;
+  }
+
+  .cmp-h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.2vw + 1rem, 2.125rem);
+    line-height: 1.2;
+    margin: 0 0 1.25rem;
+  }
+
+  /* ---- table ---- */
+  .cmp-table-wrap {
+    background-color: var(--color-paper-50);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .cmp-table-scroll {
+    overflow-x: auto;
+  }
+
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    min-width: 38rem;
+  }
+
+  .cmp-table th,
+  .cmp-table td {
+    text-align: left;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .cmp-table thead th {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    border-bottom: 2px solid var(--color-ink-900);
+  }
+
+  .cmp-table tbody th {
+    font-weight: 600;
+    color: var(--color-ink-900);
+    white-space: nowrap;
+  }
+
+  .cmp-table tbody td {
+    color: var(--color-ink-700);
+  }
+
+  /* ---- prose ---- */
+  .cmp-prose .cmp-h2 {
+    margin-top: 2.5rem;
+  }
+
+  .cmp-prose .cmp-h2:first-child {
+    margin-top: 0;
+  }
+
+  .cmp-prose p,
+  .cmp-list li {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    margin-bottom: 1.25rem;
+    max-width: 68ch;
+  }
+
+  .cmp-prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+    background: var(--color-paper-100);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+
+  .cmp-list {
+    padding-left: 1.25rem;
+  }
+
+  .cmp-list li {
+    margin-bottom: 0.875rem;
+  }
+
+  /* ---- faq ---- */
+  .cmp-faq {
+    background-color: var(--color-paper-50);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .cmp-faq__list {
+    margin: 0;
+  }
+
+  .cmp-faq__item {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-border);
+    max-width: 70ch;
+  }
+
+  .cmp-faq__item dt {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin-bottom: 0.5rem;
+  }
+
+  .cmp-faq__item dd {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-700);
+  }
+
+  /* ---- books wrapper ---- */
+  .cmp-books {
+    background-color: var(--color-paper-100);
+    border-block: 1px solid var(--color-border);
+  }
+
+  /* ---- related ---- */
+  .cmp-related .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .cmp-related__lede {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    max-width: 64ch;
+  }
+
+  .cmp-related__lede a {
+    color: var(--color-accent-500);
+    text-underline-offset: 3px;
+  }
+</style>
