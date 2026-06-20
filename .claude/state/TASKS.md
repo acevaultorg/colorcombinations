@@ -300,7 +300,7 @@ Cumulative this resumed-session loop (PR #54 → #78): 25 PRs merged + deployed 
 
 Tier-S retrofit shipped this session (Adobe + Canva + Tailwind UI + Khroma + Skillshare + Domestika + Coursera + Printful + Printify on /shop). Tier-A pages below are queued for future ships. Each is a substantial PR; pick by Oracle weight + dependency order:
 
-- [ ] `P0` BUILD `/trends/color-trends-2026/` annual report — PR-pitchable; brand-tool affiliate; press-bait [archetype:annual_report_state_of_x × +85] [oracle:high — viral potential]
+- [x] `P0` SHIPPED 2026-06-20 `/trends/color-trends-2026/` annual report (14 authorities, cited, Amazon book CTAs, FAQ+ItemList schema, live+IndexNow) — PR-pitchable; brand-tool affiliate; press-bait [archetype:annual_report_state_of_x × +85] [oracle:high — viral potential]
 - [ ] `P1` BUILD `/compare/pantone-vs-ral/` + `/compare/hsl-vs-lch/` + `/compare/adobe-vs-coolors/` — color-tool comparison pages with structural Adobe + Coolors + Tailwind UI affiliate per page [archetype:comparison_vs_competitor_page × +60]
 - [ ] `P1` BUILD `/courses/` brand-identity course affiliate hub — uses LEARN_RESOURCES from monetization.ts [archetype:programmatic_page_with_unique_data × +55]
 - [ ] `P1` BUILD `/industry/[slug]/` programmatic — 8-12 pages: tech / finance / health / retail / hospitality / nonprofit / education / wellness — color theory by industry with brand-tool affiliate [archetype:programmatic_page_with_unique_data × +55]

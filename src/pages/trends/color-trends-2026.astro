@@ -1,0 +1,305 @@
+---
+/**
+ * /trends/color-trends-2026 — annual "State of Color 2026" report.
+ *
+ * Aggregates every major authority's official 2026 Color of the Year into one
+ * cited, AI-citable, press-pitchable page. The differentiated value vs. any
+ * single-authority article: ALL of them side by side + the synthesised
+ * meta-trend. High book-purchase intent → FurtherReading (Amazon, tag
+ * colorcombinations-20).
+ *
+ * Zero fabrication: every NAME / CODE / DESCRIPTION is the authority's own,
+ * cited in the Sources section. Swatch hexes are honest sRGB approximations
+ * (paint + Pantone colours don't map to one exact hex) — labelled as such;
+ * the authoritative reference is each brand's official colour code (linked).
+ * Confirmed exact hexes: Pantone Cloud Dancer #F0EEE9, BM Silhouette #57504c.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+
+const title = "The 2026 Colors of the Year — Every Authority's Pick";
+const description =
+  "Every major authority's official 2026 Color of the Year in one place — Pantone Cloud Dancer, WGSN/Coloro Transformative Teal, and the paint brands (Benjamin Moore, Sherwin-Williams, Behr, Glidden and more) — plus the meta-trend tying 2026 together.";
+
+const siteUrl = "https://colorcombinations.org/";
+const pageUrl = "https://colorcombinations.org/trends/color-trends-2026/";
+const PUBLISHED = "2026-06-20T00:00:00Z";
+const MODIFIED = new Date().toISOString();
+
+interface Pick {
+  brand: string;
+  name: string;
+  code: string;
+  hex: string;
+  exact: boolean;
+  family: string;
+  blurb: string;
+  url: string;
+}
+
+// Verified picks (names/codes/descriptions are each authority's own — see Sources).
+const PICKS: Pick[] = [
+  { brand: "Pantone", name: "Cloud Dancer", code: "PANTONE 11-4201", hex: "#F0EEE9", exact: true, family: "Serene white", blurb: "A lofty, serene white symbolising calm, clarity and spaciousness — the first true white named Color of the Year since the program began in 1999.", url: "https://www.pantone.com" },
+  { brand: "WGSN + Coloro", name: "Transformative Teal", code: "Coloro 100-31-15", hex: "#1C7E84", exact: false, family: "Blue-green teal", blurb: "A fluid fusion of dependable blue and aquatic green for a year of redirection — cooling, regenerative and Earth-first.", url: "https://www.wgsn.com/en/blog/colour-year-2026-transformative-teal" },
+  { brand: "Benjamin Moore", name: "Silhouette", code: "AF-655", hex: "#57504C", exact: true, family: "Burnt-umber charcoal", blurb: "A burnt umber with delicate notes of charcoal — a warm, grounding alternative to black.", url: "https://www.benjaminmoore.com" },
+  { brand: "Sherwin-Williams", name: "Universal Khaki", code: "SW 6150", hex: "#CBBBA1", exact: false, family: "Warm tan neutral", blurb: "The essential neutral — a warm, earthy, creamy tan anchoring a tailored, timeless mood.", url: "https://www.sherwin-williams.com" },
+  { brand: "Behr", name: "Hidden Gem", code: "N430-6A", hex: "#5E7A72", exact: false, family: "Smokey jade", blurb: "A smokey, desaturated jade — mysterious elegance that holds a full wall.", url: "https://www.behr.com" },
+  { brand: "Valspar", name: "Warm Eucalyptus", code: "—", hex: "#98A189", exact: false, family: "Gray-green", blurb: "A muted, earthy gray-green meant to be restful to the eye and restorative to the soul.", url: "https://www.valspar.com" },
+  { brand: "Glidden", name: "Warm Mahogany", code: "PPG1060-7", hex: "#7B473C", exact: false, family: "Red-brown", blurb: "A rich, grounded red-brown evoking rest, connection and creativity.", url: "https://www.glidden.com" },
+  { brand: "Dunn-Edwards", name: "Midnight Garden", code: "—", hex: "#39463C", exact: false, family: "Deep green", blurb: "A deep, muted green of quiet elegance with earthy undertones and timeless appeal.", url: "https://www.dunnedwards.com" },
+  { brand: "Dutch Boy", name: "Melodious Ivory", code: "—", hex: "#EEE6D2", exact: false, family: "Warm cream", blurb: "A warm cream with a nostalgic, elevated vibe — a base for layering bolder accents.", url: "https://www.dutchboygroup.com" },
+  { brand: "Graham & Brown", name: "Divine Damson", code: "—", hex: "#4C2E48", exact: false, family: "Deep purple", blurb: "A deep, saturated damson purple — luxury and sophistication with timeless versatility.", url: "https://www.grahambrown.com" },
+  { brand: "C2 Paint", name: "Epernay", code: "—", hex: "#D6B96C", exact: false, family: "Soft ochre", blurb: "A soft, earthy ochre-yellow inspired by craft, artistry and European interiors.", url: "https://www.c2paint.com" },
+  { brand: "Minwax", name: "Special Walnut", code: "—", hex: "#6B4A30", exact: false, family: "Walnut wood", blurb: "A medium walnut wood-stain tone, riding the rustic wood-drenching trend.", url: "https://www.minwax.com" },
+  { brand: "Krylon", name: "Coffee Bean", code: "—", hex: "#4A3B30", exact: false, family: "Dark brown", blurb: "A dark, natural brown spray tone inspired by elements of the earth.", url: "https://www.krylon.com" },
+  { brand: "Rust-Oleum", name: "Satin Lagoon", code: "—", hex: "#2E7C84", exact: false, family: "Teal", blurb: "A tranquil-yet-vibrant teal that pairs with both neutrals and bold hues.", url: "https://www.rustoleum.com" },
+];
+
+// Luminance → readable swatch text colour (no fabrication; pure math).
+const textOn = (hex: string): string => {
+  const c = hex.replace("#", "");
+  const r = parseInt(c.slice(0, 2), 16);
+  const g = parseInt(c.slice(2, 4), 16);
+  const b = parseInt(c.slice(4, 6), 16);
+  return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? "#1a1a1a" : "#ffffff";
+};
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "The 2026 Colors of the Year — Every Authority's Pick",
+    description,
+    url: pageUrl,
+    inLanguage: "en",
+    datePublished: PUBLISHED,
+    dateModified: MODIFIED,
+    author: { "@id": `${siteUrl}#organization` },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "2026 Colors of the Year",
+    description: "Official 2026 Color of the Year selections from leading colour and paint authorities.",
+    numberOfItems: PICKS.length,
+    itemListElement: PICKS.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: `${p.brand}: ${p.name}${p.code !== "—" ? ` (${p.code})` : ""}`,
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is the Pantone Color of the Year 2026?",
+        acceptedAnswer: { "@type": "Answer", text: "Pantone's 2026 Color of the Year is Cloud Dancer (PANTONE 11-4201), a soft, serene white — the first true white ever chosen since the program began in 1999." },
+      },
+      {
+        "@type": "Question",
+        name: "What is the 2026 Color of the Year?",
+        acceptedAnswer: { "@type": "Answer", text: "There is no single one — each authority names its own. Pantone chose Cloud Dancer (a serene white); WGSN and Coloro chose Transformative Teal; and the paint brands lean toward warm earthy neutrals and browns, including Benjamin Moore Silhouette, Sherwin-Williams Universal Khaki and Glidden Warm Mahogany." },
+      },
+      {
+        "@type": "Question",
+        name: "What is the overall 2026 color trend?",
+        acceptedAnswer: { "@type": "Answer", text: "Two linked moods: serene, near-weightless light (Pantone Cloud Dancer, Dutch Boy Melodious Ivory) and grounded, tactile earth tones (warm browns, deep greens and smokey teals). Together they read as an antidote to digital fatigue — a pull toward calm, nature and the hand-made." },
+      },
+      {
+        "@type": "Question",
+        name: "What are the 2026 paint colors of the year?",
+        acceptedAnswer: { "@type": "Answer", text: "Benjamin Moore Silhouette (AF-655), Sherwin-Williams Universal Khaki (SW 6150), Behr Hidden Gem (N430-6A), Valspar Warm Eucalyptus, Glidden Warm Mahogany (PPG1060-7), Dunn-Edwards Midnight Garden and Dutch Boy Melodious Ivory." },
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Trends", item: `${siteUrl}trends/color-trends-2026/` },
+      { "@type": "ListItem", position: 3, name: "Colors of the Year 2026" },
+    ],
+  },
+];
+
+const featured = PICKS.slice(0, 2);
+const grid = PICKS.slice(2);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={pageUrl}
+  type="article"
+  publishedTime={PUBLISHED}
+  modifiedTime={MODIFIED}
+  keywords={[
+    "2026 color of the year",
+    "color trends 2026",
+    "Pantone color of the year 2026",
+    "2026 paint colors of the year",
+    "Cloud Dancer",
+    "Transformative Teal",
+  ]}
+  jsonLd={jsonLd}
+>
+  <article class="coty">
+    <header class="coty-hero container-narrow">
+      <p class="eyebrow">Color Report · 2026</p>
+      <h1 class="display-hero text-balance">The 2026 Colors of the Year</h1>
+      <p class="coty-hero__lede">
+        Every major authority names its own Color of the Year — and for 2026
+        they split into two camps that tell one story: <strong>serene, weightless
+        light</strong> and <strong>grounded, tactile earth</strong>. Here is the
+        complete set, side by side, with the meta-trend that ties them together.
+      </p>
+      <p class="coty-hero__meta">
+        Last verified <time datetime={PUBLISHED.slice(0, 10)}>20 June 2026</time>
+        · {PICKS.length} authorities · sources cited below
+      </p>
+    </header>
+
+    <section class="coty-featured container-narrow" aria-label="The two global picks">
+      {featured.map((p) => (
+        <a class="coty-feature" href={p.url} target="_blank" rel="noopener noreferrer">
+          <span class="coty-feature__swatch" style={`background:${p.hex};color:${textOn(p.hex)}`}>
+            <span class="coty-feature__hex">{p.hex}{!p.exact && <em> approx.</em>}</span>
+          </span>
+          <span class="coty-feature__body">
+            <span class="coty-feature__brand">{p.brand}</span>
+            <span class="coty-feature__name">{p.name}</span>
+            {p.code !== "—" && <span class="coty-feature__code">{p.code}</span>}
+            <span class="coty-feature__blurb">{p.blurb}</span>
+          </span>
+        </a>
+      ))}
+    </section>
+
+    <section class="container-narrow">
+      <h2 id="all-picks">Every 2026 Color of the Year</h2>
+      <p class="coty-note">
+        Swatches are approximate sRGB renderings — physical paint and Pantone
+        colours don't map to a single exact hex, so each brand's official colour
+        code (linked) is the source of truth. Cloud Dancer and Silhouette show
+        confirmed values.
+      </p>
+      <ul class="coty-grid" role="list">
+        {grid.map((p) => (
+          <li class="coty-card">
+            <a href={p.url} target="_blank" rel="noopener noreferrer">
+              <span class="coty-card__swatch" style={`background:${p.hex};color:${textOn(p.hex)}`}>
+                <span class="coty-card__hex">{p.hex}{!p.exact && <em> ~</em>}</span>
+              </span>
+              <span class="coty-card__brand">{p.brand}</span>
+              <span class="coty-card__name">{p.name}{p.code !== "—" && <span class="coty-card__code"> · {p.code}</span>}</span>
+              <span class="coty-card__blurb">{p.blurb}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="coty-trend container-narrow">
+      <h2 id="meta-trend">The 2026 meta-trend: calm earth</h2>
+      <p>
+        Read together, 2026's picks aren't fourteen different directions — they're
+        two sides of one mood. On one side is <strong>serene, near-weightless
+        light</strong>: Pantone's Cloud Dancer is the first true white it has ever
+        crowned, echoed by Dutch Boy's Melodious Ivory and Sherwin-Williams'
+        Universal Khaki. On the other is <strong>grounded, tactile earth</strong> —
+        warm browns (Benjamin Moore Silhouette, Glidden Warm Mahogany, Minwax
+        Special Walnut), deep greens (Dunn-Edwards Midnight Garden, Valspar Warm
+        Eucalyptus) and smokey blue-greens (WGSN/Coloro's Transformative Teal,
+        Behr's Hidden Gem, Rust-Oleum's Satin Lagoon).
+      </p>
+      <p>
+        Both camps point the same way: away from the saturated, screen-bright
+        palettes of recent years and toward <strong>calm, nature and the
+        hand-made</strong> — widely read as an antidote to digital fatigue. The
+        teals carry an explicit Earth-first, regenerative message; the whites and
+        creams make space; the browns and walnuts bring warmth you can almost
+        touch.
+      </p>
+      <p class="coty-cross">
+        Want to build a palette around a 2026 colour? <a href="/colors-that-go-with/">Find what goes with any colour</a>,
+        <a href="/browse/">browse the historical archive</a>, or
+        <a href="/palettes/">explore curated palettes</a> for warm neutrals,
+        deep greens and teals.
+      </p>
+    </section>
+
+    <section class="container-narrow">
+      <FurtherReading
+        title="Read more on colour"
+        intro="The thinking behind these picks — colour theory, forecasting and the language of palettes. Books we recommend on Amazon."
+        limit={6}
+      />
+    </section>
+
+    <section class="coty-sources container-narrow">
+      <h2 id="sources">Sources &amp; methodology</h2>
+      <p>
+        Each colour's name, code and description is the authority's own. Selected references:
+      </p>
+      <ul class="coty-sources__list">
+        <li>Pantone Color of the Year 2026, Cloud Dancer — announced Dec 2025 (<a href="https://www.npr.org/2025/12/04/nx-s1-5632651/pantones-color-of-the-year-2026-white" target="_blank" rel="noopener noreferrer">NPR</a>).</li>
+        <li>WGSN + Coloro Colour of the Year 2026, Transformative Teal (<a href="https://www.wgsn.com/en/blog/colour-year-2026-transformative-teal" target="_blank" rel="noopener noreferrer">WGSN</a>).</li>
+        <li>2026 paint Colors of the Year overview (<a href="https://www.hgtv.com/decorating/color/colors-of-the-year-pictures" target="_blank" rel="noopener noreferrer">HGTV</a>, <a href="https://www.younghouselove.com/2026-color-of-the-year/" target="_blank" rel="noopener noreferrer">Young House Love</a>, <a href="https://www.nahb.org/blog/2025/12/2026-colors-of-the-year" target="_blank" rel="noopener noreferrer">NAHB</a>).</li>
+        <li>Benjamin Moore Silhouette AF-655 hex reference (<a href="https://encycolorpedia.com/57504c" target="_blank" rel="noopener noreferrer">Encycolorpedia</a>).</li>
+        <li>2026 selections design context (<a href="https://www.archdaily.com/1037721/2026-color-of-the-year-selections-highlight-tonal-depth-and-spatial-calm" target="_blank" rel="noopener noreferrer">ArchDaily</a>).</li>
+      </ul>
+      <p class="coty-method">
+        Swatch hexes are approximate sRGB renderings except Pantone Cloud Dancer
+        (#F0EEE9) and Benjamin Moore Silhouette (#57504C), which are confirmed.
+        For exact colour matching, use each brand's official code at the linked source.
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .coty-hero { padding: 3rem 0 1.5rem; }
+  .coty-hero__lede { font-size: 1.2rem; line-height: 1.6; max-width: 46ch; margin-top: 1rem; }
+  .coty-hero__meta { margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; }
+  .coty section { margin-bottom: 2.5rem; }
+  .coty h2 { margin-top: 2.5rem; }
+  .coty-note, .coty-method { font-size: 0.85rem; opacity: 0.72; line-height: 1.55; max-width: 60ch; }
+
+  .coty-featured { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 1.5rem auto; }
+  .coty-feature { display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.1); border-radius: 14px; overflow: hidden; text-decoration: none; color: inherit; transition: transform .15s ease, box-shadow .15s ease; }
+  .coty-feature:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+  .coty-feature__swatch { aspect-ratio: 16/7; display: flex; align-items: flex-end; padding: 0.75rem; }
+  .coty-feature__hex { font-size: 0.78rem; font-variant-numeric: tabular-nums; opacity: 0.85; }
+  .coty-feature__hex em { font-style: normal; opacity: 0.7; }
+  .coty-feature__body { padding: 1rem 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 0.2rem; }
+  .coty-feature__brand { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.65; }
+  .coty-feature__name { font-size: 1.35rem; font-weight: 650; }
+  .coty-feature__code { font-size: 0.82rem; opacity: 0.6; font-variant-numeric: tabular-nums; }
+  .coty-feature__blurb { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.55; }
+
+  .coty-grid { list-style: none; padding: 0; margin: 1.25rem 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+  .coty-card a { display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; height: 100%; transition: transform .15s ease, box-shadow .15s ease; }
+  .coty-card a:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+  .coty-card__swatch { aspect-ratio: 5/3; display: flex; align-items: flex-end; padding: 0.55rem; }
+  .coty-card__hex { font-size: 0.72rem; font-variant-numeric: tabular-nums; opacity: 0.85; }
+  .coty-card__hex em { font-style: normal; opacity: 0.7; }
+  .coty-card__brand { padding: 0.7rem 0.85rem 0; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.62; }
+  .coty-card__name { padding: 0.1rem 0.85rem 0; font-size: 1.02rem; font-weight: 620; }
+  .coty-card__code { font-weight: 400; opacity: 0.6; font-size: 0.82rem; }
+  .coty-card__blurb { padding: 0.45rem 0.85rem 1rem; font-size: 0.86rem; line-height: 1.5; opacity: 0.85; }
+
+  .coty-trend p { font-size: 1.02rem; line-height: 1.7; max-width: 62ch; }
+  .coty-cross { font-size: 0.95rem; }
+  .coty-sources__list { font-size: 0.9rem; line-height: 1.6; }
+
+  @media (max-width: 640px) {
+    .coty-featured { grid-template-columns: 1fr; }
+    .coty-hero { padding: 2rem 0 1rem; }
+    .coty-hero__lede { font-size: 1.08rem; }
+  }
+</style>
