@@ -1,0 +1,249 @@
+---
+/**
+ * /color-psychology — an honest, design-grounded guide to colour psychology.
+ *
+ * Differentiator vs. the crowded "colour psychology" SERP: most content
+ * overstates the science. This page is explicit that these are cultural +
+ * contextual ASSOCIATIONS, not hard psychological laws — which is both more
+ * honest (E-E-A-T) and more citable. AEO-structured (per-hue quote-ready
+ * reference + FAQPage). Monetised via FurtherReading (Amazon, tag
+ * colorcombinations-20). Ties to the site's Wada archive for differentiation.
+ *
+ * Zero fabrication: claims are framed as associations / design conventions,
+ * with the weak-evidence caveat stated up front. Swatches are representative
+ * hue samples (colour psychology operates on hue families, not exact hex).
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+
+const title = "Color Psychology: An Honest, Designer's Guide";
+const description =
+  "What colors actually communicate in design — the cultural and contextual associations behind red, blue, green and the rest, honestly framed (the science is mixed) and grounded in real palette practice.";
+
+const siteUrl = "https://colorcombinations.org/";
+const pageUrl = "https://colorcombinations.org/color-psychology/";
+const PUBLISHED = "2026-06-21T00:00:00Z";
+const MODIFIED = new Date().toISOString();
+
+interface Hue {
+  name: string;
+  hex: string;
+  associations: string;
+  worksFor: string;
+  caveat: string;
+}
+
+// Representative hue samples — colour psychology works on hue families, not
+// exact hex. Associations are Western-design conventions (stated as such).
+const HUES: Hue[] = [
+  { name: "Red", hex: "#D32F2F", associations: "Energy, urgency, appetite, passion, alarm.", worksFor: "Calls-to-action, sales, food, sport, anything that wants to feel immediate.", caveat: "Reads as warning or error as easily as excitement — context decides which." },
+  { name: "Orange", hex: "#F57C00", associations: "Warmth, friendliness, affordability, playfulness, confidence.", worksFor: "Approachable brands, CTAs that want energy without red's aggression, youth and leisure.", caveat: "Can tip into 'cheap' or 'budget' if oversaturated." },
+  { name: "Yellow", hex: "#FBC02D", associations: "Optimism, attention, clarity, caution.", worksFor: "Highlights, optimism-led brands, signage — it's the most visible hue to the eye.", caveat: "Fatigues fast and can feel anxious in large fields; the hardest hue to read text on." },
+  { name: "Green", hex: "#388E3C", associations: "Nature, health, growth, money, permission, calm.", worksFor: "Wellness, finance, sustainability, 'go' actions, anything organic.", caveat: "Specific greens swing between fresh (lime) and institutional (olive/forest)." },
+  { name: "Blue", hex: "#1976D2", associations: "Trust, stability, calm, competence, distance.", worksFor: "Finance, tech, healthcare, B2B — the default 'safe' brand colour for good reason.", caveat: "So overused for trust it can read as generic or cold; appetite-suppressing for food." },
+  { name: "Purple", hex: "#7B1FA2", associations: "Luxury, creativity, spirituality, royalty, mystery.", worksFor: "Premium and beauty brands, creative tools, anything wanting to feel rare.", caveat: "Historically tied to wealth (the dye was costly) — can feel either opulent or new-age." },
+  { name: "Pink", hex: "#D81B60", associations: "Playfulness, romance, modernity, energy (hot pink) or softness (pastel).", worksFor: "Beauty, youth, challenger brands using it to feel bold and current.", caveat: "Carries strong gendered baggage in some markets — use deliberately, not by default." },
+  { name: "Brown", hex: "#6D4C41", associations: "Earthiness, craft, reliability, warmth, the hand-made.", worksFor: "Artisanal, organic, heritage and outdoor brands — and squarely on-trend for 2026.", caveat: "Easily reads as dull or dated without warm light and good texture around it." },
+  { name: "Black", hex: "#212121", associations: "Sophistication, authority, luxury, modernity, weight.", worksFor: "Premium, fashion, minimalist and tech brands; powerful for typography and contrast.", caveat: "Pure black on pure white is harsh on screens — most good 'black' is a near-black." },
+  { name: "White", hex: "#FAFAFA", associations: "Cleanliness, simplicity, space, honesty, calm.", worksFor: "Minimalism, healthcare, premium 'breathing room', and the dominant 2026 mood.", caveat: "Negative space is a design decision, not an absence — empty ≠ finished." },
+  { name: "Gray", hex: "#757575", associations: "Neutrality, balance, professionalism, restraint.", worksFor: "The connective tissue of almost every palette; UI, type and quiet backgrounds.", caveat: "All gray and no accent reads as indecisive or lifeless — it's a supporting role." },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Color Psychology: An Honest, Designer's Guide",
+    description,
+    url: pageUrl,
+    inLanguage: "en",
+    datePublished: PUBLISHED,
+    dateModified: MODIFIED,
+    author: { "@id": `${siteUrl}#organization` },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Is color psychology real or a myth?",
+        acceptedAnswer: { "@type": "Answer", text: "Both, in part. Strong universal 'colour X causes emotion Y' claims are not well supported by science — effects are small and heavily shaped by culture, context, saturation and personal experience. But colour associations are real and consistent enough within a culture to be a genuinely useful design tool, as long as you treat them as conventions, not laws." },
+      },
+      {
+        "@type": "Question",
+        name: "What color is best for a call-to-action button?",
+        acceptedAnswer: { "@type": "Answer", text: "There is no single best colour. What matters is contrast — the button should stand out from everything around it. A warm, saturated hue like red or orange often works because it draws the eye, but a green or blue CTA can outperform red on a page that is already warm. Test against your own palette rather than copying a rule." },
+      },
+      {
+        "@type": "Question",
+        name: "What does the color blue mean in branding?",
+        acceptedAnswer: { "@type": "Answer", text: "Blue is widely associated with trust, stability, calm and competence, which is why finance, tech and healthcare brands lean on it. The trade-off is that it is so common for 'trust' that it can read as generic, and it tends to suppress appetite, so it is a weak choice for food." },
+      },
+      {
+        "@type": "Question",
+        name: "Do colors mean the same thing in every culture?",
+        acceptedAnswer: { "@type": "Answer", text: "No. The same hue can carry opposite meanings across cultures — white signals purity in much of the West but mourning in parts of East Asia, and red means luck and celebration in China while signalling danger elsewhere. Always check colour meaning for the specific audience you are designing for." },
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Color Psychology" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={pageUrl}
+  type="article"
+  publishedTime={PUBLISHED}
+  modifiedTime={MODIFIED}
+  keywords={[
+    "color psychology",
+    "what colors mean",
+    "color meaning in design",
+    "color psychology in branding",
+    "is color psychology real",
+  ]}
+  jsonLd={jsonLd}
+>
+  <article class="cpsy">
+    <header class="cpsy-hero container-narrow">
+      <p class="eyebrow">Guide</p>
+      <h1 class="display-hero text-balance">Color psychology, honestly.</h1>
+      <p class="cpsy-hero__lede">
+        Colour shapes how a design feels — but not in the tidy, universal way
+        most articles claim. Here's what colours actually communicate in
+        practice, framed as the cultural <em>associations</em> they are, not
+        the psychological laws they aren't.
+      </p>
+      <p class="cpsy-hero__meta">
+        Last verified <time datetime="2026-06-21">21 June 2026</time> · grounded in design practice + the historical <a href="/methodology/">Wada archive</a>
+      </p>
+    </header>
+
+    <section class="container-narrow cpsy-intro">
+      <h2 id="is-it-real">First, the honest part</h2>
+      <p>
+        If you came here for "red increases urgency by 21%," this isn't that
+        page. The strong version of colour psychology — that a hue reliably
+        triggers a specific emotion in everyone — is <strong>not well supported
+        by evidence</strong>. Measured effects are small, and they're swamped by
+        culture, context, saturation, what surrounds the colour, and personal
+        memory.
+      </p>
+      <p>
+        The useful version is quieter and true: within a culture, colours carry
+        <strong>consistent associations</strong>, and design is the craft of
+        using those associations deliberately. A bank uses blue not because blue
+        chemically calms you, but because — in its market — blue has come to
+        signal stability, and meeting that expectation builds trust. Treat the
+        guide below as a vocabulary of conventions, not a rulebook.
+      </p>
+    </section>
+
+    <section class="container-narrow">
+      <h2 id="hues">What each colour tends to say</h2>
+      <p class="cpsy-note">Associations below are Western-design conventions. Saturation, context and culture can change or reverse them.</p>
+      <ul class="cpsy-grid" role="list">
+        {HUES.map((h) => (
+          <li class="cpsy-card">
+            <span class="cpsy-card__swatch" style={`background:${h.hex}`} aria-hidden="true"></span>
+            <div class="cpsy-card__body">
+              <h3 class="cpsy-card__name">{h.name}</h3>
+              <p class="cpsy-card__assoc"><strong>Associations:</strong> {h.associations}</p>
+              <p class="cpsy-card__works"><strong>Works for:</strong> {h.worksFor}</p>
+              <p class="cpsy-card__caveat"><strong>Watch out:</strong> {h.caveat}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="container-narrow cpsy-context">
+      <h2 id="context">Context changes everything</h2>
+      <p>
+        The single biggest mistake in applying colour psychology is reading a
+        hue in isolation. Four things move the meaning more than the hue itself:
+      </p>
+      <ul class="cpsy-bullets">
+        <li><strong>Saturation &amp; lightness.</strong> A pale, dusty red whispers heritage; a pure, bright red shouts sale. Same hue, opposite message.</li>
+        <li><strong>Combination.</strong> Green beside gold reads as luxury; green beside brown reads as organic; green beside red reads as Christmas. Meaning lives in the <a href="/colors-that-go-with/">pairing</a>.</li>
+        <li><strong>Culture.</strong> White is purity in much of the West and mourning in parts of East Asia; red is danger in one place and luck in another. Always design for the specific audience.</li>
+        <li><strong>Context &amp; expectation.</strong> The "right" CTA colour isn't red or green — it's whichever hue <em>contrasts</em> with the rest of your page. Standing out beats any colour myth.</li>
+      </ul>
+    </section>
+
+    <section class="container-narrow cpsy-history">
+      <h2 id="history">A longer view: colour as a system</h2>
+      <p>
+        Long before "colour psychology" was a marketing phrase, designers
+        treated colour as a structured language. Sanzo Wada's 1933
+        <em>Dictionary of Color Combinations</em> — the historical archive this
+        site is built on — encoded mood through <em>combination</em> rather than
+        single hues, naming hundreds of palettes for the feelings they evoke.
+        It's a useful corrective: the emotion was never in one colour, it was in
+        the relationships. Browse the <a href="/browse/">full archive</a> or
+        explore <a href="/palettes/">curated palettes</a> to see how historical
+        designers built feeling out of restraint and pairing.
+      </p>
+    </section>
+
+    <section class="container-narrow">
+      <FurtherReading
+        title="Go deeper on colour"
+        intro="The books we return to on colour theory, perception and the language of palettes. Recommended on Amazon."
+        limit={6}
+      />
+    </section>
+
+    <section class="container-narrow cpsy-sources">
+      <h2 id="approach">Our approach</h2>
+      <p class="cpsy-method">
+        We present colour associations as design conventions, not scientific
+        laws, because that's what the evidence supports. Where a strong causal
+        claim is commonly repeated, we flag the uncertainty rather than pass it
+        on. Swatches are representative hue samples — colour psychology operates
+        on hue families, not exact values — and exact palette work belongs on
+        the <a href="/colors-that-go-with/">combination</a> and
+        <a href="/palettes/">palette</a> pages.
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .cpsy-hero { padding: 3rem 0 1.5rem; }
+  .cpsy-hero__lede { font-size: 1.2rem; line-height: 1.6; max-width: 48ch; margin-top: 1rem; }
+  .cpsy-hero__meta { margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; }
+  .cpsy section { margin-bottom: 2.5rem; }
+  .cpsy h2 { margin-top: 2.5rem; }
+  .cpsy p { line-height: 1.7; max-width: 62ch; }
+  .cpsy-intro p, .cpsy-context p, .cpsy-history p { font-size: 1.02rem; }
+  .cpsy-note, .cpsy-method { font-size: 0.85rem; opacity: 0.72; line-height: 1.55; max-width: 62ch; }
+
+  .cpsy-grid { list-style: none; padding: 0; margin: 1.25rem 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  .cpsy-card { display: flex; gap: 0.9rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 0.9rem; }
+  .cpsy-card__swatch { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 9px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); }
+  .cpsy-card__body { min-width: 0; }
+  .cpsy-card__name { margin: 0 0 0.3rem; font-size: 1.1rem; }
+  .cpsy-card__body p { margin: 0.2rem 0; font-size: 0.86rem; line-height: 1.5; max-width: none; }
+
+  .cpsy-bullets { line-height: 1.7; max-width: 62ch; }
+  .cpsy-bullets li { margin-bottom: 0.5rem; }
+
+  @media (max-width: 640px) {
+    .cpsy-hero { padding: 2rem 0 1rem; }
+    .cpsy-hero__lede { font-size: 1.08rem; }
+    .cpsy-grid { grid-template-columns: 1fr; }
+  }
+</style>

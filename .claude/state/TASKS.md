@@ -301,14 +301,14 @@ Cumulative this resumed-session loop (PR #54 → #78): 25 PRs merged + deployed 
 Tier-S retrofit shipped this session (Adobe + Canva + Tailwind UI + Khroma + Skillshare + Domestika + Coursera + Printful + Printify on /shop). Tier-A pages below are queued for future ships. Each is a substantial PR; pick by Oracle weight + dependency order:
 
 - [x] `P0` SHIPPED 2026-06-20 `/trends/color-trends-2026/` annual report (14 authorities, cited, Amazon book CTAs, FAQ+ItemList schema, live+IndexNow) — PR-pitchable; brand-tool affiliate; press-bait [archetype:annual_report_state_of_x × +85] [oracle:high — viral potential]
-- [ ] `P1` BUILD `/compare/pantone-vs-ral/` + `/compare/hsl-vs-lch/` + `/compare/adobe-vs-coolors/` — color-tool comparison pages with structural Adobe + Coolors + Tailwind UI affiliate per page [archetype:comparison_vs_competitor_page × +60]
+- [x] `P1` (already built — pages exist) `/compare/pantone-vs-ral/` + `/compare/hsl-vs-lch/` + `/compare/adobe-vs-coolors/` — color-tool comparison pages with structural Adobe + Coolors + Tailwind UI affiliate per page [archetype:comparison_vs_competitor_page × +60]
 - [ ] `P1` BUILD `/courses/` brand-identity course affiliate hub — uses LEARN_RESOURCES from monetization.ts [archetype:programmatic_page_with_unique_data × +55]
 - [ ] `P1` BUILD `/industry/[slug]/` programmatic — 8-12 pages: tech / finance / health / retail / hospitality / nonprofit / education / wellness — color theory by industry with brand-tool affiliate [archetype:programmatic_page_with_unique_data × +55]
 - [ ] `P1` BUILD `/pod/` print-on-demand landing — uses POD_PROVIDERS from monetization.ts; how-to guide for taking Wada palette into Printful/Printify [archetype:editorial_curation_depth × +50]
 - [ ] `P1` BUILD `/tailwind/` Tailwind color builder — interactive tool that converts Wada palette → Tailwind config; Tailwind UI affiliate [archetype:shareable_tool_calculator × +65]
 - [ ] `P1` BUILD `/wcag/` deep contrast calculator (separate from /tools/contrast-checker starter) — accessibility-tool affiliate [archetype:shareable_tool_calculator × +65]
 - [ ] `P1` BUILD `/names/` color-name database — LLM-citation magnet [archetype:programmatic_page_with_unique_data × +55]
-- [ ] `P1` BUILD `/color-psychology/` deep guide + design-course affiliate [archetype:editorial_curation_depth × +50]
+- [x] `P1` SHIPPED 2026-06-21 `/color-psychology/` honest design guide (11-hue ref, FAQ schema, book CTAs, live) + design-course affiliate [archetype:editorial_curation_depth × +50]
 - [ ] `P1` BUILD `/material-design/` MD palette + Figma/Adobe affiliate [archetype:comparison_vs_competitor_page × +60]
 - [ ] `P2` BUILD `/brands/` favorite-colors-of-brands database — long-tail SEO [archetype:programmatic_page_with_unique_data × +55]
 - [ ] `P2` BUILD `/accessibility/color-blind-tools/` comparison [archetype:comparison_vs_competitor_page × +60]
