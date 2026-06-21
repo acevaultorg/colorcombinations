@@ -2,6 +2,7 @@
 import "@/styles/global.css";
 import SiteHeader from "@components/SiteHeader.astro";
 import SiteFooter from "@components/SiteFooter.astro";
+import FeedbackWidget from "@components/FeedbackWidget.astro";
 import CookieConsent from "@components/CookieConsent.astro";
 import { ANALYTICS } from "@/config/monetization";
 
@@ -246,6 +247,7 @@ const jsonLdArray = jsonLd
     <main id="main" class="site-main">
       <slot />
     </main>
+    <FeedbackWidget />
     <SiteFooter />
     <CookieConsent />
 

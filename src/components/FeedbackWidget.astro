@@ -1,0 +1,86 @@
+---
+// Palette-request capture — additive + harm-free, NOT a generic "rate this" box.
+//
+// Why this and not thumbs: the site already captures content gaps from
+// active-seekers via the header search (SearchNoResults + scrubbed query →
+// Plausible/Clarity, see BaseLayout.astro). This widget captures the *other*
+// population — visitors who read a page and leave (the 39% who bounce) without
+// searching — by asking what combination they wanted that we don't have yet.
+// That feeds the editorial-palette roadmap (the 30 modern palettes are curated).
+//
+// Never-harm guarantees:
+//  - Footer-adjacent, rendered BELOW all page content + the BundleCta → never
+//    competes with a money/primary CTA.
+//  - Outside <main> → never dilutes LLM-extractable content.
+//  - Static HTML at build time → zero CLS; the only JS fires on user submit
+//    (no render-block, no hydration). Inert + harmless without JS.
+//  - PII-stripped before any event fires (email + long-digit scrub, 80-char cap).
+//  - Reuses existing Plausible + Clarity wiring → zero new infrastructure.
+//  - Editorial framing + tokens → on-brand for the museum-archive identity.
+---
+<section class="cc-fb" aria-labelledby="cc-fb-h">
+  <h2 id="cc-fb-h" class="cc-fb-h">Looking for a combination we don&rsquo;t have yet?</h2>
+  <p class="cc-fb-sub">
+    Tell us the colour, mood, or palette you were after &mdash; it shapes which
+    editorial combinations we add next.
+  </p>
+  <form class="cc-fb-form" id="cc-fb-form" novalidate>
+    <label class="cc-fb-label" for="cc-fb-q">Suggest a colour combination</label>
+    <div class="cc-fb-row">
+      <input
+        id="cc-fb-q"
+        name="q"
+        type="text"
+        maxlength="80"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="e.g. muted autumn earth tones"
+      />
+      <button type="submit" data-event="palette_request_click">Suggest it</button>
+    </div>
+  </form>
+  <p class="cc-fb-thanks" id="cc-fb-thanks" role="status" aria-live="polite" hidden>
+    Thank you &mdash; noted for the editorial queue.
+  </p>
+
+  <style>
+    .cc-fb { max-width: 560px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid var(--color-ink-100, #eee); text-align: center; }
+    .cc-fb-h { font-family: var(--font-serif, "EB Garamond", serif); font-size: 1.4rem; font-weight: 600; color: var(--color-ink-900, #1a1714); margin: 0 0 0.4rem; line-height: 1.25; }
+    .cc-fb-sub { font-size: 0.9rem; color: var(--color-ink-500, #8a8378); margin: 0 0 1.1rem; line-height: 1.55; }
+    .cc-fb-label { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+    .cc-fb-row { display: flex; gap: 0.5rem; align-items: stretch; }
+    .cc-fb-row input { flex: 1; min-width: 0; padding: 0.7rem 1rem; font-size: 1rem; border: 1px solid var(--color-ink-200, #d8d2c4); border-radius: var(--radius-md, 8px); background: var(--color-paper-50, #fff); color: var(--color-ink-900, #1a1714); -webkit-appearance: none; }
+    .cc-fb-row input:focus { outline: 2px solid var(--color-accent, #b8860b); outline-offset: 1px; }
+    .cc-fb-row button { padding: 0.7rem 1.1rem; font-size: 0.95rem; font-weight: 500; white-space: nowrap; border: 1px solid var(--color-ink-900, #1a1714); border-radius: var(--radius-md, 8px); background: var(--color-ink-900, #1a1714); color: var(--color-paper-50, #fff); cursor: pointer; }
+    .cc-fb-row button:hover { background: var(--color-ink-700, #3a342d); }
+    .cc-fb-thanks { font-size: 0.95rem; color: var(--color-accent, #b8860b); margin: 1rem 0 0; min-height: 1.2em; }
+    @media (max-width: 420px) { .cc-fb-row { flex-direction: column; } .cc-fb-row button { width: 100%; } }
+  </style>
+
+  <script is:inline>
+    (function () {
+      var f = document.getElementById("cc-fb-form");
+      if (!f) return;
+      var q = document.getElementById("cc-fb-q");
+      var t = document.getElementById("cc-fb-thanks");
+      function scrub(s) {
+        return (s || "")
+          .replace(/\S+@\S+/g, "")
+          .replace(/\d{6,}/g, "")
+          .replace(/\s+/g, " ")
+          .slice(0, 80)
+          .trim();
+      }
+      f.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var v = scrub(q.value);
+        if (!v) { q.focus(); return; }
+        try { if (window.plausible) window.plausible("PaletteRequest", { props: { q: v } }); } catch (_) {}
+        try { if (window.clarity) { window.clarity("event", "PaletteRequest"); window.clarity("set", "palette_request", v); } } catch (_) {}
+        f.hidden = true;
+        t.hidden = false;
+        if (t.focus) t.focus();
+      });
+    })();
+  </script>
+</section>
