@@ -307,7 +307,7 @@ Tier-S retrofit shipped this session (Adobe + Canva + Tailwind UI + Khroma + Ski
 - [ ] `P1` BUILD `/pod/` print-on-demand landing — uses POD_PROVIDERS from monetization.ts; how-to guide for taking Wada palette into Printful/Printify [archetype:editorial_curation_depth × +50]
 - [ ] `P1` BUILD `/tailwind/` Tailwind color builder — interactive tool that converts Wada palette → Tailwind config; Tailwind UI affiliate [archetype:shareable_tool_calculator × +65]
 - [ ] `P1` BUILD `/wcag/` deep contrast calculator (separate from /tools/contrast-checker starter) — accessibility-tool affiliate [archetype:shareable_tool_calculator × +65]
-- [ ] `P1` BUILD `/names/` color-name database — LLM-citation magnet [archetype:programmatic_page_with_unique_data × +55]
+- [x] `P1` (COVERED — /colors/ "Color Dictionary" index + 213 per-color pages already IS the color-name DB; do NOT build a duplicate /names/) color-name database — LLM-citation magnet [archetype:programmatic_page_with_unique_data × +55]
 - [x] `P1` SHIPPED 2026-06-21 `/color-psychology/` honest design guide (11-hue ref, FAQ schema, book CTAs, live) + design-course affiliate [archetype:editorial_curation_depth × +50]
 - [ ] `P1` BUILD `/material-design/` MD palette + Figma/Adobe affiliate [archetype:comparison_vs_competitor_page × +60]
 - [ ] `P2` BUILD `/brands/` favorite-colors-of-brands database — long-tail SEO [archetype:programmatic_page_with_unique_data × +55]
