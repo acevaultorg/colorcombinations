@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
+import FurtherReading from "@components/FurtherReading.astro";
 import BundleCta from "@components/BundleCta.astro";
 import ShareActions from "@components/ShareActions.astro";
 import {
@@ -309,6 +310,15 @@ const jsonLd = [
   </section>
 
   <BundleCta variant="medium" />
+
+  <section class="container-narrow">
+    <FurtherReading
+      title="Colour books worth owning"
+      intro="The theory and reference behind palettes like this — recommended on Amazon."
+      limit={3}
+      offset={3}
+    />
+  </section>
 </BaseLayout>
 
 <script>

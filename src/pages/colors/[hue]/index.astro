@@ -7,6 +7,7 @@
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
+import FurtherReading from "@components/FurtherReading.astro";
 import BundleCta from "@components/BundleCta.astro";
 import { colorsByHue } from "@data/colors";
 import { palettesByHue } from "@data/palettes";
@@ -256,6 +257,15 @@ const jsonLd = [
 
   {/* ==================== CTA ==================== */}
   <BundleCta variant="medium" />
+
+  <section class="container-narrow">
+    <FurtherReading
+      title="Colour books worth owning"
+      intro="Colour theory, history and the references designers keep close — recommended on Amazon."
+      limit={3}
+      offset={6}
+    />
+  </section>
 
 </BaseLayout>
 
