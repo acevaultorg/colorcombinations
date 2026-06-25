@@ -78,7 +78,7 @@ const showDisclosure = true;
             href={amazonHref}
             rel="sponsored nofollow noopener"
             target="_blank"
-            class="further-reading__cover"
+            class="further-reading__cover plausible-event-name=AmazonClick plausible-event-from=cover"
             data-event="amazon_click"
             data-book={book.title}
             aria-label={`${book.title} on Amazon`}
@@ -110,6 +110,7 @@ const showDisclosure = true;
                 href={amazonHref}
                 rel="sponsored nofollow noopener"
                 target="_blank"
+                class="plausible-event-name=AmazonClick plausible-event-from=title"
                 data-event="amazon_click"
                 data-book={book.title}
               >
@@ -127,7 +128,7 @@ const showDisclosure = true;
                 href={amazonHref}
                 rel="sponsored nofollow noopener"
                 target="_blank"
-                class="btn btn-secondary further-reading__link"
+                class="btn btn-secondary further-reading__link plausible-event-name=AmazonClick plausible-event-from=button"
                 data-event="amazon_click"
                 data-book={book.title}
               >
