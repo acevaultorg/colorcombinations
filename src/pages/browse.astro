@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import { allPalettes } from "@data/palettes";
 
@@ -176,6 +177,15 @@ const jsonLd = [
         No palettes match these filters. <button type="button" data-browse-reset class="browse-empty__reset">Clear filters</button>
       </p>
     </div>
+  </section>
+
+  <section class="container-narrow">
+    <FurtherReading
+      title="The colour reference shelf"
+      intro="The books behind the dictionary — colour theory, history and the references designers keep close. Recommended on Amazon."
+      limit={3}
+      offset={0}
+    />
   </section>
 </BaseLayout>
 

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
 import { allColors, colorsByHue, type ColorEntry } from "@data/colors";
 import { bestTextColorOn } from "@/lib/color";
 
@@ -143,6 +144,15 @@ const jsonLd = [
       </ul>
     </div>
   </nav>
+
+  <section class="container-narrow">
+    <FurtherReading
+      title="Books on colour"
+      intro="Where these colours come from — histories and field guides to the individual hues. Recommended on Amazon."
+      limit={3}
+      offset={6}
+    />
+  </section>
 </BaseLayout>
 
 <script>

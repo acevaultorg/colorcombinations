@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import EmailCapture from "@components/EmailCapture.astro";
 import BundleCta from "@components/BundleCta.astro";
@@ -269,6 +270,15 @@ const jsonLd = {
 
   {/* ==================== NEWSLETTER ==================== */}
   <EmailCapture class="section" />
+
+  <section class="container-narrow">
+    <FurtherReading
+      title="Go deeper on colour"
+      intro="The books we return to on colour theory and the language of palettes. Recommended on Amazon."
+      limit={3}
+      offset={3}
+    />
+  </section>
 </BaseLayout>
 
 <style>
