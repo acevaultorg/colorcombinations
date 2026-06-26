@@ -1,0 +1,276 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { PAIRS, FORMATS, type Pair } from "@/data/converterPairs";
+
+export function getStaticPaths() {
+  return PAIRS.map((p) => ({ params: { pair: p.slug }, props: { pair: p } }));
+}
+
+const { pair } = Astro.props as { pair: Pair };
+const from = FORMATS[pair.from];
+const to = FORMATS[pair.to];
+
+const h1 = `${from.label} to ${to.label} Converter`;
+const title = `${from.label} to ${to.label} — Color Converter`;
+const description =
+  `Convert ${from.label} to ${to.label} instantly, with the formula, a worked example, and copy-paste code. Free, runs in your browser, no signup. ${pair.intro.split(".")[0]}.`;
+
+const keywords = [
+  `${pair.from} to ${pair.to}`,
+  `${from.label.toLowerCase()} to ${to.label.toLowerCase()}`,
+  `${pair.from} to ${pair.to} converter`,
+  `convert ${pair.from} to ${pair.to}`,
+  "color converter",
+];
+
+const url = new URL(`/tools/color-converter/${pair.slug}/`, Astro.site).toString();
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: h1,
+    description,
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    url,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: `How to convert ${from.label} to ${to.label}`,
+    description: `Step-by-step ${from.label}-to-${to.label} conversion using ${pair.example.input} as an example.`,
+    step: pair.example.steps.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      text: s,
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: pair.faq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: "Color Converter", item: new URL("/tools/color-converter/", Astro.site).toString() },
+      { "@type": "ListItem", position: 4, name: `${from.label} → ${to.label}` },
+    ],
+  },
+];
+
+// Sibling links (other conversions) — internal-link hub-and-spoke for indexing.
+const siblings = PAIRS.filter((p) => p.slug !== pair.slug && (p.from === pair.from || p.to === pair.to)).slice(0, 5);
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd} type="article">
+  <section class="tool-hero">
+    <div class="container-wide tool-hero__inner">
+      <p class="eyebrow">
+        <a href="/tools/">Tools</a> / <a href="/tools/color-converter/">Color Converter</a> / {from.label} → {to.label}
+      </p>
+      <h1>{h1}.</h1>
+      <p class="tool-hero__lede">{pair.intro}</p>
+    </div>
+  </section>
+
+  <section class="tool-body section">
+    <div class="container-wide pc" data-from={pair.from} data-to={pair.to}>
+      <label class="pc__label" for="pc-in">Enter a {from.label} color</label>
+      <div class="pc__input">
+        <input type="color" id="pc-picker" value="#1B2A4E" class="pc__swatch" aria-label="Color picker" />
+        <input
+          type="text" id="pc-in" class="pc__field" spellcheck="false" autocomplete="off"
+          value={pair.example.input} placeholder={from.placeholder}
+          aria-label={`${from.label} color`}
+        />
+      </div>
+      <p class="pc__error" id="pc-error" role="status" hidden>Not a recognizable {from.label} color.</p>
+
+      <div class="pc__result">
+        <div class="pc__swatchbig" id="pc-big" style="background:#1B2A4E"></div>
+        <div class="pc__out">
+          <span class="pc__outlabel">{to.label}</span>
+          <output class="pc__outval" id="pc-out">—</output>
+          <button
+            class="pc__copy" type="button" id="pc-copy"
+            data-event="ColorConvert" data-tool={`converter-${pair.slug}`} data-variant={pair.to}
+          >Copy</button>
+        </div>
+      </div>
+
+      <details class="pc__all">
+        <summary>All formats</summary>
+        <ul id="pc-allfmts" role="list"></ul>
+      </details>
+    </div>
+  </section>
+
+  <section class="explainer section">
+    <div class="container-wide explainer-inner">
+      <div class="explainer-grid">
+        <div>
+          <h2>The {from.label} → {to.label} formula</h2>
+          <p class="formula" set:html={pair.formula} />
+        </div>
+        <div>
+          <h2>Worked example</h2>
+          <p class="ex-input">Convert <code>{pair.example.input}</code>:</p>
+          <ol class="ex-steps">
+            {pair.example.steps.map((s) => <li>{s}</li>)}
+          </ol>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>{pair.code.lang}</h3>
+        <pre><code>{pair.code.body}</code></pre>
+      </div>
+
+      <div class="faq">
+        <h2>FAQ</h2>
+        {pair.faq.map((f) => (
+          <div class="faq-item">
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </div>
+        ))}
+      </div>
+
+      {siblings.length > 0 && (
+        <nav class="siblings" aria-label="Related conversions">
+          <h3>Other conversions</h3>
+          <ul role="list">
+            {siblings.map((s) => (
+              <li><a href={`/tools/color-converter/${s.slug}/`}>{FORMATS[s.from].label} → {FORMATS[s.to].label}</a></li>
+            ))}
+            <li><a href="/tools/color-converter/">All formats →</a></li>
+          </ul>
+        </nav>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { parseColor, allFormats, rgbToHex } from "@/lib/colorConvert";
+
+  const root = document.querySelector(".pc") as HTMLElement;
+  const to = root.dataset.to as "hex" | "rgb" | "hsl" | "hsv" | "cmyk" | "oklch";
+  const picker = document.getElementById("pc-picker") as HTMLInputElement;
+  const input = document.getElementById("pc-in") as HTMLInputElement;
+  const big = document.getElementById("pc-big") as HTMLElement;
+  const out = document.getElementById("pc-out") as HTMLElement;
+  const err = document.getElementById("pc-error") as HTMLElement;
+  const allList = document.getElementById("pc-allfmts") as HTMLElement;
+  const copyBtn = document.getElementById("pc-copy") as HTMLButtonElement;
+
+  function render(rgb: { r: number; g: number; b: number } | null) {
+    if (!rgb) { err.hidden = false; out.textContent = "—"; return; }
+    err.hidden = true;
+    const f = allFormats(rgb);
+    big.style.background = f.hex;
+    picker.value = rgbToHex(rgb);
+    out.textContent = (f as Record<string, string>)[to];
+    allList.innerHTML = Object.entries(f)
+      .map(([k, v]) => `<li><span>${k.toUpperCase()}</span><code>${v}</code></li>`)
+      .join("");
+  }
+
+  input.addEventListener("input", () => render(parseColor(input.value)));
+  picker.addEventListener("input", () => { input.value = picker.value.toUpperCase(); render(parseColor(input.value)); });
+  copyBtn.addEventListener("click", async () => {
+    const v = out.textContent || "";
+    if (!v || v === "—") return;
+    try { await navigator.clipboard.writeText(v); } catch {}
+    const o = copyBtn.textContent; copyBtn.textContent = "Copied"; copyBtn.setAttribute("data-copied", "true");
+    setTimeout(() => { copyBtn.textContent = o; copyBtn.removeAttribute("data-copied"); }, 1100);
+  });
+
+  render(parseColor(input.value));
+</script>
+
+<style>
+  .tool-hero { padding-top: 3rem; padding-bottom: 1.5rem; }
+  .tool-hero__inner { max-width: 62rem; }
+  .tool-hero__inner .eyebrow a { color: var(--color-accent-500); text-decoration: none; }
+  .tool-hero__lede {
+    font-family: var(--font-serif); font-size: clamp(1.0625rem, 1.1vw + 0.75rem, 1.25rem);
+    line-height: 1.6; color: var(--color-ink-700); margin-top: 1.25rem; max-width: 62ch;
+  }
+
+  .pc { max-width: 42rem; }
+  .pc__label {
+    display: block; font-size: 0.8125rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--color-ink-500); margin-bottom: 0.5rem;
+  }
+  .pc__input {
+    display: flex; align-items: center; gap: 0.625rem; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); background: var(--color-bg-elevated); padding: 0.5rem 0.75rem;
+  }
+  .pc__swatch { width: 2.5rem; height: 2.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 0; cursor: pointer; background: none; flex-shrink: 0; }
+  .pc__swatch::-webkit-color-swatch-wrapper { padding: 0; }
+  .pc__swatch::-webkit-color-swatch { border: none; border-radius: 3px; }
+  .pc__field { flex: 1; font-family: var(--font-mono); font-size: 1.0625rem; font-weight: 500; color: var(--color-ink-900); border: none; background: none; outline: none; min-width: 0; }
+  .pc__error { color: #991b1b; font-size: 0.875rem; margin-top: 0.5rem; }
+
+  .pc__result { display: flex; align-items: stretch; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap; }
+  .pc__swatchbig { width: 5rem; min-height: 5rem; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); flex-shrink: 0; transition: background 0.12s; }
+  .pc__out {
+    flex: 1; min-width: 14rem; display: flex; flex-direction: column; gap: 0.375rem; justify-content: center;
+    padding: 1rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-elevated);
+  }
+  .pc__outlabel { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-ink-500); }
+  .pc__outval { font-family: var(--font-mono); font-size: 1.375rem; font-weight: 500; color: var(--color-ink-900); overflow-x: auto; }
+  .pc__copy {
+    align-self: flex-start; margin-top: 0.25rem; font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 600;
+    padding: 0.3125rem 0.875rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: var(--color-paper-50, #fff); color: var(--color-ink-700); cursor: pointer; transition: border-color 150ms, color 150ms;
+  }
+  .pc__copy:hover { border-color: var(--color-ink-900); color: var(--color-ink-900); }
+  .pc__copy[data-copied="true"] { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+
+  .pc__all { margin-top: 1rem; }
+  .pc__all summary { cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--color-ink-600, var(--color-ink-700)); }
+  .pc__all ul { list-style: none; margin: 0.75rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.375rem; }
+  :global(.pc__all li) { display: grid; grid-template-columns: 4rem 1fr; gap: 0.75rem; padding: 0.375rem 0.625rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 0.375rem; }
+  :global(.pc__all li span) { font-size: 0.7rem; font-weight: 700; color: var(--color-ink-500); align-self: center; }
+  :global(.pc__all li code) { font-family: var(--font-mono); font-size: 0.875rem; color: var(--color-ink-900); }
+
+  .explainer { border-top: 1px solid var(--color-border); padding-top: 3rem; padding-bottom: 4rem; }
+  .explainer-inner { max-width: 52rem; }
+  .explainer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  @media (max-width: 680px) { .explainer-grid { grid-template-columns: 1fr; } }
+  .explainer h2 { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 500; margin: 0 0 0.875rem; }
+  .formula { font-size: 0.9375rem; line-height: 1.7; color: var(--color-ink-700); }
+  .formula :global(code) { font-family: var(--font-mono); font-size: 0.86em; background: var(--color-paper-100, #f5f1e8); padding: 0.1em 0.35em; border-radius: 3px; }
+  .ex-input { font-size: 0.9375rem; color: var(--color-ink-700); margin: 0 0 0.5rem; }
+  .ex-input code { font-family: var(--font-mono); }
+  .ex-steps { margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.375rem; font-size: 0.9375rem; line-height: 1.55; color: var(--color-ink-700); }
+
+  .code-block { margin-top: 2.5rem; }
+  .code-block h3 { font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-ink-500); margin: 0 0 0.625rem; }
+  .code-block pre { margin: 0; padding: 1.125rem 1.25rem; background: var(--color-ink-900, #1a1714); color: #e8e3d6; border-radius: var(--radius-md); overflow-x: auto; }
+  .code-block code { font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.6; white-space: pre; }
+
+  .faq { margin-top: 2.75rem; }
+  .faq > h2 { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 500; margin: 0 0 1.25rem; }
+  .faq-item { margin-bottom: 1.25rem; }
+  .faq-item h3 { font-family: var(--font-sans); font-size: 1rem; font-weight: 600; color: var(--color-ink-900); margin: 0 0 0.375rem; }
+  .faq-item p { font-family: var(--font-serif); font-size: 0.9375rem; line-height: 1.65; color: var(--color-ink-700); margin: 0; }
+
+  .siblings { margin-top: 2.5rem; border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+  .siblings h3 { font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-ink-500); margin: 0 0 0.75rem; }
+  .siblings ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .siblings a { display: inline-block; padding: 0.375rem 0.75rem; border: 1px solid var(--color-border); border-radius: 100px; font-family: var(--font-mono); font-size: 0.8125rem; color: var(--color-ink-700); text-decoration: none; }
+  .siblings a:hover { border-color: var(--color-ink-900); color: var(--color-ink-900); }
+</style>

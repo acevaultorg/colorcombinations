@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { allPalettes } from "@/data/palettes";
 import { allColors } from "@/data/colors";
 import { collections } from "@/data/collections";
+import { PAIRS } from "@/data/converterPairs";
 
 /**
  * /sitemap-ai.xml — secondary sitemap for LLM/AI crawlers.
@@ -121,11 +122,20 @@ export const GET: APIRoute = () => {
   urls.push({ loc: `${SITE}/collections/`, priority: "0.7", changefreq: "monthly", jsonAlt: `${SITE}/api/collections.json` });
   urls.push({ loc: `${SITE}/browse/`, priority: "0.7", changefreq: "weekly" });
 
-  // Tier 0.6 — discovery + utilities
-  urls.push({ loc: `${SITE}/random/`, priority: "0.6", changefreq: "weekly", jsonAlt: `${SITE}/api/random.json` });
-  urls.push({ loc: `${SITE}/tools/`, priority: "0.6", changefreq: "monthly" });
+  // Tier 0.7 — color tools (high-volume, high-citation utilities)
+  urls.push({ loc: `${SITE}/tools/`, priority: "0.7", changefreq: "monthly" });
+  urls.push({ loc: `${SITE}/tools/color-converter/`, priority: "0.7", changefreq: "monthly" });
+  for (const p of PAIRS) {
+    urls.push({ loc: `${SITE}/tools/color-converter/${p.slug}/`, priority: "0.6", changefreq: "monthly" });
+  }
   urls.push({ loc: `${SITE}/tools/contrast-checker/`, priority: "0.6", changefreq: "monthly" });
+  urls.push({ loc: `${SITE}/tools/gradient-generator/`, priority: "0.6", changefreq: "monthly" });
+  urls.push({ loc: `${SITE}/tools/color-blindness-simulator/`, priority: "0.6", changefreq: "monthly" });
+  urls.push({ loc: `${SITE}/tools/palette-from-image/`, priority: "0.6", changefreq: "monthly" });
   urls.push({ loc: `${SITE}/tools/palette-from-color/`, priority: "0.6", changefreq: "monthly" });
+
+  // Tier 0.6 — discovery
+  urls.push({ loc: `${SITE}/random/`, priority: "0.6", changefreq: "weekly", jsonAlt: `${SITE}/api/random.json` });
 
   // Tier 0.5 — commercial
   urls.push({ loc: `${SITE}/shop/`, priority: "0.5", changefreq: "monthly" });

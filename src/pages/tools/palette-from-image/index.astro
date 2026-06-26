@@ -1,0 +1,214 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Color Palette from Image — extract colors in your browser";
+const description =
+  "Upload any photo and pull a clean color palette from it — dominant colors as HEX, RGB, and HSL, ready to copy. Runs entirely in your browser; your image is never uploaded. Free, no signup.";
+
+const keywords = [
+  "color palette from image",
+  "extract colors from image",
+  "image color picker",
+  "get colors from photo",
+  "palette generator from image",
+  "dominant colors",
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Color Palette from Image",
+    description,
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    url: new URL("/tools/palette-from-image/", Astro.site).toString(),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: "Palette from Image" },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd}>
+  <section class="tool-hero">
+    <div class="container-wide tool-hero__inner">
+      <p class="eyebrow"><a href="/tools/">Tools</a> / Palette from Image</p>
+      <h1>Color Palette from Image.</h1>
+      <p class="tool-hero__lede">
+        Drop in a photo and get its dominant colors as a copy-ready palette.
+        Everything runs in your browser — <strong>your image is never uploaded</strong> —
+        so it's fast and private.
+      </p>
+    </div>
+  </section>
+
+  <section class="tool-body section">
+    <div class="container-wide pi">
+      <label class="pi__drop" id="pi-drop" for="pi-file">
+        <input type="file" id="pi-file" accept="image/*" hidden />
+        <div class="pi__dropinner" id="pi-dropinner">
+          <p class="pi__dropbig">Drop an image here</p>
+          <p class="pi__dropsmall">or click to choose a file — JPG, PNG, WebP. Nothing leaves your device.</p>
+        </div>
+        <img id="pi-img" class="pi__img" alt="" hidden />
+      </label>
+
+      <div class="pi__count" id="pi-count" hidden>
+        <label for="pi-n">Colors</label>
+        <input type="range" id="pi-n" min="3" max="10" value="6" />
+        <span id="pi-nval">6</span>
+      </div>
+
+      <div class="pi__palette" id="pi-palette"></div>
+      <canvas id="pi-canvas" hidden></canvas>
+    </div>
+  </section>
+
+  <section class="explainer section">
+    <div class="container-wide explainer-inner">
+      <h2 class="explainer-title">How the extraction works</h2>
+      <div class="explainer-body">
+        <div class="explainer-col">
+          <h3>In your browser, privately</h3>
+          <p>
+            The image is drawn to a hidden <code>&lt;canvas&gt;</code>, downscaled,
+            and its pixels are quantized into color buckets. The most populous,
+            visually distinct buckets become your palette. No server, no upload —
+            the file never leaves the page.
+          </p>
+        </div>
+        <div class="explainer-col">
+          <h3>Using the result</h3>
+          <p>
+            Click any swatch to copy its hex. The colors come out sorted by how much
+            of the image they cover, so the first few are your anchors. For a curated,
+            history-backed alternative, browse the
+            <a href="/browse/">378 Wada combinations</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { rgbToHex, rgbToHsl } from "@/lib/colorConvert";
+
+  const drop = document.getElementById("pi-drop") as HTMLElement;
+  const file = document.getElementById("pi-file") as HTMLInputElement;
+  const img = document.getElementById("pi-img") as HTMLImageElement;
+  const dropinner = document.getElementById("pi-dropinner") as HTMLElement;
+  const canvas = document.getElementById("pi-canvas") as HTMLCanvasElement;
+  const paletteWrap = document.getElementById("pi-palette") as HTMLElement;
+  const countWrap = document.getElementById("pi-count") as HTMLElement;
+  const nInput = document.getElementById("pi-n") as HTMLInputElement;
+  const nVal = document.getElementById("pi-nval") as HTMLElement;
+
+  let lastPixels: Uint8ClampedArray | null = null;
+
+  function loadFile(f: File) {
+    if (!f || !f.type.startsWith("image/")) return;
+    const url = URL.createObjectURL(f);
+    img.onload = () => {
+      const W = 200, scale = W / img.naturalWidth, H = Math.max(1, Math.round(img.naturalHeight * scale));
+      canvas.width = W; canvas.height = H;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+      ctx.drawImage(img, 0, 0, W, H);
+      lastPixels = ctx.getImageData(0, 0, W, H).data;
+      img.hidden = false; dropinner.hidden = true; countWrap.hidden = false;
+      extract();
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  }
+
+  function extract() {
+    if (!lastPixels) return;
+    const px = lastPixels;
+    const buckets = new Map<number, { r: number; g: number; b: number; n: number }>();
+    // Quantize to 5 bits/channel (32 levels) to group near-identical pixels.
+    for (let i = 0; i < px.length; i += 4) {
+      const a = px[i + 3];
+      if (a < 128) continue;
+      const r = px[i], g = px[i + 1], b = px[i + 2];
+      const key = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+      const e = buckets.get(key);
+      if (e) { e.r += r; e.g += g; e.b += b; e.n++; }
+      else buckets.set(key, { r, g, b, n: 1 });
+    }
+    let list = [...buckets.values()].map((e) => ({ r: Math.round(e.r / e.n), g: Math.round(e.g / e.n), b: Math.round(e.b / e.n), n: e.n }));
+    list.sort((a, b) => b.n - a.n);
+    // Greedily drop colors too close to an already-picked one (perceptual-ish dedupe).
+    const N = +nInput.value;
+    const picked: typeof list = [];
+    for (const c of list) {
+      if (picked.length >= N) break;
+      const near = picked.some((p) => Math.abs(p.r - c.r) + Math.abs(p.g - c.g) + Math.abs(p.b - c.b) < 48);
+      if (!near) picked.push(c);
+    }
+    while (picked.length < N && list.length > picked.length) picked.push(list[picked.length]);
+
+    paletteWrap.innerHTML = picked.map((c) => {
+      const hex = rgbToHex(c); const hsl = rgbToHsl(c);
+      return `<button class="pi__sw" type="button" data-hex="${hex}" data-event="ImagePaletteCopy" data-tool="palette-from-image" style="background:${hex}">
+        <span class="pi__hex">${hex}</span>
+        <span class="pi__hsl">hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)</span>
+      </button>`;
+    }).join("");
+    paletteWrap.querySelectorAll<HTMLButtonElement>(".pi__sw").forEach((b) =>
+      b.addEventListener("click", async () => {
+        try { await navigator.clipboard.writeText(b.dataset.hex!); } catch {}
+        b.classList.add("is-copied"); setTimeout(() => b.classList.remove("is-copied"), 1100);
+      }));
+  }
+
+  file.addEventListener("change", () => { if (file.files?.[0]) loadFile(file.files[0]); });
+  nInput.addEventListener("input", () => { nVal.textContent = nInput.value; extract(); });
+  ["dragover", "dragenter"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("is-over"); }));
+  ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("is-over")));
+  drop.addEventListener("drop", (e) => { e.preventDefault(); const f = (e as DragEvent).dataTransfer?.files?.[0]; if (f) loadFile(f); });
+</script>
+
+<style>
+  .tool-hero { padding-top: 3rem; padding-bottom: 1.5rem; }
+  .tool-hero__inner { max-width: 62rem; }
+  .tool-hero__inner .eyebrow a { color: var(--color-accent-500); text-decoration: none; }
+  .tool-hero__lede { font-family: var(--font-serif); font-size: clamp(1.0625rem, 1.1vw + 0.75rem, 1.25rem); line-height: 1.6; color: var(--color-ink-700); margin-top: 1.25rem; max-width: 60ch; }
+  .tool-hero__lede strong { color: var(--color-ink-900); }
+
+  .pi { max-width: 44rem; }
+  .pi__drop { display: block; position: relative; border: 2px dashed var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-elevated); cursor: pointer; overflow: hidden; min-height: 12rem; transition: border-color 150ms, background 150ms; }
+  .pi__drop.is-over { border-color: var(--color-accent-500); background: var(--color-paper-100, #f5f1e8); }
+  .pi__dropinner { padding: 3rem 1.5rem; text-align: center; }
+  .pi__dropbig { font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-ink-900); margin: 0 0 0.375rem; }
+  .pi__dropsmall { font-size: 0.875rem; color: var(--color-ink-500); margin: 0; }
+  .pi__img { display: block; width: 100%; max-height: 22rem; object-fit: contain; background: #00000008; }
+
+  .pi__count { display: flex; align-items: center; gap: 0.75rem; margin: 1.25rem 0; font-size: 0.875rem; color: var(--color-ink-600, var(--color-ink-700)); }
+  .pi__count label { font-weight: 600; }
+  .pi__count input { flex: 1; max-width: 16rem; }
+
+  .pi__palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 0.625rem; margin-top: 1rem; }
+  :global(.pi__sw) { display: flex; flex-direction: column; justify-content: flex-end; height: 6rem; border: 1px solid rgba(0,0,0,0.08); border-radius: var(--radius-md); padding: 0.5rem 0.625rem; cursor: pointer; text-align: left; }
+  :global(.pi__hex) { font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+  :global(.pi__hsl) { font-family: var(--font-mono); font-size: 0.65rem; color: #fff; opacity: 0.85; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+  :global(.pi__sw.is-copied) { outline: 3px solid #10b981; outline-offset: -3px; }
+
+  .explainer { border-top: 1px solid var(--color-border); padding-top: 3rem; padding-bottom: 4rem; }
+  .explainer-inner { max-width: 52rem; }
+  .explainer-title { font-family: var(--font-serif); font-size: clamp(1.5rem, 2vw + 0.75rem, 2rem); font-weight: 500; margin-bottom: 1.5rem; }
+  .explainer-body { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  @media (max-width: 640px) { .explainer-body { grid-template-columns: 1fr; } }
+  .explainer-col h3 { font-family: var(--font-sans); font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-ink-500); margin-bottom: 0.75rem; }
+  .explainer-col p { font-family: var(--font-serif); font-size: 1rem; line-height: 1.7; color: var(--color-ink-700); }
+  .explainer-col p code { font-family: var(--font-mono); font-size: 0.86em; }
+  .explainer-col p a { color: var(--color-accent-500); }
+</style>

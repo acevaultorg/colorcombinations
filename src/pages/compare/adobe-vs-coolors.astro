@@ -1,0 +1,412 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+
+const title = "Adobe Color vs Coolors — which palette tool to use";
+const description =
+  "Adobe Color and Coolors are the two free palette tools most designers reach for — but they work very differently. A plain comparison: harmony-wheel vs spacebar-generator, integrations, what each does best, and which to use.";
+
+const pageUrl = new URL("/compare/adobe-vs-coolors", Astro.site).toString();
+
+const faq = [
+  {
+    q: "What is the difference between Adobe Color and Coolors?",
+    a: "Adobe Color is a color-wheel tool built around harmony rules and Creative Cloud integration. Coolors is a fast standalone palette generator — press the spacebar to cycle palettes — with web and mobile apps. Adobe suits people in the Adobe ecosystem; Coolors suits fast, standalone palette-making.",
+  },
+  {
+    q: "Are Adobe Color and Coolors free?",
+    a: "Both have free tiers. Adobe Color is free with an Adobe account. Coolors is free to use, with an optional Pro subscription that unlocks extra features and removes limits.",
+  },
+  {
+    q: "Which is better for beginners?",
+    a: "Coolors, for most people — pressing the spacebar to cycle whole palettes is the fastest way to explore color. Adobe Color is the better pick if you want to learn color-harmony rules or already work inside Adobe apps.",
+  },
+  {
+    q: "Can these tools build a palette from a photo?",
+    a: "Yes — both can extract a palette from an uploaded image. Adobe Color also pulls gradients and includes accessibility/contrast tools; Coolors offers a fast image-to-palette picker as well.",
+  },
+  {
+    q: "Do they integrate with design software?",
+    a: "Adobe Color saves palettes to your Creative Cloud Libraries, so they appear directly in Photoshop, Illustrator and other Adobe apps. Coolors is standalone but exports to many formats (CSS, SVG, PDF, code) you can drop into any tool.",
+  },
+  {
+    q: "Can you use both together?",
+    a: "Yes, and many designers do: generate quickly in Coolors, then refine the harmony or push it into the Adobe ecosystem with Adobe Color. They solve overlapping but different parts of the same job.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: "Adobe Color vs Coolors — which palette tool to use",
+    description,
+    url: pageUrl,
+    datePublished: "2026-06-20",
+    dateModified: "2026-06-20",
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    about: [
+      { "@type": "Thing", name: "Adobe Color" },
+      { "@type": "Thing", name: "Coolors" },
+      { "@type": "Thing", name: "Color palette tools" },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: new URL("/", Astro.site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Compare",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Adobe Color vs Coolors",
+        item: pageUrl,
+      },
+    ],
+  },
+];
+
+const rows = [
+  { dim: "Maker", adobe: "Adobe", coolors: "Coolors (Fabrizio Bianchi)" },
+  { dim: "Price", adobe: "Free with an Adobe account", coolors: "Free + optional Pro" },
+  { dim: "Platform", adobe: "Web — color.adobe.com", coolors: "Web + iOS/Android apps + browser extension" },
+  { dim: "Core approach", adobe: "Color wheel + harmony rules", coolors: "Spacebar-fast palette generator" },
+  { dim: "Standout features", adobe: "Extract from image, gradients, accessibility tools", coolors: "Lock & regenerate, many export formats, contrast checker" },
+  { dim: "Integration", adobe: "Saves to Creative Cloud → Photoshop / Illustrator", coolors: "Standalone; exports to CSS / SVG / PDF / code" },
+  { dim: "Best for", adobe: "Adobe-ecosystem users, harmony-driven work", coolors: "Fast standalone palette generation, mobile" },
+];
+---
+
+<BaseLayout title={title} description={description} image="/og-default.svg" jsonLd={jsonLd}>
+  {/* ============ HERO ============ */}
+  <section class="cmp-hero">
+    <div class="container-wide cmp-hero__inner">
+      <p class="eyebrow">Palette tools</p>
+      <h1 class="display-hero text-balance">Adobe Color vs Coolors</h1>
+      <p class="cmp-hero__lede">
+        Two free, excellent palette tools — and they pull in different
+        directions. The short version: <strong>Adobe Color is a harmony wheel
+        wired into Creative Cloud; Coolors is a spacebar you mash until a palette
+        appears.</strong> One rewards understanding color theory and living in
+        Adobe's apps; the other rewards speed. Here's how to choose.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ AT-A-GLANCE TABLE ============ */}
+  <section class="cmp-table-wrap section">
+    <div class="container-wide">
+      <h2 class="cmp-h2">At a glance</h2>
+      <div class="cmp-table-scroll">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th scope="col">&nbsp;</th>
+              <th scope="col">Adobe Color</th>
+              <th scope="col">Coolors</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <th scope="row">{r.dim}</th>
+                <td>{r.adobe}</td>
+                <td>{r.coolors}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  {/* ============ PROSE ============ */}
+  <section class="cmp-prose section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">What Adobe Color is</h2>
+      <p>
+        <strong>Adobe Color</strong> (at color.adobe.com) is Adobe's free,
+        web-based color tool. Its heart is a <em>color wheel driven by harmony
+        rules</em> — pick analogous, monochromatic, triad, complementary and so
+        on, and it builds a coordinated palette for you. It can also extract a
+        palette and gradients from an uploaded photo, and it has built-in
+        accessibility and contrast tools. The real lock-in, in a good way, is
+        integration: palettes save to your <strong>Creative Cloud Libraries</strong>,
+        so they show up directly inside Photoshop, Illustrator and the rest of
+        the Adobe apps. If that's where your work lives, Adobe Color removes a
+        step.
+      </p>
+
+      <h2 class="cmp-h2">What Coolors is</h2>
+      <p>
+        <strong>Coolors</strong> (coolors.co) is the fast one. Its signature move
+        is the <em>spacebar</em>: hit it and the whole palette regenerates, lock
+        the colors you like, and keep going until it clicks. It runs on the web,
+        as iOS and Android apps, and as a browser extension, and it exports to
+        just about any format you'd want — CSS, SVG, PDF, code snippets — plus
+        contrast checking and a gradient maker. It's standalone (no ecosystem
+        required), which is exactly why a lot of designers keep it open in a tab
+        as a quick palette scratchpad.
+      </p>
+
+      <h2 class="cmp-h2">The real difference</h2>
+      <p>
+        Adobe Color is <strong>theory-first</strong>: it nudges you toward
+        palettes that are harmonically sound and hands them straight to your
+        Adobe apps. Coolors is <strong>speed-first</strong>: it gets you to a
+        good-looking palette in seconds and exports it anywhere. Neither is
+        "better" — they optimise for different moments. Adobe Color shines when
+        you want structure and Creative Cloud handoff; Coolors shines when you
+        want to explore fast and stay tool-agnostic.
+      </p>
+
+      <h2 class="cmp-h2">Which should you use?</h2>
+      <ul class="cmp-list">
+        <li>
+          <strong>You live in Photoshop / Illustrator / Adobe apps?</strong> Use
+          Adobe Color — palettes flow straight into your Libraries.
+        </li>
+        <li>
+          <strong>You want a palette in ten seconds, on any device?</strong> Use
+          Coolors — the spacebar generator is unbeaten for speed, and it exports
+          everywhere.
+        </li>
+        <li>
+          <strong>You're learning color harmony?</strong> Adobe Color's
+          rule-based wheel teaches the relationships as you go.
+        </li>
+      </ul>
+
+      <h2 class="cmp-h2">Can you use both?</h2>
+      <p>
+        Absolutely — and it's a common workflow. Generate quickly in Coolors to
+        find a direction, then refine the harmony or hand it to your Adobe apps
+        through Adobe Color. They overlap, but they're strongest at different
+        ends of the same task: finding a palette, and putting it to work.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ FAQ ============ */}
+  <section class="cmp-faq section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">Questions, answered</h2>
+      <dl class="cmp-faq__list">
+        {faq.map((item) => (
+          <div class="cmp-faq__item">
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  {/* ============ AFFILIATE (Amazon books — compliant rail) ============ */}
+  <div class="cmp-books">
+    <div class="container-wide">
+      <FurtherReading
+        title="Go deeper on color"
+        intro="Tools generate palettes fast — but knowing why a palette works is what makes the difference. These are the books on the theory and craft of color."
+        limit={6}
+      />
+    </div>
+  </div>
+
+  {/* ============ RELATED ============ */}
+  <section class="cmp-related section">
+    <div class="container-prose">
+      <p class="eyebrow">Keep exploring</p>
+      <p class="cmp-related__lede">
+        More color reference: <a href="/compare/pantone-vs-ral">Pantone vs RAL</a>
+        and <a href="/compare/hsl-vs-lch">HSL vs LCH</a>. Or browse
+        <a href="/browse">the palette archive</a>, explore individual
+        <a href="/colors">colors and their pairings</a>, or read
+        <a href="/methodology">how the archive is built</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cmp-hero {
+    padding-top: clamp(3rem, 8vw, 7rem);
+    padding-bottom: clamp(1.5rem, 5vw, 3.5rem);
+  }
+
+  .cmp-hero__inner {
+    max-width: 62rem;
+  }
+
+  .cmp-hero .eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .cmp-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.4vw + 0.75rem, 1.375rem);
+    line-height: 1.6;
+    color: var(--color-ink-700);
+    max-width: 60ch;
+    margin-top: 1.5rem;
+  }
+
+  .cmp-h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.2vw + 1rem, 2.125rem);
+    line-height: 1.2;
+    margin: 0 0 1.25rem;
+  }
+
+  /* ---- table ---- */
+  .cmp-table-wrap {
+    background-color: var(--color-paper-50);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .cmp-table-scroll {
+    overflow-x: auto;
+  }
+
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    min-width: 38rem;
+  }
+
+  .cmp-table th,
+  .cmp-table td {
+    text-align: left;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .cmp-table thead th {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    border-bottom: 2px solid var(--color-ink-900);
+  }
+
+  .cmp-table tbody th {
+    font-weight: 600;
+    color: var(--color-ink-900);
+    white-space: nowrap;
+  }
+
+  .cmp-table tbody td {
+    color: var(--color-ink-700);
+  }
+
+  /* ---- prose ---- */
+  .cmp-prose .cmp-h2 {
+    margin-top: 2.5rem;
+  }
+
+  .cmp-prose .cmp-h2:first-child {
+    margin-top: 0;
+  }
+
+  .cmp-prose p,
+  .cmp-list li {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    margin-bottom: 1.25rem;
+    max-width: 68ch;
+  }
+
+  .cmp-list {
+    padding-left: 1.25rem;
+  }
+
+  .cmp-list li {
+    margin-bottom: 0.875rem;
+  }
+
+  /* ---- faq ---- */
+  .cmp-faq {
+    background-color: var(--color-paper-50);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .cmp-faq__list {
+    margin: 0;
+  }
+
+  .cmp-faq__item {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-border);
+    max-width: 70ch;
+  }
+
+  .cmp-faq__item dt {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin-bottom: 0.5rem;
+  }
+
+  .cmp-faq__item dd {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-700);
+  }
+
+  /* ---- books wrapper ---- */
+  .cmp-books {
+    background-color: var(--color-paper-100);
+    border-block: 1px solid var(--color-border);
+  }
+
+  /* ---- related ---- */
+  .cmp-related .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .cmp-related__lede {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    max-width: 64ch;
+  }
+
+  .cmp-related__lede a {
+    color: var(--color-accent-500);
+    text-underline-offset: 3px;
+  }
+</style>

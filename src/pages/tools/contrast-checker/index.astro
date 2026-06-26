@@ -183,6 +183,33 @@ const jsonLd = [
       </div>
     </div>
   </section>
+
+  <section class="section" style="border-top:1px solid var(--color-border);padding-top:2.5rem;padding-bottom:4rem">
+    <div class="container-wide" style="max-width:52rem">
+      <h2 style="font-family:var(--font-serif);font-size:clamp(1.5rem,2vw + 0.75rem,2rem);font-weight:500;margin-bottom:0.75rem">Embed this contrast checker</h2>
+      <p style="font-family:var(--font-serif);font-size:1rem;line-height:1.7;color:var(--color-ink-700);margin-bottom:1.25rem;max-width:60ch">
+        Drop a live WCAG contrast checker into your own site, docs, or design-system
+        page. It's a single iframe — no script, no tracking. Paste this where you want it:
+      </p>
+      <div style="display:flex;gap:0.75rem;align-items:stretch">
+        <textarea id="embed-code" readonly rows="3" style="flex:1;font-family:var(--font-mono);font-size:0.8125rem;line-height:1.5;padding:0.875rem 1rem;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-ink-900,#1a1714);color:#e8e3d6;resize:vertical;" aria-label="Embed code">&lt;iframe src="https://colorcombinations.org/embed/contrast-checker/" width="100%" height="340" style="border:0;border-radius:8px" title="WCAG Contrast Checker by Color Combinations" loading="lazy"&gt;&lt;/iframe&gt;</textarea>
+        <button id="embed-copy" type="button" data-event="EmbedCopy" data-tool="contrast-checker" style="flex-shrink:0;padding:0 1rem;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg-elevated);color:var(--color-ink-700);font-size:0.8125rem;font-weight:600;cursor:pointer">Copy</button>
+      </div>
+      <p style="font-size:0.8125rem;color:var(--color-ink-500);margin-top:0.875rem">Live preview:</p>
+      <iframe src="/embed/contrast-checker/" width="100%" height="340" style="border:1px solid var(--color-border);border-radius:var(--radius-md)" title="WCAG Contrast Checker preview" loading="lazy"></iframe>
+    </div>
+  </section>
+  <script is:inline>
+    (function () {
+      var b = document.getElementById("embed-copy"), t = document.getElementById("embed-code");
+      if (!b || !t) return;
+      b.addEventListener("click", function () {
+        t.select();
+        try { navigator.clipboard.writeText(t.value); } catch (e) { document.execCommand("copy"); }
+        var o = b.textContent; b.textContent = "Copied"; setTimeout(function () { b.textContent = o; }, 1100);
+      });
+    })();
+  </script>
 </BaseLayout>
 
 <script>

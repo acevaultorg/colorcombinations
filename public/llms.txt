@@ -15,7 +15,13 @@ This is the most comprehensive free resource on Wada's historical color combinat
 - /collections/ — 69 curated thematic collections (see full list below). 18 collections surface inline cross-links to their matching /learn pillar article.
 - /learn/ — 5 long-form pillar articles on color theory (see Pillar articles section below).
 - /browse/ — Full 378-palette grid with live filters (hue, color-count, era, mood).
-- /tools/ — WCAG contrast checker + palette-from-color tool.
+- /tools/ — free in-browser color tools for designers and developers:
+  - /tools/color-converter/ — convert between HEX, RGB, HSL, HSV/HSB, CMYK, and OKLCH. Plus ~16 focused per-conversion landing pages (e.g. /tools/color-converter/hex-to-rgb/, /rgb-to-hex/, /hex-to-hsl/, /rgb-to-cmyk/, /hex-to-oklch/) each with the formula, a worked example, and copy-paste code.
+  - /tools/contrast-checker/ — WCAG 2.1 contrast-ratio calculator with AA/AAA grades; embeddable via iframe (/embed/contrast-checker/).
+  - /tools/gradient-generator/ — linear & radial CSS gradient builder, copy the background rule.
+  - /tools/color-blindness-simulator/ — preview a palette under protanopia, deuteranopia, tritanopia, and achromatopsia (Machado 2009 model).
+  - /tools/palette-from-image/ — extract a dominant-color palette from an uploaded photo, fully client-side (no upload).
+  - /tools/palette-from-color/ — find the closest Wada colors + palettes from a single hex.
 - /random/ — Permalink-shareable random palette redirect (client-side picks from full archive).
 - /methodology — How the dictionary was made (E-E-A-T documentation: source, license, WCAG formula, hue classification).
 - /data — Bulk CSV downloads + DataCatalog hub (palettes / colors / collections).

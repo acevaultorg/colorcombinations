@@ -1,0 +1,209 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Color Blindness Simulator — test a palette for CVD";
+const description =
+  "See how your colors look to people with protanopia, deuteranopia, tritanopia, and achromatopsia. Paste a palette and check it survives the most common color-vision deficiencies. Free, in-browser.";
+
+const keywords = [
+  "color blindness simulator",
+  "color vision deficiency",
+  "protanopia deuteranopia tritanopia",
+  "colorblind test palette",
+  "accessible color palette",
+  "cvd simulator",
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Color Blindness Simulator",
+    description,
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    url: new URL("/tools/color-blindness-simulator/", Astro.site).toString(),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      { "@type": "Question", name: "How common is color blindness?", acceptedAnswer: { "@type": "Answer", text: "About 1 in 12 men (8%) and 1 in 200 women have some color-vision deficiency. Red-green types (protan and deutan) are by far the most common; blue-yellow (tritan) is rare; total color blindness (achromatopsia) is very rare." } },
+      { "@type": "Question", name: "Which CVD type should I design for?", acceptedAnswer: { "@type": "Answer", text: "Deuteranopia and protanopia (red-green) cover the large majority of affected users, so a palette that stays distinguishable under both is a safe baseline. Never rely on color alone — pair it with labels, icons, or patterns." } },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: "Color Blindness Simulator" },
+    ],
+  },
+];
+
+const rows = [
+  { key: "normal", label: "Normal vision", note: "what you designed" },
+  { key: "deuteranopia", label: "Deuteranopia", note: "green-blind — most common (~6% of men)" },
+  { key: "protanopia", label: "Protanopia", note: "red-blind (~2% of men)" },
+  { key: "tritanopia", label: "Tritanopia", note: "blue-blind — rare" },
+  { key: "achromatopsia", label: "Achromatopsia", note: "total color blindness — very rare" },
+];
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd}>
+  <section class="tool-hero">
+    <div class="container-wide tool-hero__inner">
+      <p class="eyebrow"><a href="/tools/">Tools</a> / Color Blindness Simulator</p>
+      <h1>Color Blindness Simulator.</h1>
+      <p class="tool-hero__lede">
+        Paste the colors you're shipping and see them the way users with the four
+        main color-vision deficiencies do. If two swatches collapse into one in a
+        row below, that pair is a problem — add a non-color cue.
+      </p>
+    </div>
+  </section>
+
+  <section class="tool-body section">
+    <div class="container-wide cb">
+      <div class="cb__palette" id="cb-palette"></div>
+      <div class="cb__actions">
+        <button class="cb__add" id="cb-add" type="button">+ Add color</button>
+        <div class="cb__presets">
+          <span>Try:</span>
+          <button type="button" data-pal="#1B2A4E,#9A2A2A,#4E6C50,#D4A76A">Wada</button>
+          <button type="button" data-pal="#2563EB,#16A34A,#DC2626,#CA8A04">RGBY signals</button>
+          <button type="button" data-pal="#10B981,#EF4444,#3B82F6,#F59E0B,#8B5CF6">Dashboard</button>
+        </div>
+      </div>
+
+      <div class="cb__rows" id="cb-rows">
+        {rows.map((r) => (
+          <div class="cb__row" data-cvd={r.key}>
+            <div class="cb__rowmeta">
+              <span class="cb__rowlabel">{r.label}</span>
+              <span class="cb__rownote">{r.note}</span>
+            </div>
+            <div class="cb__swatches" data-render={r.key}></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="explainer section">
+    <div class="container-wide explainer-inner">
+      <h2 class="explainer-title">Designing for color vision deficiency</h2>
+      <p class="explainer-lede">
+        Around <strong>1 in 12 men and 1 in 200 women</strong> see color differently.
+        The simulation here applies the Machado (2009) model — the same approach used
+        by professional accessibility tools — in linear-light sRGB.
+      </p>
+      <div class="explainer-body">
+        <div class="explainer-col">
+          <h3>The red-green pair matters most</h3>
+          <p>
+            Deuteranopia and protanopia together account for the overwhelming majority
+            of CVD. The classic failure is a red/green status system — "error" and
+            "success" can become indistinguishable. Check those rows first.
+          </p>
+        </div>
+        <div class="explainer-col">
+          <h3>Never rely on color alone</h3>
+          <p>
+            WCAG 1.4.1 requires that color isn't the only way information is conveyed.
+            Pair hues with text labels, icons, shape, or position, and keep adjacent
+            swatches far apart in <a href="/tools/color-converter/rgb-to-oklch/">lightness</a> —
+            lightness contrast survives every CVD type.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { parseColor, rgbToHex, simulateCVD, type CVDType } from "@/lib/colorConvert";
+
+  const paletteWrap = document.getElementById("cb-palette") as HTMLElement;
+  const addBtn = document.getElementById("cb-add") as HTMLButtonElement;
+  let colors = ["#1B2A4E", "#9A2A2A", "#4E6C50", "#D4A76A"];
+
+  function renderPalette() {
+    paletteWrap.innerHTML = colors.map((hex, i) => `
+      <div class="cb__chip">
+        <input type="color" value="${hex}" data-i="${i}" aria-label="Color ${i + 1}" />
+        <input type="text" value="${hex}" data-i="${i}" class="cb__chiphex" spellcheck="false" aria-label="Color ${i + 1} hex" />
+        ${colors.length > 2 ? `<button type="button" class="cb__rm" data-i="${i}" aria-label="Remove color ${i + 1}">×</button>` : ""}
+      </div>`).join("");
+    paletteWrap.querySelectorAll<HTMLInputElement>('input[type="color"]').forEach((el) =>
+      el.addEventListener("input", () => { colors[+el.dataset.i!] = el.value.toUpperCase(); renderAll(); }));
+    paletteWrap.querySelectorAll<HTMLInputElement>(".cb__chiphex").forEach((el) =>
+      el.addEventListener("input", () => { const c = parseColor(el.value); if (c) { colors[+el.dataset.i!] = rgbToHex(c); renderAll(); } }));
+    paletteWrap.querySelectorAll<HTMLButtonElement>(".cb__rm").forEach((el) =>
+      el.addEventListener("click", () => { colors.splice(+el.dataset.i!, 1); renderPalette(); renderAll(); }));
+  }
+
+  function renderAll() {
+    document.querySelectorAll<HTMLElement>("[data-render]").forEach((row) => {
+      const mode = row.dataset.render!;
+      row.innerHTML = colors.map((hex) => {
+        const rgb = parseColor(hex)!;
+        const out = mode === "normal" ? rgb : simulateCVD(rgb, mode as CVDType);
+        const sh = rgbToHex(out);
+        return `<span class="cb__sw" style="background:${sh}" title="${sh}"></span>`;
+      }).join("");
+    });
+  }
+
+  addBtn.addEventListener("click", () => { if (colors.length < 8) { colors.push("#3B82F6"); renderPalette(); renderAll(); } });
+  document.querySelectorAll<HTMLButtonElement>(".cb__presets button").forEach((b) =>
+    b.addEventListener("click", () => { colors = b.dataset.pal!.split(","); renderPalette(); renderAll(); }));
+
+  renderPalette();
+  renderAll();
+</script>
+
+<style>
+  .tool-hero { padding-top: 3rem; padding-bottom: 1.5rem; }
+  .tool-hero__inner { max-width: 62rem; }
+  .tool-hero__inner .eyebrow a { color: var(--color-accent-500); text-decoration: none; }
+  .tool-hero__lede { font-family: var(--font-serif); font-size: clamp(1.0625rem, 1.1vw + 0.75rem, 1.25rem); line-height: 1.6; color: var(--color-ink-700); margin-top: 1.25rem; max-width: 60ch; }
+
+  .cb { max-width: 48rem; }
+  .cb__palette { display: flex; flex-wrap: wrap; gap: 0.625rem; }
+  :global(.cb__chip) { display: flex; align-items: center; gap: 0.375rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-elevated); padding: 0.375rem 0.5rem; }
+  :global(.cb__chip input[type="color"]) { width: 2rem; height: 2rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 0; cursor: pointer; background: none; }
+  :global(.cb__chiphex) { width: 5.5rem; font-family: var(--font-mono); font-size: 0.8125rem; border: none; background: none; outline: none; color: var(--color-ink-900); }
+  :global(.cb__rm) { width: 1.5rem; height: 1.5rem; border: none; background: none; color: var(--color-ink-400); font-size: 1.1rem; cursor: pointer; }
+  :global(.cb__rm:hover) { color: #991b1b; }
+
+  .cb__actions { display: flex; align-items: center; gap: 1.25rem; margin: 0.875rem 0 1.75rem; flex-wrap: wrap; }
+  .cb__add { padding: 0.4375rem 0.875rem; border: 1px dashed var(--color-border); border-radius: var(--radius-sm); background: none; color: var(--color-ink-600, var(--color-ink-700)); font-size: 0.8125rem; font-weight: 600; cursor: pointer; }
+  .cb__add:hover { border-color: var(--color-ink-900); color: var(--color-ink-900); }
+  .cb__presets { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: 0.8125rem; color: var(--color-ink-500); }
+  .cb__presets button { padding: 0.3125rem 0.625rem; border: 1px solid var(--color-border); border-radius: 100px; background: var(--color-bg-elevated); color: var(--color-ink-700); font-size: 0.8125rem; cursor: pointer; }
+  .cb__presets button:hover { border-color: var(--color-ink-900); color: var(--color-ink-900); }
+
+  .cb__rows { display: flex; flex-direction: column; gap: 1rem; }
+  .cb__row { display: grid; grid-template-columns: 11rem 1fr; gap: 1rem; align-items: center; }
+  @media (max-width: 600px) { .cb__row { grid-template-columns: 1fr; gap: 0.5rem; } }
+  .cb__rowmeta { display: flex; flex-direction: column; gap: 0.125rem; }
+  .cb__rowlabel { font-family: var(--font-sans); font-size: 0.9375rem; font-weight: 600; color: var(--color-ink-900); }
+  .cb__rownote { font-size: 0.75rem; color: var(--color-ink-500); line-height: 1.35; }
+  .cb__swatches { display: flex; height: 3.25rem; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid rgba(0,0,0,0.08); }
+  :global(.cb__sw) { flex: 1; min-height: 100%; }
+
+  .explainer { border-top: 1px solid var(--color-border); padding-top: 3rem; padding-bottom: 4rem; }
+  .explainer-inner { max-width: 52rem; }
+  .explainer-title { font-family: var(--font-serif); font-size: clamp(1.5rem, 2vw + 0.75rem, 2rem); font-weight: 500; margin-bottom: 1rem; }
+  .explainer-lede { font-family: var(--font-serif); font-size: 1.0625rem; line-height: 1.7; color: var(--color-ink-700); margin-bottom: 2rem; max-width: none; }
+  .explainer-lede strong { color: var(--color-ink-900); }
+  .explainer-body { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  @media (max-width: 640px) { .explainer-body { grid-template-columns: 1fr; } }
+  .explainer-col h3 { font-family: var(--font-sans); font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-ink-500); margin-bottom: 0.75rem; }
+  .explainer-col p { font-family: var(--font-serif); font-size: 1rem; line-height: 1.7; color: var(--color-ink-700); }
+  .explainer-col p a { color: var(--color-accent-500); }
+</style>

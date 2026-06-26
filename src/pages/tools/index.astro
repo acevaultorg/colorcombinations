@@ -3,16 +3,48 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 
 const title = "Tools";
 const description =
-  "Free tools for working designers — a WCAG contrast checker, a palette finder that searches all 378 historical Wada combinations, bulk CSV + JSON downloads, and a permalink-shareable random palette. No signups, no ads, no tracking.";
+  "Free color tools for designers and developers — a HEX/RGB/HSL/CMYK/OKLCH converter, a WCAG contrast checker, a CSS gradient generator, a color-blindness simulator, palette-from-image extraction, and bulk CSV + JSON data. No signups, no ads, runs in your browser.";
 
 const tools = [
+  {
+    href: "/tools/color-converter/",
+    title: "Color Converter",
+    subtitle: "HEX · RGB · HSL · HSV · CMYK · OKLCH",
+    description:
+      "Paste a color in any format and copy it back in every other — hex, rgb(), hsl(), HSV, CMYK, and the perceptual oklch(). Plus a focused landing page for each direct conversion, with the formula, a worked example, and code.",
+    swatches: ["#1B2A4E", "#9A2A2A", "#4E6C50", "#D4A76A"],
+  },
   {
     href: "/tools/contrast-checker/",
     title: "Contrast Checker",
     subtitle: "WCAG 2.1 ratio calculator",
     description:
-      "Paste any two colors, get the contrast ratio and WCAG AA/AAA grades. See how the pair looks on real body text, headings, and buttons before you ship.",
+      "Paste any two colors, get the contrast ratio and WCAG AA/AAA grades. See how the pair looks on real body text, headings, and buttons before you ship. Embeddable on your own site.",
     swatches: ["#1B2A4E", "#F4EEE0"],
+  },
+  {
+    href: "/tools/gradient-generator/",
+    title: "Gradient Generator",
+    subtitle: "Linear & radial CSS, copy the code",
+    description:
+      "Build a linear or radial gradient with live preview, multiple color stops, and angle control. Copy a production-ready background rule in one click — seedable from any Wada palette.",
+    swatches: ["#1B2A4E", "#9A2A2A", "#D4A76A"],
+  },
+  {
+    href: "/tools/color-blindness-simulator/",
+    title: "Color Blindness Simulator",
+    subtitle: "Test a palette for protan / deutan / tritan",
+    description:
+      "See your colors the way users with the four main color-vision deficiencies do. If two swatches collapse into one, that pair needs a non-color cue. Machado (2009) model, in your browser.",
+    swatches: ["#2563EB", "#16A34A", "#DC2626", "#CA8A04"],
+  },
+  {
+    href: "/tools/palette-from-image/",
+    title: "Palette from Image",
+    subtitle: "Extract colors from any photo — privately",
+    description:
+      "Drop in a photo and pull its dominant colors as a copy-ready palette in HEX, RGB, and HSL. Everything runs in your browser; your image is never uploaded.",
+    swatches: ["#7E6B4E", "#A8B2A6", "#3F5874"],
   },
   {
     href: "/tools/palette-from-color/",
@@ -83,10 +115,10 @@ const jsonLd = [
       <p class="eyebrow">Free tools</p>
       <h1 class="display-hero text-balance">Tools.</h1>
       <p class="tools-hero__lede">
-        Four small, useful tools built on the same color library that powers
-        the rest of the site. Check contrast, find a palette from a single
-        hex, grab the full archive as CSV, or jump to a random palette. No
-        signups, no tracking, no ads.
+        Fast, focused color tools built on the same library that powers the
+        rest of the site. Convert between formats, check WCAG contrast, build
+        a gradient, simulate color blindness, pull a palette from a photo, or
+        grab the whole archive as data. No signups, no tracking, no ads.
       </p>
     </div>
   </section>
@@ -121,12 +153,10 @@ const jsonLd = [
     <div class="container-wide tools-note__inner">
       <p class="eyebrow">Why these tools</p>
       <p>
-        Most contrast checkers are buried under ads. Most palette generators
-        spit out randomized hues with no history behind them. Most color
-        datasets aren't downloadable. These four do one job each, grounded
-        in the 378 palettes from the full Sanzo Wada catalog. Bookmarkable,
-        shareable, free — built for the browser tab you keep open while
-        you work.
+        Most color tools are buried under ads or sign-up walls. These each do
+        one job, run entirely in your browser, and stay grounded in the 378
+        palettes from the full Sanzo Wada catalog. Bookmarkable, shareable,
+        free — built for the browser tab you keep open while you work.
       </p>
     </div>
   </section>

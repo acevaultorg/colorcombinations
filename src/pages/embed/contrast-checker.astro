@@ -1,0 +1,93 @@
+---
+// Standalone embeddable WCAG contrast checker. Designed to be dropped into any
+// site via <iframe>. noindex (also excluded from sitemap by astro.config filter).
+// Every embed carries a dofollow backlink to the tool — the distribution loop.
+const site = Astro.site?.toString().replace(/\/$/, "") ?? "https://colorcombinations.org";
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>WCAG Contrast Checker (embed)</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif; background: #faf7ef; color: #1a1714; padding: 14px; }
+    .w { max-width: 460px; margin: 0 auto; }
+    .row { display: flex; gap: 8px; align-items: flex-end; }
+    .grp { flex: 1; }
+    label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #8a8378; margin-bottom: 4px; }
+    .field { display: flex; align-items: center; gap: 6px; border: 1px solid #d8d2c4; border-radius: 8px; background: #fff; padding: 5px 8px; }
+    input[type=color] { width: 26px; height: 26px; border: 1px solid #d8d2c4; border-radius: 4px; padding: 0; background: none; cursor: pointer; }
+    input[type=text] { flex: 1; border: none; outline: none; font: 600 14px ui-monospace, Menlo, monospace; color: #1a1714; min-width: 0; }
+    .swap { border: 1px solid #d8d2c4; border-radius: 8px; background: #fff; height: 38px; width: 38px; cursor: pointer; color: #8a8378; font-size: 16px; }
+    .prev { margin: 12px 0; border-radius: 8px; padding: 14px 16px; border: 1px solid rgba(0,0,0,.08); }
+    .prev p { margin: 0; }
+    .prev .big { font-size: 20px; font-weight: 600; }
+    .res { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .ratio { font: 600 30px ui-serif, Georgia, serif; }
+    .ratio small { font: 600 11px sans-serif; color: #8a8378; text-transform: uppercase; letter-spacing: .06em; display: block; }
+    .grades { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; min-width: 220px; }
+    .g { border: 1px solid #d8d2c4; border-radius: 6px; padding: 6px 8px; font-size: 12px; }
+    .g b { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; background: #eee; color: #8a8378; }
+    .g[data-pass=true] b { background: #d1fae5; color: #065f46; }
+    .g[data-pass=false] b { background: #fee2e2; color: #991b1b; }
+    .credit { margin-top: 12px; font-size: 11px; color: #8a8378; text-align: center; }
+    .credit a { color: #b8860b; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="w">
+    <div class="row">
+      <div class="grp">
+        <label for="fg">Text</label>
+        <div class="field"><input type="color" id="fgp" value="#1B2A4E"><input type="text" id="fg" value="#1B2A4E" spellcheck="false"></div>
+      </div>
+      <button class="swap" id="swap" title="Swap" aria-label="Swap colors">⇅</button>
+      <div class="grp">
+        <label for="bg">Background</label>
+        <div class="field"><input type="color" id="bgp" value="#F4EEE0"><input type="text" id="bg" value="#F4EEE0" spellcheck="false"></div>
+      </div>
+    </div>
+    <div class="prev" id="prev" style="background:#F4EEE0;color:#1B2A4E">
+      <p class="big">The quick brown fox</p>
+      <p style="font-size:13px">jumps over the lazy dog — 0123456789.</p>
+    </div>
+    <div class="res">
+      <div class="ratio"><span id="ratio">—</span><small>contrast ratio</small></div>
+      <div class="grades">
+        <div class="g" id="g1"><b id="b1">—</b> AA normal</div>
+        <div class="g" id="g2"><b id="b2">—</b> AA large</div>
+        <div class="g" id="g3"><b id="b3">—</b> AAA normal</div>
+        <div class="g" id="g4"><b id="b4">—</b> AAA large</div>
+      </div>
+    </div>
+    <p class="credit">WCAG contrast checker by <a href={`${site}/tools/contrast-checker/`} target="_blank" rel="noopener">Color Combinations</a></p>
+  </div>
+
+  <script>
+    import { parseColor, contrastRatio, rgbToHex } from "@/lib/colorConvert";
+    const $ = (id: string) => document.getElementById(id) as HTMLElement;
+    const fg = $("fg") as HTMLInputElement, bg = $("bg") as HTMLInputElement;
+    const fgp = $("fgp") as HTMLInputElement, bgp = $("bgp") as HTMLInputElement;
+    const prev = $("prev"), ratioEl = $("ratio");
+    const grades = [["g1","b1",4.5],["g2","b2",3],["g3","b3",7],["g4","b4",4.5]] as const;
+    function upd() {
+      const a = parseColor(fg.value), b = parseColor(bg.value);
+      if (!a || !b) return;
+      const ha = rgbToHex(a), hb = rgbToHex(b);
+      prev.style.color = ha; prev.style.background = hb; fgp.value = ha; bgp.value = hb;
+      const r = contrastRatio(a, b);
+      ratioEl.textContent = r.toFixed(2) + " : 1";
+      grades.forEach(([g, bdg, t]) => { const p = r >= t; $(g).setAttribute("data-pass", String(p)); $(bdg).textContent = p ? "Pass" : "Fail"; });
+    }
+    fg.addEventListener("input", upd); bg.addEventListener("input", upd);
+    fgp.addEventListener("input", () => { fg.value = fgp.value.toUpperCase(); upd(); });
+    bgp.addEventListener("input", () => { bg.value = bgp.value.toUpperCase(); upd(); });
+    $("swap").addEventListener("click", () => { const t = fg.value; fg.value = bg.value; bg.value = t; upd(); });
+    upd();
+  </script>
+</body>
+</html>

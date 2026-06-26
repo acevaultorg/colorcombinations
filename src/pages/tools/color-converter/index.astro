@@ -1,0 +1,292 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { PAIRS, FORMATS } from "@/data/converterPairs";
+
+const title = "Color Converter — HEX, RGB, HSL, HSV, CMYK, OKLCH";
+const description =
+  "Convert any color between HEX, RGB, HSL, HSV/HSB, CMYK, and OKLCH instantly. Paste one value, copy them all. Free, no signup, no ads — runs entirely in your browser.";
+
+const keywords = [
+  "color converter",
+  "hex to rgb",
+  "rgb to hex",
+  "hex to hsl",
+  "rgb to cmyk",
+  "hex to oklch",
+  "hsl to rgb",
+  "color code converter",
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Color Converter",
+    description,
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    featureList: "HEX, RGB, HSL, HSV/HSB, CMYK, OKLCH conversion",
+    url: new URL("/tools/color-converter/", Astro.site).toString(),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: "Color Converter" },
+    ],
+  },
+];
+
+const formatRows = [
+  { key: "hex", label: "HEX" },
+  { key: "rgb", label: "RGB" },
+  { key: "hsl", label: "HSL" },
+  { key: "hsv", label: "HSV / HSB" },
+  { key: "cmyk", label: "CMYK" },
+  { key: "oklch", label: "OKLCH" },
+];
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd}>
+  <section class="tool-hero">
+    <div class="container-wide tool-hero__inner">
+      <p class="eyebrow"><a href="/tools/">Tools</a> / Color Converter</p>
+      <h1>Color Converter.</h1>
+      <p class="tool-hero__lede">
+        Paste a color in any format — a hex code, <code>rgb()</code>, <code>hsl()</code>,
+        HSV, CMYK, or <code>oklch()</code> — and copy it back in every other. It all
+        runs in your browser; nothing is uploaded.
+      </p>
+    </div>
+  </section>
+
+  <section class="tool-body section">
+    <div class="container-wide cv">
+      <div class="cv__input">
+        <input
+          type="color"
+          id="cv-picker"
+          value="#1B2A4E"
+          class="cv__swatch"
+          aria-label="Color picker"
+        />
+        <input
+          type="text"
+          id="cv-text"
+          value="#1B2A4E"
+          class="cv__field"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="#1B2A4E, rgb(27,42,78), hsl(220,49%,21%)…"
+          aria-label="Color in any format"
+        />
+      </div>
+      <p class="cv__error" id="cv-error" role="status" hidden>Not a recognizable color — try a hex like <code>#1B2A4E</code>.</p>
+
+      <div class="cv__bigswatch" id="cv-big" style="background:#1B2A4E"></div>
+
+      <ul class="cv__rows" role="list">
+        {formatRows.map((f) => (
+          <li class="cv__row">
+            <span class="cv__rowlabel">{f.label}</span>
+            <output class="cv__value" id={`cv-out-${f.key}`}>—</output>
+            <button
+              class="cv__copy"
+              type="button"
+              data-fmt={f.key}
+              data-event="ColorConvert"
+              data-tool="color-converter"
+              data-variant={f.key}
+              aria-label={`Copy ${f.label} value`}
+            >Copy</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="cv-pairs section">
+    <div class="container-wide">
+      <h2 class="cv-pairs__title">Direct conversions</h2>
+      <p class="cv-pairs__lede">Jump straight to a single conversion — each has the formula, a worked example, and copy-paste code.</p>
+      <ul class="cv-pairs__list" role="list">
+        {PAIRS.map((p) => (
+          <li>
+            <a href={`/tools/color-converter/${p.slug}/`}>
+              {FORMATS[p.from].label} <span aria-hidden="true">→</span> {FORMATS[p.to].label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="explainer section">
+    <div class="container-wide explainer-inner">
+      <h2 class="explainer-title">Which color format should I use?</h2>
+      <div class="explainer-body">
+        <div class="explainer-col">
+          <h3>For the web</h3>
+          <p>
+            <strong>HEX</strong> and <strong>RGB</strong> are interchangeable six-byte
+            sRGB colors — use hex for brevity. <strong>HSL</strong> makes tints and
+            shades a one-number tweak. <strong>OKLCH</strong> is the modern choice:
+            its lightness is perceptually even, so accessible ramps and contrast
+            behave predictably across hues.
+          </p>
+        </div>
+        <div class="explainer-col">
+          <h3>For pickers &amp; print</h3>
+          <p>
+            <strong>HSV / HSB</strong> is the model behind most color-picker squares
+            (saturation × value). <strong>CMYK</strong> describes the four print inks —
+            treat any RGB→CMYK number as a screen approximation and confirm with a
+            proof, since print has a narrower gamut than your monitor.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { parseColor, allFormats, rgbToHex } from "@/lib/colorConvert";
+
+  const picker = document.getElementById("cv-picker") as HTMLInputElement;
+  const text = document.getElementById("cv-text") as HTMLInputElement;
+  const big = document.getElementById("cv-big") as HTMLElement;
+  const err = document.getElementById("cv-error") as HTMLElement;
+  const outs: Record<string, HTMLElement> = {};
+  ["hex", "rgb", "hsl", "hsv", "cmyk", "oklch"].forEach((k) => {
+    outs[k] = document.getElementById("cv-out-" + k) as HTMLElement;
+  });
+
+  function render(rgb: { r: number; g: number; b: number } | null) {
+    if (!rgb) { err.hidden = false; return; }
+    err.hidden = true;
+    const hex = rgbToHex(rgb);
+    big.style.background = hex;
+    const f = allFormats(rgb);
+    outs.hex.textContent = f.hex;
+    outs.rgb.textContent = f.rgb;
+    outs.hsl.textContent = f.hsl;
+    outs.hsv.textContent = f.hsv;
+    outs.cmyk.textContent = f.cmyk;
+    outs.oklch.textContent = f.oklch;
+    picker.value = hex;
+  }
+
+  function fromText() { render(parseColor(text.value)); }
+  function fromPicker() { text.value = picker.value.toUpperCase(); render(parseColor(text.value)); }
+
+  text.addEventListener("input", fromText);
+  picker.addEventListener("input", fromPicker);
+
+  document.querySelectorAll<HTMLButtonElement>(".cv__copy").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const k = btn.dataset.fmt!;
+      const val = outs[k]?.textContent || "";
+      if (!val || val === "—") return;
+      try { await navigator.clipboard.writeText(val); } catch { /* ignore */ }
+      const old = btn.textContent;
+      btn.textContent = "Copied";
+      btn.setAttribute("data-copied", "true");
+      setTimeout(() => { btn.textContent = old; btn.removeAttribute("data-copied"); }, 1100);
+    });
+  });
+
+  // Seed from ?c= param if present (shareable links)
+  const seed = new URLSearchParams(location.search).get("c");
+  if (seed) { text.value = seed; }
+  fromText();
+</script>
+
+<style>
+  .tool-hero { padding-top: 3rem; padding-bottom: 1.5rem; }
+  .tool-hero__inner { max-width: 62rem; }
+  .tool-hero__inner .eyebrow a { color: var(--color-accent-500); text-decoration: none; }
+  .tool-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.2vw + 0.75rem, 1.3125rem);
+    line-height: 1.55; color: var(--color-ink-700);
+    margin-top: 1.25rem; max-width: 58ch;
+  }
+  .tool-hero__lede code { font-family: var(--font-mono); font-size: 0.92em; }
+
+  .cv { max-width: 46rem; }
+  .cv__input {
+    display: flex; align-items: center; gap: 0.625rem;
+    border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    background: var(--color-bg-elevated); padding: 0.5rem 0.75rem;
+  }
+  .cv__swatch {
+    width: 2.75rem; height: 2.75rem; border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm); padding: 0; cursor: pointer; background: none; flex-shrink: 0;
+  }
+  .cv__swatch::-webkit-color-swatch-wrapper { padding: 0; }
+  .cv__swatch::-webkit-color-swatch { border: none; border-radius: 3px; }
+  .cv__field {
+    flex: 1; font-family: var(--font-mono); font-size: 1.0625rem; font-weight: 500;
+    color: var(--color-ink-900); border: none; background: none; outline: none; min-width: 0;
+  }
+  .cv__error { color: #991b1b; font-size: 0.875rem; margin-top: 0.625rem; }
+  .cv__error code { font-family: var(--font-mono); }
+
+  .cv__bigswatch {
+    height: 4.5rem; border-radius: var(--radius-md);
+    border: 1px solid rgba(0,0,0,0.08); margin: 1.25rem 0; transition: background 0.12s;
+  }
+
+  .cv__rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.625rem; }
+  .cv__row {
+    display: grid; grid-template-columns: 5.5rem 1fr auto; align-items: center; gap: 0.75rem;
+    padding: 0.625rem 0.875rem; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); background: var(--color-bg-elevated);
+  }
+  .cv__rowlabel {
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--color-ink-500);
+  }
+  .cv__value {
+    font-family: var(--font-mono); font-size: 0.9375rem; color: var(--color-ink-900);
+    overflow-x: auto; white-space: nowrap;
+  }
+  .cv__copy {
+    font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 600;
+    padding: 0.3125rem 0.75rem; border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm); background: var(--color-paper-50, #fff);
+    color: var(--color-ink-700); cursor: pointer; transition: border-color 150ms, color 150ms;
+  }
+  .cv__copy:hover { border-color: var(--color-ink-900); color: var(--color-ink-900); }
+  .cv__copy[data-copied="true"] { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+
+  .cv-pairs { padding-top: 2.5rem; padding-bottom: 1rem; }
+  .cv-pairs__title { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 500; margin: 0 0 0.375rem; }
+  .cv-pairs__lede { color: var(--color-ink-600, var(--color-ink-700)); font-size: 0.9375rem; margin: 0 0 1.25rem; }
+  .cv-pairs__list {
+    list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  }
+  .cv-pairs__list a {
+    display: block; padding: 0.625rem 0.875rem; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); background: var(--color-bg-elevated);
+    text-decoration: none; color: var(--color-ink-900); font-family: var(--font-mono);
+    font-size: 0.875rem; transition: border-color 150ms, transform 150ms;
+  }
+  .cv-pairs__list a:hover { border-color: var(--color-ink-900); transform: translateY(-1px); }
+
+  .explainer { border-top: 1px solid var(--color-border); padding-top: 3rem; padding-bottom: 4rem; }
+  .explainer-inner { max-width: 52rem; }
+  .explainer-title { font-family: var(--font-serif); font-size: clamp(1.5rem, 2vw + 0.75rem, 2rem); font-weight: 500; margin-bottom: 1.5rem; }
+  .explainer-body { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  @media (max-width: 640px) { .explainer-body { grid-template-columns: 1fr; } }
+  .explainer-col h3 {
+    font-family: var(--font-sans); font-size: 0.875rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-ink-500); margin-bottom: 0.75rem;
+  }
+  .explainer-col p { font-family: var(--font-serif); font-size: 1rem; line-height: 1.7; color: var(--color-ink-700); }
+  .explainer-col p strong { font-weight: 600; color: var(--color-ink-900); }
+</style>

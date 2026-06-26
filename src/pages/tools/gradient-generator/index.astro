@@ -1,0 +1,216 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "CSS Gradient Generator — linear & radial, copy the code";
+const description =
+  "Build a linear or radial CSS gradient with live preview, drag-free color stops, and angle control. Copy production-ready background CSS in one click. Free, runs in your browser.";
+
+const keywords = [
+  "css gradient generator",
+  "gradient generator",
+  "linear gradient css",
+  "radial gradient",
+  "background gradient css",
+  "gradient maker",
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "CSS Gradient Generator",
+    description,
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    url: new URL("/tools/gradient-generator/", Astro.site).toString(),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: "Gradient Generator" },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd}>
+  <section class="tool-hero">
+    <div class="container-wide tool-hero__inner">
+      <p class="eyebrow"><a href="/tools/">Tools</a> / Gradient Generator</p>
+      <h1>CSS Gradient Generator.</h1>
+      <p class="tool-hero__lede">
+        Pick a few colors, choose linear or radial, set the angle, and copy the
+        <code>background</code> rule. Live preview, no signup — and you can seed it
+        from any of the 378 historical Wada palettes.
+      </p>
+    </div>
+  </section>
+
+  <section class="tool-body section">
+    <div class="container-wide gg">
+      <div class="gg__preview" id="gg-preview"></div>
+
+      <div class="gg__controls">
+        <div class="gg__type" role="radiogroup" aria-label="Gradient type">
+          <button class="gg__seg is-active" data-type="linear" type="button" aria-pressed="true">Linear</button>
+          <button class="gg__seg" data-type="radial" type="button" aria-pressed="false">Radial</button>
+        </div>
+        <div class="gg__angle">
+          <label for="gg-angle">Angle <span id="gg-angle-val">90°</span></label>
+          <input type="range" id="gg-angle" min="0" max="360" value="90" />
+        </div>
+      </div>
+
+      <div class="gg__stops" id="gg-stops"></div>
+      <button class="gg__addstop" id="gg-add" type="button">+ Add color stop</button>
+
+      <div class="gg__output">
+        <pre><code id="gg-css">—</code></pre>
+        <button class="gg__copy" id="gg-copy" type="button" data-event="GradientCopy" data-tool="gradient-generator">Copy CSS</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="explainer section">
+    <div class="container-wide explainer-inner">
+      <h2 class="explainer-title">How CSS gradients work</h2>
+      <div class="explainer-body">
+        <div class="explainer-col">
+          <h3>Linear vs radial</h3>
+          <p>
+            A <strong>linear gradient</strong> blends colors along a straight line whose
+            direction you set with an angle (<code>0deg</code> = upward, <code>90deg</code> =
+            rightward). A <strong>radial gradient</strong> blends outward from a center
+            point in concentric rings — good for spotlights and soft glows.
+          </p>
+        </div>
+        <div class="explainer-col">
+          <h3>Color stops</h3>
+          <p>
+            Each stop is a color plus an optional position (<code>0%</code>–<code>100%</code>).
+            Two stops give a clean fade; three or more let you build bands and rainbows.
+            Evenly spaced stops are smoothest; clustering two stops creates a hard edge.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { parseColor, rgbToHex } from "@/lib/colorConvert";
+
+  const preview = document.getElementById("gg-preview") as HTMLElement;
+  const stopsWrap = document.getElementById("gg-stops") as HTMLElement;
+  const cssOut = document.getElementById("gg-css") as HTMLElement;
+  const angleInput = document.getElementById("gg-angle") as HTMLInputElement;
+  const angleVal = document.getElementById("gg-angle-val") as HTMLElement;
+  const addBtn = document.getElementById("gg-add") as HTMLButtonElement;
+  const copyBtn = document.getElementById("gg-copy") as HTMLButtonElement;
+
+  let type: "linear" | "radial" = "linear";
+  let stops = ["#1B2A4E", "#9A2A2A", "#D4A76A"];
+
+  function renderStops() {
+    stopsWrap.innerHTML = stops.map((hex, i) => `
+      <div class="gg__stop">
+        <input type="color" value="${hex}" data-i="${i}" aria-label="Color stop ${i + 1}" />
+        <input type="text" value="${hex}" data-i="${i}" class="gg__stophex" spellcheck="false" aria-label="Color stop ${i + 1} hex" />
+        ${stops.length > 2 ? `<button type="button" class="gg__rm" data-i="${i}" aria-label="Remove stop ${i + 1}">×</button>` : ""}
+      </div>`).join("");
+    stopsWrap.querySelectorAll<HTMLInputElement>('input[type="color"]').forEach((el) => {
+      el.addEventListener("input", () => { stops[+el.dataset.i!] = el.value.toUpperCase(); update(); });
+    });
+    stopsWrap.querySelectorAll<HTMLInputElement>(".gg__stophex").forEach((el) => {
+      el.addEventListener("input", () => { const c = parseColor(el.value); if (c) { stops[+el.dataset.i!] = rgbToHex(c); update(); } });
+    });
+    stopsWrap.querySelectorAll<HTMLButtonElement>(".gg__rm").forEach((el) => {
+      el.addEventListener("click", () => { stops.splice(+el.dataset.i!, 1); renderStops(); update(); });
+    });
+  }
+
+  function gradientCss(): string {
+    const list = stops.join(", ");
+    return type === "linear"
+      ? `linear-gradient(${angleInput.value}deg, ${list})`
+      : `radial-gradient(circle, ${list})`;
+  }
+
+  function update() {
+    const g = gradientCss();
+    preview.style.background = g;
+    cssOut.textContent = `background: ${g};`;
+    angleVal.textContent = `${angleInput.value}°`;
+    const showAngle = type === "linear";
+    (document.querySelector(".gg__angle") as HTMLElement).style.opacity = showAngle ? "1" : "0.4";
+    angleInput.disabled = !showAngle;
+  }
+
+  document.querySelectorAll<HTMLButtonElement>(".gg__seg").forEach((b) => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".gg__seg").forEach((x) => { x.classList.remove("is-active"); x.setAttribute("aria-pressed", "false"); });
+      b.classList.add("is-active"); b.setAttribute("aria-pressed", "true");
+      type = b.dataset.type as "linear" | "radial"; update();
+    });
+  });
+  angleInput.addEventListener("input", update);
+  addBtn.addEventListener("click", () => { if (stops.length < 6) { stops.push("#FAF7EF"); renderStops(); update(); } });
+  copyBtn.addEventListener("click", async () => {
+    const v = cssOut.textContent || ""; if (!v) return;
+    try { await navigator.clipboard.writeText(v); } catch {}
+    const o = copyBtn.textContent; copyBtn.textContent = "Copied"; copyBtn.setAttribute("data-copied", "true");
+    setTimeout(() => { copyBtn.textContent = o; copyBtn.removeAttribute("data-copied"); }, 1100);
+  });
+
+  renderStops();
+  update();
+</script>
+
+<style>
+  .tool-hero { padding-top: 3rem; padding-bottom: 1.5rem; }
+  .tool-hero__inner { max-width: 62rem; }
+  .tool-hero__inner .eyebrow a { color: var(--color-accent-500); text-decoration: none; }
+  .tool-hero__lede { font-family: var(--font-serif); font-size: clamp(1.0625rem, 1.1vw + 0.75rem, 1.25rem); line-height: 1.6; color: var(--color-ink-700); margin-top: 1.25rem; max-width: 60ch; }
+  .tool-hero__lede code { font-family: var(--font-mono); font-size: 0.9em; }
+
+  .gg { max-width: 44rem; }
+  .gg__preview { height: 13rem; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); background: linear-gradient(90deg, #1B2A4E, #9A2A2A, #D4A76A); }
+
+  .gg__controls { display: flex; align-items: center; gap: 1.5rem; margin: 1.25rem 0; flex-wrap: wrap; }
+  .gg__type { display: inline-flex; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+  .gg__seg { padding: 0.5rem 1rem; border: none; background: var(--color-bg-elevated); color: var(--color-ink-700); font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; cursor: pointer; }
+  .gg__seg.is-active { background: var(--color-ink-900); color: var(--color-paper-50, #fff); }
+  .gg__angle { flex: 1; min-width: 14rem; }
+  .gg__angle label { display: block; font-size: 0.8125rem; font-weight: 600; color: var(--color-ink-500); margin-bottom: 0.375rem; }
+  .gg__angle input[type="range"] { width: 100%; }
+
+  .gg__stops { display: flex; flex-direction: column; gap: 0.625rem; }
+  :global(.gg__stop) { display: flex; align-items: center; gap: 0.625rem; }
+  :global(.gg__stop input[type="color"]) { width: 2.5rem; height: 2.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 0; cursor: pointer; background: none; flex-shrink: 0; }
+  :global(.gg__stophex) { flex: 1; font-family: var(--font-mono); font-size: 0.9375rem; padding: 0.5rem 0.75rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg-elevated); color: var(--color-ink-900); }
+  :global(.gg__rm) { width: 2.25rem; height: 2.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg-elevated); color: var(--color-ink-500); font-size: 1.25rem; cursor: pointer; }
+  :global(.gg__rm:hover) { border-color: #991b1b; color: #991b1b; }
+  .gg__addstop { margin-top: 0.75rem; padding: 0.4375rem 0.875rem; border: 1px dashed var(--color-border); border-radius: var(--radius-sm); background: none; color: var(--color-ink-600, var(--color-ink-700)); font-size: 0.8125rem; font-weight: 600; cursor: pointer; }
+  .gg__addstop:hover { border-color: var(--color-ink-900); color: var(--color-ink-900); }
+
+  .gg__output { display: flex; align-items: stretch; gap: 0.75rem; margin-top: 1.5rem; }
+  .gg__output pre { flex: 1; margin: 0; padding: 1rem 1.125rem; background: var(--color-ink-900, #1a1714); color: #e8e3d6; border-radius: var(--radius-md); overflow-x: auto; }
+  .gg__output code { font-family: var(--font-mono); font-size: 0.8125rem; white-space: pre-wrap; word-break: break-word; }
+  .gg__copy { flex-shrink: 0; padding: 0 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-elevated); color: var(--color-ink-700); font-size: 0.8125rem; font-weight: 600; cursor: pointer; }
+  .gg__copy:hover { border-color: var(--color-ink-900); color: var(--color-ink-900); }
+  .gg__copy[data-copied="true"] { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+
+  .explainer { border-top: 1px solid var(--color-border); padding-top: 3rem; padding-bottom: 4rem; }
+  .explainer-inner { max-width: 52rem; }
+  .explainer-title { font-family: var(--font-serif); font-size: clamp(1.5rem, 2vw + 0.75rem, 2rem); font-weight: 500; margin-bottom: 1.5rem; }
+  .explainer-body { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  @media (max-width: 640px) { .explainer-body { grid-template-columns: 1fr; } }
+  .explainer-col h3 { font-family: var(--font-sans); font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-ink-500); margin-bottom: 0.75rem; }
+  .explainer-col p { font-family: var(--font-serif); font-size: 1rem; line-height: 1.7; color: var(--color-ink-700); }
+  .explainer-col p code { font-family: var(--font-mono); font-size: 0.86em; }
+  .explainer-col p strong { font-weight: 600; color: var(--color-ink-900); }
+</style>
