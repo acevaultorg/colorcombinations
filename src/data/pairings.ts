@@ -37,6 +37,16 @@ export const commonColors: CommonColor[] = [
   { slug: "charcoal-grey", name: "Charcoal Grey", hex: "#36454F", descriptor: "a dark blue-grey" },
   { slug: "olive-green", name: "Olive Green", hex: "#708238", descriptor: "a muted yellow-green" },
   { slug: "burgundy", name: "Burgundy", hex: "#7B1E2B", descriptor: "a deep wine red" },
+  { slug: "teal", name: "Teal", hex: "#008080", descriptor: "a balanced blue-green" },
+  { slug: "coral", name: "Coral", hex: "#FF7F50", descriptor: "a warm pink-orange" },
+  { slug: "emerald-green", name: "Emerald Green", hex: "#009B77", descriptor: "a rich, jewel-toned green" },
+  { slug: "forest-green", name: "Forest Green", hex: "#228B22", descriptor: "a deep, shadowy green" },
+  { slug: "dusty-rose", name: "Dusty Rose", hex: "#C08081", descriptor: "a muted, greyed pink" },
+  { slug: "beige", name: "Beige", hex: "#E1D4BB", descriptor: "a warm, sandy neutral" },
+  { slug: "cream", name: "Cream", hex: "#F3EAD3", descriptor: "a soft, warm off-white" },
+  { slug: "mauve", name: "Mauve", hex: "#B784A7", descriptor: "a dusty purple-pink" },
+  { slug: "taupe", name: "Taupe", hex: "#B0A08E", descriptor: "a warm grey-brown" },
+  { slug: "peach", name: "Peach", hex: "#FFCBA4", descriptor: "a soft, warm peach" },
 ];
 
 export const commonColorBySlug = (slug: string): CommonColor | undefined =>
