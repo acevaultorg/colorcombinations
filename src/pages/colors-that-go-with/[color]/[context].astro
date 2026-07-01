@@ -2,7 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import BundleCta from "@components/BundleCta.astro";
-import { bestTextColorOn, contrastRatio } from "@/lib/color";
+import { bestTextColorOn, contrastRatio, hexToRgb } from "@/lib/color";
 import type { HexColor } from "@/types/palette";
 import {
   commonColors,
@@ -67,6 +67,35 @@ const partnerSentence =
   topFamilies.length >= 2
     ? `${topFamilies.slice(0, -1).join(", ")}, and ${topFamilies[topFamilies.length - 1]}`
     : topFamilies[0] ?? "warm neutrals";
+
+// ---- Factual colour reference + pairing rationale (all computed from the hex — zero fabrication) ----
+const rgb = hexToRgb(color.hex);
+const { hue: cHue, s: cS, l: cL } = hsl(color.hex);
+const sPct = Math.round(cS * 100);
+const lPct = Math.round(cL * 100);
+const _r = rgb.r / 255, _g = rgb.g / 255, _b = rgb.b / 255;
+const _k = 1 - Math.max(_r, _g, _b);
+const cmyk = _k >= 0.999
+  ? { c: 0, m: 0, y: 0, k: 100 }
+  : {
+      c: Math.round(((1 - _r - _k) / (1 - _k)) * 100),
+      m: Math.round(((1 - _g - _k) / (1 - _k)) * 100),
+      y: Math.round(((1 - _b - _k) / (1 - _k)) * 100),
+      k: Math.round(_k * 100),
+    };
+const temperature = cS < 0.12 ? "neutral" : (cHue < 75 || cHue >= 300) ? "warm" : (cHue >= 140 && cHue < 260) ? "cool" : "balanced";
+const lightWord = cL > 0.7 ? "light and airy" : cL > 0.45 ? "mid-toned" : "deep and grounding";
+const satWord = cS < 0.2 ? "nearly neutral" : cS < 0.5 ? "gently muted" : "saturated";
+const textOn = bestTextColorOn(color.hex);
+const cr = Math.round(contrastRatio(color.hex, textOn === "dark" ? "#1c1917" : "#fafaf9") * 10) / 10;
+const wcag = cr >= 7 ? "AAA" : cr >= 4.5 ? "AA" : cr >= 3 ? "AA for large text" : "below AA (decorative use)";
+const balanceNeed =
+  temperature === "warm" ? "cool and neutral partners that temper its warmth"
+  : temperature === "cool" ? "warm and neutral partners that add the warmth it lacks"
+  : temperature === "neutral" ? "one accent with real hue, plus quiet tonal neighbours"
+  : "both warmer and cooler neighbours";
+const valueNeed = cL < 0.4 ? "lighter" : cL > 0.7 ? "deeper" : "both lighter and deeper";
+const mood0 = (ctx.favorMoods && ctx.favorMoods[0]) ? ctx.favorMoods[0] : "considered";
 
 // ---- SEO ----
 const h1 = `Colors that go with ${color.name} for ${ctx.label}`;
@@ -151,14 +180,51 @@ const jsonLd = [
       <p class="mt-3 text-sm text-stone-500">{ctx.lens}</p>
     </header>
 
-    <!-- Partner families: the direct "what goes with" answer -->
-    <section class="mb-10">
-      <h2 class="mb-3 text-lg font-semibold text-stone-900">What {color.name.toLowerCase()} pairs with</h2>
+    <!-- About the colour: factual reference, unique per colour -->
+    <section class="mb-8 rounded-xl border border-stone-200 bg-stone-50/70 p-5">
+      <h2 class="mb-2 text-lg font-semibold text-stone-900">About {color.name.toLowerCase()}</h2>
+      <p class="text-stone-700">
+        {color.name} is {color.descriptor} — a {satWord}, {temperature} colour that reads as {lightWord}. As a {temperature}
+        tone it looks most resolved next to {balanceNeed}, and it needs {valueNeed} shades nearby for the value contrast the
+        eye reads as finished. That balance is what makes it feel {mood0} in {ctx.label}.
+      </p>
+      <dl class="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-4">
+        <div><dt class="text-[11px] uppercase tracking-wide text-stone-400">HEX</dt><dd class="font-mono text-stone-800">{color.hex}</dd></div>
+        <div><dt class="text-[11px] uppercase tracking-wide text-stone-400">RGB</dt><dd class="font-mono text-stone-800">{rgb.r}, {rgb.g}, {rgb.b}</dd></div>
+        <div><dt class="text-[11px] uppercase tracking-wide text-stone-400">HSL</dt><dd class="font-mono text-stone-800">{cHue}°, {sPct}%, {lPct}%</dd></div>
+        <div><dt class="text-[11px] uppercase tracking-wide text-stone-400">CMYK</dt><dd class="font-mono text-stone-800">{cmyk.c}, {cmyk.m}, {cmyk.y}, {cmyk.k}</dd></div>
+      </dl>
+      <p class="mt-3 text-sm text-stone-500">
+        Accessibility: put <strong>{textOn}</strong> text on {color.name.toLowerCase()} for {wcag} legibility
+        (contrast {cr}:1 against {textOn === "dark" ? "near-black" : "off-white"}).
+      </p>
+    </section>
+
+    <!-- Why it pairs: colour theory grounded in the archive evidence, unique per colour -->
+    <section class="mb-9">
+      <h2 class="mb-3 text-lg font-semibold text-stone-900">Why {color.name.toLowerCase()} pairs with {partnerSentence}</h2>
+      <p class="mb-4 text-stone-700">
+        Across the {matches.length} historical combinations below, {color.name.toLowerCase()} sits most often beside
+        {partnerSentence}. That tracks with colour theory: a {temperature}, {lightWord.split(" ")[0]} tone like this one
+        wants {balanceNeed} so the scheme feels intentional rather than flat, and {valueNeed} partners supply the
+        light-to-dark range the eye needs. {ctx.lens}
+      </p>
       <ul class="flex flex-wrap gap-2">
         {topFamilies.map((f) => (
           <li class="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-sm text-stone-700">{f}</li>
         ))}
       </ul>
+    </section>
+
+    <!-- Context guidance woven with the colour, unique per colour + setting -->
+    <section class="mb-10 rounded-xl border border-stone-200 p-5">
+      <h2 class="mb-2 text-lg font-semibold text-stone-900">Using {color.name.toLowerCase()} in {ctx.label}</h2>
+      <p class="text-stone-700">
+        {ctx.tip} {topFamilies.slice(0, 2).join(" and ") || "a warm neutral"}. Because {color.name.toLowerCase()} is
+        {" "}{lightWord}, {cL < 0.45
+          ? `keep it to anchor pieces or a single feature area and let ${topFamilies[0] ?? "a light neutral"} carry the larger surfaces`
+          : `it can cover larger surfaces, with ${topFamilies[topFamilies.length - 1] ?? "a deeper tone"} added for depth`}.
+      </p>
     </section>
 
     <!-- Curated combinations from the archive -->
