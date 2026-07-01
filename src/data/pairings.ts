@@ -47,6 +47,16 @@ export const commonColors: CommonColor[] = [
   { slug: "mauve", name: "Mauve", hex: "#B784A7", descriptor: "a dusty purple-pink" },
   { slug: "taupe", name: "Taupe", hex: "#B0A08E", descriptor: "a warm grey-brown" },
   { slug: "peach", name: "Peach", hex: "#FFCBA4", descriptor: "a soft, warm peach" },
+  { slug: "gray", name: "Gray", hex: "#808080", descriptor: "a neutral mid-grey" },
+  { slug: "brown", name: "Brown", hex: "#7B5233", descriptor: "a warm mid-brown" },
+  { slug: "blue", name: "Blue", hex: "#3E6FA3", descriptor: "a classic mid-blue" },
+  { slug: "green", name: "Green", hex: "#4A7C59", descriptor: "a balanced mid-green" },
+  { slug: "pink", name: "Pink", hex: "#F7A8B8", descriptor: "a clear, soft pink" },
+  { slug: "yellow", name: "Yellow", hex: "#F2C94C", descriptor: "a warm, sunny yellow" },
+  { slug: "orange", name: "Orange", hex: "#E8833A", descriptor: "a warm, vivid orange" },
+  { slug: "purple", name: "Purple", hex: "#7D5BA6", descriptor: "a balanced purple" },
+  { slug: "red", name: "Red", hex: "#C0392B", descriptor: "a clear, warm red" },
+  { slug: "turquoise", name: "Turquoise", hex: "#40C4B7", descriptor: "a bright blue-green" },
 ];
 
 export const commonColorBySlug = (slug: string): CommonColor | undefined =>
