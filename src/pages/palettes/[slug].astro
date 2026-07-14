@@ -55,7 +55,17 @@ const bookOffset =
     .reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % FURTHER_READING.length;
 
 const title = palette.title + (palette.titleJa ? ` (${palette.titleJa})` : "");
-const description = palette.summary;
+// Bing WMT r118 (2026-07-14): 19 palette pages flagged for too-short meta
+// descriptions — the poetic summary alone can be <60ch. When short, extend it
+// with facts computed from the palette itself (names + hexes + what the page has).
+const _colorBits = palette.colors
+  .slice(0, 3)
+  .map((c) => `${c.nameRomaji ?? c.hex} (${c.hex})`)
+  .join(", ");
+const description =
+  palette.summary.length >= 110
+    ? palette.summary
+    : `${palette.summary} A ${palette.colors.length}-color combination — ${_colorBits}${palette.colors.length > 3 ? " and more" : ""} — with hex and RGB values, contrast checks and pairing guidance.`;
 const pageUrl = new URL(`/palettes/${palette.slug}`, Astro.site).toString();
 const ogImage = `/og/${palette.slug}.svg`;
 
