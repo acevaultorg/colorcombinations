@@ -8,6 +8,7 @@ import ContrastMatrix from "@components/ContrastMatrix.astro";
 import ShareBar from "@components/ShareBar.astro";
 import { FURTHER_READING } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
+import { commonColors, contexts, pairingPaths, redmean } from "@data/pairings";
 import { collectionsForPalette, paletteSetForCollection } from "@data/collections";
 import { pillarForCollection } from "@data/pillarMap";
 import { bestTextColorOn, contrastRatio } from "@/lib/color";
@@ -93,6 +94,40 @@ for (let i = 0; i < palette.colors.length; i++) {
   }
 }
 const bestRatio = bestPair.ratio.toFixed(2);
+
+// ---- "Colors that go with…" cross-links (internal-link equity → the 520 pairing pages) ----
+// For each hex in this palette, find the nearest COMMON color (redmean perceptual
+// distance) and, IF it's a genuine same-family match AND that color has built
+// pairing pages, link to one. Zero fabrication: a link only appears when a palette
+// hex really is that common color; only contexts that actually build are linked
+// (derived from pairingPaths(), the same source getStaticPaths uses). Dedupes by
+// common color so a palette maps to a handful of distinct pairing pages.
+const PAIRING_MATCH_THRESHOLD = 95; // redmean units — the engine's "same family" cutoff
+const CONTEXT_PREFERENCE = ["living-room", "bedroom", "walls", "an-outfit", "clothes"];
+const _builtContextsByColor = new Map<string, string[]>();
+for (const p of pairingPaths()) {
+  const arr = _builtContextsByColor.get(p.color) ?? [];
+  arr.push(p.context);
+  _builtContextsByColor.set(p.color, arr);
+}
+const _seenPairColor = new Set<string>();
+const pairingCrossLinks: { name: string; slug: string; context: string; ctxLabel: string }[] = [];
+for (const c of palette.colors) {
+  let best: { slug: string; name: string; d: number } | null = null;
+  for (const cc of commonColors) {
+    const d = redmean(c.hex, cc.hex);
+    if (best === null || d < best.d) best = { slug: cc.slug, name: cc.name, d };
+  }
+  if (!best || best.d > PAIRING_MATCH_THRESHOLD) continue; // not genuinely that color
+  if (_seenPairColor.has(best.slug)) continue;
+  const built = _builtContextsByColor.get(best.slug);
+  if (!built || built.length === 0) continue; // only link pages that exist
+  _seenPairColor.add(best.slug);
+  const ctxSlug = CONTEXT_PREFERENCE.find((x) => built.includes(x)) ?? built[0];
+  const ctxLabel = contexts.find((x) => x.slug === ctxSlug)?.label ?? ctxSlug.replace(/-/g, " ");
+  pairingCrossLinks.push({ name: best.name, slug: best.slug, context: ctxSlug, ctxLabel });
+}
+const pairingCrossLinksTop = pairingCrossLinks.slice(0, 5);
 const wcagVerdict =
   bestPair.ratio >= 7
     ? "clearing the WCAG AAA bar for body text"
@@ -505,6 +540,28 @@ const jsonLd = [
   )}
 
   {/* ============ COLLECTION SIBLINGS ============ */}
+  {/* ============ COLORS THAT GO WITH (pairing cross-links) ============ */}
+  {pairingCrossLinksTop.length > 0 && (
+    <section class="section pairing-crosslinks">
+      <div class="container-wide">
+        <header class="section-head">
+          <p class="eyebrow">Colors that go with these shades</p>
+          <h2 class="text-balance">Find partner colors for each tone in this palette.</h2>
+        </header>
+        <ul class="pairing-crosslinks__list" role="list">
+          {pairingCrossLinksTop.map((l) => (
+            <li>
+              <a href={`/colors-that-go-with/${l.slug}/${l.context}/`}>
+                Colors that go with <strong>{l.name}</strong>
+                <span class="pairing-crosslinks__ctx">for {l.ctxLabel}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
   {primaryCollection && collectionSiblings.length > 0 && (
     <section class="section collection-siblings">
       <div class="container-wide">
@@ -1073,6 +1130,51 @@ const jsonLd = [
 
   .collection-siblings h2 a:hover {
     color: var(--color-accent-700);
+  }
+
+  .pairing-crosslinks {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .pairing-crosslinks__list {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 0.75rem;
+  }
+
+  .pairing-crosslinks__list a {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-ink-300);
+    border-radius: 0.5rem;
+    background: var(--color-bg-elevated);
+    color: var(--color-ink-700);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .pairing-crosslinks__list a:hover {
+    border-color: var(--color-accent-500);
+    color: var(--color-ink-900);
+  }
+
+  .pairing-crosslinks__list strong {
+    font-weight: 600;
+    color: var(--color-ink-900);
+  }
+
+  .pairing-crosslinks__ctx {
+    color: var(--color-ink-500);
+    font-size: 0.8125rem;
   }
 
   .collection-siblings__more {
