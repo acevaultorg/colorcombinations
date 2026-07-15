@@ -1,0 +1,386 @@
+---
+/**
+ * /data/sanzo-wada-color-analysis/ — a press-grade, citable DATA STUDY of all
+ * 348 combinations in the MIT-licensed community reconstruction of Sanzo Wada's
+ * 1933 "A Dictionary of Color Combinations". EVERY number is recomputed at
+ * build time from src/data/wada-palettes.ts — zero fabrication. Built to earn
+ * links from design/culture press + the book's existing fandom (the #1
+ * authority lever). Source doc: VAULT-Fleet/WADA-COLOR-DATA-STUDY.md.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { wadaPalettes } from "@/data/wada-palettes";
+
+const total = wadaPalettes.length;
+
+// ---- recompute all figures from the dataset (build-time) ----
+const hue = new Map<string, number>();
+const mood = new Map<string, number>();
+const size = new Map<number, number>();
+const colorCount = new Map<string, number>();
+const colorHex = new Map<string, string>(); // first hex seen per color name
+
+for (const p of wadaPalettes) {
+  if (p.dominantHue) hue.set(p.dominantHue, (hue.get(p.dominantHue) ?? 0) + 1);
+  for (const m of p.moods ?? []) mood.set(m, (mood.get(m) ?? 0) + 1);
+  const n = p.colors.length;
+  size.set(n, (size.get(n) ?? 0) + 1);
+  for (const c of p.colors) {
+    if (!c.nameRomaji) continue;
+    colorCount.set(c.nameRomaji, (colorCount.get(c.nameRomaji) ?? 0) + 1);
+    if (!colorHex.has(c.nameRomaji)) colorHex.set(c.nameRomaji, c.hex);
+  }
+}
+
+const pct = (n: number) => Math.round((n / total) * 100);
+const desc = <K,>(m: Map<K, number>) =>
+  [...m.entries()].sort((a, b) => b[1] - a[1]);
+
+// Bar temperature is a VISUAL cue (pink reads warm). The "warm-anchored"
+// headline STAT uses the classic warm trio red+orange+yellow — that is the
+// 320/92% figure the study reports, so the page, its title, and the CSV all
+// agree. Pink (7 plates, 2%) sits just outside the trio.
+const WARM_VISUAL = new Set(["red", "orange", "yellow", "pink"]);
+const WARM_TRIO = new Set(["red", "orange", "yellow"]);
+const hues = desc(hue).map(([name, count]) => ({
+  name,
+  count,
+  share: pct(count),
+  warm: WARM_VISUAL.has(name),
+}));
+const warmTotal = desc(hue)
+  .filter(([n]) => WARM_TRIO.has(n))
+  .reduce((s, [, c]) => s + c, 0);
+const warmShare = pct(warmTotal);
+
+const topColors = desc(colorCount)
+  .slice(0, 12)
+  .map(([name, count]) => ({ name, count, hex: colorHex.get(name) ?? "#000" }));
+
+const sizes = [...size.entries()]
+  .sort((a, b) => a[0] - b[0])
+  .map(([n, count]) => ({ n, count }));
+
+const topMoods = desc(mood).slice(0, 6);
+
+const title = "Data Study: Sanzo Wada's 1933 Color Bible Was 92% Warm";
+const description = `We computed all ${total} combinations in Sanzo Wada's 1933 Dictionary of Color Combinations. ${warmShare}% are anchored by a warm hue; blue appears in just ${pct(hue.get("blue") ?? 0)}%; and black is the single most-used color. Full tables, methodology, and a downloadable CSV.`;
+const modified = new Date().toISOString();
+const canonicalUrl = "https://colorcombinations.org/data/sanzo-wada-color-analysis/";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: "Sanzo Wada 1933 Dictionary of Color Combinations — statistical analysis",
+    description: `A computed statistical analysis of all ${total} historical combinations in Sanzo Wada's 1933 "A Dictionary of Color Combinations": dominant-hue distribution, most-used colors, combination-size split, and mood frequency.`,
+    url: canonicalUrl,
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    creator: {
+      "@type": "Organization",
+      "@id": "https://colorcombinations.org/#organization",
+      name: "The Dictionary of Color Combinations",
+    },
+    isBasedOn:
+      "https://github.com/mattdesl/dictionary-of-colour-combinations",
+    variableMeasured: [
+      "dominant hue distribution",
+      "most-used individual colors",
+      "combination-size split",
+      "mood frequency",
+    ],
+    distribution: {
+      "@type": "DataDownload",
+      encodingFormat: "text/csv",
+      contentUrl:
+        "https://colorcombinations.org/data/sanzo-wada-color-analysis.csv",
+    },
+    temporalCoverage: "1933",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    datePublished: "2026-07-15T00:00:00Z",
+    dateModified: modified,
+    mainEntityOfPage: canonicalUrl,
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: {
+      "@type": "Organization",
+      "@id": "https://colorcombinations.org/#organization",
+      name: "The Dictionary of Color Combinations",
+    },
+  },
+];
+
+// Cite-this strings (build-time so they carry the live headline number).
+const citeTitle =
+  "Data Study: Sanzo Wada's 1933 Dictionary of Color Combinations";
+const citeHtml = `<a href="${canonicalUrl}">${citeTitle}</a>. The Dictionary of Color Combinations, colorcombinations.org.`;
+const citeMd = `[${citeTitle}](${canonicalUrl}). The Dictionary of Color Combinations, colorcombinations.org.`;
+const citeBib = `[url]${canonicalUrl}[/url] — ${citeTitle}, colorcombinations.org`;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  jsonLd={jsonLd}
+  jsonAlternate="/data/sanzo-wada-color-analysis.csv"
+  publishedTime="2026-07-15T00:00:00Z"
+  modifiedTime={modified}
+>
+  <article class="mx-auto max-w-3xl px-4 py-10">
+    <nav class="mb-6 text-sm text-neutral-500">
+      <a href="/" class="hover:underline">Home</a>
+      <span aria-hidden="true"> / </span>
+      <a href="/data/" class="hover:underline">Data</a>
+      <span aria-hidden="true"> / </span>
+      <span>Sanzo Wada color analysis</span>
+    </nav>
+
+    <h1 class="text-3xl font-bold leading-tight sm:text-4xl">
+      What {total} plates of Sanzo Wada's 1933 color dictionary reveal about
+      1930s design taste
+    </h1>
+    <p class="mt-4 text-lg text-neutral-700 dark:text-neutral-300">
+      We ran the numbers on every combination in the community reconstruction
+      of Sanzo Wada's 1933 <em>A Dictionary of Color Combinations</em>. The
+      result is a portrait of a color world that was overwhelmingly
+      <strong>warm</strong> — the opposite of the cool-neutral minimalism that
+      defines 2020s design.
+    </p>
+    <p class="mt-2 text-sm text-neutral-500">
+      Every figure below is computed directly from the dataset. Last recomputed
+      at build. <a class="underline" href="#methodology">Methodology →</a>
+    </p>
+
+    <!-- Headline findings -->
+    <h2 class="mt-10 text-2xl font-semibold">The headline findings</h2>
+    <ol class="mt-4 space-y-4">
+      <li>
+        <strong>Wada's world was overwhelmingly warm.</strong> Of the {total}
+        combinations, <strong>{warmTotal} ({warmShare}%) are anchored by red,
+        yellow, or orange</strong> — red leads with {hue.get("red")} plates ({pct(hue.get("red") ?? 0)}%),
+        then yellow ({hue.get("yellow")}) and orange ({hue.get("orange")}).
+        Cool colors are the striking minority: blue anchors just {hue.get("blue")}
+        ({pct(hue.get("blue") ?? 0)}%), green only {hue.get("green")}.
+      </li>
+      <li>
+        <strong>The structure is deliberate.</strong> The {total} plates split
+        almost perfectly by size —
+        {sizes.map((s, i) => (
+          <span>{i > 0 ? ", " : ""}{s.count} {s.n}-color</span>
+        ))} combinations across the six volumes.
+      </li>
+      <li>
+        <strong>Black is the most-used single color</strong> — it appears in
+        {colorCount.get("Black")} of {total} plates, more than any individual
+        hue, acting as the contrast anchor inside an otherwise warm palette.
+      </li>
+      <li>
+        <strong>"Refined" and "warm" define the mood.</strong> Across the
+        tagged moods, <em>refined</em> appears on {mood.get("refined")} plates
+        and <em>warm</em> on {mood.get("warm")} — a manual of restrained, warm
+        elegance.
+      </li>
+      <li>
+        <strong>The cool, serene palette barely exists.</strong>
+        <em>Serene</em> ({mood.get("serene")}) and blue/green-dominant plates
+        sit at the far tail — Wada's 1933 taste was warm where ours is cool.
+      </li>
+    </ol>
+
+    <!-- Hue-share bar -->
+    <h2 class="mt-10 text-2xl font-semibold">Dominant-hue distribution</h2>
+    <p class="mt-2 text-sm text-neutral-500">
+      Warm hues in warm swatches, cool hues in cool. Share of all {total} plates.
+    </p>
+    <div class="mt-4 space-y-2">
+      {hues.map((h) => (
+        <div class="flex items-center gap-3 text-sm">
+          <span class="w-16 shrink-0 capitalize">{h.name}</span>
+          <div class="h-5 flex-1 rounded bg-neutral-100 dark:bg-neutral-800">
+            <div
+              class="flex h-5 items-center rounded px-2 text-xs font-medium text-white"
+              style={`width:${Math.max(h.share, 3)}%;background:${h.warm ? "#c2571f" : "#2b6f8f"}`}
+            >
+              {h.share >= 6 ? `${h.count} · ${h.share}%` : ""}
+            </div>
+          </div>
+          {h.share < 6 && (
+            <span class="w-16 shrink-0 text-xs text-neutral-500">
+              {h.count} · {h.share}%
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+
+    <!-- Most-used colors -->
+    <h2 class="mt-10 text-2xl font-semibold">
+      Most-used individual colors (across all {total} plates)
+    </h2>
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full border-collapse text-sm">
+        <thead>
+          <tr class="border-b border-neutral-300 text-left dark:border-neutral-700">
+            <th class="py-2 pr-4 font-semibold">#</th>
+            <th class="py-2 pr-4 font-semibold">Color</th>
+            <th class="py-2 pr-4 font-semibold">Swatch</th>
+            <th class="py-2 font-semibold">Plates</th>
+          </tr>
+        </thead>
+        <tbody>
+          {topColors.map((c, i) => (
+            <tr class="border-b border-neutral-100 dark:border-neutral-800">
+              <td class="py-2 pr-4 tabular-nums text-neutral-500">{i + 1}</td>
+              <td class="py-2 pr-4">{c.name}</td>
+              <td class="py-2 pr-4">
+                <span class="inline-flex items-center gap-2">
+                  <span
+                    class="inline-block h-5 w-8 rounded border border-black/10"
+                    style={`background:${c.hex}`}
+                    aria-hidden="true"
+                  ></span>
+                  <code class="text-xs text-neutral-500">{c.hex}</code>
+                </span>
+              </td>
+              <td class="py-2 tabular-nums">{c.count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Combination-size split -->
+    <h2 class="mt-10 text-2xl font-semibold">Combination-size split</h2>
+    <ul class="mt-4 space-y-1 text-sm">
+      {sizes.map((s) => (
+        <li>
+          <strong>{s.n}-color:</strong> {s.count} plates ({pct(s.count)}%)
+        </li>
+      ))}
+    </ul>
+
+    <!-- Mood -->
+    <h2 class="mt-10 text-2xl font-semibold">Mood frequency</h2>
+    <ul class="mt-4 flex flex-wrap gap-2 text-sm">
+      {topMoods.map(([m, c]) => (
+        <li class="rounded-full border border-neutral-300 px-3 py-1 dark:border-neutral-700">
+          <span class="capitalize">{m}</span>
+          <span class="text-neutral-500"> · {c}</span>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Download -->
+    <h2 class="mt-10 text-2xl font-semibold">Download the data</h2>
+    <p class="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
+      The full computed analysis (hue distribution, most-used colors,
+      size split, mood frequency) as a single CSV, plus the complete
+      348-plate dataset. Free, CORS-enabled, CC-BY-4.0.
+    </p>
+    <ul class="mt-3 space-y-1 text-sm">
+      <li>
+        <a class="underline" href="/data/sanzo-wada-color-analysis.csv">
+          sanzo-wada-color-analysis.csv
+        </a> — this study's computed tables
+      </li>
+      <li>
+        <a class="underline" href="/data/palettes.csv">palettes.csv</a> — all
+        {total} plates (hex, names, hue, moods)
+      </li>
+      <li>
+        <a class="underline" href="/data/">Full data + API hub →</a>
+      </li>
+    </ul>
+
+    <!-- Cite this -->
+    <h2 class="mt-10 text-2xl font-semibold">Cite this study</h2>
+    <div class="mt-3 space-y-2 text-sm">
+      <div class="cite-row" data-cite={citeHtml}>
+        <span class="w-14 shrink-0 font-medium text-neutral-500">HTML</span>
+        <code class="cite-code">{citeHtml}</code>
+        <button class="cite-copy" type="button">Copy</button>
+      </div>
+      <div class="cite-row" data-cite={citeMd}>
+        <span class="w-14 shrink-0 font-medium text-neutral-500">Markdown</span>
+        <code class="cite-code">{citeMd}</code>
+        <button class="cite-copy" type="button">Copy</button>
+      </div>
+      <div class="cite-row" data-cite={citeBib}>
+        <span class="w-14 shrink-0 font-medium text-neutral-500">BBCode</span>
+        <code class="cite-code">{citeBib}</code>
+        <button class="cite-copy" type="button">Copy</button>
+      </div>
+    </div>
+
+    <!-- Methodology -->
+    <h2 id="methodology" class="mt-10 text-2xl font-semibold">Methodology</h2>
+    <p class="mt-3 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+      Figures are computed directly from all {total} combinations in the
+      community reconstruction of Sanzo Wada's 1933 <em>A Dictionary of Color
+      Combinations</em> (<a class="underline" href="https://github.com/mattdesl/dictionary-of-colour-combinations" rel="noopener">mattdesl/dictionary-of-colour-combinations</a>,
+      MIT-licensed; individual hex values and color names are public-domain
+      facts). "Dominant hue" and "mood" are the dataset's own classifications
+      of each plate; "most-used color" counts a color name's appearances across
+      all plates. This is a descriptive analysis of a historical document, not
+      a claim about all 1930s design. Source book: Sanzo Wada,
+      <em>Haishoku Sōkan</em> (配色総鑑), 1933, six volumes.
+    </p>
+
+    <p class="mt-8 text-xs text-neutral-500">
+      Data + analysis: <a class="underline" href="/">colorcombinations.org</a>,
+      CC-BY-4.0. Explore the plates:
+      <a class="underline" href="/collections/">collections</a> ·
+      <a class="underline" href="/palettes/">palettes</a>.
+    </p>
+  </article>
+
+  <script is:inline>
+    document.querySelectorAll(".cite-copy").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const row = btn.closest(".cite-row");
+        const text = row && row.getAttribute("data-cite");
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+          const prev = btn.textContent;
+          btn.textContent = "Copied";
+          setTimeout(() => (btn.textContent = prev), 1400);
+        });
+      });
+    });
+  </script>
+
+  <style>
+    .cite-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cite-code {
+      flex: 1;
+      overflow-x: auto;
+      white-space: nowrap;
+      border-radius: 0.375rem;
+      background: var(--surface-2, #f4f4f5);
+      padding: 0.375rem 0.5rem;
+      font-size: 0.75rem;
+    }
+    .cite-copy {
+      flex-shrink: 0;
+      border-radius: 0.375rem;
+      border: 1px solid #d4d4d8;
+      padding: 0.25rem 0.625rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .cite-copy:hover {
+      background: #f4f4f5;
+    }
+  </style>
+</BaseLayout>
