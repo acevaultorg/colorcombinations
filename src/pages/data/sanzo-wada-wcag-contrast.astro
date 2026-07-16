@@ -1,0 +1,444 @@
+---
+/**
+ * /data/sanzo-wada-wcag-contrast/ — a citable JOIN data study: all 348
+ * combinations of Sanzo Wada's 1933 "A Dictionary of Color Combinations"
+ * tested against the modern WCAG 2.x text-contrast standard. EVERY number is
+ * recomputed at build time from src/data/wada-palettes.ts + the WCAG relative-
+ * luminance formula — zero fabrication, primary source by construction.
+ * A Figures Bureau study (the fleet's data-publications desk). Companion to
+ * /data/sanzo-wada-color-analysis/. Spec: VAULT-Fleet/FIGURESBUREAU-GENESIS.md
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { wadaPalettes } from "@/data/wada-palettes";
+
+const total = wadaPalettes.length;
+
+// ---- WCAG 2.x math (https://www.w3.org/TR/WCAG22/#dfn-relative-luminance) ----
+function lum(hex: string): number {
+  const h = hex.replace("#", "");
+  const [r, g, b] = [0, 2, 4]
+    .map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function contrast(a: string, b: string): number {
+  const la = lum(a);
+  const lb = lum(b);
+  const [l1, l2] = la >= lb ? [la, lb] : [lb, la];
+  return (l1 + 0.05) / (l2 + 0.05);
+}
+
+// ---- per-plate best text pairing (build-time) ----
+type PlateStat = {
+  slug: string;
+  title: string;
+  n: number;
+  best: number;
+  bestPair: [{ hex: string; name: string }, { hex: string; name: string }];
+  pairs: number;
+  aaPairs: number;
+};
+const plates: PlateStat[] = wadaPalettes.map((p) => {
+  let best = 0;
+  let bestPair: PlateStat["bestPair"] = [
+    { hex: p.colors[0].hex, name: p.colors[0].nameRomaji ?? p.colors[0].hex },
+    { hex: p.colors[0].hex, name: p.colors[0].nameRomaji ?? p.colors[0].hex },
+  ];
+  let pairs = 0;
+  let aaPairs = 0;
+  for (let i = 0; i < p.colors.length; i++) {
+    for (let j = i + 1; j < p.colors.length; j++) {
+      const r = contrast(p.colors[i].hex, p.colors[j].hex);
+      pairs++;
+      if (r >= 4.5) aaPairs++;
+      if (r > best) {
+        best = r;
+        bestPair = [
+          { hex: p.colors[i].hex, name: p.colors[i].nameRomaji ?? p.colors[i].hex },
+          { hex: p.colors[j].hex, name: p.colors[j].nameRomaji ?? p.colors[j].hex },
+        ];
+      }
+    }
+  }
+  return { slug: p.slug, title: p.title, n: p.colors.length, best, bestPair, pairs, aaPairs };
+});
+
+const pct = (n: number, d: number = total) => Math.round((n / d) * 100);
+const r2 = (n: number) => Math.round(n * 100) / 100;
+
+const passAAA = plates.filter((p) => p.best >= 7).length;
+const passAA = plates.filter((p) => p.best >= 4.5).length;
+const passAALarge = plates.filter((p) => p.best >= 3).length;
+const failAll = total - passAALarge;
+const aaShare = pct(passAA);
+
+const bands = [
+  { label: "AAA — a pairing ≥ 7:1 (enhanced contrast)", count: passAAA },
+  { label: "AA — best pairing 4.5:1–7:1 (normal text)", count: passAA - passAAA },
+  { label: "AA-large only — best pairing 3:1–4.5:1", count: passAALarge - passAA },
+  { label: "Fails all text levels — best pairing < 3:1", count: failAll },
+];
+
+const bySize = [2, 3, 4].map((n) => {
+  const subset = plates.filter((p) => p.n === n);
+  const aa = subset.filter((p) => p.best >= 4.5).length;
+  return { n, total: subset.length, aa, share: pct(aa, subset.length || 1) };
+});
+
+const totalPairs = plates.reduce((s, p) => s + p.pairs, 0);
+const totalAAPairs = plates.reduce((s, p) => s + p.aaPairs, 0);
+const pairAAShare = pct(totalAAPairs, totalPairs);
+
+const sorted = [...plates].sort((a, b) => b.best - a.best);
+const top5 = sorted.slice(0, 5);
+const bottom5 = sorted.slice(-5).reverse();
+
+const title = `Data Study: ${aaShare}% of Sanzo Wada's 1933 Color Combinations Pass Modern Text-Contrast Rules`;
+const description = `We tested all ${total} combinations in Sanzo Wada's 1933 Dictionary of Color Combinations against the WCAG 2.x accessibility standard. ${aaShare}% contain at least one AA text-safe pairing (≥4.5:1), ${pct(passAAA)}% reach AAA, and ${pct(failAll)}% fail every text level. Full tables, WCAG methodology, downloadable CSV.`;
+const modified = new Date().toISOString();
+const published = "2026-07-16T00:00:00Z";
+const canonicalUrl = "https://colorcombinations.org/data/sanzo-wada-wcag-contrast/";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: "Sanzo Wada 1933 color combinations × WCAG 2.x contrast — computed accessibility analysis",
+    description: `A computed join of all ${total} historical combinations in Sanzo Wada's 1933 "A Dictionary of Color Combinations" with the WCAG 2.x relative-luminance contrast standard: per-plate best text pairing, AA/AAA pass rates, pass-rate by combination size, and the highest/lowest-contrast plates.`,
+    url: canonicalUrl,
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    creator: {
+      "@type": "Organization",
+      "@id": "https://colorcombinations.org/#organization",
+      name: "The Dictionary of Color Combinations",
+    },
+    isBasedOn: [
+      "https://github.com/mattdesl/dictionary-of-colour-combinations",
+      "https://www.w3.org/TR/WCAG22/",
+    ],
+    variableMeasured: [
+      "best-pair WCAG contrast ratio per combination",
+      "AA (4.5:1) pass rate",
+      "AAA (7:1) pass rate",
+      "pass rate by combination size",
+      "pairwise AA rate",
+    ],
+    distribution: {
+      "@type": "DataDownload",
+      encodingFormat: "text/csv",
+      contentUrl: "https://colorcombinations.org/data/sanzo-wada-wcag-contrast.csv",
+    },
+    temporalCoverage: "1933/2026",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    datePublished: published,
+    dateModified: modified,
+    mainEntityOfPage: canonicalUrl,
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: {
+      "@type": "Organization",
+      "@id": "https://colorcombinations.org/#organization",
+      name: "The Dictionary of Color Combinations",
+    },
+  },
+];
+
+const citeTitle =
+  "Data Study: Sanzo Wada's 1933 Color Combinations vs Modern WCAG Contrast";
+const citeHtml = `<a href="${canonicalUrl}">${citeTitle}</a>. The Dictionary of Color Combinations, colorcombinations.org.`;
+const citeMd = `[${citeTitle}](${canonicalUrl}). The Dictionary of Color Combinations, colorcombinations.org.`;
+const citeBib = `[url]${canonicalUrl}[/url] — ${citeTitle}, colorcombinations.org`;
+
+const lastVerified = modified.slice(0, 10);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  jsonLd={jsonLd}
+  jsonAlternate="/data/sanzo-wada-wcag-contrast.csv"
+  publishedTime={published}
+  modifiedTime={modified}
+>
+  <article class="mx-auto max-w-3xl px-4 py-10">
+    <nav class="mb-6 text-sm text-neutral-500">
+      <a href="/" class="hover:underline">Home</a>
+      <span aria-hidden="true"> / </span>
+      <a href="/data/" class="hover:underline">Data</a>
+      <span aria-hidden="true"> / </span>
+      <span>Wada × WCAG contrast</span>
+    </nav>
+
+    <h1 class="text-3xl font-bold leading-tight sm:text-4xl">
+      Can a 1933 color bible pass 2026 accessibility rules? We tested all
+      {total} of Sanzo Wada's combinations against WCAG
+    </h1>
+    <p class="mt-2 text-xs text-neutral-500">
+      A Figures Bureau study · Last verified {lastVerified} · every number
+      recomputed at build time
+    </p>
+
+    <!-- Direct answer first (AEO) -->
+    <div
+      class="mt-6 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-base dark:border-neutral-700 dark:bg-neutral-900"
+    >
+      <strong>{aaShare}% of Sanzo Wada's 1933 color combinations ({passAA} of
+      {total}) contain at least one text-safe pairing under WCAG AA
+      (≥&nbsp;4.5:1 contrast).</strong>
+      {pct(passAAA)}% ({passAAA}) reach the stricter AAA level (≥&nbsp;7:1),
+      {pct(passAALarge - passAA)}% ({passAALarge - passAA}) work only for large
+      text (3:1–4.5:1), and {pct(failAll)}% ({failAll}) fail every text-contrast
+      level. Across all {totalPairs} color pairs in the book, just
+      {pairAAShare}% pass AA — Wada composed for harmony, not for headlines.
+    </div>
+
+    <p class="mt-6 text-lg text-neutral-700 dark:text-neutral-300">
+      Sanzo Wada assembled his six-volume <em>A Dictionary of Color
+      Combinations</em> in 1933 — sixty-six years before the first Web Content
+      Accessibility Guidelines. We joined the two: every one of the {total}
+      historical plates, scored with the exact WCAG 2.x relative-luminance
+      formula used by accessibility auditors today. The result is a map of
+      where 1930s aesthetic taste and modern legibility agree — and where they
+      collide.
+    </p>
+
+    <!-- Pass-level distribution -->
+    <h2 class="mt-10 text-2xl font-semibold">
+      Where {total} plates land on the WCAG ladder
+    </h2>
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full min-w-[28rem] text-left text-sm">
+        <thead>
+          <tr class="border-b border-neutral-300 dark:border-neutral-700">
+            <th class="py-2 pr-4 font-medium">Best text pairing in the plate</th>
+            <th class="py-2 pr-4 font-medium">Plates</th>
+            <th class="py-2 font-medium">Share</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bands.map((b) => (
+            <tr class="border-b border-neutral-100 dark:border-neutral-800">
+              <td class="py-2 pr-4">{b.label}</td>
+              <td class="py-2 pr-4 tabular-nums">{b.count}</td>
+              <td class="py-2 tabular-nums">{pct(b.count)}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- By size -->
+    <h2 class="mt-10 text-2xl font-semibold">
+      More colors, more chances: AA pass rate by combination size
+    </h2>
+    <ul class="mt-4 space-y-1 text-sm">
+      {bySize.map((s) => (
+        <li>
+          <strong>{s.n}-color plates:</strong> {s.aa} of {s.total} pass AA
+          ({s.share}%)
+        </li>
+      ))}
+    </ul>
+
+    <!-- Extremes -->
+    <h2 class="mt-10 text-2xl font-semibold">
+      The most legible plates of 1933
+    </h2>
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full min-w-[28rem] text-left text-sm">
+        <thead>
+          <tr class="border-b border-neutral-300 dark:border-neutral-700">
+            <th class="py-2 pr-4 font-medium">Combination</th>
+            <th class="py-2 pr-4 font-medium">Best pairing</th>
+            <th class="py-2 font-medium">Contrast</th>
+          </tr>
+        </thead>
+        <tbody>
+          {top5.map((p) => (
+            <tr class="border-b border-neutral-100 dark:border-neutral-800">
+              <td class="py-2 pr-4">
+                <a class="underline" href={`/palettes/${p.slug}/`}>{p.title}</a>
+              </td>
+              <td class="py-2 pr-4">
+                {p.bestPair.map((c, i) => (
+                  <>
+                    {i > 0 && <span class="text-neutral-400"> on </span>}
+                    <span class="inline-flex items-center gap-1">
+                      <span
+                        class="inline-block h-3 w-3 rounded-sm border border-neutral-300"
+                        style={`background:${c.hex}`}
+                        aria-hidden="true"
+                      ></span>
+                      {c.name}
+                    </span>
+                  </>
+                ))}
+              </td>
+              <td class="py-2 tabular-nums">{r2(p.best)}:1</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="mt-10 text-2xl font-semibold">
+      …and the plates no screen reader can save
+    </h2>
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full min-w-[28rem] text-left text-sm">
+        <tbody>
+          {bottom5.map((p) => (
+            <tr class="border-b border-neutral-100 dark:border-neutral-800">
+              <td class="py-2 pr-4">
+                <a class="underline" href={`/palettes/${p.slug}/`}>{p.title}</a>
+              </td>
+              <td class="py-2 pr-4">
+                {p.bestPair.map((c, i) => (
+                  <>
+                    {i > 0 && <span class="text-neutral-400"> on </span>}
+                    <span class="inline-flex items-center gap-1">
+                      <span
+                        class="inline-block h-3 w-3 rounded-sm border border-neutral-300"
+                        style={`background:${c.hex}`}
+                        aria-hidden="true"
+                      ></span>
+                      {c.name}
+                    </span>
+                  </>
+                ))}
+              </td>
+              <td class="py-2 tabular-nums">{r2(p.best)}:1</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-6 text-sm text-neutral-700 dark:text-neutral-300">
+      Test any pairing yourself with our
+      <a class="underline" href="/embed/contrast-checker">free contrast
+      checker</a>, or read the companion study:
+      <a class="underline" href="/data/sanzo-wada-color-analysis/">what the
+      same 348 plates reveal about 1930s design taste</a>.
+    </p>
+
+    <!-- Download -->
+    <h2 class="mt-10 text-2xl font-semibold">Download the data</h2>
+    <p class="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
+      The full computed analysis (per-level pass rates, size split, pairwise
+      rates, extremes) as a single CSV. Free, CORS-enabled, CC-BY-4.0 —
+      reuse with a link.
+    </p>
+    <ul class="mt-3 space-y-1 text-sm">
+      <li>
+        <a class="underline" href="/data/sanzo-wada-wcag-contrast.csv">
+          sanzo-wada-wcag-contrast.csv
+        </a> — this study's computed tables
+      </li>
+      <li>
+        <a class="underline" href="/data/palettes.csv">palettes.csv</a> — all
+        {total} plates (hex, names, hue, moods)
+      </li>
+      <li>
+        <a class="underline" href="/data/">Full data + API hub →</a>
+      </li>
+    </ul>
+
+    <!-- Cite this -->
+    <h2 class="mt-10 text-2xl font-semibold">Cite this study</h2>
+    <div class="mt-3 space-y-2 text-sm">
+      <div class="cite-row" data-cite={citeHtml}>
+        <span class="w-14 shrink-0 font-medium text-neutral-500">HTML</span>
+        <code class="cite-code">{citeHtml}</code>
+        <button class="cite-copy" type="button">Copy</button>
+      </div>
+      <div class="cite-row" data-cite={citeMd}>
+        <span class="w-14 shrink-0 font-medium text-neutral-500">Markdown</span>
+        <code class="cite-code">{citeMd}</code>
+        <button class="cite-copy" type="button">Copy</button>
+      </div>
+      <div class="cite-row" data-cite={citeBib}>
+        <span class="w-14 shrink-0 font-medium text-neutral-500">BBCode</span>
+        <code class="cite-code">{citeBib}</code>
+        <button class="cite-copy" type="button">Copy</button>
+      </div>
+    </div>
+
+    <!-- Methodology -->
+    <h2 id="methodology" class="mt-10 text-2xl font-semibold">Methodology</h2>
+    <p class="mt-3 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+      For each of the {total} combinations in the community reconstruction of
+      Sanzo Wada's 1933 <em>A Dictionary of Color Combinations</em>
+      (<a class="underline" href="https://github.com/mattdesl/dictionary-of-colour-combinations" rel="noopener">mattdesl/dictionary-of-colour-combinations</a>,
+      MIT-licensed), we computed the WCAG 2.x contrast ratio of every pair of
+      colors inside the plate using the
+      <a class="underline" href="https://www.w3.org/TR/WCAG22/#dfn-relative-luminance" rel="noopener">W3C relative-luminance formula</a>,
+      then scored the plate by its <em>best</em> pairing — the most generous
+      reading, since a designer would set text in the plate's highest-contrast
+      pair. Thresholds are the standard's own: 4.5:1 (AA, normal text), 3:1
+      (AA, large text), 7:1 (AAA). One honest caveat, stated plainly: Wada
+      composed decorative harmonies, not text systems — WCAG is a modern lens
+      on a historical document, not a criticism of it. All figures recompute
+      from source data on every build.
+    </p>
+
+    <p class="mt-8 text-xs text-neutral-500">
+      Data + analysis: <a class="underline" href="/">colorcombinations.org</a>,
+      CC-BY-4.0. A Figures Bureau study. Explore the plates:
+      <a class="underline" href="/collections/">collections</a> ·
+      <a class="underline" href="/palettes/">palettes</a> ·
+      <a class="underline" href="/embed/contrast-checker">contrast checker</a>.
+    </p>
+  </article>
+
+  <script is:inline>
+    document.querySelectorAll(".cite-copy").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const row = btn.closest(".cite-row");
+        const text = row && row.getAttribute("data-cite");
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+          const prev = btn.textContent;
+          btn.textContent = "Copied";
+          setTimeout(() => (btn.textContent = prev), 1400);
+        });
+      });
+    });
+  </script>
+
+  <style>
+    .cite-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cite-code {
+      flex: 1;
+      overflow-x: auto;
+      white-space: nowrap;
+      border-radius: 0.375rem;
+      background: var(--surface-2, #f4f4f5);
+      padding: 0.375rem 0.5rem;
+      font-size: 0.75rem;
+    }
+    .cite-copy {
+      flex-shrink: 0;
+      border-radius: 0.375rem;
+      border: 1px solid #d4d4d8;
+      padding: 0.25rem 0.625rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .cite-copy:hover {
+      background: #f4f4f5;
+    }
+  </style>
+</BaseLayout>
