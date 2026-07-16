@@ -125,6 +125,14 @@ def check_missing(jwt, hashes):
         miss.extend(r.get("result", []))
     return miss
 
+# Pacing knobs (2026-07-16): CF's upload endpoint volume-throttles a fast burst
+# of batch POSTs from one IP — mid-run every connection then fails for a long
+# window (curl-level errors, NOT auth; the JWT refresh below was never the fix).
+# CF_BATCH_PAUSE seconds between batches avoids tripping it; CF_RETRY_MAX_SLEEP
+# lets backoff wait out a throttle window when it still trips.
+BATCH_PAUSE = float(os.environ.get("CF_BATCH_PAUSE", "0"))
+RETRY_MAX_SLEEP = int(os.environ.get("CF_RETRY_MAX_SLEEP", "30"))
+
 def upload(jwt, batch, attempts=40):
     body = json.dumps(batch).encode(); last = None
     for a in range(1, attempts+1):
@@ -133,9 +141,10 @@ def upload(jwt, batch, attempts=40):
                      headers={"Authorization": f"Bearer {jwt}", "Content-Type": "application/json", "Connection": "close"},
                      data=body, timeout=UPLOAD_TIMEOUT)
             if not r.get("success"): raise RuntimeError(f"upload failed: {r}")
+            if BATCH_PAUSE: time.sleep(BATCH_PAUSE)
             return
         except Exception as e:
-            last = e; s = min(30, 2**(a-1))
+            last = e; s = min(RETRY_MAX_SLEEP, 2**(a-1))
             sys.stderr.write(f"  ⚠ batch {a}/{attempts}: {str(e)[:110]} — retry {s}s\n"); sys.stderr.flush()
             time.sleep(s)
     raise RuntimeError(f"batch failed after {attempts}: {last}")
