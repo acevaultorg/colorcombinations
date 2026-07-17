@@ -37,6 +37,7 @@ interface AiUrl {
   priority: string;        // "0.0" — "1.0"
   changefreq: "monthly" | "weekly" | "yearly";
   jsonAlt?: string;        // optional /api/... twin
+  csvAlt?: string;         // optional .csv twin (data studies)
 }
 
 const SITE = "https://colorcombinations.org";
@@ -66,6 +67,18 @@ export const GET: APIRoute = () => {
       priority: "1.0",
       changefreq: "monthly",
       jsonAlt: `${SITE}/api/learn/${slug}.json`,
+    });
+  }
+
+  // Tier 1.0 — Figures Bureau data studies (the site's densest citable
+  // numbers; each advertises its CSV twin for machine consumers)
+  const studySlugs = ["sanzo-wada-color-analysis", "sanzo-wada-wcag-contrast"];
+  for (const slug of studySlugs) {
+    urls.push({
+      loc: `${SITE}/data/${slug}/`,
+      priority: "1.0",
+      changefreq: "monthly",
+      csvAlt: `${SITE}/data/${slug}.csv`,
     });
   }
 
@@ -158,6 +171,11 @@ export const GET: APIRoute = () => {
     if (u.jsonAlt) {
       lines.push(
         `    <xhtml:link rel="alternate" type="application/json" href="${escapeXml(u.jsonAlt)}"/>`
+      );
+    }
+    if (u.csvAlt) {
+      lines.push(
+        `    <xhtml:link rel="alternate" type="text/csv" href="${escapeXml(u.csvAlt)}"/>`
       );
     }
     lines.push("  </url>");
