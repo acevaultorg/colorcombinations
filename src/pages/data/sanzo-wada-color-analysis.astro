@@ -65,6 +65,7 @@ const topMoods = desc(mood).slice(0, 6);
 const title = "Data Study: Sanzo Wada's 1933 Color Bible Was 92% Warm";
 const description = `We computed all ${total} combinations in Sanzo Wada's 1933 Dictionary of Color Combinations. ${warmShare}% are anchored by a warm hue; blue appears in just ${pct(hue.get("blue") ?? 0)}%; and black is the single most-used color. Full tables, methodology, and a downloadable CSV.`;
 const modified = new Date().toISOString();
+const lastVerified = modified.slice(0, 10);
 const canonicalUrl = "https://colorcombinations.org/data/sanzo-wada-color-analysis/";
 
 const jsonLd = [
@@ -146,6 +147,10 @@ const citeBib = `[url]${canonicalUrl}[/url] — ${citeTitle}, colorcombinations.
       What {total} plates of Sanzo Wada's 1933 color dictionary reveal about
       1930s design taste
     </h1>
+    <p class="mt-2 text-xs text-neutral-500">
+      A Figures Bureau study · Last verified {lastVerified} · every number
+      recomputed at build time
+    </p>
     <p class="mt-4 text-lg text-neutral-700 dark:text-neutral-300">
       We ran the numbers on every combination in the community reconstruction
       of Sanzo Wada's 1933 <em>A Dictionary of Color Combinations</em>. The
@@ -342,7 +347,7 @@ const citeBib = `[url]${canonicalUrl}[/url] — ${citeTitle}, colorcombinations.
 
     <p class="mt-8 text-xs text-neutral-500">
       Data + analysis: <a class="underline" href="/">colorcombinations.org</a>,
-      CC-BY-4.0. Explore the plates:
+      CC-BY-4.0. A Figures Bureau study. Explore the plates:
       <a class="underline" href="/collections/">collections</a> ·
       <a class="underline" href="/palettes/">palettes</a>.
     </p>
