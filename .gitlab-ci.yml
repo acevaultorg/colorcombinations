@@ -1,0 +1,31 @@
+# Server-side build + deploy for colorcombinations.org → Cloudflare Pages.
+# Runs on GitLab's runners so deploys don't stall on the home uplink /
+# wrangler's ~56 MB-per-connection reset. Uses `wrangler pages deploy` (NOT the
+# chunked deployer) so the Pages Function in ./functions/ (api/subscribe.js —
+# the "Get the next study" email capture, KV binding SUBSCRIBERS already set on
+# the project) actually ships. Static Astro build, no DB/secret at build time.
+# ONE secret CI/CD variable required: CLOUDFLARE_API_TOKEN (Cloudflare Pages:Edit).
+stages: [deploy]
+
+deploy_cf_pages:
+  stage: deploy
+  image: node:22
+  timeout: 1h
+  interruptible: true
+  variables:
+    CLOUDFLARE_ACCOUNT_ID: "72bfd26c5f3c935393a25e5c0dea6039"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  script:
+    - node -v && npm -v
+    - npm ci --no-audit --no-fund
+    - echo "▶ astro build (skip astro check — deploy must not block on type-check)…"
+    - npx astro build
+    - echo "out files: $(find dist -type f | wc -l)"
+    - |
+      if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+        echo "✗ CLOUDFLARE_API_TOKEN CI/CD variable not set. Add it (Settings → CI/CD → Variables, Masked, Protect OFF), then Retry."
+        exit 1
+      fi
+    - echo "▶ wrangler pages deploy (includes ./functions/) …"
+    - npx --yes wrangler@latest pages deploy dist --project-name=colorcombinations --branch main --commit-dirty=true
