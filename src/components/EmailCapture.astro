@@ -2,24 +2,31 @@
 export interface Props {
   /**
    * Integration target:
-   * - "convertkit": replace action + ck_form_id for ConvertKit
-   * - "mailerlite": replace action for MailerLite
+   * - "kv": first-party /api/subscribe (Cloudflare KV) — the default, no account
+   * - "convertkit" / "mailerlite": replace action for a hosted provider
    * - "custom": your own backend endpoint
    */
-  provider?: "convertkit" | "mailerlite" | "custom";
-  /** Action URL (defaults to a placeholder until the provider is wired up) */
+  provider?: "kv" | "convertkit" | "mailerlite" | "custom";
+  /** POST endpoint (defaults to the first-party KV function). */
   action?: string;
+  /** Tag written to KV so captures are segmentable (e.g. "study:wcag-contrast"). */
+  source?: string;
   heading?: string;
   lede?: string;
+  cta?: string;
+  note?: string;
   /** Extra class for the outer wrapper */
   class?: string;
 }
 
 const {
-  provider = "custom",
-  action = "https://forms.example.com/subscribe",
+  provider = "kv",
+  action = "/api/subscribe",
+  source = "homepage",
   heading = "One palette a week. No spam, ever.",
   lede = "Every Sunday: one combination, one era, one short story. Unsubscribe any time.",
+  cta = "Subscribe",
+  note = "Free. No credit card. Archive stays readable forever.",
   class: extraClass,
 } = Astro.props;
 
@@ -39,6 +46,7 @@ const method = "post";
         action={action}
         method={method}
         data-provider={provider}
+        data-source={source}
         novalidate
       >
         <label class="sr-only" for="email-capture-input">Email address</label>
@@ -50,40 +58,55 @@ const method = "post";
           autocomplete="email"
           placeholder="your@email.com"
         />
-        <button type="submit" class="btn btn-primary">Subscribe</button>
+        <button type="submit" class="btn btn-primary">{cta}</button>
       </form>
 
-      <p class="email-capture__note">Free. No credit card. Archive stays readable forever.</p>
+      <p class="email-capture__note">{note}</p>
       <p class="email-capture__status" aria-live="polite" role="status"></p>
     </div>
   </div>
 </section>
 
 <script>
-  // Optimistic UX: confirm success in-place so the user isn't redirected away.
+  // Fetch + stay-on-page: POST JSON to the first-party /api/subscribe KV function
+  // so the reader is confirmed in-place, never redirected away.
   document.querySelectorAll<HTMLFormElement>(".email-capture__form").forEach((form) => {
     const status = form.parentElement?.querySelector<HTMLParagraphElement>(".email-capture__status");
     const input = form.querySelector<HTMLInputElement>('input[type="email"]');
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const source = form.getAttribute("data-source") || "unknown";
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
       if (!input || !input.value || !input.checkValidity()) {
-        event.preventDefault();
         if (status) status.textContent = "Please enter a valid email.";
         input?.focus();
         return;
       }
-      // Let the form submit normally (to the provider endpoint).
-      // Optionally swap to fetch+stay-on-page by uncommenting:
-      /*
-      event.preventDefault();
-      const data = new FormData(form);
-      fetch(form.action, { method: form.method, body: data })
-        .then(() => { if (status) status.textContent = "✓ Subscribed. Check your inbox."; form.reset(); })
-        .catch(() => { if (status) status.textContent = "Something went wrong. Try again in a moment."; });
-      */
       if (button) button.disabled = true;
       if (status) status.textContent = "Subscribing…";
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: input.value.trim(), source, ref: location.pathname }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok) {
+          if (status)
+            status.textContent =
+              data.status === "already_subscribed"
+                ? "✓ You're already on the list."
+                : "✓ You're in — the next one lands in your inbox.";
+          form.reset();
+        } else {
+          if (status) status.textContent = data.error || "Something went wrong. Try again in a moment.";
+          if (button) button.disabled = false;
+        }
+      } catch {
+        if (status) status.textContent = "Network hiccup — try again in a moment.";
+        if (button) button.disabled = false;
+      }
     });
   });
 </script>
