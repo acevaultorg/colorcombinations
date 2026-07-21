@@ -4,9 +4,10 @@ import PaletteCard from "@components/PaletteCard.astro";
 import ExportPalette from "@components/ExportPalette.astro";
 import BundleCta from "@components/BundleCta.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 import ContrastMatrix from "@components/ContrastMatrix.astro";
 import ShareBar from "@components/ShareBar.astro";
-import { FURTHER_READING } from "@/config/monetization";
+import { FURTHER_READING, ART_SUPPLIES } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
 import { commonColors, contexts, pairingPaths, redmean } from "@data/pairings";
 import { collectionsForPalette, paletteSetForCollection } from "@data/collections";
@@ -54,6 +55,14 @@ const bookOffset =
   palette.slug
     .split("")
     .reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % FURTHER_READING.length;
+
+// Same idea for the studio shelf, but seeded off the slug length as well so
+// the two rotations don't move in lockstep (a reader browsing several plates
+// should meet the whole catalogue, not the same pairing every time).
+const supplyOffset =
+  (palette.slug.split("").reduce((sum, ch) => sum + ch.charCodeAt(0), 0) +
+    palette.slug.length) %
+  ART_SUPPLIES.length;
 
 const title = palette.title + (palette.titleJa ? ` (${palette.titleJa})` : "");
 // Bing WMT r118 (2026-07-14): 19 palette pages flagged for too-short meta
@@ -423,6 +432,15 @@ const jsonLd = [
 
       <aside class="palette-body__aside" aria-label="Export and metadata">
         <ExportPalette palette={palette} />
+
+        <div class="palette-studio plate">
+          <PaintThisPalette
+            intro="You have the hex codes. These are the materials a colour study like this actually gets made with."
+            limit={2}
+            offset={supplyOffset}
+            variant="sidebar"
+          />
+        </div>
 
         <div class="palette-meta plate">
           <h3>Details</h3>

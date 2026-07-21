@@ -545,3 +545,95 @@ export function hasPodAffiliate(): boolean {
     (p) => p.affiliate && !p.url.includes("PLACEHOLDER"),
   );
 }
+
+// ============================================================================
+// ART SUPPLIES — intent-matched physical shelf (added 2026-07-21)
+// ============================================================================
+
+/**
+ * Why this exists: the Amazon Associates dashboard read for tag
+ * `colorcombinations-20` showed ~87 clicks → 0 orders, with ~50 of those
+ * clicks landing on the Sanzo Wada volumes. Those are $40-60 Japanese
+ * imports whose entire catalogue this site gives away free — a visitor
+ * clicks out of curiosity and leaves. The CTA is not the problem; the
+ * product/intent match is.
+ *
+ * A visitor reading a traditional Japanese colour plate is far more often
+ * an artist or designer about to MAKE something than a collector about to
+ * buy an out-of-print import. This shelf carries the materials a colour
+ * study actually gets made with, plus the one reference that matters when
+ * a palette goes to print.
+ *
+ * Discipline:
+ *  - Every ASIN below was verified live on amazon.com (exact product title
+ *    read from the product page, stock state checked) on 2026-07-21. No
+ *    guessed ASINs — a wrong ASIN sends a reader to the wrong product.
+ *  - Low-stock items ("only N left") are deliberately excluded: they go
+ *    dead and turn the shelf into broken promises.
+ *  - No prices are rendered anywhere (Amazon Associates operating
+ *    agreement), no scarcity language, no "click to support us".
+ *  - Claims stay aesthetic/material and checkable. We do NOT claim any
+ *    paint matches a Wada plate exactly — it doesn't.
+ */
+export interface ArtSupply {
+  /** Short display name — not the full Amazon title (which is keyword soup). */
+  name: string;
+  /** Maker, shown as the byline. */
+  brand: string;
+  /** Verified Amazon ASIN (checked live 2026-07-21). */
+  amazonAsin: string;
+  /** Exact product title as read from the Amazon product page — provenance. */
+  verifiedTitle: string;
+  /** One honest sentence on why it belongs next to a colour plate. */
+  why: string;
+  /** Grouping used for the section split. */
+  group: "paint" | "print";
+}
+
+export const ART_SUPPLIES: ArtSupply[] = [
+  {
+    name: "Gansai Tambi 24 — Art Nouveau",
+    brand: "Kuretake",
+    amazonAsin: "B0B87XPWB2",
+    verifiedTitle:
+      "Kuretake GANSAI TAMBI Watercolor Paint Set 24 Colors II - Art Nouveau",
+    why: "Gansai are traditional Japanese watercolour pans — dense, matte and easy to mix, the closest everyday medium to the flat printed colour Wada's plates were made in. This is the Art Nouveau-themed 'II' edition, a different 24 to the standard set.",
+    group: "paint",
+  },
+  {
+    name: "Gansai Tambi 36",
+    brand: "Kuretake",
+    amazonAsin: "B001MPA6W4",
+    verifiedTitle:
+      "Kuretake GANSAI TAMBI Watercolor Paint Set 36 Colors",
+    why: "The larger pan set. More range means mixing toward a specific plate rather than approximating it from six colours.",
+    group: "paint",
+  },
+  {
+    name: "300 Series watercolour pad, 140 lb cold press",
+    brand: "Strathmore",
+    amazonAsin: "B000KNLQIM",
+    verifiedTitle:
+      "Strathmore 300 Series Tape Bound Watercolor Pad, 140 lb. Cold Press, 11 X 15 inches, White, 12 Sheets (360-111)",
+    why: "140 lb cold press is the weight that takes a wet wash without buckling — the paper most colour studies end up on.",
+    group: "paint",
+  },
+  {
+    name: "Fude Touch brush sign pen",
+    brand: "Pentel",
+    amazonAsin: "B07HKZYBVM",
+    verifiedTitle:
+      "Pentel Fude Touch Sign Pen, Black, Felt Pen Like Brush Stroke (SES15C-A) 3 Pieces",
+    why: "A felt brush tip for the labelling and linework around a swatch study — the annotation half of a colour notebook.",
+    group: "paint",
+  },
+  {
+    name: "Formula Guide — coated & uncoated",
+    brand: "Pantone",
+    amazonAsin: "B0BJ13LVD4",
+    verifiedTitle:
+      "Pantone Formula Guide – Coated & Uncoated | Professional PMS Color Matching System for Print, Packaging & Graphic Design | GP1601B",
+    why: "When a palette leaves the screen, this is the shared vocabulary between you and the press. Coated and uncoated because the same ink is not the same colour on both.",
+    group: "print",
+  },
+];

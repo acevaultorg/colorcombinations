@@ -1,0 +1,248 @@
+---
+/**
+ * PaintThisPalette — intent-matched art-supply shelf.
+ *
+ * Context: the Amazon read for `colorcombinations-20` was ~87 clicks → 0
+ * orders, ~50 of them on the Sanzo Wada volumes ($40-60 Japanese imports of
+ * a catalogue this site gives away free). The click surface works; the
+ * product match does not. Someone reading a colour plate is usually about
+ * to MAKE something, not to buy an out-of-print import.
+ *
+ * So this carries the materials a colour study actually gets made with,
+ * placed at the moment the reader has the hex codes in hand.
+ *
+ * Compliance (Amazon Associates operating agreement + FTC):
+ *  - no prices rendered anywhere (prices go stale and are not permitted)
+ *  - no product images (image use requires the Product Advertising API)
+ *  - rel="sponsored nofollow noopener" on every outbound link
+ *  - disclosure adjacent to the links, in every variant
+ *  - no scarcity language, no "click to support us"
+ *
+ * Measurement: clicks carry data-event="amazon_click" + data-tool, so supply
+ * clicks are separable from book clicks (data-book) in Clarity/GA4 — the
+ * whole point is to find out which shelf the audience actually wants.
+ */
+
+import { AMAZON, ART_SUPPLIES, type ArtSupply } from "@/config/monetization";
+
+export interface Props {
+  title?: string;
+  intro?: string;
+  /** Cap the number of items rendered. */
+  limit?: number;
+  /** Rotate the starting item so different palette pages lead with different tools. */
+  offset?: number;
+  /** Layout variant. */
+  variant?: "full" | "sidebar";
+}
+
+const {
+  title = "Paint this palette",
+  intro,
+  limit,
+  offset = 0,
+  variant = "full",
+} = Astro.props;
+
+// Deterministic rotation — stable per URL (no randomness, so the HTML is
+// cacheable and the same reader sees the same shelf on reload), but spread
+// across the catalogue so every tool gets impressions somewhere.
+const items: ArtSupply[] = (() => {
+  const n = ART_SUPPLIES.length;
+  const start = ((offset % n) + n) % n;
+  const rotated = [...ART_SUPPLIES.slice(start), ...ART_SUPPLIES.slice(0, start)];
+  return typeof limit === "number" ? rotated.slice(0, limit) : rotated;
+})();
+---
+
+<section class:list={["paint-kit", `paint-kit--${variant}`]}>
+  <header class="paint-kit__head">
+    <p class="eyebrow">Studio</p>
+    <h2 class="text-balance">{title}</h2>
+    {intro && <p class="paint-kit__intro">{intro}</p>}
+  </header>
+
+  <ul class="paint-kit__list" role="list">
+    {items.map((item) => (
+      <li class="paint-kit__item">
+        <p class="paint-kit__brand">{item.brand}</p>
+        <h3 class="paint-kit__name">
+          <a
+            href={AMAZON.link(item.amazonAsin)}
+            rel="sponsored nofollow noopener"
+            target="_blank"
+            class="plausible-event-name=AmazonClick plausible-event-from=supply-title"
+            data-event="amazon_click"
+            data-tool={item.name}
+            aria-label={`${item.name} by ${item.brand} on Amazon`}
+          >
+            {item.name}
+          </a>
+        </h3>
+        <p class="paint-kit__why">{item.why}</p>
+        {variant === "full" && (
+          <a
+            href={AMAZON.link(item.amazonAsin)}
+            rel="sponsored nofollow noopener"
+            target="_blank"
+            class="btn btn-secondary paint-kit__link plausible-event-name=AmazonClick plausible-event-from=supply-button"
+            data-event="amazon_click"
+            data-tool={item.name}
+          >
+            View on Amazon <span aria-hidden="true">↗</span>
+          </a>
+        )}
+      </li>
+    ))}
+  </ul>
+
+  <p class="paint-kit__disclosure">
+    Amazon Associates affiliate links — your price is unchanged and a small
+    commission keeps the archive free. As an Amazon Associate we earn from
+    qualifying purchases.
+  </p>
+</section>
+
+<style>
+  .paint-kit {
+    padding-block: var(--spacing-section);
+  }
+
+  .paint-kit--sidebar {
+    padding-block: 0;
+  }
+
+  .paint-kit__head {
+    max-width: 58ch;
+    margin-bottom: 2rem;
+  }
+
+  .paint-kit--sidebar .paint-kit__head {
+    margin-bottom: 0.875rem;
+  }
+
+  .paint-kit__head .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .paint-kit__head h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.5vw + 1rem, 2.25rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .paint-kit--sidebar .paint-kit__head h2 {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .paint-kit__intro {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    color: var(--color-ink-700);
+    line-height: 1.65;
+    margin-top: 1rem;
+  }
+
+  .paint-kit--sidebar .paint-kit__intro {
+    font-size: 0.9375rem;
+    margin-top: 0.5rem;
+  }
+
+  .paint-kit__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .paint-kit--full .paint-kit__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1080px) {
+    .paint-kit--full .paint-kit__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .paint-kit--sidebar .paint-kit__list {
+    gap: 0.875rem;
+  }
+
+  .paint-kit__item {
+    padding: 1.25rem;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+  }
+
+  .paint-kit--sidebar .paint-kit__item {
+    padding: 0.875rem 1rem;
+  }
+
+  .paint-kit__brand {
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    margin: 0 0 0.35rem;
+  }
+
+  .paint-kit__name {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  .paint-kit--sidebar .paint-kit__name {
+    font-size: 0.9375rem;
+  }
+
+  .paint-kit__name a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .paint-kit__name a:hover,
+  .paint-kit__name a:focus-visible {
+    border-bottom-color: currentColor;
+  }
+
+  .paint-kit__why {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-ink-700);
+    margin: 0.5rem 0 0;
+  }
+
+  .paint-kit--sidebar .paint-kit__why {
+    font-size: 0.8125rem;
+    margin-top: 0.35rem;
+  }
+
+  .paint-kit__link {
+    margin-top: 1rem;
+  }
+
+  .paint-kit__disclosure {
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--color-ink-700);
+    margin-top: 1.25rem;
+    max-width: 60ch;
+  }
+
+  .paint-kit--sidebar .paint-kit__disclosure {
+    font-size: 0.6875rem;
+    margin-top: 0.75rem;
+  }
+</style>

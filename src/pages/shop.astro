@@ -2,6 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import BundleCta from "@components/BundleCta.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 import { BUNDLE, PRINTS } from "@/config/monetization";
 
 const title = "Shop";
@@ -84,6 +85,19 @@ const jsonLd = [
       <FurtherReading
         title="The library behind the archive"
         intro="Every palette in this archive stands on the shoulders of these books. Real criticism, real history, real judgment. If you want to go deeper than hex values, start here."
+      />
+    </div>
+  </div>
+
+  {/* ============ 2. STUDIO (materials rail — added 2026-07-21) ============
+      The book rail above measured ~87 clicks → 0 orders: readers here are
+      makers, not collectors of out-of-print imports. This rail carries what
+      a colour study is actually made with. */}
+  <div class="shop-studio" id="studio">
+    <div class="container-wide">
+      <PaintThisPalette
+        title="Off the screen"
+        intro="A palette is a set of decisions until someone mixes it. These are the materials — Japanese watercolour pans, paper that takes a wash, and the one reference that survives the trip to a printing press."
       />
     </div>
   </div>
