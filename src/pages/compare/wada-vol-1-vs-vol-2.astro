@@ -1,0 +1,245 @@
+---
+/**
+ * /compare/wada-vol-1-vs-vol-2 — "which volume should I buy?"
+ *
+ * WHY THIS PAGE EXISTS (data, not a hunch). The 2026-07-21 Amazon Linked-Product
+ * export showed this site's affiliate demand is extremely concentrated:
+ *   • A Dictionary of Color Combinations Vol 1 (ASIN 4861522471) — 97 clicks
+ *   • Volume 2 (4861527724) — 28 clicks
+ *   • Interaction of Color, 50th Anniv. (0300179359) — 15 clicks
+ *   = 140 of the site's 170 affiliate clicks, on three ASINs.
+ * People are already trying to buy these. What was missing was the page that
+ * answers the actual buying question — Vol 1 or Vol 2? — at the moment of
+ * decision. Per WINNER ENGINE: sharpen the proven cluster, don't widen the list.
+ *
+ * HONESTY CONTRACT (this is the whole point of the page):
+ * every plate count is COMPUTED from this repo's own dataset or taken from the
+ * published FURTHER_READING notes — nothing invented. And the page says plainly
+ * that Vol 1's contents are browsable free here, because they are. The genuinely
+ * useful answer for most readers is "browse Vol 1 free first" — which also
+ * happens to steer buyers toward Vol 2, the volume this archive canNOT replace.
+ * Being straight and monetising well are the same move here.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import { wadaPalettes } from "@/data/wada-palettes";
+
+// Computed, never hardcoded — same source the /data study renders from.
+const vol1Plates = wadaPalettes.length;
+
+// Vol 2 breakdown as published in FURTHER_READING (Seigensha 2020):
+// 72 seasonal plates + 165 drawn from early-century fashion/interior/graphic design.
+const vol2Seasonal = 72;
+const vol2Design = 165;
+const vol2Plates = vol2Seasonal + vol2Design;
+
+const title = "Dictionary of Color Combinations Vol 1 vs Vol 2 — which should you buy?";
+const description = `Sanzo Wada's Vol 1 holds ${vol1Plates} combinations from 1933; Vol 2 adds ${vol2Plates} more from 1935–1938 that appear nowhere else. A plain comparison of what is in each book, what you can read here for free, and which one to buy first.`;
+
+const pageUrl = new URL("/compare/wada-vol-1-vs-vol-2", Astro.site).toString();
+
+const faq = [
+  {
+    q: "What is the difference between Dictionary of Color Combinations Vol 1 and Vol 2?",
+    a: `Vol 1 reproduces Sanzo Wada's 1933 work — ${vol1Plates} color combinations, the set most people mean when they cite "Wada". Vol 2 collects his 1935–1938 follow-ups: ${vol2Seasonal} plates on the Japanese seasons and ${vol2Design} drawn from early-century fashion, interior and graphic design, ${vol2Plates} in total. The two books do not overlap.`,
+  },
+  {
+    q: "Which volume should I buy first?",
+    a: `If you have never used Wada, start with Vol 1 — it is the canonical set and the one every reference points to. If you already know Vol 1, Vol 2 is the better purchase, because its ${vol2Plates} plates are not reproduced in this archive or in most online sources.`,
+  },
+  {
+    q: "Do I need to buy the book if the combinations are online?",
+    a: `No — and we would rather say so. All ${vol1Plates} Vol 1 combinations are browsable free on this site, with hex values you can copy. Buy the book if you want the object: Japanese binding, matte stock, and the plates printed rather than backlit. Vol 2 is the different case: its plates are not in this archive, so the book is the only practical way to see them.`,
+  },
+  {
+    q: "Is Interaction of Color the same kind of book?",
+    a: "No. Wada's dictionaries are reference — combinations to pull from. Josef Albers's Interaction of Color is instructional: it teaches how colors change each other depending on what sits nearby. They complement rather than compete, which is why designers often own both.",
+  },
+  {
+    q: "Are these books in English?",
+    a: "The Wada volumes are Japanese imports published by Seigensha. They are plate books — the value is in the printed color, and captions are minimal — so the language barrier is small in practice. Interaction of Color is in English (Yale University Press).",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: "Dictionary of Color Combinations Vol 1 vs Vol 2 — which should you buy?",
+    description,
+    url: pageUrl,
+    datePublished: "2026-07-21",
+    dateModified: "2026-07-21",
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    about: [
+      { "@type": "Book", name: "A Dictionary of Color Combinations", author: { "@type": "Person", name: "Sanzo Wada" } },
+      { "@type": "Book", name: "A Dictionary of Color Combinations Vol. 2", author: { "@type": "Person", name: "Sanzo Wada" } },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Compare" },
+      { "@type": "ListItem", position: 3, name: "Wada Vol 1 vs Vol 2", item: pageUrl },
+    ],
+  },
+];
+
+const rows = [
+  { dim: "First published", v1: "1933 (Seigensha republication, 2010)", v2: "1935–1938 (Seigensha, 2020)" },
+  { dim: "Plates", v1: `${vol1Plates} color combinations`, v2: `${vol2Plates} plates — ${vol2Seasonal} seasonal, ${vol2Design} design-sourced` },
+  { dim: "Subject", v1: "Wada's core combination system, 2–4 colors per plate", v2: "The Japanese seasons; early-century fashion, interior & graphic design" },
+  { dim: "In this archive?", v1: "Yes — all browsable free, with hex values", v2: "No — not reproduced here" },
+  { dim: "Best for", v1: "First-time Wada readers; anyone citing the classic set", v2: "People who already know Vol 1 and want what they cannot get online" },
+  { dim: "Format", v1: "Japanese import, matte plates, minimal captions", v2: "Japanese import, matte plates, minimal captions" },
+];
+---
+
+<BaseLayout title={title} description={description} image="/og-default.svg" jsonLd={jsonLd}>
+  {/* ============ HERO — direct answer first (AEO/featured-snippet shape) ============ */}
+  <section class="cmp-hero">
+    <div class="container-wide cmp-hero__inner">
+      <p class="eyebrow">Sanzo Wada</p>
+      <h1 class="display-hero text-balance">Vol 1 vs Vol 2</h1>
+      <p class="cmp-hero__lede">
+        <strong>Short answer: buy Vol 1 if you are new to Wada, Vol 2 if you
+        already own it.</strong> Vol 1 is the 1933 classic — {vol1Plates} combinations,
+        all of which you can browse free on this site. Vol 2 is a different book,
+        not a reprint: {vol2Plates} plates from 1935–1938 that are not reproduced here
+        or in most online sources. Here is the full picture.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ AT-A-GLANCE TABLE ============ */}
+  <section class="cmp-table-wrap section">
+    <div class="container-wide">
+      <h2 class="cmp-h2">At a glance</h2>
+      <div class="cmp-table-scroll">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th scope="col">&nbsp;</th>
+              <th scope="col">Vol 1 (1933)</th>
+              <th scope="col">Vol 2 (1935–38)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <th scope="row">{r.dim}</th>
+                <td>{r.v1}</td>
+                <td>{r.v2}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  {/* ============ PROSE ============ */}
+  <section class="cmp-prose section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">What Vol 1 is</h2>
+      <p>
+        <strong>A Dictionary of Color Combinations</strong> is the book people mean
+        when they say "Wada". Sanzo Wada — painter, teacher, and costume designer
+        who won an Academy Award for <em>Gate of Hell</em> — compiled it in 1933 as
+        a working reference for designers. It holds {vol1Plates} combinations of two,
+        three and four colors, printed as flat plates with no explanation attached.
+        Seigensha brought it back into print in 2010 after decades of scarcity.
+      </p>
+      <p>
+        Its influence is out of proportion to its size: it is the reason a
+        particular muted, warm palette keeps reappearing in contemporary design.
+        We analysed all {vol1Plates} plates and found that
+        <a href="/data/sanzo-wada-color-analysis/">92% of them are warm-anchored</a>
+        — red alone accounts for almost half.
+      </p>
+
+      <h2 class="cmp-h2">What Vol 2 is</h2>
+      <p>
+        <strong>Vol 2 is not an expanded edition of Vol 1.</strong> It gathers the
+        work Wada published between 1935 and 1938: {vol2Seasonal} plates built around the
+        Japanese seasons, and {vol2Design} drawn from the fashion, interior and graphic
+        design of the period — {vol2Plates} in total, none of them in Vol 1.
+      </p>
+      <p>
+        It is also the harder book to find secondhand, and the one most likely to
+        show you something you have not seen before if you have spent time with the
+        classic set.
+      </p>
+
+      <h2 class="cmp-h2">The honest difference</h2>
+      <p>
+        Most comparisons of these two books stop at "Vol 2 has more plates". The
+        difference that actually matters when you are deciding what to spend money
+        on is this: <strong>you can read all of Vol 1 here for free.</strong> Every
+        one of its {vol1Plates} combinations is on this site with copyable hex values.
+      </p>
+      <p>
+        So for Vol 1, the book is worth buying for the <em>object</em> — the
+        printed color, the paper, the binding — not for access to the data. For
+        Vol 2 the calculation is different: those {vol2Plates} plates are not in this
+        archive, so the book is the only practical way to see them.
+      </p>
+
+      <h2 class="cmp-h2">Which should you buy?</h2>
+      <p><strong>You have never used Wada before →</strong> Vol 1. It is the canonical
+      set, the one every other reference cites. Browse it free here first; buy it if
+      you find yourself returning.</p>
+      <p><strong>You already own or know Vol 1 →</strong> Vol 2, comfortably. It is
+      genuinely new material rather than a reissue, and it is the volume this archive
+      cannot substitute for.</p>
+      <p><strong>You want to understand why combinations work, not just collect them
+      →</strong> neither, yet. Read Albers's <em>Interaction of Color</em> first — it
+      teaches the mechanism. Wada gives you the answers; Albers explains them.</p>
+
+      <h2 class="cmp-h2">Where Interaction of Color fits</h2>
+      <p>
+        Josef Albers's <strong>Interaction of Color</strong> (Yale University Press,
+        50th Anniversary Edition) is the third book designers pair with these. It is
+        instructional rather than referential: it demonstrates how the same color
+        appears to change depending on what surrounds it. If Wada is a dictionary,
+        Albers is the grammar. Owning both is common, and they are rarely substitutes
+        for one another.
+      </p>
+
+      <h2 class="cmp-h2">Questions, answered</h2>
+      {faq.map((item) => (
+        <details class="cmp-faq">
+          <summary>{item.q}</summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  {/* ============ THE THREE BOOKS (affiliate — compliant via FurtherReading) ============ */}
+  <FurtherReading
+    title="The three books"
+    intro="Vol 1, Vol 2, and the Albers. Links go to Amazon."
+    limit={3}
+  />
+</BaseLayout>
