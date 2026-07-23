@@ -43,10 +43,35 @@ const collectionSiblings = primaryCollection
 // pillar, surface it. Tries collections in order until one matches. Compounds
 // /palettes → /learn discovery alongside the existing /collections + /colors
 // → /learn paths.
-const pillar =
+const collectionPillar =
   paletteCollections
     .map((c) => pillarForCollection(c.slug))
     .find((p): p is NonNullable<typeof p> => p !== null) ?? null;
+
+// Fallback for the 348 Wada plates (mostly outside collections): route each
+// plate to the most relevant original-research pillar by its own properties,
+// so every palette page carries a /learn cross-link (hub-and-spoke).
+const wadaPillar = palette.tags?.includes("wada")
+  ? palette.moods.includes("solemn") || palette.moods.includes("serene")
+    ? {
+        href: "/learn/wada-palettes-by-mood/",
+        title: "Wada Palettes by Mood and Season: Grouping the 348 Plates",
+        lede: "This plate sits in one of the dictionary's rare value-extreme groups. See all 348 combinations grouped by mood — dark, pale, warm, cool — and by season.",
+      }
+    : palette.colors.length === 2
+      ? {
+          href: "/learn/wada-color-psychology/",
+          title: "Color Psychology in Wada's System: What 348 Plates Are Built to Feel Like",
+          lede: "Two-color plates are Wada's signature discipline. What the pairing format — and the warm-against-cool move — does to a viewer, measured across the archive.",
+        }
+      : {
+          href: "/learn/color-data-analysis/",
+          title: "What 348 Palettes Reveal: A Data Analysis of Sanzo Wada's Dictionary",
+          lede: "The most-used colors, which hues dominate, and how many of the 348 historical combinations are legible enough for screen text — measured from the archive.",
+        }
+  : null;
+
+const pillar = collectionPillar ?? wadaPillar;
 
 // Deterministic book rotation — different palette pages show different books
 // so impressions are distributed across the full FurtherReading inventory.
