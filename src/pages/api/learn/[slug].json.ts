@@ -279,6 +279,56 @@ const PILLARS: ReadonlyArray<Pillar> = [
     ],
     relatedSlugs: ["accessible-palettes", "color-data-analysis"],
   },
+  {
+    slug: "wada-palettes-by-mood",
+    type: "pillar",
+    readingOrder: null,
+    title: "Wada Palettes by Mood and Season: Grouping the 348 Plates",
+    description:
+      "All 348 historical combinations grouped by computed mood (dark, pale, warm, cool, two-color, four-color) and by a practical seasonal reading, with example plates per group — measured from the archive itself.",
+    eyebrow: "Original research · Data",
+    readingTime: "6 min",
+    tags: ["Data", "Original research", "Mood", "Seasons"],
+    wordCount: 900,
+    datePublished: "2026-07-23T00:00:00Z",
+    outline: [
+      "How the 348 plates split by mood",
+      "A seasonal reading of the dictionary",
+      "Choosing by mood instead of by browsing",
+      "Method",
+    ],
+    citedTerms: [
+      { term: "solemn", meaning: "Computed mood: plate average lightness below 35% — the dark register." },
+      { term: "serene", meaning: "Computed mood: plate average lightness above 70% — the pale register." },
+      { term: "kasane no irome", pronunciation: "ka-sa-ne no i-ro-me", meaning: "Heian layered-robe seasonal colour combinations — the tradition behind seasonal palette reading." },
+    ],
+    relatedSlugs: ["color-data-analysis", "wada-color-psychology", "heian-court-color-theory"],
+  },
+  {
+    slug: "wada-color-psychology",
+    type: "pillar",
+    readingOrder: null,
+    title: "Color Psychology in Wada's System: What 348 Plates Are Built to Feel Like",
+    description:
+      "The 1933 dictionary read through color psychology, with the structure measured: how often warm is set against cool inside one plate, why the archive lives in the mid-tones, and what the two-color discipline does perceptually.",
+    eyebrow: "Original research · Color theory",
+    readingTime: "6 min",
+    tags: ["Color theory", "Original research", "Psychology"],
+    wordCount: 950,
+    datePublished: "2026-07-23T00:00:00Z",
+    outline: [
+      "Wada's signature move: warm against cool",
+      "The mid-tone register",
+      "What two colors do that four cannot",
+      "Using this in practice",
+      "Method",
+    ],
+    citedTerms: [
+      { term: "warm-cool contrast", meaning: "Pairing an advancing warm hue with a receding cool hue — creates depth in a two-color plate." },
+      { term: "value register", meaning: "The lightness band a palette occupies; mid-value palettes are the least assertive." },
+    ],
+    relatedSlugs: ["wada-palettes-by-mood", "color-data-analysis", "wada-palettes-web-design"],
+  },
 ];
 
 export function getStaticPaths() {
@@ -293,6 +343,8 @@ export function getStaticPaths() {
     "color-data-analysis",
     "accessible-palettes",
     "wada-palettes-web-design",
+    "wada-palettes-by-mood",
+    "wada-color-psychology",
   ];
   return slugs.map((slug) => ({ params: { slug } }));
 }

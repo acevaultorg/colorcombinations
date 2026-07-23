@@ -1,0 +1,330 @@
+---
+/**
+ * /learn/wada-palettes-by-mood/ — original-research pillar.
+ *
+ * Groups all 348 historical Wada combinations by computed mood (lightness +
+ * hue + size classification, method documented on-page) and by a practical
+ * seasonal reading (hue family + lightness). Every number and every example
+ * palette derives from the dataset at build time; nothing invented.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import ShareActions from "@components/ShareActions.astro";
+import { wadaCatalog } from "@data/palettes";
+import type { Palette } from "@/types/palette";
+
+const dict = wadaCatalog();
+const N = dict.length;
+
+// ---- Mood frequency across the 348 (computed from the dataset) ----
+const MOOD_MEANING: Record<string, string> = {
+  refined: "mid-toned — neither notably dark nor pale; the dictionary's default register",
+  warm: "contains a red or orange member",
+  cool: "contains a blue or green member (and no red/orange)",
+  austere: "a two-color pairing — the smallest, most disciplined format",
+  bold: "four colors — the largest, most assertive format",
+  solemn: "dark — average lightness below 35%",
+  serene: "pale — average lightness above 70%",
+};
+const moodCounts = new Map<string, number>();
+for (const p of dict) for (const m of p.moods) moodCounts.set(m, (moodCounts.get(m) ?? 0) + 1);
+const moodRows = [...moodCounts.entries()].sort((a, b) => b[1] - a[1]);
+
+// Example palettes per mood — first three plates (by plate order) carrying the mood.
+const examplesFor = (mood: string): Palette[] =>
+  dict.filter((p) => p.moods.includes(mood as Palette["moods"][number])).slice(0, 3);
+
+// ---- Seasonal reading (hue family + lightness; rule documented in Method) ----
+type Season = "spring" | "summer" | "autumn" | "winter";
+function seasonOf(p: Palette): Season {
+  const light = p.moods.includes("serene");
+  const dark = p.moods.includes("solemn");
+  const h = p.dominantHue;
+  if ((h === "pink" || h === "green") && !dark) return "spring";
+  if ((h === "blue" || h === "green") || (light && h !== "red" && h !== "orange")) return "summer";
+  if (h === "red" || h === "orange" || h === "yellow") return dark ? "winter" : "autumn";
+  return "winter";
+}
+const seasonCounts = new Map<Season, number>();
+const seasonExamples = new Map<Season, Palette[]>();
+for (const p of dict) {
+  const s = seasonOf(p);
+  seasonCounts.set(s, (seasonCounts.get(s) ?? 0) + 1);
+  const arr = seasonExamples.get(s) ?? [];
+  if (arr.length < 3) { arr.push(p); seasonExamples.set(s, arr); }
+}
+const SEASONS: ReadonlyArray<{ key: Season; label: string; note: string }> = [
+  { key: "spring", label: "Spring", note: "pink and fresh-green plates that are not dark — the budding register" },
+  { key: "autumn", label: "Autumn", note: "mid-toned red, orange, and yellow plates — the largest seasonal family, matching the dictionary's warm bias" },
+  { key: "summer", label: "Summer", note: "blue and green plates plus the pale non-warm sets — cool and airy" },
+  { key: "winter", label: "Winter", note: "the dark warm plates and the neutral sets — reduced and severe" },
+];
+
+const title = "Wada Palettes by Mood and Season: Grouping the 348 Plates";
+const description = `All ${N} historical combinations in Sanzo Wada's 1933 Dictionary, grouped by computed mood (dark, pale, warm, cool, two-color, four-color) and by a practical seasonal reading — with example plates for each group, measured from the archive itself.`;
+const keywords = [
+  "wada palettes by mood",
+  "sanzo wada seasonal palettes",
+  "japanese color combinations mood",
+  "warm wada palettes",
+  "dark japanese palettes",
+  "autumn japanese color palette",
+  "Sanzo Wada",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-07-23T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/wada-palettes-by-mood/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Original research",
+    author: { "@type": "Organization", "@id": `${siteUrl}#organization`, name: "The Dictionary of Color Combinations" },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Palettes by Mood and Season" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/learn/wada-palettes-by-mood.svg"
+  type="article"
+  jsonAlternate="/api/learn/wada-palettes-by-mood.json"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Palettes by Mood and Season</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Original research · Data</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          Wada's 1933 dictionary is organised by plate number, which tells you
+          nothing about what a combination feels like. We classified all {N}
+          historical plates by mood — dark, pale, warm, cool, two-color,
+          four-color — and by a practical seasonal reading, so you can enter the
+          archive by atmosphere instead of by index.
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/learn/wada-palettes-by-mood.svg", Astro.site).toString()}
+          description={description}
+          heading="Share this analysis"
+          download={{
+            kind: "page",
+            slug: "learn-wada-palettes-by-mood",
+            title,
+            subtitle: `${N} historical combinations, grouped by mood and season.`,
+            eyebrow: "Original research · Data",
+            accentHex: "#C04B3A",
+          }}
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        A mood grouping only means something if it is consistent, so ours is
+        computed, not curated: each plate's classification derives from its
+        measured lightness, its hue membership, and its size. The definitions
+        are below, the rule is in the <a href="#method">method</a>, and every
+        count updates from the archive at build time.
+      </p>
+
+      <h2 id="mood-frequency">How the 348 plates split by mood</h2>
+      <ul class="data-stats">
+        {moodRows.map(([m, n]) => (
+          <li>
+            <strong>{m}</strong> — {n} combinations ({Math.round((100 * n) / N)}%): {MOOD_MEANING[m] ?? ""}
+          </li>
+        ))}
+      </ul>
+      <p>
+        Two structural facts stand out. First, the dictionary leans firmly
+        warm: far more plates contain a red or orange member than a cool blue
+        or green one. Second, the extremes are rare — genuinely dark
+        (<em>solemn</em>) and genuinely pale (<em>serene</em>) sets together
+        make up a small fraction of the archive. Wada worked overwhelmingly in
+        the mid-tones, which is a large part of why the plates feel so wearable:
+        they were composed for kimono fabric and printed goods, not for posters.
+      </p>
+
+      {["warm", "cool", "solemn", "serene"].map((mood) => (
+        <>
+          <h3>{mood[0].toUpperCase() + mood.slice(1)} — three plates to start with</h3>
+          <ul class="mood-examples">
+            {examplesFor(mood).map((p) => (
+              <li>
+                <span class="mood-swatches" aria-hidden="true">
+                  {p.colors.map((c) => (
+                    <span class="data-swatch" style={`background:${c.hex}`}></span>
+                  ))}
+                </span>
+                <a href={`/palettes/${p.slug}/`}>{p.title}</a>
+              </li>
+            ))}
+          </ul>
+        </>
+      ))}
+
+      <h2 id="seasons">A seasonal reading of the dictionary</h2>
+      <p>
+        Japan's color tradition has read palettes seasonally since the Heian
+        court's <a href="/learn/heian-court-color-theory/">kasane no irome</a>
+        calendar, so a seasonal cut of Wada's plates is a natural question. The
+        dictionary itself assigns no seasons; the grouping below is our
+        computed reading, from hue family and lightness (rule in the method):
+      </p>
+      <ul class="data-stats">
+        {SEASONS.map((s) => (
+          <li>
+            <strong>{s.label}</strong> — {seasonCounts.get(s.key) ?? 0} combinations ({Math.round((100 * (seasonCounts.get(s.key) ?? 0)) / N)}%): {s.note}
+          </li>
+        ))}
+      </ul>
+      {SEASONS.map((s) => (
+        <>
+          <h3>{s.label} — three plates</h3>
+          <ul class="mood-examples">
+            {(seasonExamples.get(s.key) ?? []).map((p) => (
+              <li>
+                <span class="mood-swatches" aria-hidden="true">
+                  {p.colors.map((c) => (
+                    <span class="data-swatch" style={`background:${c.hex}`}></span>
+                  ))}
+                </span>
+                <a href={`/palettes/${p.slug}/`}>{p.title}</a>
+              </li>
+            ))}
+          </ul>
+        </>
+      ))}
+
+      <h2 id="using">Choosing by mood instead of by browsing</h2>
+      <p>
+        The practical use of these groupings: decide the atmosphere first, then
+        pick inside the matching group. A brand that needs gravity starts in
+        the solemn plates; packaging for spring produce starts in the spring
+        set; an interface that must stay calm starts cool and mid-toned. Because
+        each group is small, choosing becomes a short comparison instead of a
+        348-plate scroll — and every plate links to its own page with contrast
+        data and export formats.
+      </p>
+
+      <h2 id="method">Method</h2>
+      <p>
+        Moods are assigned deterministically per plate: average HSL lightness
+        below 35% → <em>solemn</em>, above 70% → <em>serene</em>, otherwise
+        <em>refined</em>; a red or orange member → <em>warm</em>, else a blue or
+        green member → <em>cool</em>; two colors → <em>austere</em>, four →
+        <em>bold</em>. Seasons read the dominant hue plus lightness: non-dark
+        pink/green → spring; blue/green or pale non-warm → summer; mid-toned
+        red/orange/yellow → autumn; dark-warm and neutral sets → winter. The 30
+        modern editorial palettes are excluded; all figures describe the {N}
+        historical plates. Source data is public domain; this analysis is
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC&nbsp;BY&nbsp;4.0</a>.
+      </p>
+
+      <p class="article-related">
+        Keep reading: <a href="/learn/color-data-analysis/">the full data analysis of the dictionary</a> ·
+        <a href="/learn/wada-color-psychology/">color psychology in Wada's system</a> ·
+        <a href="/browse/">browse all {N} combinations</a>.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .data-stats {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+  .data-stats li {
+    margin-bottom: 0.5rem;
+  }
+  .mood-examples {
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    max-width: 65ch;
+  }
+  .mood-examples li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mood-swatches {
+    display: inline-flex;
+    gap: 2px;
+    flex: none;
+  }
+  .data-swatch {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    flex: none;
+  }
+  .article-related {
+    margin-top: 2rem;
+    font-size: 0.9375rem;
+  }
+  .article-related a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>

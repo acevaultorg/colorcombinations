@@ -94,6 +94,22 @@ const PILLARS: ReadonlyArray<PillarSpec> = [
       "Pick for the medium, assign color roles, pass contrast, and ship a historical palette as CSS tokens.",
     swatches: ["#4C5D3F", "#F1ECDF", "#1B2A4E", "#C04B3A"],
   },
+  {
+    slug: "wada-palettes-by-mood",
+    title: "Palettes by Mood and Season",
+    subtitle: "The 348 plates, grouped",
+    blurb:
+      "All 348 historical combinations grouped by computed mood — dark, pale, warm, cool — and by a practical seasonal reading.",
+    swatches: ["#C04B3A", "#A8B2A6", "#1B2A4E", "#F1ECDF"],
+  },
+  {
+    slug: "wada-color-psychology",
+    title: "Color Psychology in Wada's System",
+    subtitle: "Temperature, value, format — measured",
+    blurb:
+      "How often Wada mixes warm against cool, why the archive lives in the mid-tones, and what the two-color discipline does to a viewer.",
+    swatches: ["#1B2A4E", "#D9523B", "#A8B5C2", "#D4AF37"],
+  },
 ];
 
 export function getStaticPaths() {
