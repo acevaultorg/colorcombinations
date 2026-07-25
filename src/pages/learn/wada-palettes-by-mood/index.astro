@@ -297,6 +297,9 @@ const jsonLd = [
     gap: 0.75rem;
     padding: 0.5rem 0;
     border-bottom: 1px solid var(--color-border);
+    /* Matches the proven .data-colors pattern — lets a long plate title drop to
+       its own line on narrow screens instead of being squeezed beside 4 swatches. */
+    flex-wrap: wrap;
   }
   .mood-swatches {
     display: inline-flex;
