@@ -223,8 +223,12 @@ const jsonLdArray = jsonLd
     <script is:inline src="/amazon-track.js"></script>
   </head>
   <body>
-    {/* Event tracking — connects data-event attributes to Plausible custom events.
-        Works even before Plausible loads (queues via the polyfill above). */}
+    {/* Event tracking — connects data-event attributes to the analytics sinks.
+        DUAL-SINK (fixed 2026-07-23): previously fired to Plausible ONLY, which has
+        been a dead sink since the subscription lapsed 2026-06-28 — every custom
+        event on the site (shares, exports, hex copies, CTA clicks) was invisible.
+        Now fires GA4 (what the fleet metrics layer reads) + Clarity (filterable
+        tag) as well, with Plausible kept as a harmless legacy call. */}
     <script is:inline>
     (function(){
       document.addEventListener('click', function(e) {
@@ -238,7 +242,14 @@ const jsonLdArray = jsonLd
         if (el.dataset.tool) props.tool = el.dataset.tool;
         if (el.dataset.variant) props.variant = el.dataset.variant;
         if (el.href) props.url = el.href;
-        window.plausible(name, {props: props});
+        // amazon_click is already dual-sunk by /amazon-track.js — don't double-count.
+        if (name !== 'amazon_click') {
+          try {
+            if (window.gtag) window.gtag('event', name, Object.assign({page: location.pathname}, props));
+            if (window.clarity) { window.clarity('event', name); window.clarity('set', 'last_event', name); }
+          } catch (x) {}
+        }
+        if (window.plausible) window.plausible(name, {props: props});
       });
     })();
     </script>
@@ -306,7 +317,7 @@ const jsonLdArray = jsonLd
       function scrub(s){return s.replace(/\S+@\S+/g,"").replace(/\d{6,}/g,"").slice(0,60).trim()}
       function srch(raw){var qn=norm(raw);if(!qn||!idx)return[];var tk=qn.split(" "),o=[];for(var i=0;i<idx.length;i++){var e=idx[i],tn=norm(e.t),hay=norm(e.t+" "+(e.x||"")),sc=0;if(tn.indexOf(qn)===0)sc=100;else if(tn.indexOf(qn)>=0)sc=70;else if(hay.indexOf(qn)>=0)sc=40;else{var all=1;for(var k=0;k<tk.length;k++)if(hay.indexOf(tk[k])<0){all=0;break}if(all)sc=20}if(sc)o.push([sc,e])}o.sort(function(a,b){return b[0]-a[0]||a[1].t.length-b[1].t.length});return o.slice(0,8).map(function(x){return x[1]})}
       function render(raw){items=srch(raw);if(!raw.trim()){box.hidden=true;box.innerHTML="";q.setAttribute("aria-expanded","false");return}if(items.length){box.innerHTML=items.map(function(e,i){return "<a role='option' id='cc-o"+i+"' href='"+e.s+"'><span>"+esc(e.t)+"</span><span class='k'>"+esc(e.k)+"</span></a>"}).join("")}else{box.innerHTML="<div class='cc-none'>No match for “"+esc(raw)+"” yet. <a href='/browse/'>Browse all palettes →</a></div>"}box.hidden=false;q.setAttribute("aria-expanded","true");sel=-1}
-      function log(){var raw=q.value.trim();if(!raw||raw===last)return;last=raw;var sq=scrub(raw);if(!sq)return;var z=!items.length;if(window.plausible)window.plausible(z?"SearchNoResults":"Search",{props:z?{q:sq}:{q:sq,results:items.length}});if(window.clarity){window.clarity("event",z?"SearchNoResults":"Search");window.clarity("set",z?"search_noresult":"search_query",sq)}}
+      function log(){var raw=q.value.trim();if(!raw||raw===last)return;last=raw;var sq=scrub(raw);if(!sq)return;var z=!items.length;if(window.plausible)window.plausible(z?"SearchNoResults":"Search",{props:z?{q:sq}:{q:sq,results:items.length}});if(window.clarity){window.clarity("event",z?"SearchNoResults":"Search");window.clarity("set",z?"search_noresult":"search_query",sq)}if(window.gtag)window.gtag("event",z?"SearchNoResults":"Search",{search_term:sq,results:items.length})}
       q.addEventListener("focus",load);
       q.addEventListener("input",function(){clearTimeout(rt);rt=setTimeout(function(){load().then(function(){render(q.value)})},110);clearTimeout(lt);lt=setTimeout(log,900)});
       q.addEventListener("keydown",function(e){if(e.key==="Escape"){box.hidden=true;q.blur();return}if(e.key==="Enter"){clearTimeout(rt);render(q.value);clearTimeout(lt);log();var t=sel>=0&&items[sel]?items[sel]:items[0];if(t)location.href=t.s;return}if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();if(!items.length)return;sel=(sel+(e.key==="ArrowDown"?1:-1)+items.length)%items.length;for(var i=0;i<items.length;i++){var o=document.getElementById("cc-o"+i);if(o)o.setAttribute("aria-selected",i===sel?"true":"false")}q.setAttribute("aria-activedescendant",sel>=0?"cc-o"+sel:"")}});
