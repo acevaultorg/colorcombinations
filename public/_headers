@@ -8,7 +8,17 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
   # No inline scripts except our own (set:html blocks for JSON-LD) — unsafe-inline needed for that.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://www.clarity.ms https://scripts.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://plausible.io https://*.clarity.ms; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://forms.example.com
+  # EVERY analytics origin the site loads MUST be listed here or the browser silently blocks it.
+  # This bit us hard (fixed 2026-07-25): googletagmanager/google-analytics were missing, so GA4
+  # was blocked and daily users read ~2/day from Jul 19 while Clarity independently measured ~790
+  # humans/3d — a ~40x under-report on one of the fleet's few trafficked sites. It only surfaced on
+  # Jul 19 because the Jul-18 switch to `wrangler pages deploy` (commit 9af8588) is what started
+  # actually SHIPPING this _headers file; the CSP had been written before GA4 was ever added.
+  # Verified live: gtag/js returned HTTP 503 (CSP block) while clarity.ms — which IS listed — 200'd.
+  # script-src  = where a <script src> may load FROM (gtag loader, CF beacon)
+  # connect-src = where JS may SEND to (the /g/collect beacon; GA4 also uses region1.* endpoints)
+  # If you add an analytics/ads vendor later, add it to BOTH or it will fail the same silent way.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://www.clarity.ms https://scripts.clarity.ms https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://plausible.io https://*.clarity.ms https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://static.cloudflareinsights.com https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://forms.example.com
 
 # Embed widgets — deliberately iframe-embeddable on any origin.
 # Overrides the global X-Frame-Options: DENY + frame-ancestors 'none'
