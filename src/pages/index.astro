@@ -272,11 +272,24 @@ const jsonLd = {
   <EmailCapture class="section" />
 
   <section class="container-narrow">
+    {/* offset 3 → 0, changed 2026-07-27 on measured demand. Bing WMT "AI
+        Performance" shows the HOMEPAGE alone carries 6,100 Copilot/ChatGPT
+        grounding citations — 72% of this site's 8,500 — and its top grounding
+        queries are literally the Wada dictionaries: "a dictionary of color
+        combinations" (2.5K citations, 22.15% share), "dictionary of color
+        combinations" (1.5K, 31.08%), "the color dictionary" (62.16% share).
+        offset={3} rendered books #3-5 and skipped the two Wada volumes sitting
+        at #0-1 — so the most-cited page in the fleet never showed the product
+        its citations are about, and the Vol-1-vs-Vol-2 comparison link (which
+        only renders when a Wada book is in the slice) never fired here either.
+        offset={0} surfaces Vol 1, Vol 2 and Interaction of Color — exactly the
+        three books the citations ask about. Rotation/variety still applies on
+        palette + collection pages, where the demand is not Wada-specific. */}
     <FurtherReading
       title="Go deeper on colour"
       intro="The books we return to on colour theory and the language of palettes. Recommended on Amazon."
       limit={3}
-      offset={3}
+      offset={0}
     />
   </section>
 </BaseLayout>
