@@ -22,7 +22,17 @@
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import { AMAZON } from "@/config/monetization";
 import { wadaPalettes } from "@/data/wada-palettes";
+
+// Seigensha's two-volume set (Vol 1 + Vol 2 + Japanese Traditional Colors chart),
+// verified live on amazon.com 2026-07-27: paperback, Seigensha, buy-box active.
+// WHY it earns its place here (Amazon Linked-Product 30d): Vol 1 draws 119 clicks
+// with 0 orders while Vol 2 converts 4 of 34 — readers arriving at this comparison
+// are deciding between volumes, and a meaningful share want both. The set is the
+// honest answer to that question, and one order of it pays several times a single
+// paperback. No price is shown anywhere (Amazon Associates policy).
+const WADA_SET_ASIN = "B094NTK2RB";
 
 // Computed, never hardcoded — same source the /data study renders from.
 const vol1Plates = wadaPalettes.length;
@@ -215,6 +225,12 @@ const rows = [
       <p><strong>You want to understand why combinations work, not just collect them
       →</strong> neither, yet. Read Albers's <em>Interaction of Color</em> first — it
       teaches the mechanism. Wada gives you the answers; Albers explains them.</p>
+      <p><strong>You know you want both →</strong> Seigensha publishes them as a
+      <a href={AMAZON.link(WADA_SET_ASIN)} target="_blank" rel="sponsored nofollow noopener"
+         class="plausible-event-name=AmazonClick plausible-event-from=compare-set"
+         data-event="amazon_click" data-book="Wada Vol 1 + Vol 2 set">two-volume set that
+      also includes the Japanese Traditional Colors chart</a> — the same two books plus
+      the traditional-color reference, in one order rather than two.</p>
 
       <h2 class="cmp-h2">Where Interaction of Color fits</h2>
       <p>
