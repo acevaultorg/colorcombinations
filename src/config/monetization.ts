@@ -637,13 +637,25 @@ export const ART_SUPPLIES: ArtSupply[] = [
     why: "A felt brush tip for the labelling and linework around a swatch study — the annotation half of a colour notebook.",
     group: "paint",
   },
+  // Was the Formula Guide (GP1601B, B0BJ13LVD4) until scripts/verify-asins.mjs
+  // flagged that ASIN MISSING — a dead link earning $0 while still taking clicks.
+  //
+  // There is no live Formula Guide listing to swap to. Its nearest relative, the
+  // Solid Guide Set (B0BNP1X53S), is AVAILABLE_DATE — backorder — and pointing a
+  // CTA at something unshippable is exactly what produced Wada Vol 1's 119 clicks
+  // and 0 orders. So this is the Color Bridge Guide Set instead: New, buy-box
+  // winner, IN_STOCK, and genuinely coated & uncoated.
+  //
+  // Not a like-for-like swap, so the name and copy changed with it. Color Bridge
+  // translates Pantone spot colours to CMYK/RGB/HTML rather than defining the
+  // spot inks themselves — which for readers arriving from a screen palette is
+  // the more useful direction anyway.
   {
-    name: "Formula Guide — coated & uncoated",
+    name: "Color Bridge Guide Set — coated & uncoated",
     brand: "Pantone",
-    amazonAsin: "B0BJ13LVD4",
-    verifiedTitle:
-      "Pantone Formula Guide – Coated & Uncoated | Professional PMS Color Matching System for Print, Packaging & Graphic Design | GP1601B",
-    why: "When a palette leaves the screen, this is the shared vocabulary between you and the press. Coated and uncoated because the same ink is not the same colour on both.",
+    amazonAsin: "B0BJ147GF9",
+    verifiedTitle: "Pantone GP6102B Color Bridge Guide Set Coated & Uncoated, Multi-Colour",
+    why: "The translation layer between a screen palette and a printed one: every Pantone spot colour shown beside its CMYK, RGB and HTML equivalents. Coated and uncoated because the same ink is not the same colour on both.",
     group: "print",
   },
 ];
