@@ -47,6 +47,14 @@ const books = (() => {
 // listings. Click-tracking fires regardless of whether an affiliate tag is
 // pasted in yet, so the disclosure is an always-on compliance surface.
 const showDisclosure = true;
+
+// When the rendered set includes either Wada dictionary (the two highest-click
+// books on the site — 150+ Amazon clicks/30d combined), route undecided
+// readers to the on-site comparison instead of losing them at the buy fork.
+// Internal link → /compare/wada-vol-1-vs-vol-2 (was an orphan page with zero
+// inbound links; this surface renders on every palette page + /about + /shop).
+const WADA_ASINS = new Set(["4861522471", "4861527724"]);
+const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
 ---
 
 <section class:list={["further-reading", `further-reading--${variant}`]}>
@@ -140,6 +148,13 @@ const showDisclosure = true;
       );
     })}
   </ul>
+
+  {showWadaCompare && (
+    <p class="further-reading__compare">
+      Torn between the two Wada dictionaries?{" "}
+      <a href="/compare/wada-vol-1-vs-vol-2">Vol 1 vs Vol 2, compared plate by plate →</a>
+    </p>
+  )}
 
   {showDisclosure && (
     <p class="further-reading__disclosure">
@@ -378,6 +393,12 @@ const showDisclosure = true;
 
   .further-reading__amazon:hover {
     color: var(--color-accent-500);
+  }
+
+  .further-reading__compare {
+    margin-block-start: 1.25rem;
+    font-size: 0.9375rem;
+    color: var(--color-ink-soft, inherit);
   }
 
   .further-reading__disclosure {
