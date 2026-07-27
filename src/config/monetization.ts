@@ -213,7 +213,17 @@ export const FURTHER_READING: CuratedBook[] = [
     amazonAsin: "4861522471",
     isbn: "4861522471",
     coverUrl: "/book-covers/wada-vol-1.jpg",
-    why: "The source tradition this archive draws from. Out of print for decades; Seigensha brought it back.",
+    // Vol 1 took 119 Amazon clicks and returned 0 orders in 30d, while Vol 2 took
+    // 34 and returned 4 (11.8%). The cause isn't the copy or the listing — it's
+    // that every combination in Vol 1 is already browsable free on this site, with
+    // hex values (see /compare/wada-vol-1-vs-vol-2). Asking someone to buy the data
+    // we give away is a click they were never going to convert on.
+    //
+    // So this now says so plainly and points at the two reasons someone genuinely
+    // does buy it: the printed object, and a citable copy of the 1933 classic.
+    // Fewer clicks here is the intended outcome — the ones left are qualified, and
+    // readers who want plates they can't get free are routed to Vol 2.
+    why: "Every combination in it is already browsable free here, hex values and all. Buy this one for the object rather than the data — Seigensha's matte plates and Japanese binding, or a citable copy of the 1933 original. If you want plates this archive doesn't have, Vol. 2 is the one.",
   },
   {
     title: "A Dictionary of Color Combinations Vol. 2",
