@@ -54,9 +54,10 @@ const siteName = "The Dictionary of Color Combinations";
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).toString();
 
-// Default OG image: SVG works for most modern crawlers. Human can upload a
-// 1200x630 PNG later for maximum Twitter/FB/LinkedIn compatibility.
-const ogImage = image ?? "/og-default.svg";
+// Default OG image must be a raster: every social surface (FB / X / LinkedIn /
+// Slack / Discord / WhatsApp) and Pinterest refuse an SVG og:image and render a
+// blank card. Rasterised from og-default.svg with @resvg/resvg-js.
+const ogImage = image ?? "/og-default.png";
 const imageUrl = new URL(ogImage, Astro.site).toString();
 
 // Global Organization/WebSite schema — merged with page-specific entries.

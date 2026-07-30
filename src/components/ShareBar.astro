@@ -32,7 +32,7 @@ const tweetText = `${title} — a ${palette.era}-era combination from the 1933 D
 const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(url)}`;
 
 // Pinterest needs `media` for the image — use the OG image on the page
-const pinterestMedia = new URL(`/og/${palette.slug}.svg`, url).toString();
+const pinterestMedia = new URL(`/og/${palette.slug}.png`, url).toString();
 const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(pinterestMedia)}&description=${encodeURIComponent(title + " — from the Dictionary of Color Combinations")}`;
 ---
 

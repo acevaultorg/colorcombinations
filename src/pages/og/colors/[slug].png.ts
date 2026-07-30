@@ -1,5 +1,5 @@
 /**
- * Per-color OG image endpoint — /og/colors/[slug].svg
+ * Per-color OG image endpoint — /og/colors/[slug].png
  *
  * 1200×630 SVG, one per named color in the dictionary. Used as og:image
  * when /colors/[slug]/ URLs are shared on Twitter, LinkedIn, Slack,
@@ -11,6 +11,7 @@
  */
 
 import type { APIRoute } from "astro";
+import { svgToPngResponse } from "@/lib/og-png";
 import { allColors, colorBySlug, palettesForColor } from "@/data/colors";
 
 export function getStaticPaths() {
@@ -134,11 +135,5 @@ export const GET: APIRoute = ({ params }) => {
 </svg>
 `;
 
-  return new Response(svg, {
-    status: 200,
-    headers: {
-      "Content-Type": "image/svg+xml; charset=utf-8",
-      "Cache-Control": "public, max-age=31536000, immutable",
-    },
-  });
+  return svgToPngResponse(svg);
 };

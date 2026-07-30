@@ -165,7 +165,7 @@ const jsonLd = [
   title={title}
   description={description}
   keywords={collection.keywords}
-  image={`/og/collections/${collection.slug}.svg`}
+  image={`/og/collections/${collection.slug}.png`}
   type="article"
   jsonAlternate={`/api/collections/${collection.slug}.json`}
   jsonLd={jsonLd}
@@ -194,7 +194,7 @@ const jsonLd = [
       <ShareActions
         title={collection.title}
         url={new URL(`/collections/${collection.slug}`, Astro.site).toString()}
-        image={new URL(`/og/collections/${collection.slug}.svg`, Astro.site).toString()}
+        image={new URL(`/og/collections/${collection.slug}.png`, Astro.site).toString()}
         description={`${collection.title} — ${collection.tagline}`}
         heading="Share this collection"
         download={{

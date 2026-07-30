@@ -1,5 +1,5 @@
 /**
- * Per-palette OG image endpoint — /og/[slug].svg
+ * Per-palette OG image endpoint — /og/[slug].png
  *
  * Generates a 1200x630 SVG at build time (one per palette), used by Twitter,
  * LinkedIn, Facebook, Discord, Slack, etc. as the Open Graph preview image
@@ -13,6 +13,7 @@
  */
 
 import type { APIRoute } from "astro";
+import { svgToPngResponse } from "@/lib/og-png";
 import { allPalettes, paletteBySlug } from "@/data/palettes";
 
 export function getStaticPaths() {
@@ -102,11 +103,5 @@ export const GET: APIRoute = ({ params }) => {
 </svg>
 `;
 
-  return new Response(svg, {
-    status: 200,
-    headers: {
-      "Content-Type": "image/svg+xml; charset=utf-8",
-      "Cache-Control": "public, max-age=31536000, immutable",
-    },
-  });
+  return svgToPngResponse(svg);
 };

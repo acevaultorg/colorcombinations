@@ -8,7 +8,7 @@
  * + WCAG specs at-a-glance + cross-link to /collections that match.
  *
  * Distribution archetype: programmatic_page_with_unique_data × +55 +
- * SEO_page_addition × +50. Companion /og/hue/[hue].svg already shipped.
+ * SEO_page_addition × +50. Companion /og/hue/[hue].png already shipped.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
@@ -164,7 +164,7 @@ const keywords = [
 ];
 
 const pageUrl = new URL(`/colors/hue/${hueKey}`, Astro.site).toString();
-const ogImage = `/og/hue/${hueKey}.svg`;
+const ogImage = `/og/hue/${hueKey}.png`;
 
 const jsonLd = [
   {

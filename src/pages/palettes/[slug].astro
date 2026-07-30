@@ -102,7 +102,7 @@ const description =
     ? palette.summary
     : `${palette.summary} A ${palette.colors.length}-color combination — ${_colorBits}${palette.colors.length > 3 ? " and more" : ""} — with hex and RGB values, contrast checks and pairing guidance.`;
 const pageUrl = new URL(`/palettes/${palette.slug}`, Astro.site).toString();
-const ogImage = `/og/${palette.slug}.svg`;
+const ogImage = `/og/${palette.slug}.png`;
 
 // Per-combination "Historical context" — unique, fact-derived prose so each
 // palette page carries page-specific content (plate #, the actual colours,

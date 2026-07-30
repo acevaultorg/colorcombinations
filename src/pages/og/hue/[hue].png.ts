@@ -1,5 +1,5 @@
 /**
- * /og/hue/[hue].svg — 9 OG images for /colors/[hue]/ landing pages.
+ * /og/hue/[hue].png — 9 OG images for /colors/[hue]/ landing pages.
  *
  * Each pulls the top swatches in that hue family from the live color
  * dictionary, so the OG always reflects the current archive shape.
@@ -7,6 +7,7 @@
  */
 
 import type { APIRoute } from "astro";
+import { svgToPngResponse } from "@/lib/og-png";
 import { colorsByHue } from "@/data/colors";
 import type { DominantHue } from "@/types/palette";
 
@@ -154,11 +155,5 @@ export const GET: APIRoute = ({ params }) => {
 </svg>
 `;
 
-  return new Response(svg, {
-    status: 200,
-    headers: {
-      "Content-Type": "image/svg+xml; charset=utf-8",
-      "Cache-Control": "public, max-age=31536000, immutable",
-    },
-  });
+  return svgToPngResponse(svg);
 };

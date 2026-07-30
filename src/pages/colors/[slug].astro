@@ -234,7 +234,7 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={title} description={description} keywords={keywords} image={`/og/colors/${color.slug}.svg`} type="article" jsonAlternate={`/api/colors/${color.slug}.json`} jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} keywords={keywords} image={`/og/colors/${color.slug}.png`} type="article" jsonAlternate={`/api/colors/${color.slug}.json`} jsonLd={jsonLd}>
   <nav class="breadcrumb container-wide" aria-label="Breadcrumb">
     <ol>
       <li><a href="/">Home</a></li>
@@ -266,7 +266,7 @@ const jsonLd = [
         <ShareActions
           title={`${color.name}${color.nameJa ? ` (${color.nameJa})` : ""}`}
           url={new URL(`/colors/${color.slug}`, Astro.site).toString()}
-          image={new URL(`/og/colors/${color.slug}.svg`, Astro.site).toString()}
+          image={new URL(`/og/colors/${color.slug}.png`, Astro.site).toString()}
           description={color.meaning ? `${color.name} (${color.hex}) — ${color.meaning}` : `${color.name} (${color.hex})`}
           heading="Share this color"
           download={{

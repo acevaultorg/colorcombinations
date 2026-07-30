@@ -23,7 +23,7 @@ const jsonLd = [
       "@type": "Brand",
       name: "The Dictionary of Color Combinations",
     },
-    image: new URL("/og-default.svg", Astro.site).toString(),
+    image: new URL("/og-default.png", Astro.site).toString(),
     offers: {
       "@type": "Offer",
       priceCurrency: "USD",
@@ -60,7 +60,7 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={title} description={description} image="/og/shop.svg" jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} image="/og/shop.png" jsonLd={jsonLd}>
   {/* ============ HERO ============ */}
   <section class="shop-hero">
     <div class="container-wide shop-hero__inner">

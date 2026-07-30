@@ -1,16 +1,17 @@
 /**
- * Per-pillar OG image endpoint — /og/learn/[slug].svg
+ * Per-pillar OG image endpoint — /og/learn/[slug].png
  *
  * Generates an article-shaped 1200x630 SVG per /learn pillar. Used by
  * Twitter, LinkedIn, Facebook, Discord, Slack, Pinterest as the Open
  * Graph preview when a pillar URL is shared.
  *
- * Different from /og/collections/[slug].svg: pillar OG says
+ * Different from /og/collections/[slug].png: pillar OG says
  * "Working guide" + article title + brief blurb + tradition-accent
  * swatch strip. No palette grid.
  */
 
 import type { APIRoute } from "astro";
+import { svgToPngResponse } from "@/lib/og-png";
 
 interface PillarSpec {
   slug: string;
@@ -200,11 +201,5 @@ export const GET: APIRoute = ({ params }) => {
   <text x="${W - MARGIN_X}" y="595" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#8a8a8a" letter-spacing="0.08em">colorcombinations.org/learn/${esc(pillar.slug)}</text>
 </svg>`;
 
-  return new Response(svg, {
-    headers: {
-      "Content-Type": "image/svg+xml",
-      // Stable per-pillar — long cache OK; bumped when SSG rebuilds
-      "Cache-Control": "public, max-age=86400, s-maxage=86400",
-    },
-  });
+  return svgToPngResponse(svg);
 };

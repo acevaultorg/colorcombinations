@@ -1,16 +1,17 @@
 /**
- * Per-collection OG image endpoint — /og/collections/[slug].svg
+ * Per-collection OG image endpoint — /og/collections/[slug].png
  *
  * Generates a 1200x630 SVG at build time (one per collection), used by
  * Twitter, LinkedIn, Facebook, Discord, Slack etc. as the Open Graph
  * preview image when any collection page is shared. Shows the collection
  * title + tagline + a preview grid of 4 palettes from the set.
  *
- * Mirrors the palette OG pattern (src/pages/og/[slug].svg.ts) — same
+ * Mirrors the palette OG pattern (src/pages/og/[slug].png.ts) — same
  * museum-plate brand, same SVG-not-PNG rationale.
  */
 
 import type { APIRoute } from "astro";
+import { svgToPngResponse } from "@/lib/og-png";
 import {
   collections,
   collectionBySlug,
@@ -135,11 +136,5 @@ export const GET: APIRoute = ({ params }) => {
 </svg>
 `;
 
-  return new Response(svg, {
-    status: 200,
-    headers: {
-      "Content-Type": "image/svg+xml; charset=utf-8",
-      "Cache-Control": "public, max-age=31536000, immutable",
-    },
-  });
+  return svgToPngResponse(svg);
 };
