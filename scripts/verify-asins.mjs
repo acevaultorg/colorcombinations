@@ -25,12 +25,28 @@
  *
  * WHY NOT-BUYABLE EXISTS (added 2026-07-28): "does this ASIN exist?" and "can
  * someone actually buy it?" are different questions, and only the first was being
- * asked. B094NTK2RB — the Wada two-volume set, shipped in 3915a38 as the primary
- * "you want both" CTA at ~3x commission — resolves fine, so it passed as healthy
- * while its buy-box New offer sat at AVAILABLE_DATE (backorder). A CTA pointing at
- * something unshippable behaves exactly like Wada Vol 1 did: 119 clicks, 0 orders.
- * This is a WARNING, not a build failure — backordered stock usually returns, and
- * failing a deploy over it would be worse than the problem.
+ * asked. A CTA pointing at something genuinely unshippable earns $0 on every click.
+ * This is a WARNING, not a build failure — stock returns, and failing a deploy over
+ * it would be worse than the problem.
+ *
+ * ⚠️ AVAILABLE_DATE IS NOT A BACKORDER — corrected 2026-07-30. This block used to
+ * claim B094NTK2RB (the Wada two-volume set) "sat at AVAILABLE_DATE (backorder)"
+ * and was therefore unshippable. That was wrong, and the allowlist built on it
+ * (pass only IN_STOCK / IN_STOCK_SCARCE, fail everything else) flagged three live
+ * listings as NOT-BUYABLE. All three were confirmed buyable in a real signed-in
+ * browser on 2026-07-30 — `#add-to-cart-button` AND `#buy-now-button` present, a
+ * real price, and a concrete delivery promise, with no "Currently unavailable" or
+ * "out of stock" text anywhere on the page:
+ *   4861527724  Wada Vol 2       → #availability "In Stock", $17.90, ships from Amazon
+ *   B094NTK2RB  Wada Vol 1+2 set → add-to-cart live, $49.99, "as soon as Mon Aug 10"
+ *   B07HKZYBVM  Pentel Fude pen  → #availability "In Stock", $6.30
+ * AVAILABLE_DATE means "buyable, dispatches by <date>" (a dated ship/preorder
+ * promise), not "cannot be bought". Acting on it would have demoted the primary CTA
+ * on /compare/wada-vol-1-vs-vol-2 (28 clicks) away from a page that sells the
+ * fleet's #1 product. Wada Vol 1's 119-clicks-0-orders leak therefore does NOT have
+ * an established AVAILABLE_DATE cause — treat that as unexplained, not solved.
+ * Do NOT restore the allowlist: verify a state against a live page before trusting
+ * it, and see the denylist rationale in buyability() below.
  *
  * ⚠️ TWO-STAGE ON PURPOSE (learned the hard way 2026-07-28): API absence is a
  * SIGNAL, never a verdict. getItems returns `ItemNotAccessible` for many
@@ -159,8 +175,23 @@ function buyability(listings) {
   const cond = bb?.condition?.value;
   const avail = bb?.availability?.type;
   if (!avail) return { ok: true, note: "no availability data" };
-  if (avail === "IN_STOCK" || avail === "IN_STOCK_SCARCE") return { ok: true, note: avail };
-  return { ok: false, note: `buy box is ${cond || "?"} / ${avail}` };
+
+  // DENYLIST, not allowlist (corrected 2026-07-30 — see header). Only states whose
+  // NAME unambiguously means "cannot be bought" fail. The availability enum is not
+  // fully documented, so an allowlist necessarily fails every value we haven't met
+  // yet — which is how AVAILABLE_DATE produced 3 false NOT-BUYABLE calls on live,
+  // in-stock, add-to-cart-able listings. Matching on substrings keeps new enum
+  // values from manufacturing a verdict.
+  const unbuyable = /OUT_OF_STOCK|UNAVAILABLE/i.test(avail);
+  if (unbuyable) return { ok: false, note: `buy box is ${cond || "?"} / ${avail}` };
+
+  const clean = avail === "IN_STOCK" || avail === "IN_STOCK_SCARCE";
+  return {
+    ok: true,
+    // A dated / preorder / unrecognised state is still buyable — the buyer can add
+    // to cart and the click still earns — so it passes, but it is worth surfacing.
+    note: clean ? avail : `${avail} (buyable; dated or unrecognised state)`,
+  };
 }
 
 /**
@@ -248,7 +279,14 @@ if (JSON_OUT) {
   }, null, 2));
 } else {
   for (const r of rows) {
-    if (r.state === "live") console.log(`  OK          ${r.asin}  ${r.title}`);
+    // A live row whose availability isn't a plain IN_STOCK still passes, but the
+    // state is printed — a dated/preorder listing is useful to know about, and a
+    // silent pass is what let the allowlist bug hide behind a clean-looking report.
+    if (r.state === "live")
+      console.log(
+        `  OK          ${r.asin}  ${r.title}` +
+          (/buyable;/.test(r.why || "") ? `\n                          ↳ ${r.why}` : ""),
+      );
     else if (r.state === "not-buyable") console.log(`  NOT-BUYABLE ${r.asin}  ← ${r.why} · ${r.title}\n                          ${WHERE[r.asin]}`);
     else if (r.state === "dead") console.log(`  DEAD        ${r.asin}  ← HTTP 404 confirmed, earns $0\n                          ${WHERE[r.asin]}`);
     else console.log(`  not-in-api  ${r.asin}  (sells fine; just not exposed via the API — no action)`);
