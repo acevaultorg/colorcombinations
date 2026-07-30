@@ -4,7 +4,6 @@ import SiteHeader from "@components/SiteHeader.astro";
 import SiteFooter from "@components/SiteFooter.astro";
 import FeedbackWidget from "@components/FeedbackWidget.astro";
 import CookieConsent from "@components/CookieConsent.astro";
-import { ANALYTICS } from "@/config/monetization";
 
 export interface Props {
   title: string;
@@ -197,18 +196,6 @@ const jsonLdArray = jsonLd
       />
     ))}
 
-    {/* Plausible — privacy-first analytics. Loaded only when configured. */}
-    {ANALYTICS.isLive && (
-      <>
-        <script
-          is:inline
-          defer
-          data-domain={ANALYTICS.plausibleDomain}
-          src="https://plausible.io/js/script.tagged-events.outbound-links.js"
-        />
-        <script is:inline set:html={`window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}`} />
-      </>
-    )}
 
     {/* Microsoft Clarity — heatmaps + session recordings (project wpwnyowok1). */}
     <script is:inline set:html={`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","wpwnyowok1");`} />
@@ -219,16 +206,16 @@ const jsonLdArray = jsonLd
 
     <slot name="head" />
 
-    {/* Amazon affiliate-click measurement (Clarity amazon_click + Plausible AmazonClick) */}
+    {/* Amazon affiliate-click measurement (Clarity amazon_click + GA4 + first-party /c beacon) */}
     <script is:inline src="/amazon-track.js"></script>
   </head>
   <body>
     {/* Event tracking — connects data-event attributes to the analytics sinks.
-        DUAL-SINK (fixed 2026-07-23): previously fired to Plausible ONLY, which has
+        DUAL-SINK (fixed 2026-07-23): previously fired to Plausible ONLY, which had
         been a dead sink since the subscription lapsed 2026-06-28 — every custom
         event on the site (shares, exports, hex copies, CTA clicks) was invisible.
         Now fires GA4 (what the fleet metrics layer reads) + Clarity (filterable
-        tag) as well, with Plausible kept as a harmless legacy call. */}
+        tag) as well. Plausible was removed 2026-07-30 (subscription lapsed 2026-06-28). */}
     <script is:inline>
     (function(){
       document.addEventListener('click', function(e) {
@@ -249,7 +236,6 @@ const jsonLdArray = jsonLd
             if (window.clarity) { window.clarity('event', name); window.clarity('set', 'last_event', name); }
           } catch (x) {}
         }
-        if (window.plausible) window.plausible(name, {props: props});
       });
     })();
     </script>
@@ -322,7 +308,7 @@ const jsonLdArray = jsonLd
          prefix) so a near-miss query still lands on real, relevant entries. */
       function loose(raw){var qn=norm(raw);if(!qn||!idx)return[];var tk=qn.split(" ").filter(function(t){return t.length>2});if(!tk.length)return[];var o=[];for(var i=0;i<idx.length;i++){var e=idx[i],hay=norm(e.t+" "+(e.x||"")),w=hay.split(" "),sc=0;for(var k=0;k<tk.length;k++){if(hay.indexOf(tk[k])>=0){sc+=10;continue}for(var j=0;j<w.length;j++){if(w[j].length>3&&(w[j].indexOf(tk[k])===0||tk[k].indexOf(w[j])===0)){sc+=6;break}}}if(sc)o.push([sc,e])}o.sort(function(a,b){return b[0]-a[0]||a[1].t.length-b[1].t.length});return o.slice(0,6).map(function(x){return x[1]})}
       function render(raw){if(!raw.trim()){box.hidden=true;box.innerHTML="";q.setAttribute("aria-expanded","false");return}if(!idx){box.innerHTML="<div class='cc-none'>Searching…</div>";box.hidden=false;q.setAttribute("aria-expanded","true");load().then(function(){if(q.value===raw)render(raw)});return}items=srch(raw);exactMiss=!items.length;if(items.length){box.innerHTML=items.map(function(e,i){return "<a role='option' id='cc-o"+i+"' href='"+e.s+"'><span>"+esc(e.t)+"</span><span class='k'>"+esc(e.k)+"</span></a>"}).join("")}else{var alt=loose(raw);if(alt.length){box.innerHTML="<div class='cc-none'>No exact match for “"+esc(raw)+"” — closest in the dictionary:</div>"+alt.map(function(e,i){return "<a role='option' id='cc-o"+i+"' href='"+e.s+"'><span>"+esc(e.t)+"</span><span class='k'>"+esc(e.k)+"</span></a>"}).join("");items=alt}else{box.innerHTML="<div class='cc-none'>No match for “"+esc(raw)+"” yet. Try <a href='/browse/'>all 378 palettes</a> · <a href='/colors/'>every named color</a> · <a href='/learn/'>the research</a></div>"}}box.hidden=false;q.setAttribute("aria-expanded","true");sel=-1}
-      function log(){var raw=q.value.trim();if(!raw||raw===last)return;last=raw;var sq=scrub(raw);if(!sq)return;var z=exactMiss;if(window.plausible)window.plausible(z?"SearchNoResults":"Search",{props:z?{q:sq}:{q:sq,results:items.length}});if(window.clarity){window.clarity("event",z?"SearchNoResults":"Search");window.clarity("set",z?"search_noresult":"search_query",sq)}if(window.gtag)window.gtag("event",z?"SearchNoResults":"Search",{search_term:sq,results:items.length,fallback_shown:z&&items.length>0})}
+      function log(){var raw=q.value.trim();if(!raw||raw===last)return;last=raw;var sq=scrub(raw);if(!sq)return;var z=exactMiss;if(window.clarity){window.clarity("event",z?"SearchNoResults":"Search");window.clarity("set",z?"search_noresult":"search_query",sq)}if(window.gtag)window.gtag("event",z?"SearchNoResults":"Search",{search_term:sq,results:items.length,fallback_shown:z&&items.length>0})}
       q.addEventListener("focus",load);
       q.addEventListener("input",function(){clearTimeout(rt);rt=setTimeout(function(){load().then(function(){render(q.value)})},110);clearTimeout(lt);lt=setTimeout(log,900)});
       q.addEventListener("keydown",function(e){if(e.key==="Escape"){box.hidden=true;q.blur();return}if(e.key==="Enter"){clearTimeout(rt);render(q.value);clearTimeout(lt);log();var t=sel>=0&&items[sel]?items[sel]:items[0];if(t)location.href=t.s;return}if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();if(!items.length)return;sel=(sel+(e.key==="ArrowDown"?1:-1)+items.length)%items.length;for(var i=0;i<items.length;i++){var o=document.getElementById("cc-o"+i);if(o)o.setAttribute("aria-selected",i===sel?"true":"false")}q.setAttribute("aria-activedescendant",sel>=0?"cc-o"+sel:"")}});

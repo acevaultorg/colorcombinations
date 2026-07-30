@@ -15,7 +15,7 @@
  * directive 2026-05-21: Bookshop.org retired; Amazon is the sole storefront.
  */
 
-import { AMAZON, FURTHER_READING, bookCover } from "@/config/monetization";
+import { AMAZON, FURTHER_READING, bookCover } from"@/config/monetization";
 
 export interface Props {
   title?: string;
@@ -25,22 +25,22 @@ export interface Props {
   /** Offset into the book list — used to rotate picks on palette pages. */
   offset?: number;
   /** Layout variant. */
-  variant?: "full" | "compact" | "sidebar";
+  variant?:"full" |"compact" |"sidebar";
 }
 
 const {
-  title = "Further reading",
+  title ="Further reading",
   intro,
   limit,
   offset = 0,
-  variant = "full",
+  variant ="full",
 } = Astro.props;
 
 // Rotate + slice. Keeps the rendered set stable per-URL (no random) while
 // giving different palette pages different book picks for impression variety.
 const books = (() => {
   const rotated = [...FURTHER_READING.slice(offset), ...FURTHER_READING.slice(0, offset)];
-  return typeof limit === "number" ? rotated.slice(0, limit) : rotated;
+  return typeof limit ==="number" ? rotated.slice(0, limit) : rotated;
 })();
 
 // FTC + Amazon Associates disclosure is shown unconditionally on non-sidebar
@@ -53,7 +53,7 @@ const showDisclosure = true;
 // readers to the on-site comparison instead of losing them at the buy fork.
 // Internal link → /compare/wada-vol-1-vs-vol-2 (was an orphan page with zero
 // inbound links; this surface renders on every palette page + /about + /shop).
-const WADA_ASINS = new Set(["4861522471", "4861527724"]);
+const WADA_ASINS = new Set(["4861522471","4861527724"]);
 const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
 ---
 
@@ -66,7 +66,7 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
 
   <ul class="further-reading__list" role="list">
     {books.map((book) => {
-      const coverUrl = bookCover(book, variant === "sidebar" ? "M" : "L");
+      const coverUrl = bookCover(book, variant ==="sidebar" ?"M" :"L");
       const initials = book.title
         .split(/\s+/)
         .slice(0, 2)
@@ -78,7 +78,7 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
       // without an ASIN fall back to an internal anchor (#) so the layout
       // doesn't break, but the FURTHER_READING dataset should have an ASIN
       // for every entry — this branch is defensive only.
-      const amazonHref = book.amazonAsin ? AMAZON.link(book.amazonAsin) : "#";
+      const amazonHref = book.amazonAsin ? AMAZON.link(book.amazonAsin) :"#";
 
       return (
         <li class="further-reading__item">
@@ -86,7 +86,7 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
             href={amazonHref}
             rel="sponsored nofollow noopener"
             target="_blank"
-            class="further-reading__cover plausible-event-name=AmazonClick plausible-event-from=cover"
+            class="further-reading__cover"
             data-event="amazon_click"
             data-book={book.title}
             aria-label={`${book.title} on Amazon`}
@@ -118,17 +118,17 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
                 href={amazonHref}
                 rel="sponsored nofollow noopener"
                 target="_blank"
-                class="plausible-event-name=AmazonClick plausible-event-from=title"
+                class=""
                 data-event="amazon_click"
                 data-book={book.title}
               >
                 {book.title}
               </a>
             </h3>
-            {variant !== "sidebar" && (
+            {variant !=="sidebar" && (
               <p class="further-reading__note">{book.note}</p>
             )}
-            {variant !== "sidebar" && (
+            {variant !=="sidebar" && (
               <p class="further-reading__why">{book.why}</p>
             )}
             <div class="further-reading__links">
@@ -136,7 +136,7 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
                 href={amazonHref}
                 rel="sponsored nofollow noopener"
                 target="_blank"
-                class="btn btn-secondary further-reading__link plausible-event-name=AmazonClick plausible-event-from=button"
+                class="btn btn-secondary further-reading__link"
                 data-event="amazon_click"
                 data-book={book.title}
               >
@@ -151,16 +151,16 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
 
   {showWadaCompare && (
     <p class="further-reading__compare">
-      Torn between the two Wada dictionaries?{" "}
+      Torn between the two Wada dictionaries?{""}
       <a href="/compare/wada-vol-1-vs-vol-2">Vol 1 vs Vol 2, compared plate by plate →</a>
     </p>
   )}
 
   {showDisclosure && (
     <p class="further-reading__disclosure">
-      {variant === "sidebar"
-        ? "Affiliate links — as an Amazon Associate we earn from qualifying purchases."
-        : "Book links are Amazon Associates affiliate links. Your price is unchanged; a small commission supports the archive. As an Amazon Associate we earn from qualifying purchases."}
+      {variant ==="sidebar"
+        ?"Affiliate links — as an Amazon Associate we earn from qualifying purchases."
+        :"Book links are Amazon Associates affiliate links. Your price is unchanged; a small commission supports the archive. As an Amazon Associate we earn from qualifying purchases."}
     </p>
   )}
 </section>

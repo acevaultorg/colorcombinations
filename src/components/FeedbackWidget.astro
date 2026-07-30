@@ -3,7 +3,7 @@
 //
 // Why this and not thumbs: the site already captures content gaps from
 // active-seekers via the header search (SearchNoResults + scrubbed query →
-// Plausible/Clarity, see BaseLayout.astro). This widget captures the *other*
+// Clarity/GA4, see BaseLayout.astro). This widget captures the *other*
 // population — visitors who read a page and leave (the 39% who bounce) without
 // searching — by asking what combination they wanted that we don't have yet.
 // That feeds the editorial-palette roadmap (the 30 modern palettes are curated).
@@ -15,7 +15,7 @@
 //  - Static HTML at build time → zero CLS; the only JS fires on user submit
 //    (no render-block, no hydration). Inert + harmless without JS.
 //  - PII-stripped before any event fires (email + long-digit scrub, 80-char cap).
-//  - Reuses existing Plausible + Clarity wiring → zero new infrastructure.
+//  - Reuses existing Clarity + GA4 wiring → zero new infrastructure.
 //  - Editorial framing + tokens → on-brand for the museum-archive identity.
 ---
 <section class="cc-fb" aria-labelledby="cc-fb-h">
@@ -75,7 +75,7 @@
         e.preventDefault();
         var v = scrub(q.value);
         if (!v) { q.focus(); return; }
-        try { if (window.plausible) window.plausible("PaletteRequest", { props: { q: v } }); } catch (_) {}
+        try { if (window.clarity) { window.clarity("event", "PaletteRequest"); window.clarity("set", "palette_request", v); } if (window.gtag) window.gtag("event", "PaletteRequest", { search_term: v }); } catch (_) {}
         try { if (window.clarity) { window.clarity("event", "PaletteRequest"); window.clarity("set", "palette_request", v); } } catch (_) {}
         f.hidden = true;
         t.hidden = false;

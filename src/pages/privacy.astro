@@ -40,9 +40,13 @@ const jsonLd = {
         <p>We collect limited, anonymised data to understand how the site is used and to improve it:</p>
         <ul>
           <li>
-            <strong>Analytics:</strong> We use <a href="https://plausible.io" target="_blank" rel="noopener">Plausible Analytics</a>
-            — a privacy-first analytics tool that does not use cookies, does not collect personal data,
-            and does not track you across sites. No IP addresses are stored. Data is aggregated only.
+            <strong>Analytics:</strong> We use <a href="https://clarity.microsoft.com" target="_blank" rel="noopener">Microsoft Clarity</a>
+            (aggregate usage, heatmaps, and session replay of on-page interactions),
+            <a href="https://marketingplatform.google.com/about/analytics/" target="_blank" rel="noopener">Google Analytics 4</a>
+            (aggregate traffic reporting, with IP anonymisation enabled), and
+            <a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener">Cloudflare Web Analytics</a>
+            (cookieless page and performance metrics). Clarity and Google Analytics set cookies or
+            similar identifiers; Cloudflare Web Analytics does not. We never sell this data.
           </li>
           <li>
             <strong>Third-party advertising:</strong> We may display advertisements served by
@@ -61,7 +65,7 @@ const jsonLd = {
 
         <h2>Cookies</h2>
         <p>
-          Our own analytics (Plausible) are cookieless and do not require consent. Google AdSense,
+          Cloudflare Web Analytics is cookieless. Microsoft Clarity and Google Analytics 4 set cookies or similar identifiers to measure aggregate usage and record on-page interactions. Google AdSense,
           when active, may set cookies on your device to personalise advertising. You can opt out
           of personalised advertising at any time via
           <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a> or

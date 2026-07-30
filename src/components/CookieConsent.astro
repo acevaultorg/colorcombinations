@@ -1,6 +1,7 @@
 ---
 // Notice banner — shown once on first visit.
-// This site uses Plausible (cookieless analytics) and does not run display ads.
+// This site uses Microsoft Clarity + Google Analytics 4 (and cookieless Cloudflare
+// Web Analytics) and does not run display ads. Plausible was retired 2026-06-28.
 // Book links route via Amazon Associates; amazon.com sets its own cookies
 // *after* you click through. The banner exists to be transparent about that,
 // not to gate consent for anything we ourselves set.
@@ -10,8 +11,10 @@
 <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Site data notice" aria-live="polite" hidden>
   <div class="cookie-banner__inner">
     <p class="cookie-banner__text">
-      <strong>About data on this site.</strong> We use Plausible (cookieless
-      analytics) and run no display-ad networks. Book links route through the
+      <strong>About data on this site.</strong> We use Microsoft Clarity and
+      Google Analytics to measure aggregate usage and record on-page
+      interactions, alongside cookieless Cloudflare Web Analytics. We run no
+      display-ad networks. Book links route through the
       Amazon Associates affiliate program; amazon.com sets its own cookies
       once you visit it. As an Amazon Associate we earn from qualifying
       purchases. <a href="/privacy" class="cookie-banner__link">Privacy policy</a>
@@ -41,9 +44,6 @@
     localStorage.setItem(STORAGE_KEY, 'acknowledged');
     var banner = document.getElementById('cookie-banner');
     if (banner) banner.hidden = true;
-    if (window.plausible) {
-      window.plausible('site_notice_acknowledged');
-    }
   }
 
   document.addEventListener('DOMContentLoaded', function () {

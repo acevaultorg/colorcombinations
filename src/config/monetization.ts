@@ -124,22 +124,6 @@ export const PRINTS = {
   },
 } as const;
 
-// ============================================================================
-// ANALYTICS — Plausible (privacy-first, no cookie banner needed)
-// ============================================================================
-
-/**
- * Plausible — privacy-first, GDPR-compliant, no cookies.
- * $9/mo for 10k pageviews. When paused, script tag is omitted entirely.
- * https://plausible.io/colorcombinations.org
- */
-export const ANALYTICS = {
-  plausibleDomain: "colorcombinations.org",
-
-  get isLive(): boolean {
-    return !this.plausibleDomain.startsWith("PLACEHOLDER");
-  },
-} as const;
 
 // ============================================================================
 // CARBON ADS — traffic-gated V1.5 rail, not active at launch

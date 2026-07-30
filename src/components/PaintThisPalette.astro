@@ -16,14 +16,14 @@
  *  - no product images (image use requires the Product Advertising API)
  *  - rel="sponsored nofollow noopener" on every outbound link
  *  - disclosure adjacent to the links, in every variant
- *  - no scarcity language, no "click to support us"
+ *  - no scarcity language, no"click to support us"
  *
  * Measurement: clicks carry data-event="amazon_click" + data-tool, so supply
  * clicks are separable from book clicks (data-book) in Clarity/GA4 — the
  * whole point is to find out which shelf the audience actually wants.
  */
 
-import { AMAZON, ART_SUPPLIES, type ArtSupply } from "@/config/monetization";
+import { AMAZON, ART_SUPPLIES, type ArtSupply } from"@/config/monetization";
 
 export interface Props {
   title?: string;
@@ -33,15 +33,15 @@ export interface Props {
   /** Rotate the starting item so different palette pages lead with different tools. */
   offset?: number;
   /** Layout variant. */
-  variant?: "full" | "sidebar";
+  variant?:"full" |"sidebar";
 }
 
 const {
-  title = "Paint this palette",
+  title ="Paint this palette",
   intro,
   limit,
   offset = 0,
-  variant = "full",
+  variant ="full",
 } = Astro.props;
 
 // Deterministic rotation — stable per URL (no randomness, so the HTML is
@@ -51,7 +51,7 @@ const items: ArtSupply[] = (() => {
   const n = ART_SUPPLIES.length;
   const start = ((offset % n) + n) % n;
   const rotated = [...ART_SUPPLIES.slice(start), ...ART_SUPPLIES.slice(0, start)];
-  return typeof limit === "number" ? rotated.slice(0, limit) : rotated;
+  return typeof limit ==="number" ? rotated.slice(0, limit) : rotated;
 })();
 ---
 
@@ -71,7 +71,7 @@ const items: ArtSupply[] = (() => {
             href={AMAZON.link(item.amazonAsin)}
             rel="sponsored nofollow noopener"
             target="_blank"
-            class="plausible-event-name=AmazonClick plausible-event-from=supply-title"
+            class=""
             data-event="amazon_click"
             data-tool={item.name}
             aria-label={`${item.name} by ${item.brand} on Amazon`}
@@ -80,12 +80,12 @@ const items: ArtSupply[] = (() => {
           </a>
         </h3>
         <p class="paint-kit__why">{item.why}</p>
-        {variant === "full" && (
+        {variant ==="full" && (
           <a
             href={AMAZON.link(item.amazonAsin)}
             rel="sponsored nofollow noopener"
             target="_blank"
-            class="btn btn-secondary paint-kit__link plausible-event-name=AmazonClick plausible-event-from=supply-button"
+            class="btn btn-secondary paint-kit__link"
             data-event="amazon_click"
             data-tool={item.name}
           >
