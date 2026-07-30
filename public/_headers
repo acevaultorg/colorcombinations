@@ -18,7 +18,18 @@
   # script-src  = where a <script src> may load FROM (gtag loader, CF beacon)
   # connect-src = where JS may SEND to (the /g/collect beacon; GA4 also uses region1.* endpoints)
   # If you add an analytics/ads vendor later, add it to BOTH or it will fail the same silent way.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://scripts.clarity.ms https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.clarity.ms https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://static.cloudflareinsights.com https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://forms.example.com
+  #
+  # 2026-07-30 — that warning came true. public/amazon-track.js has called
+  # navigator.sendBeacon('https://fleet.promptprio.com/c?s=colorcombinations.org') since
+  # 2026-07-19 (commit e289b06), but fleet.promptprio.com was never added here. sendBeacon
+  # is governed by connect-src, so the browser silently refused EVERY Amazon-click beacon.
+  # Cost: Amazon's own Tracking-ID report shows 238 clicks for colorcombinations-20 over
+  # Jun 30–Jul 29, while the fleet metrics layer recorded 1 — so the dashboard rated this
+  # site 0.1% click-rate (near-worst) when Amazon-side it is 238/1,646 = 14.5%, the BEST
+  # converter in the fleet (readinglist is 3.1%). A measurement bug, not a conversion
+  # problem, and it was actively misdirecting where work went. sendBeacon needs only
+  # connect-src (nothing is loaded FROM there), so script-src is deliberately unchanged.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://scripts.clarity.ms https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.clarity.ms https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://static.cloudflareinsights.com https://cloudflareinsights.com https://fleet.promptprio.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://forms.example.com
 
 # Embed widgets — deliberately iframe-embeddable on any origin.
 # Overrides the global X-Frame-Options: DENY + frame-ancestors 'none'
