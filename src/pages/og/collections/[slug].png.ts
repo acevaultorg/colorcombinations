@@ -11,7 +11,7 @@
  */
 
 import type { APIRoute } from "astro";
-import { svgToPngResponse } from "@/lib/og-png";
+import { svgToPngResponse, fitText } from "@/lib/og-png";
 import {
   collections,
   collectionBySlug,
@@ -71,9 +71,7 @@ export const GET: APIRoute = ({ params }) => {
 
   // Title clamp — SVG doesn't wrap
   const title =
-    collection.title.length > 32
-      ? collection.title.slice(0, 30) + "…"
-      : collection.title;
+    fitText(collection.title, 68, W - MARGIN_X * 2);
   const tagline =
     collection.tagline.length > 100
       ? collection.tagline.slice(0, 98) + "…"

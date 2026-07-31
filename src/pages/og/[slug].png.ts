@@ -13,7 +13,7 @@
  */
 
 import type { APIRoute } from "astro";
-import { svgToPngResponse } from "@/lib/og-png";
+import { svgToPngResponse, fitText } from "@/lib/og-png";
 import { allPalettes, paletteBySlug } from "@/data/palettes";
 
 export function getStaticPaths() {
@@ -63,10 +63,8 @@ export const GET: APIRoute = ({ params }) => {
 
   // Title clamp — SVG doesn't do text-wrap, so we manually clamp
   const title =
-    palette.title.length > 38
-      ? palette.title.slice(0, 36) + "…"
-      : palette.title;
-  const subtitle = palette.titleJa ?? palette.summary.slice(0, 70);
+    fitText(palette.title, 72, W - MARGIN_X * 2);
+  const subtitle = fitText(palette.titleJa ?? palette.summary, 26, W - MARGIN_X * 2);
 
   // Build swatches with labels on dark/light automatic contrast
   const swatchBlocks = palette.colors
