@@ -20,3 +20,5 @@ bundle-source/*.zip
 # Editor
 .vscode/
 .idea/
+# Local wrangler cache — never committed.
+.wrangler/
