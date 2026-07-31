@@ -112,14 +112,14 @@ export const GET: APIRoute = ({ params }) => {
       <rect x="0" y="-14" width="14" height="14" fill="#9A2A2A"/>
       <rect x="16" y="-14" width="14" height="14" fill="#1B2A4E"/>
       <rect x="32" y="-14" width="14" height="14" fill="#F4EEE0" stroke="#d9d6ce" stroke-width="0.5"/>
-      <text x="58" y="0" font-family="EB Garamond, Garamond, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
+      <text x="58" y="0" font-family="EB Garamond, Garamond, Georgia, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
     </g>`;
 
   // Title block
   const titleBlock = `
     <text x="${MARGIN_X}" y="135" font-family="Inter, sans-serif" font-size="14" fill="${meta.accentHex}" letter-spacing="0.14em">${esc(hue.toUpperCase())} HUE FAMILY</text>
-    <text x="${MARGIN_X}" y="220" font-family="EB Garamond, Garamond, serif" font-size="68" font-weight="500" fill="#141414">${esc(meta.headline)}</text>
-    <text x="${MARGIN_X}" y="270" font-family="EB Garamond, Garamond, serif" font-size="22" font-style="italic" fill="#6b6b6b">${esc(meta.lede)}</text>`;
+    <text x="${MARGIN_X}" y="220" font-family="EB Garamond, Garamond, Georgia, serif" font-size="68" font-weight="500" fill="#141414">${esc(meta.headline)}</text>
+    <text x="${MARGIN_X}" y="270" font-family="EB Garamond, Garamond, Georgia, serif" font-size="22" font-style="italic" fill="#6b6b6b">${esc(meta.lede)}</text>`;
 
   const dividerY = 320;
 
@@ -138,7 +138,7 @@ export const GET: APIRoute = ({ params }) => {
       const clipped = labelName.length > 12 ? labelName.slice(0, 11) + "…" : labelName;
       return `
     <rect x="${x}" y="${tileY}" width="${tileW}" height="${tileH}" fill="${c.hex}"/>
-    <text x="${x + 12}" y="${tileY + tileH - 30}" font-family="EB Garamond, Garamond, serif" font-size="13" font-style="italic" fill="${tone}" opacity="0.9">${esc(clipped)}</text>
+    <text x="${x + 12}" y="${tileY + tileH - 30}" font-family="EB Garamond, Garamond, Georgia, serif" font-size="13" font-style="italic" fill="${tone}" opacity="0.9">${esc(clipped)}</text>
     <text x="${x + 12}" y="${tileY + tileH - 12}" font-family="JetBrains Mono, Menlo, monospace" font-size="10" fill="${tone}" opacity="0.78">${c.hex.toUpperCase()}</text>`;
     })
     .join("");

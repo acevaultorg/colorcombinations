@@ -96,7 +96,7 @@ export const GET: APIRoute = ({ params }) => {
       <rect x="0" y="-14" width="14" height="14" fill="#9A2A2A" />
       <rect x="16" y="-14" width="14" height="14" fill="#1B2A4E" />
       <rect x="32" y="-14" width="14" height="14" fill="#F4EEE0" stroke="#d9d6ce" stroke-width="0.5" />
-      <text x="58" y="0" font-family="EB Garamond, Garamond, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
+      <text x="58" y="0" font-family="EB Garamond, Garamond, Georgia, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
     </g>`;
 
   // Right column — name + Japanese + meaning + hex/RGB + contrast + count
@@ -109,9 +109,9 @@ export const GET: APIRoute = ({ params }) => {
 
   const right = `
     <text x="${rightX}" y="${eyebrowY}" font-family="Inter, sans-serif" font-size="14" fill="#9A2A2A" letter-spacing="0.14em">COLOR</text>
-    <text x="${rightX}" y="${nameY}" font-family="EB Garamond, Garamond, serif" font-size="68" font-weight="500" fill="#141414">${esc(name)}</text>
-    ${color.nameJa ? `<text x="${rightX}" y="${nameJaY}" font-family="EB Garamond, Garamond, serif" font-size="32" font-style="italic" fill="#6b6b6b">${esc(color.nameJa)}</text>` : ""}
-    ${meaning ? `<text x="${rightX}" y="${meaningY}" font-family="EB Garamond, Garamond, serif" font-size="24" font-style="italic" fill="#6b6b6b">${esc(meaning)}</text>` : ""}
+    <text x="${rightX}" y="${nameY}" font-family="EB Garamond, Garamond, Georgia, serif" font-size="68" font-weight="500" fill="#141414">${esc(name)}</text>
+    ${color.nameJa ? `<text x="${rightX}" y="${nameJaY}" font-family="EB Garamond, Garamond, Georgia, serif" font-size="32" font-style="italic" fill="#6b6b6b">${esc(color.nameJa)}</text>` : ""}
+    ${meaning ? `<text x="${rightX}" y="${meaningY}" font-family="EB Garamond, Garamond, Georgia, serif" font-size="24" font-style="italic" fill="#6b6b6b">${esc(meaning)}</text>` : ""}
     <line x1="${rightX}" y1="${dividerY}" x2="${W - 80}" y2="${dividerY}" stroke="#d9d6ce" stroke-width="1" />
     <text x="${rightX}" y="${dividerY + 50}" font-family="JetBrains Mono, Menlo, monospace" font-size="22" fill="#141414">${color.hex.toUpperCase()}</text>
     <text x="${rightX}" y="${dividerY + 80}" font-family="JetBrains Mono, Menlo, monospace" font-size="14" fill="#6b6b6b">RGB ${rgb.r}, ${rgb.g}, ${rgb.b}</text>

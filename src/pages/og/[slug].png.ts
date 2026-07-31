@@ -77,7 +77,7 @@ export const GET: APIRoute = ({ params }) => {
       const hexText = c.hex.toUpperCase();
       return `
     <rect x="${x}" y="${SWATCH_Y}" width="${swatchW}" height="${SWATCH_H}" fill="${c.hex}" />
-    <text x="${x + 28}" y="${SWATCH_Y + 50}" font-family="EB Garamond, Garamond, serif" font-size="24" font-style="italic" fill="${text}" opacity="0.92">${esc(labelText)}</text>
+    <text x="${x + 28}" y="${SWATCH_Y + 50}" font-family="EB Garamond, Garamond, Georgia, serif" font-size="24" font-style="italic" fill="${text}" opacity="0.92">${esc(labelText)}</text>
     <text x="${x + 28}" y="${SWATCH_Y + 78}" font-family="JetBrains Mono, Menlo, monospace" font-size="14" fill="${text}" opacity="0.75">${hexText}</text>`;
     })
     .join("");
@@ -88,15 +88,15 @@ export const GET: APIRoute = ({ params }) => {
       <rect x="0" y="-14" width="14" height="14" fill="#9A2A2A" />
       <rect x="16" y="-14" width="14" height="14" fill="#1B2A4E" />
       <rect x="32" y="-14" width="14" height="14" fill="#F4EEE0" stroke="#d9d6ce" stroke-width="0.5" />
-      <text x="58" y="0" font-family="EB Garamond, Garamond, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
+      <text x="58" y="0" font-family="EB Garamond, Garamond, Georgia, serif" font-size="18" fill="#141414">The Dictionary of Color Combinations</text>
     </g>`;
 
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
   <rect width="${W}" height="${H}" fill="#FAF7EF" />
   ${siteMark}
-  <text x="${MARGIN_X}" y="${HEAD_Y}" font-family="EB Garamond, Garamond, serif" font-size="72" font-weight="500" fill="#141414">${esc(title)}</text>
-  <text x="${MARGIN_X}" y="${LEDE_Y}" font-family="EB Garamond, Garamond, serif" font-size="26" font-style="italic" fill="#6b6b6b">${esc(subtitle)}</text>
+  <text x="${MARGIN_X}" y="${HEAD_Y}" font-family="EB Garamond, Garamond, Georgia, serif" font-size="72" font-weight="500" fill="#141414">${esc(title)}</text>
+  <text x="${MARGIN_X}" y="${LEDE_Y}" font-family="EB Garamond, Garamond, Georgia, serif" font-size="26" font-style="italic" fill="#6b6b6b">${esc(subtitle)}</text>
   <line x1="${MARGIN_X}" y1="${SWATCH_Y - 20}" x2="${W - MARGIN_X}" y2="${SWATCH_Y - 20}" stroke="#d9d6ce" stroke-width="1" />
   ${swatchBlocks}
   <text x="${W - MARGIN_X}" y="${SWATCH_Y - 32}" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#8a8a8a" letter-spacing="0.08em" text-transform="uppercase">colorcombinations.org</text>
