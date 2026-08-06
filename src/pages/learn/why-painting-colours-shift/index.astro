@@ -1,0 +1,235 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
+import { paintingBySlug } from "@data/paintings";
+
+const sunflowers = paintingBySlug("sunflowers");
+const jatte = paintingBySlug("a-sunday-on-la-grande-jatte");
+const scream = paintingBySlug("the-scream");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "The Yellow Problem: Why the Colours in Famous Paintings Are Not the Colours the Artists Mixed",
+  description:
+    "Three of the most famous yellows in art history are chemically unstable, each failing differently. What that means for anyone sampling a colour palette from a painting.",
+  author: { "@type": "Organization", name: "colorcombinations.org" },
+  mainEntityOfPage: new URL("/learn/why-painting-colours-shift/", Astro.site).href,
+};
+
+const faq = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Do the colours in famous paintings change over time?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes, and it is measurable. Conservation science has documented chrome yellow browning in van Gogh's Sunflowers, zinc yellow darkening to ochre in Seurat's La Grande Jatte, and cadmium yellow turning off-white in Munch's The Scream. A palette sampled from a painting today is the surface as it now stands, not the colours the artist mixed.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Why did nineteenth-century yellows fail so often?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "The bright yellows that became available to painters in the nineteenth century were new industrial chemistry — chromates and sulfides adopted for their intensity before their long-term stability was understood. Chrome yellow, zinc yellow and cadmium yellow each degrade by a different mechanism, and all three were widely used at exactly the moment modern painting became most interested in colour.",
+      },
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="The Yellow Problem — Why Painting Colours Are Not What the Artist Mixed"
+  description="Chrome yellow browns. Zinc yellow darkens to ochre. Cadmium yellow turns off-white. Three famous paintings, three different chemical failures, and what it means for sampling colour palettes from art."
+  type="article"
+  jsonLd={[jsonLd, faq]}
+  keywords={[
+    "do painting colors fade",
+    "chrome yellow van gogh degradation",
+    "zinc yellow seurat",
+    "why do paintings change color",
+    "historical pigment stability",
+  ]}
+>
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">Home</a> <span aria-hidden="true">/</span>
+    <a href="/learn/">Learn</a> <span aria-hidden="true">/</span>
+    <span aria-current="page">The yellow problem</span>
+  </nav>
+
+  <article class="prose">
+    <h1 class="text-balance">The yellow problem</h1>
+    <p class="lede">
+      Three of the most-reproduced paintings in the world share a defect nobody planned. Their yellows
+      are chemically unstable — and each one is failing in a different way. Which means every colour
+      palette sampled from a famous painting, including the ones on this site, is a reading of a
+      surface that has moved.
+    </p>
+
+    <h2>The short answer</h2>
+    <!-- Direct answer, snippet-shaped. -->
+    <p>
+      Paintings do change colour measurably, and conservation science can now say by how much. In van
+      Gogh's <cite>Sunflowers</cite> chrome yellow is browning; in Seurat's <cite>La Grande Jatte</cite>
+      zinc yellow has darkened toward ochre; in Munch's <cite>The Scream</cite> cadmium yellow is
+      turning off-white. Same colour, three different chemical failures.
+    </p>
+
+    <h2>Chrome yellow: van Gogh, and a reduction you cannot yet see</h2>
+    <p>
+      Van Gogh built <cite>Sunflowers</cite> out of chrome yellow — lead chromate — including a
+      sulfur-rich lemon variety that turns out to be the unstable one. Synchrotron analysis of the
+      Van Gogh Museum canvas found the pigment undergoing photo-induced reduction, with roughly 35% of
+      the chromium at the paint surface converted from Cr(VI) to Cr(III). That is the chemistry that
+      takes a pale lemon toward olive brown.
+    </p>
+    <p>
+      The unsettling detail is the timescale. Researchers note the change is not yet obvious to the
+      naked eye. The painting is browning on a schedule slower than human attention, which means the
+      version reproduced in every book is already slightly wrong and nobody can see it happening.
+    </p>
+    {sunflowers && (
+      <p class="inline-swatches">
+        <a href="/paintings/sunflowers/">
+          {sunflowers.colors.map((c) => <span style={`background:${c.hex}`}></span>)}
+          <span class="inline-swatches__label">Today's <cite>Sunflowers</cite> palette →</span>
+        </a>
+      </p>
+    )}
+
+    <h2>Zinc yellow: Seurat, and a painting that changed while he was alive</h2>
+    <p>
+      Seurat finished <cite>A Sunday on La Grande Jatte</cite> in 1886. Darkening of specific
+      brushstrokes was recorded in <strong>1892</strong> — six years later, and a year after his own
+      death at 31. He had used zinc yellow, zinc potassium chromate, in the bright
+      yellow-green passages. It moves toward a dull ochre as Cr(VI) reduces to Cr(III), most
+      aggressively under strong light, high humidity and sulfur dioxide, which describes an
+      industrial city with reasonable precision.
+    </p>
+    <p>
+      There is a particular irony here. Seurat's entire method was built on optical precision — small
+      separate touches of colour intended to combine in the viewer's eye rather than on the palette.
+      The one variable he could not control was whether the pigments would still be the colours he
+      chose. The Art Institute of Chicago and the Rochester Institute of Technology have since
+      produced digital reconstructions of the original.
+    </p>
+    {jatte && (
+      <p class="inline-swatches">
+        <a href="/paintings/a-sunday-on-la-grande-jatte/">
+          {jatte.colors.map((c) => <span style={`background:${c.hex}`}></span>)}
+          <span class="inline-swatches__label">Today's <cite>La Grande Jatte</cite> palette →</span>
+        </a>
+      </p>
+    )}
+
+    <h2>Cadmium yellow: Munch, and the one that is not about light</h2>
+    <p>
+      Everyone assumes light is what damages paintings. In the c. 1910 version of <cite>The Scream</cite>
+      it mostly is not. Yellow strokes in the sky and the figure's neck have turned off-white, and
+      thickly-painted water is flaking. Synchrotron study found the driver is <strong>moisture</strong>,
+      combined with mobile chlorine compounds, oxidising cadmium sulfide into cadmium sulfate.
+      Photodegradation plays the smaller role. The museum's resulting guidance is about humidity —
+      keep the work below 45% relative humidity — not about lux levels.
+    </p>
+    {scream && (
+      <p class="inline-swatches">
+        <a href="/paintings/the-scream/">
+          {scream.colors.map((c) => <span style={`background:${c.hex}`}></span>)}
+          <span class="inline-swatches__label">Today's <cite>The Scream</cite> palette →</span>
+        </a>
+      </p>
+    )}
+
+    <h2>Why all three are yellow</h2>
+    <p>
+      This is not coincidence. The brilliant yellows that arrived in the nineteenth century were new
+      industrial chemistry — chromates and sulfides — and painters adopted them for their intensity
+      long before anyone understood how they would age. Chrome, zinc and cadmium yellow all reached
+      the studio during precisely the decades when European painting became most preoccupied with
+      colour itself.
+    </p>
+    <p>
+      The generation that cared most about colour got the least stable pigments in the history of
+      the medium. Van Gogh, Seurat and Munch were not careless; they were early adopters, and the
+      bill arrived a century later.
+    </p>
+
+    <h2>The counter-example: what stability actually looks like</h2>
+    <p>
+      Set against this, Vermeer's blues are almost unchanged. Natural ultramarine — lazurite ground
+      from lapis lazuli mined in what is now Afghanistan — was more valuable than gold by weight in
+      the seventeenth century, and it is chemically stable. Analysis for the Girl in the Spotlight
+      project found a high-quality grade in the headscarf of
+      <a href="/paintings/girl-with-a-pearl-earring/"><cite>Girl with a Pearl Earring</cite></a>, and
+      suggested the stone had been heat-treated before grinding to yield a more intense blue.
+    </p>
+    <p>
+      So the blue you see is close to the blue Vermeer laid down, and the yellow you see in
+      <cite>Sunflowers</cite> is not. Cost and permanence turn out to be correlated in a way that is
+      slightly depressing: the pigment that bankrupted painters is the one still telling the truth.
+    </p>
+
+    <h2>What this means if you are sampling a palette</h2>
+    <ul>
+      <li>
+        A palette taken from a painting is a reading of <strong>today's surface</strong>. It is a real
+        measurement of a real object, but not a record of the artist's intent.
+      </li>
+      <li>
+        Expect yellows and greens in nineteenth-century work to be duller and browner than originally
+        painted. Blues, earths and blacks are generally more trustworthy.
+      </li>
+      <li>
+        Varnish and photography add their own bias on top. Different reproductions of the same
+        painting genuinely disagree.
+      </li>
+      <li>
+        None of which makes the palettes less useful — it makes them <em>historical</em>. Design with
+        them knowingly.
+      </li>
+    </ul>
+
+    <p class="cta-line">
+      <a href="/paintings/">See all 25 painting palettes →</a> ·
+      <a href="/paintings/methodology/">How they were sampled</a>
+    </p>
+
+    <h2>Sources</h2>
+    <ul class="sources">
+      <li><a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.201505840" rel="noopener" target="_blank">Monico et al., “Evidence for Degradation of the Chrome Yellows in Van Gogh's Sunflowers”, <em>Angewandte Chemie Int. Ed.</em> (2015)</a></li>
+      <li><a href="https://www.esrf.fr/home/UsersAndScience/Publications/Highlights/highlights-2015/x-ray-nanoprobe/xnp08.html" rel="noopener" target="_blank">ESRF — Van Gogh's Sunflowers: evidence of chrome yellow degradation</a></li>
+      <li><a href="https://link.springer.com/article/10.1007/s00216-010-4264-9" rel="noopener" target="_blank">Electron energy loss spectroscopy and the darkening of zinc potassium chromate in <em>La Grande Jatte</em> — <em>Anal. Bioanal. Chem.</em></a></li>
+      <li><a href="https://www.science.org/doi/10.1126/sciadv.aay3514" rel="noopener" target="_blank">“Probing the chemistry of CdS paints in <em>The Scream</em>” — <em>Science Advances</em></a></li>
+      <li><a href="https://www.munch.no/en/about/conservation/researchers-have-found-out-why-the-scream-is-fading/" rel="noopener" target="_blank">Munchmuseet — why <em>The Scream</em> is fading</a></li>
+      <li><a href="https://www.nature.com/articles/s40494-020-00364-5" rel="noopener" target="_blank">“Out of the blue: Vermeer's use of ultramarine in <em>Girl with a Pearl Earring</em>” — <em>npj Heritage Science</em></a></li>
+    </ul>
+
+    <PaintThisPalette
+      title="Mixing these yourself"
+      intro="Modern cadmium-hue and chrome-hue replacements are stable — they are formulated to be the colours these paintings used to be."
+      limit={4}
+    />
+  </article>
+</BaseLayout>
+
+<style>
+  .crumbs { font-size: .8rem; opacity: .7; margin-bottom: 1.5rem; display: flex; gap: .4rem; flex-wrap: wrap; }
+  .crumbs a { color: inherit; }
+  .prose { max-width: 68ch; }
+  .prose .lede { font-size: 1.15rem; line-height: 1.7; }
+  .prose h2 { margin-top: 2.4rem; margin-bottom: .6rem; }
+  .prose p, .prose li { line-height: 1.75; }
+  .prose ul { margin: 1rem 0 1rem 1.2rem; }
+  .prose li { margin-bottom: .5rem; }
+
+  .inline-swatches { margin: 1.25rem 0; }
+  .inline-swatches a { display: block; text-decoration: none; color: inherit; }
+  .inline-swatches a span:not(.inline-swatches__label) { display: inline-block; width: 14.6%; height: 34px; vertical-align: top; }
+  .inline-swatches__label { display: block; font-size: .82rem; opacity: .75; margin-top: .35rem; }
+
+  .cta-line { margin: 2rem 0; font-size: .95rem; }
+  .sources li { font-size: .85rem; margin-bottom: .5rem; line-height: 1.55; }
+</style>

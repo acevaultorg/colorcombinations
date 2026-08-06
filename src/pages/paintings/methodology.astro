@@ -1,0 +1,124 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { allPaintings } from "@data/paintings";
+
+const paintings = allPaintings();
+const withPigments = paintings.filter((p) => p.pigments.length > 0).length;
+const withShift = paintings.filter((p) => p.shift).length;
+---
+
+<BaseLayout
+  title="How These Painting Palettes Were Sampled — Method and Limits"
+  description="The full method behind the painting palettes: CIELAB clustering, nearest-real-pixel snapping, how ground and accent colours are chosen, image licensing, and what these numbers cannot tell you."
+  keywords={["color extraction methodology", "painting palette extraction", "CIELAB k-means color"]}
+>
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">Home</a> <span aria-hidden="true">/</span>
+    <a href="/paintings/">Painting palettes</a> <span aria-hidden="true">/</span>
+    <span aria-current="page">Methodology</span>
+  </nav>
+
+  <article class="prose">
+    <h1 class="text-balance">How these palettes were sampled</h1>
+    <p class="lede">
+      Every hex code on this site's painting pages was measured from the artwork rather than picked
+      by eye. This page documents exactly how, and — more usefully — what the numbers cannot tell you.
+    </p>
+
+    <h2>The source images</h2>
+    <p>
+      Images come from Wikimedia Commons. A painting is only included when its licence resolves to
+      public domain <em>and</em> the artist is independently confirmed in the file's own metadata, not
+      merely in a filename someone typed. Both checks are automated and a failure drops the entry from
+      the build. Three candidates were dropped on the first run for exactly this reason, and works
+      still in copyright — Hopper's <cite>Nighthawks</cite>, Wood's <cite>American Gothic</cite> —
+      are excluded outright rather than reproduced under a guess.
+    </p>
+
+    <h2>Extraction</h2>
+    <ol>
+      <li>The image is sampled at 700px on its long edge.</li>
+      <li>
+        Pixels are converted from sRGB into <strong>CIELAB</strong>, so that distance between two
+        colours corresponds roughly to how different they look, rather than how different their RGB
+        numbers happen to be.
+      </li>
+      <li>k-means clustering (k=26, fixed seed, so the build is reproducible).</li>
+      <li>Clusters closer together than ΔE 5 are merged, so no two published swatches are colours a
+        person would call the same colour.</li>
+      <li>
+        Each surviving cluster centroid is <strong>snapped to the nearest real pixel</strong> in the
+        painting.
+      </li>
+    </ol>
+    <p>
+      That last step is the one that matters most for honesty. A cluster centroid is an average, and
+      the average of two pigments can easily be a colour the painter never mixed and that appears
+      nowhere on the canvas. Snapping to a real pixel means every hex code published here is a colour
+      that genuinely occurs in the work.
+    </p>
+
+    <h2>Which six colours get published</h2>
+    <p>
+      Publishing simply the six largest clusters produces technically defensible palettes that are
+      wrong about the paintings. Sampled that way, <cite>The Starry Night</cite> returns six blues and
+      no yellow at all — accurate to the surface, useless as a description of the picture. Monet's
+      <cite>Impression, Sunrise</cite> loses its sun entirely.
+    </p>
+    <p>So selection is split:</p>
+    <ul>
+      <li><strong>Three grounds</strong> — the largest clusters by area. What the painting is made of.</li>
+      <li>
+        <strong>Three accents</strong> — ranked by intensity far more heavily than by area, so a
+        cluster covering two percent of a canvas can still be published. What the painting is
+        recognised by.
+      </li>
+    </ul>
+    <p>
+      Accents are also picked with a hue-diversity penalty, so a painting built from a single hue
+      family cannot spend every accent slot on near-identical swatches. That is what surfaces the blue
+      headscarf in <cite>Girl with a Pearl Earring</cite>, which the warm golds around it would
+      otherwise crowd out entirely.
+    </p>
+
+    <h2>What this cannot tell you</h2>
+    <p>
+      <strong>These are not the artist's colours.</strong> They are today's surface, photographed,
+      and photographs of paintings vary considerably between sources in white balance and exposure.
+      Varnish yellows. Pigments change. {withShift} of the {paintings.length} paintings here carry
+      published conservation research showing measurable colour change since completion, and
+      {withPigments} list the pigments identified in them.
+    </p>
+    <p>
+      Where no such research exists, this site says nothing about pigments rather than guessing —
+      an absent claim means absent evidence, not a stable painting.
+    </p>
+    <p>
+      For works involving metal leaf, such as Klimt's <cite>The Kiss</cite>, a hex code is a
+      particularly rough instrument: gold changes with viewing angle and light in a way no flat
+      colour value can hold.
+    </p>
+
+    <h2>Reproducing this</h2>
+    <p>
+      The pipeline lives in the site repository as <code>scripts/build-dataset.py</code>,
+      <code>scripts/choose_palette.py</code> and <code>scripts/gen-paintings.mjs</code>. It is
+      deterministic — same inputs, same hex codes.
+    </p>
+
+    <p class="back"><a href="/paintings/">← Back to the painting palettes</a></p>
+  </article>
+</BaseLayout>
+
+<style>
+  .crumbs { font-size: .8rem; opacity: .7; margin-bottom: 1.5rem; display: flex; gap: .4rem; flex-wrap: wrap; }
+  .crumbs a { color: inherit; }
+  .prose { max-width: 68ch; }
+  .prose .lede { font-size: 1.12rem; line-height: 1.7; }
+  .prose h2 { margin-top: 2.25rem; margin-bottom: .6rem; }
+  .prose p, .prose li { line-height: 1.75; }
+  .prose ol, .prose ul { margin: 1rem 0 1rem 1.2rem; }
+  .prose li { margin-bottom: .45rem; }
+  .prose code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; }
+  .back { margin-top: 2.5rem; }
+</style>

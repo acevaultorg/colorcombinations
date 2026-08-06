@@ -1,0 +1,136 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { allPaintings } from "@data/paintings";
+import { sharePct } from "@/lib/painting";
+import sizes from "@data/painting-image-sizes.json";
+
+const paintings = allPaintings();
+const dims = sizes as Record<string, { w: number; h: number }>;
+const withResearch = paintings.filter((p) => p.sources.length > 0).length;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Colour palettes from famous paintings",
+  numberOfItems: paintings.length,
+  itemListElement: paintings.map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: `${p.title} — ${p.artist}`,
+    url: new URL(`/paintings/${p.slug}/`, Astro.site).href,
+  })),
+};
+---
+
+<BaseLayout
+  title="Colour Palettes from Famous Paintings — Hex Codes, Sampled from the Canvas"
+  description="Palettes sampled from 25 public-domain paintings, with hex codes, WCAG contrast, CSS and Tailwind export — and the pigments the artists actually used, including which colours have since changed."
+  jsonLd={jsonLd}
+  keywords={[
+    "color palette from famous paintings",
+    "painting color palettes hex codes",
+    "famous painting colors",
+    "van gogh color palette",
+    "art color palette generator",
+  ]}
+>
+  <header class="hero">
+    <p class="eyebrow">Painting palettes</p>
+    <h1 class="text-balance">Colour palettes from famous paintings</h1>
+    <!-- Direct answer, snippet-shaped, ≤45 words. -->
+    <p class="hero__lede text-balance">
+      {paintings.length} palettes sampled directly from the canvas of public-domain paintings — each
+      with hex codes, WCAG contrast pairs, and CSS or Tailwind export. Every swatch is a colour that
+      genuinely occurs in the work, never an average of two that appears nowhere in it.
+    </p>
+  </header>
+
+  <section class="claim">
+    <h2>What makes these different</h2>
+    <div class="claim__grid">
+      <div>
+        <h3>Sampled, not eyeballed</h3>
+        <p>
+          Colours are clustered in CIELAB — perceptual space, not RGB — then snapped to the nearest
+          real pixel in the painting. <a href="/paintings/methodology/">Read the method</a>.
+        </p>
+      </div>
+      <div>
+        <h3>Weighted for what you actually see</h3>
+        <p>
+          Sampling by surface area alone loses the point of a painting: van Gogh's chrome yellow is a
+          rounding error by coverage. Three swatches record the largest areas; three are chosen for
+          intensity.
+        </p>
+      </div>
+      <div>
+        <h3>And honest about drift</h3>
+        <p>
+          {withResearch} of these carry published conservation research on the pigments used — and on
+          which colours have measurably changed since. <a href="/learn/why-painting-colours-shift/">The
+          yellow problem</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <ul class="grid" role="list">
+    {paintings.map((p) => (
+      <li class="card">
+        <a href={`/paintings/${p.slug}/`}>
+          <img
+            src={`/paintings/${p.slug}.jpg`}
+            alt={`${p.title} by ${p.artist}`}
+            width={dims[p.slug]?.w ?? 900}
+            height={dims[p.slug]?.h ?? 700}
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="card__chips" aria-hidden="true">
+            {p.colors.map((c) => (
+              <span style={`background:${c.hex}`} title={`${c.hex} · ${sharePct(c.share)}`}></span>
+            ))}
+          </span>
+          <span class="card__body">
+            <strong class="card__title">{p.title}</strong>
+            <em class="card__artist">{p.artist} · {p.year}</em>
+            {p.shift && <span class="card__flag">colour has shifted</span>}
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <section class="tail">
+    <h2>Palettes elsewhere on the site</h2>
+    <p>
+      The rest of this archive is built on Sanzo Wada's 1933 <em>Dictionary of Color Combinations</em> —
+      348 plates from the six-volume Japanese original, plus editorial deep-dives.
+      <a href="/browse/">Browse all palettes</a> or start with the
+      <a href="/collections/">thematic collections</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { margin-bottom: 2.5rem; }
+  .hero__lede { font-size: 1.15rem; line-height: 1.65; margin-top: .8rem; max-width: 60ch; }
+
+  .claim { margin: 2.5rem 0 3rem; }
+  .claim__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+  .claim__grid h3 { font-size: .95rem; margin-bottom: .4rem; }
+  .claim__grid p { font-size: .88rem; line-height: 1.6; opacity: .85; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; list-style: none; padding: 0; }
+  .card a { display: block; text-decoration: none; color: inherit; }
+  .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 9px 9px 0 0; display: block; }
+  .card__chips { display: flex; height: 30px; }
+  .card__chips span { flex: 1; }
+  .card__body { display: block; padding: .7rem .1rem 0; }
+  .card__title { display: block; font-size: .97rem; line-height: 1.3; }
+  .card__artist { display: block; font-size: .8rem; opacity: .7; font-style: normal; margin-top: .15rem; }
+  .card__flag { display: inline-block; margin-top: .4rem; font-size: .68rem; letter-spacing: .04em; text-transform: uppercase; opacity: .6; border: 1px solid currentColor; border-radius: 999px; padding: .1rem .45rem; }
+
+  .tail { margin-top: 3.5rem; }
+  .tail p { line-height: 1.7; max-width: 62ch; }
+</style>

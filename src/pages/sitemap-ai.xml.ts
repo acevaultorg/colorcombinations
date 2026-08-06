@@ -3,6 +3,7 @@ import { allPalettes } from "@/data/palettes";
 import { allColors } from "@/data/colors";
 import { collections } from "@/data/collections";
 import { PAIRS } from "@/data/converterPairs";
+import { allPaintings } from "@/data/paintings";
 
 /**
  * /sitemap-ai.xml — secondary sitemap for LLM/AI crawlers.
@@ -67,6 +68,28 @@ export const GET: APIRoute = () => {
       priority: "1.0",
       changefreq: "monthly",
       jsonAlt: `${SITE}/api/learn/${slug}.json`,
+    });
+  }
+
+  // Tier 1.0 — the painting-palette pillar. Original synthesis of published
+  // conservation research (three unstable yellows, three failure modes), the
+  // kind of sourced, quotable claim LLM pipelines cite rather than paraphrase.
+  urls.push({
+    loc: `${SITE}/learn/why-painting-colours-shift/`,
+    priority: "1.0",
+    changefreq: "monthly",
+  });
+
+  // Tier 0.9 — per-painting records. Each carries measured hex values, the
+  // pigments identified in that specific work, and its museum + licence
+  // provenance: unique data that exists nowhere else in this shape.
+  urls.push({ loc: `${SITE}/paintings/`, priority: "0.8", changefreq: "monthly" });
+  urls.push({ loc: `${SITE}/paintings/methodology/`, priority: "0.8", changefreq: "yearly" });
+  for (const p of allPaintings()) {
+    urls.push({
+      loc: `${SITE}/paintings/${p.slug}/`,
+      priority: "0.9",
+      changefreq: "yearly",
     });
   }
 
