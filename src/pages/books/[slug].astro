@@ -1,0 +1,366 @@
+---
+/**
+ * /books/[slug] — one page per book on the shelf.
+ *
+ * Why this route exists: until now every book on this site appeared only as a
+ * row inside a list (FurtherReading on /about, /shop, and the palette sidebar).
+ * A row can't answer the question someone actually types — "is this book worth
+ * it", "what's in Vol 2 that isn't in Vol 1" — and it can't be linked to,
+ * cited, or ranked on its own. These pages are the entity surface.
+ *
+ * Every fact rendered here comes from the FURTHER_READING record: author,
+ * publisher note, and the editorial reason the book is on the shelf. Nothing is
+ * invented — no page counts, no ratings, no prices (Amazon Associates forbids
+ * rendering price), no invented review quotes.
+ *
+ * The one thing these pages have that a retailer listing does not: this archive
+ * holds the actual plates from Wada Vol 1, so a reader can see the contents
+ * before deciding. That comparison is rendered honestly in both directions —
+ * Vol 1's data is free here, Vol 2's is not.
+ *
+ * Affiliate compliance (shared Associates account — one breach risks the fleet):
+ * tag on every link via AMAZON.link(), rel="sponsored nofollow noopener",
+ * FTC disclosure adjacent to the CTA, no price, no scarcity language.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import {
+  AMAZON,
+  FURTHER_READING,
+  bookCover,
+  relatedBooks,
+  type CuratedBook,
+} from "@/config/monetization";
+
+export function getStaticPaths() {
+  return FURTHER_READING.map((book) => ({
+    params: { slug: book.slug },
+    props: { book },
+  }));
+}
+
+interface Props {
+  book: CuratedBook;
+}
+
+const { book } = Astro.props;
+
+const amazonHref = AMAZON.link(book.amazonAsin);
+const coverUrl = bookCover(book, "L");
+const related = relatedBooks(book.slug, 3);
+
+// The archive holds all 348 combinations from Wada's 1933 Vol 1 (see
+// src/data/palettes.ts). Vol 2's plates are not in it. Saying so on both pages
+// is the honest version of the comparison — and it is the reason to buy Vol 2
+// and the reason not to buy Vol 1 for its data.
+const WADA_VOL_1 = "a-dictionary-of-color-combinations";
+const WADA_VOL_2 = "a-dictionary-of-color-combinations-vol-2";
+const isWada = book.slug === WADA_VOL_1 || book.slug === WADA_VOL_2;
+
+const title = `${book.title} — ${book.author}`;
+const description = `${book.title} by ${book.author}. ${book.note} Why it's on the shelf at the Dictionary of Color Combinations, and what this archive already holds for free.`;
+
+// Book schema — only fields we can stand behind. No aggregateRating, no
+// price, no invented publisher metadata: an unverifiable field in structured
+// data is the same lie as an unverifiable sentence in the copy.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Book",
+  name: book.title,
+  author: { "@type": "Person", name: book.author },
+  ...(book.isbn ? { isbn: book.isbn } : {}),
+  ...(coverUrl ? { image: new URL(coverUrl, Astro.site).toString() } : {}),
+  url: new URL(`/books/${book.slug}/`, Astro.site).toString(),
+  description: book.why,
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  jsonLd={jsonLd}
+  keywords={[book.title, book.author, "color book", "design reference"]}
+>
+  <article class="book">
+    <nav class="book__crumbs" aria-label="Breadcrumb">
+      <a href="/books/">The shelf</a>
+      <span aria-hidden="true">→</span>
+      <span>{book.title}</span>
+    </nav>
+
+    <header class="book__head">
+      <div class="book__cover">
+        {coverUrl && (
+          <img
+            src={coverUrl}
+            alt={`${book.title} by ${book.author} — book cover`}
+            width="400"
+            height="600"
+            loading="eager"
+            decoding="async"
+            onerror="this.style.display='none'"
+          />
+        )}
+      </div>
+
+      <div class="book__intro">
+        <p class="eyebrow">On the shelf</p>
+        <h1 class="text-balance">{book.title}</h1>
+        <p class="book__author">{book.author}</p>
+        <p class="book__note">{book.note}</p>
+
+        <p class="book__why">{book.why}</p>
+
+        <div class="book__cta">
+          <a
+            href={amazonHref}
+            rel="sponsored nofollow noopener"
+            target="_blank"
+            class="btn btn-primary"
+            data-event="amazon_click"
+            data-book={book.title}
+            data-surface="book-page"
+          >
+            View on Amazon <span aria-hidden="true">↗</span>
+          </a>
+          <p class="book__disclosure">
+            Affiliate link. Your price is unchanged; as an Amazon Associate we
+            earn from qualifying purchases.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    {isWada && (
+      <section class="book__archive">
+        <h2>What this archive already holds</h2>
+        {book.slug === WADA_VOL_1 ? (
+          <>
+            <p>
+              All 348 combinations from this 1933 work are browsable here for
+              free, with hex values for every colour. If you want the data, you
+              do not need the book — start at
+              {" "}<a href="/browse/">the full archive</a>. People buy this
+              edition for the printed object: Seigensha's matte plates and
+              Japanese binding, or a citable copy of the original.
+            </p>
+            <p>
+              For plates this archive does <em>not</em> hold, the follow-up is
+              {" "}<a href={`/books/${WADA_VOL_2}/`}>Vol. 2</a>.
+            </p>
+          </>
+        ) : (
+          <>
+            <p>
+              Vol. 2 collects Wada's 1935–1938 follow-ups — 72 plates on the
+              Japanese seasons and 165 drawn from early-century fashion,
+              interior and graphic design. Those plates are{" "}
+              <strong>not in this archive</strong>, and not in Vol. 1.
+            </p>
+            <p>
+              The 348 combinations from{" "}
+              <a href={`/books/${WADA_VOL_1}/`}>Vol. 1</a> are free here — see
+              {" "}<a href="/browse/">the archive</a> before deciding which
+              volume you actually want.
+            </p>
+          </>
+        )}
+        <p class="book__compare-link">
+          <a href="/compare/wada-vol-1-vs-vol-2">
+            Vol 1 vs Vol 2, compared plate by plate →
+          </a>
+        </p>
+      </section>
+    )}
+
+    <section class="book__related">
+      <h2>Also on the shelf</h2>
+      <ul class="book__related-list" role="list">
+        {related.map((other) => (
+          <li>
+            <a href={`/books/${other.slug}/`}>
+              <span class="book__related-title">{other.title}</span>
+              <span class="book__related-author">{other.author}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="book__back">
+        <a href="/books/">← Every book on the shelf</a>
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .book {
+    max-width: var(--content-width, 72rem);
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter, 1.25rem);
+    padding-block: var(--spacing-section, 3rem);
+  }
+
+  .book__crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 2rem;
+  }
+
+  .book__crumbs a {
+    color: var(--color-ink-500);
+  }
+
+  .book__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 760px) {
+    .book__head {
+      grid-template-columns: minmax(0, 16rem) 1fr;
+      gap: 3rem;
+    }
+  }
+
+  .book__cover img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    background: var(--color-paper-100);
+    box-shadow: var(--shadow-plate);
+  }
+
+  /* On narrow screens the cover shouldn't push the answer below the fold. */
+  @media (max-width: 759px) {
+    .book__cover {
+      max-width: 11rem;
+    }
+  }
+
+  .book__intro h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 3vw + 1rem, 2.75rem);
+    line-height: 1.1;
+    margin: 0.5rem 0 0.75rem;
+  }
+
+  .book__author {
+    font-size: 1rem;
+    color: var(--color-ink-700);
+    margin: 0 0 0.25rem;
+  }
+
+  .book__note {
+    font-size: 0.875rem;
+    color: var(--color-ink-500);
+    margin: 0 0 1.5rem;
+  }
+
+  .book__why {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-ink-900);
+    margin: 0 0 2rem;
+  }
+
+  .book__cta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .book__disclosure {
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--color-ink-400);
+    max-width: 46ch;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .book__archive,
+  .book__related {
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .book__archive h2,
+  .book__related h2 {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    margin: 0 0 1rem;
+  }
+
+  .book__archive p {
+    max-width: 62ch;
+    line-height: 1.7;
+    margin: 0 0 1rem;
+    color: var(--color-ink-700);
+  }
+
+  .book__compare-link {
+    font-size: 0.9375rem;
+  }
+
+  .book__related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .book__related-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .book__related-list a {
+    display: block;
+    padding: 1rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    height: 100%;
+  }
+
+  .book__related-list a:hover {
+    border-color: var(--color-accent-500);
+  }
+
+  .book__related-title {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--color-ink-900);
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+
+  .book__related-author {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-500);
+  }
+
+  .book__back {
+    margin-top: 1.75rem;
+    font-size: 0.9375rem;
+  }
+</style>

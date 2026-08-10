@@ -157,6 +157,12 @@ export const CARBON_ADS = {
 // ============================================================================
 
 export interface CuratedBook {
+  /**
+   * URL slug for the book's own page at `/books/[slug]`. Stable — treat as
+   * a permalink; changing one breaks an indexed URL. Derived by hand rather
+   * than slugified from the title so punctuation choices stay deliberate.
+   */
+  slug: string;
   title: string;
   author: string;
   note: string;
@@ -191,6 +197,7 @@ export interface CuratedBook {
 
 export const FURTHER_READING: CuratedBook[] = [
   {
+    slug: "a-dictionary-of-color-combinations",
     title: "A Dictionary of Color Combinations",
     author: "Sanzo Wada",
     note: "The 2010 Seigensha republication of the 1933 original. Japanese import.",
@@ -210,6 +217,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "Every combination in it is already browsable free here, hex values and all. Buy this one for the object rather than the data — Seigensha's matte plates and Japanese binding, or a citable copy of the 1933 original. If you want plates this archive doesn't have, Vol. 2 is the one.",
   },
   {
+    slug: "a-dictionary-of-color-combinations-vol-2",
     title: "A Dictionary of Color Combinations Vol. 2",
     author: "Sanzo Wada",
     note: "Seigensha, 2020. Japanese import.",
@@ -219,6 +227,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "Wada's 1935–1938 follow-ups: 72 plates on the Japanese seasons and 165 drawn from early-century fashion, interior, and graphic design. Not in Vol. 1. Not in this archive. The book itself is a design object — Japanese binding, matte pages, zero captions.",
   },
   {
+    slug: "interaction-of-color",
     title: "Interaction of Color",
     author: "Josef Albers",
     note: "50th Anniversary Edition, Yale University Press.",
@@ -228,6 +237,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "The most important book on how colors behave next to each other. Still the default reference in art schools.",
   },
   {
+    slug: "the-secret-lives-of-color",
     title: "The Secret Lives of Color",
     author: "Kassia St. Clair",
     note: "Penguin, 2017.",
@@ -237,6 +247,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "Seventy-five individual colors, each with a short history. Reads like a cabinet of curiosities.",
   },
   {
+    slug: "color-a-natural-history-of-the-palette",
     title: "Color: A Natural History of the Palette",
     author: "Victoria Finlay",
     note: "Random House, 2004.",
@@ -246,6 +257,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "Investigative travelogue through dye sources — indigo farms, lapis mines, safflower fields. The journey of kurenai.",
   },
   {
+    slug: "chromaphilia",
     title: "Chromaphilia",
     author: "Stella Paul",
     note: "Phaidon, 2017.",
@@ -255,6 +267,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "240 artworks organized by color. A visual counterpart to Wada's dictionary.",
   },
   {
+    slug: "the-designers-dictionary-of-color",
     title: "The Designer's Dictionary of Color",
     author: "Sean Adams",
     note: "Abrams, 2017.",
@@ -264,6 +277,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "A practical, example-filled guide to thirty key colors and the way they behave together. Working-designer companion to Wada's historical archive.",
   },
   {
+    slug: "pantone-the-twentieth-century-in-color",
     title: "Pantone: The Twentieth Century in Color",
     author: "Leatrice Eiseman & Keith Recker",
     note: "Chronicle Books, 2011.",
@@ -273,6 +287,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "A decade-by-decade visual history of color in design, advertising, and culture from 1900 to 2000. The modern complement to Wada's pre-war record.",
   },
   {
+    slug: "color-index-xl",
     title: "Color Index XL",
     author: "Jim Krause",
     note: "Watson-Guptill, 2017.",
@@ -282,6 +297,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "1,100+ ready-to-apply palettes with CMYK + RGB formulas. The shelf-reference designers reach for on deadline.",
   },
   {
+    slug: "on-color",
     title: "On Color",
     author: "David Scott Kastan with Stephen Farthing",
     note: "Yale University Press, 2018.",
@@ -291,6 +307,7 @@ export const FURTHER_READING: CuratedBook[] = [
     why: "Ten essays — one per color — pairing cultural history with how each pigment came to mean what it does. Sits next to Finlay on a serious shelf.",
   },
   {
+    slug: "the-anatomy-of-color",
     title: "The Anatomy of Color",
     author: "Patrick Baty",
     note: "Thames & Hudson, 2017.",
@@ -329,6 +346,26 @@ export function bookCover(book: CuratedBook, size: "S" | "M" | "L" = "M"): strin
   const id = book.isbn ?? book.amazonAsin ?? "";
   if (!id) return "";
   return `https://covers.openlibrary.org/b/isbn/${id}-${size}.jpg?default=false`;
+}
+
+/** Look up one shelf book by its `/books/[slug]` permalink. */
+export function bookBySlug(slug: string): CuratedBook | undefined {
+  return FURTHER_READING.find((b) => b.slug === slug);
+}
+
+/**
+ * The other books on the shelf, for the "also on the shelf" rail at the foot
+ * of a book page. Rotates from the current book's position so each page shows
+ * a different trio — no randomness, so the HTML stays stable per URL.
+ */
+export function relatedBooks(slug: string, count = 3): CuratedBook[] {
+  const i = FURTHER_READING.findIndex((b) => b.slug === slug);
+  if (i === -1) return FURTHER_READING.slice(0, count);
+  const rotated = [
+    ...FURTHER_READING.slice(i + 1),
+    ...FURTHER_READING.slice(0, i),
+  ];
+  return rotated.slice(0, count);
 }
 
 // ============================================================================
