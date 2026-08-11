@@ -6,12 +6,32 @@
 // layout (colorcombinations runs functions/, NOT advanced-mode _worker.js —
 // adding a _worker.js here would disable functions/api/subscribe.js).
 //
-// WHY GEO ROUTING: amazon.com does NOT geo-redirect (verified live from
-// Amsterdam 2026-07-16). A EUR 13.03 book carries ~EUR 10.36 in import
-// charges for an EU buyer — an ~80% surcharge — which is why EU clicks
-// on .com almost never convert. This site is 22-30% European (GA4 30d
-// bot-stripped 25.2%, CF RUM 22.2%, Clarity 3d 51.6%), the only materially
-// European site in the fleet: 73% of all fleet EU traffic lands here.
+// WHY GEO ROUTING: this site is 22-30% European (GA4 30d bot-stripped 25.2%,
+// CF RUM 22.2%, Clarity 3d 51.6%), the only materially European site in the
+// fleet: 73% of all fleet EU traffic lands here. So local-store routing matters
+// more here than anywhere else — but only where Amazon does not already do it.
+//
+// ⚠️ CORRECTED 2026-08-11 — the premise this file shipped on is FALSE as of
+// Amazon's GLOBAL EARNING launch (2026-08-10). It claimed "amazon.com does NOT
+// geo-redirect (verified live from Amsterdam 2026-07-16)". It DOES now.
+// Live-verified from Amsterdam 2026-08-11: amazon.com/dp/{isbn}?tag=<site>-20
+// 302s to www.amazon.nl/dp/{isbn}?...&tag=<site>-20&ar_mt=EXACT_MATCH — the US
+// -20 tag SURVIVES, the page prices in EUR with local delivery, and the ~80%
+// import surcharge is gone. OneLink was likewise NOT retired; it was replaced
+// by Global Earning ("existing setup will continue to work... no action needed").
+//
+// CONSEQUENCE — routing a Global-Earning country through .de is now WORSE:
+//   • It sends FR/IT/ES/NL/PL/SE visitors to a GERMAN-language store when
+//     Amazon would have sent them to their OWN local store.
+//   • It DESTROYS per-site attribution: an EU sale credits caslonmedia-21 /
+//     paulodevries-21 instead of colorcombinations-20. Per-tag $/click is the
+//     fleet's #1 EV instrument; this blinds it for exactly the traffic this
+//     site exists to monetize.
+//   • It re-introduces the per-locale "3 qualifying sales / 180 days or the
+//     account is CLOSED" risk the -20 Global Earning path does not carry.
+// EU_ROUTED below is therefore narrowed to ONLY the EU/EEA countries Global
+// Earning does NOT cover. Do not re-add DE/NL/FR/IT/ES/PL/SE.
+// Canonical: memory reference_amazon_global_earning_2026_08.
 //
 // SCOPE — deliberately narrow, do NOT widen without evidence:
 //   • ONLY ISBN-10 book links reach this route. For BOOKS the ISBN-10 *is*
@@ -42,13 +62,15 @@ const TAG = "colorcombinations-20";
 // The store OneLink runs on. EU visitors are handed this, then forwarded.
 const EU_TAG = "caslonmedia-21";
 
-// EU/EEA only. Deliberately NOT GB/US/CA/CH — sending a UK or US visitor to
-// amazon.de would be worse, not better. (GB is 4.4% of this site's traffic
-// and has its own marketplace; routing it to .de would add import friction.)
+// EU/EEA countries GLOBAL EARNING DOES NOT COVER — the only ones still worth
+// routing ourselves. Global Earning natively covers US · CA · GB · DE · FR · IT ·
+// ES · NL · PL · SE, so those are deliberately ABSENT: the plain .com link with
+// this site's own -20 tag serves them better (own local store + attribution
+// kept). GB/US/CA/CH were already excluded and stay excluded.
 const EU_ROUTED = new Set([
-  "DE", "AT", "NL", "BE", "LU", "FR", "IT", "ES", "PT", "IE",
-  "PL", "CZ", "SK", "SI", "HU", "RO", "BG", "HR", "GR",
-  "DK", "SE", "FI", "EE", "LV", "LT", "CY", "MT",
+  "AT", "BE", "LU", "PT", "IE",
+  "CZ", "SK", "SI", "HU", "RO", "BG", "HR", "GR",
+  "DK", "FI", "EE", "LV", "LT", "CY", "MT",
 ]);
 
 /**
