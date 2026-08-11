@@ -198,8 +198,34 @@ const jsonLdArray = jsonLd
     ))}
 
 
-    {/* Microsoft Clarity — heatmaps + session recordings (project wpwnyowok1). */}
-    <script is:inline set:html={`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","wpwnyowok1");`} />
+    {/* FLEET-AGENT GATE — keeps our own verification traffic out of Clarity + GA4, so
+        session/engagement numbers describe humans. Ported from readstacks 2026-08-11.
+
+        Visit any page once with ?__fa=1 from an agent-driven browser; persists in
+        localStorage. Undo: localStorage.removeItem('__fleet_agent').
+        Covers Chrome MCP too (real Chrome UA, webdriver false — invisible to any UA
+        test, and it is the fleet's default verification browser). Also excludes the
+        operator's own self-visits.
+
+        SELF-DECLARATION, NOT UA-SNIFFING — deliberately. A UA-matching version was
+        written and reverted on readstacks: matching a vendor client string drops real
+        humans who browse in that client, silently and uncountably. Do not reintroduce.
+
+        ⚠️ The GA4 id is HARDCODED here on purpose. readstacks emits its kill-switch
+        only when an env var is set, which is safe there because GA4 also only loads
+        under that var. This site hardcodes both ids (line below), so an env-conditioned
+        copy would emit NO ga-disable while GA4 still loaded — a gate that reports
+        success and suppresses nothing. Keep this in sync with the loader's own ids.
+
+        Ordering: the async gtag.js below dispatches no hit by itself; the first hit is
+        the inline gtag('config'), which runs after this. ga-disable is read per-hit. */}
+    <script is:inline set:html={`(function(){var a=false;try{if(location.search.indexOf("__fa=1")>-1){localStorage.setItem("__fleet_agent","1");}a=localStorage.getItem("__fleet_agent")==="1";}catch(e){}if(navigator.webdriver===true||(navigator.userAgent||"").indexOf("HeadlessChrome")>-1){a=true;}if(a){window.__FLEET_AGENT__=1;document.documentElement.setAttribute("data-google-analytics-opt-out","");window["ga-disable-G-QT7PC59PV6"]=true;}})();`} />
+
+    {/* Microsoft Clarity — heatmaps + session recordings (project wpwnyowok1).
+        Guarded by the gate above: Clarity has no documented runtime opt-out (GA4 has
+        ga-disable-<ID>), so the only way to stop it recording an agent session is to
+        never inject the tag. */}
+    <script is:inline set:html={`if(!window.__FLEET_AGENT__){(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","wpwnyowok1");}`} />
 
     {/* Google Analytics 4 — measurement ID G-QT7PC59PV6 (stacked with Clarity). */}
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-QT7PC59PV6"></script>
