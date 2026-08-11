@@ -94,9 +94,49 @@ export const AMAZON = {
     return !this.tag.startsWith("PLACEHOLDER");
   },
 
-  /** Build an affiliate link from an ASIN or full amazon.com URL. */
+  /**
+   * True only for a real ISBN-10: 9 digits + a check digit (0-9 or X) that
+   * satisfies the mod-11 weighted sum. Used to decide which links may be
+   * geo-routed — see `link()`.
+   */
+  isIsbn10(s: string): boolean {
+    if (!/^[0-9]{9}[0-9X]$/.test(s)) return false;
+    let sum = 0;
+    for (let i = 0; i < 10; i++) {
+      const c = s[i]!;
+      sum += (10 - i) * (c === "X" ? 10 : Number(c));
+    }
+    return sum % 11 === 0;
+  },
+
+  /**
+   * Build an affiliate link from an ASIN or full amazon.com URL.
+   *
+   * BOOKS (ISBN-10) route through our own /go/b/{isbn} redirect so that EU
+   * visitors can be sent to their local Amazon — see functions/go/b/[[isbn]].js.
+   * This matters here more than anywhere else in the fleet: ~22-30% of this
+   * site's humans are in the EU, and amazon.com does not geo-redirect, so a
+   * EUR 13 book arrives with ~80% import charges and the click dies.
+   *
+   * EVERYTHING ELSE keeps the direct, unchanged amazon.com link:
+   *   • B-prefix ASINs (the 5 ART_SUPPLIES items, and the Seigensha Wada
+   *     two-volume set B094NTK2RB) are Amazon-internal identifiers with no
+   *     guarantee the same product exists on amazon.de. Routing them would
+   *     risk a dead or wrong-product landing — strictly worse than .com.
+   *   • Full URLs pass through verbatim, so any hand-built SiteStripe or
+   *     bounty URL added later is never rewritten by this function.
+   *
+   * The ISBN-10 checksum — not a length check — is what gates the geo path,
+   * because it is exactly the property that makes /dp/{id} resolve to the
+   * same title on every marketplace.
+   */
   link(asinOrUrl: string): string {
     const isAsin = /^[A-Z0-9]{10}$/.test(asinOrUrl);
+    if (isAsin && this.isIsbn10(asinOrUrl) && this.isLive) {
+      // First-party, geo-routed. The tag is applied server-side so it can
+      // differ per marketplace; it is deliberately absent from the HTML.
+      return `/go/b/${asinOrUrl}`;
+    }
     const base = isAsin
       ? `https://www.amazon.com/dp/${asinOrUrl}`
       : asinOrUrl;

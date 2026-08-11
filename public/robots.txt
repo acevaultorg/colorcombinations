@@ -33,6 +33,11 @@ Allow: /
 User-agent: *
 Allow: /
 Disallow: /og/
+# Affiliate redirect endpoint (functions/go/b/[[isbn]].js). Not a content
+# surface, and every hit that reaches Amazon is a tagged click against a
+# fleet-shared Associates account — crawlers must never walk it. A referer
+# gate in the function is the enforcement; this is the polite signal.
+Disallow: /go/
 
 Sitemap: https://colorcombinations.org/sitemap-index.xml
 Sitemap: https://colorcombinations.org/sitemap-ai.xml
