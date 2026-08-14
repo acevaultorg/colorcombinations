@@ -17,5 +17,5 @@ ck "$(curl -s -o /dev/null -w '%{redirect_url}' "$U?t=$T")" "https://www.amazon.
 ck "$(curl -s -o /dev/null -w '%{http_code}' "$U?t=1")" 200 "5. stale ?t= → interstitial, no 302"
 ck "$(curl -s -o /dev/null -w '%{redirect_url}' -H "Cookie: cc_g=$T" "https://colorcombinations.org/go/b/1234567890")" "https://colorcombinations.org/" "6. checksum-invalid ISBN → home, never amazon"
 ck "$(curl -s https://colorcombinations.org/amazon-track.js | grep -c 'cc_g=')" 1 "7. tracker mints cc_g"
-ck "$(curl -s -o /dev/null -w '%{http_code}' https://colorcombinations.org/api/subscribe)" 400 "8. functions alive (subscribe 400s on empty GET)"
+ck "$(curl -s -o /dev/null -w '%{http_code}' https://colorcombinations.org/api/subscribe)" 405 "8. functions alive (subscribe 405s bare GET = method-checked, not 404-dead)"
 echo "PASS=$P FAIL=$F"; exit $F
