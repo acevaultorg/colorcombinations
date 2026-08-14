@@ -17,5 +17,17 @@
    converters. That is the exact failure mode that already cost this site a month of
    measurement (see public/_headers: the connect-src omission that made a 14.5%
    converter read as 0.1%). So /go/b/ is matched explicitly below, and the ISBN is
-   extracted from it as the asin so GA4 event shape is unchanged. */
-(function(){var B='https://fleet.promptprio.com/c?s=colorcombinations.org';function t(e){try{var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.href||'';var isGo=/\/go\/b\/[0-9X]{10}\/?$/i.test(h);if(!isGo&&!/amazon\.|amzn\.to|amzn\.eu/i.test(h))return;var m=h.match(/\/(?:dp|gp\/product|gp\/aw\/d|go\/b)\/([A-Z0-9]{10})/i);var asin=m?m[1].toUpperCase():'';var dest=/amzn\.to|audible/i.test(h)?'audible':'amazon';var shelf=a.dataset.tool?'tool':(a.dataset.book?'book':'');if(window.clarity){window.clarity('event','amazon_click');if(shelf){window.clarity('event','amazon_click_'+shelf);window.clarity('set','amazon_shelf',shelf);}}if(window.gtag)window.gtag('event','amazon_click',{page:location.pathname,asin:asin,dest:dest,shelf:shelf});if(navigator.sendBeacon)navigator.sendBeacon(B+(window.__FLEET_AGENT__?'&a=1':''));}catch(x){}}document.addEventListener('click',t,true);document.addEventListener('auxclick',function(e){if(e.button===1)t(e);},true);})();
+   extracted from it as the asin so GA4 event shape is unchanged.
+
+   2026-08-14 — GESTURE TOKEN. This file now also MINTS the credential the /go/ gate
+   requires: a short-lived first-party cc_g cookie, written synchronously in this
+   capture-phase handler before the navigation starts (SameSite=Lax so it rides along
+   on top-level navigations including middle-click new tabs). functions/go/b/[[isbn]].js
+   302s to Amazon only when that cookie — or a fresh ?t= the interstitial self-mints —
+   is present. It replaces a Referer check, which was the wrong credential: the
+   click-harvester is JS-blind but SPOOFS Referer headers, so it walked straight through
+   the old gate and generated tagged clicks against the FLEET-SHARED Associates account.
+   A JS-blind crawler cannot mint this. Ported from readstacks (commit 73196a4).
+   If this file ever stops loading, /go/ links degrade to the interstitial hop — they
+   still work, they just cost one extra round-trip. Do not "optimise" the cookie away. */
+(function(){var B='https://fleet.promptprio.com/c?s=colorcombinations.org';function t(e){try{var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.href||'';try{if(a.host===location.host&&a.pathname&&a.pathname.indexOf('/go/')===0){document.cookie='cc_g='+Date.now().toString(36)+'; Path=/; Max-Age=600; SameSite=Lax; Secure';}}catch(g){}var isGo=/\/go\/b\/[0-9X]{10}\/?$/i.test(h);if(!isGo&&!/amazon\.|amzn\.to|amzn\.eu/i.test(h))return;var m=h.match(/\/(?:dp|gp\/product|gp\/aw\/d|go\/b)\/([A-Z0-9]{10})/i);var asin=m?m[1].toUpperCase():'';var dest=/amzn\.to|audible/i.test(h)?'audible':'amazon';var shelf=a.dataset.tool?'tool':(a.dataset.book?'book':'');if(window.clarity){window.clarity('event','amazon_click');if(shelf){window.clarity('event','amazon_click_'+shelf);window.clarity('set','amazon_shelf',shelf);}}if(window.gtag)window.gtag('event','amazon_click',{page:location.pathname,asin:asin,dest:dest,shelf:shelf});if(navigator.sendBeacon)navigator.sendBeacon(B+(window.__FLEET_AGENT__?'&a=1':''));}catch(x){}}document.addEventListener('click',t,true);document.addEventListener('auxclick',function(e){if(e.button===1)t(e);},true);})();

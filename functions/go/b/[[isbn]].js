@@ -91,28 +91,54 @@ function isIsbn10(s) {
 export const onRequestGet = ({ request }) => {
   const url = new URL(request.url);
 
-  // REFERER GATE — copied verbatim in behaviour from readstacks. A bot or
-  // harvester hitting /go/* directly (no referer) gets a noindex interstitial
-  // instead of a 302, so it never generates a tagged click against the
-  // FLEET-SHARED Associates account. Real referer-stripped humans still land
-  // on Amazon via location.replace.
-  const refOk = (() => {
-    const ref = request.headers.get("referer") || "";
-    if (!ref) return false;
-    try {
-      const h = new URL(ref).hostname;
-      return (
-        h === "colorcombinations.org" ||
-        h === "www.colorcombinations.org" ||
-        h === url.hostname // covers *.pages.dev previews
-      );
-    } catch {
-      return false;
-    }
+  // GESTURE-TOKEN GATE (2026-08-14) — replaces the 2026-08-11 referer gate,
+  // which FAILED measurably on readstacks (commit 73196a4): Amazon's
+  // Tracking-ID report showed 186 clicks / 0 orders in Aug 1-13 (~14.3/day vs
+  // an 11.8/day pre-gate baseline) while CF logs still showed ~64 tagged
+  // 302s/day on /go/*. The harvester is JS-blind — the /c beacon never fires
+  // for it — but it SPOOFS Referer headers, so a referer check is exactly the
+  // wrong credential. Verified on THIS site 2026-08-14 before the fix:
+  //   curl -H 'Referer: https://colorcombinations.org/' /go/b/0300179359
+  //   → 302 https://www.amazon.com/dp/0300179359?tag=colorcombinations-20
+  // i.e. one spoofed header bought a fully-tagged click against the
+  // FLEET-SHARED Associates account.
+  //
+  // This gate instead requires a FRESH base36 timestamp only page JS can mint:
+  //   • Real on-page clicks: public/amazon-track.js writes a cc_g cookie in its
+  //     capture-phase click handler (SameSite=Lax rides the navigation,
+  //     including middle-click new tabs) → instant 302, fast path preserved.
+  //   • Referer-less humans (pasted links): the interstitial below self-mints a
+  //     fresh ?t= and re-navigates — one invisible hop, then 302.
+  //   • JS-blind crawlers (spoofed UA + spoofed Referer): no cookie, no ?t=,
+  //     and the interstitial no longer embeds the target URL in ANY encoding.
+  //     The previous interstitial shipped atob("<base64 tagged amazon URL>") —
+  //     harvestable by anyone who can call atob. There is now nothing to
+  //     harvest and no tagged click occurs.
+  // Freshness window 10 min; base36 keeps the token compact + unremarkable.
+  // Trade-off accepted: JS-off humans lose the redirect (noscript message,
+  // link home). They previously passed via referer — the exact spoofed path —
+  // and are a rounding error of real traffic.
+  const tokenFresh = (s) => {
+    if (!s || !/^[0-9a-z]{6,12}$/.test(s)) return false;
+    const ts = parseInt(s, 36);
+    return Number.isFinite(ts) && Math.abs(Date.now() - ts) < 600000;
+  };
+  const tokenOk = (() => {
+    const m = (request.headers.get("cookie") || "").match(
+      /(?:^|;\s*)cc_g=([^;\s]+)/,
+    );
+    if (m && tokenFresh(m[1])) return true;
+    return tokenFresh(url.searchParams.get("t"));
   })();
 
+  // `dest` only names the destination in the interstitial copy — the gate
+  // itself is identical for every affiliate network.
+  // The interstitial carries NO target URL: it re-requests THIS /go/ path with
+  // a freshly minted ?t=. The ?t= lives in the query string, so the pathname
+  // match below is unaffected. If a ?t= was already present and still rejected
+  // (stale clock, replayed URL), it goes home — no reload loop.
   const go = (target, dest = "Amazon") =>
-    refOk
+    tokenOk
       ? new Response(null, {
           status: 302,
           headers: {
@@ -124,7 +150,7 @@ export const onRequestGet = ({ request }) => {
           },
         })
       : new Response(
-          `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>One moment…</title></head><body style="font-family:system-ui;padding:2rem"><p>Taking you to ${dest}…</p><noscript><p>JavaScript is off — <a href="/">return to Color Combinations</a>.</p></noscript><script>location.replace(atob("${btoa(target)}"))</script></body></html>`,
+          `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>One moment…</title></head><body style="font-family:system-ui;padding:2rem"><p>Taking you to ${dest}…</p><noscript><p>JavaScript is off — <a href="/">return to Color Combinations</a>.</p></noscript><script>var u=new URL(location.href);if(u.searchParams.has("t")){location.replace("/")}else{u.searchParams.set("t",Date.now().toString(36));location.replace(u.pathname+u.search)}</script></body></html>`,
           {
             status: 200,
             headers: {
