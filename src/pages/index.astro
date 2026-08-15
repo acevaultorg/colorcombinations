@@ -13,7 +13,7 @@ import { AMAZON } from "@/config/monetization";
 // Amazon Associates is the sole book affiliate as of 2026-05-21 (operator
 // directive). AMAZON.link() returns a tagged URL because AMAZON.tag =
 // "colorcombinations-20" (operator's Associates console).
-const sourceBookAmazonUrl = AMAZON.link("4861522471");
+const sourceBookAmazonUrl = AMAZON.link("4861522471", "home");
 const sourceBookShowDisclosure = AMAZON.isLive;
 
 const featured = featuredPalettes();
@@ -286,6 +286,7 @@ const jsonLd = {
         three books the citations ask about. Rotation/variety still applies on
         palette + collection pages, where the demand is not Wada-specific. */}
     <FurtherReading
+      pageClass="home"
       title="Go deeper on colour"
       intro="The books we return to on colour theory and the language of palettes. Recommended on Amazon."
       limit={3}

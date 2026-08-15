@@ -68,7 +68,7 @@ const items: ArtSupply[] = (() => {
         <p class="paint-kit__brand">{item.brand}</p>
         <h3 class="paint-kit__name">
           <a
-            href={AMAZON.link(item.amazonAsin)}
+            href={AMAZON.link(item.amazonAsin, "art-supplies")}
             rel="sponsored nofollow noopener"
             target="_blank"
             class=""
@@ -82,7 +82,7 @@ const items: ArtSupply[] = (() => {
         <p class="paint-kit__why">{item.why}</p>
         {variant ==="full" && (
           <a
-            href={AMAZON.link(item.amazonAsin)}
+            href={AMAZON.link(item.amazonAsin, "art-supplies")}
             rel="sponsored nofollow noopener"
             target="_blank"
             class="btn btn-secondary paint-kit__link"

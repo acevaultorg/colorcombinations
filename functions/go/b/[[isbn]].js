@@ -169,7 +169,20 @@ export const onRequestGet = ({ request }) => {
     const geo = EU_ROUTED.has(country)
       ? { host: "www.amazon.de", tag: EU_TAG }
       : { host: "www.amazon.com", tag: TAG };
-    return go(`https://${geo.host}/dp/${m[1].toUpperCase()}?tag=${geo.tag}`);
+    let dest = `https://${geo.host}/dp/${m[1].toUpperCase()}?tag=${geo.tag}`;
+    // Per-page-class Amazon subtag (2026-08-15) — the caller passes it as
+    // ?c=<slug> (see AMAZON.link() in src/config/monetization.ts) because the
+    // real &tag= is decided HERE, server-side, per marketplace; the caller
+    // can't know it yet. Re-emitted as Amazon's own &ascsubtag= param on
+    // whichever marketplace this resolves to, so per-page click data
+    // (Plausible/GA4/beacon) can later be joined against Amazon's own order
+    // report by page class, not just by site. Whitelisted to a short slug —
+    // no PII, no free text, nothing else survives into the redirect target.
+    const c = url.searchParams.get("c");
+    if (c && /^[a-z0-9-]{1,32}$/.test(c)) {
+      dest += `&ascsubtag=${c}`;
+    }
+    return go(dest);
   }
 
   // Unknown or non-ISBN shape → home. Never a 404 dead-end on a money path,

@@ -44,7 +44,7 @@ interface Props {
 
 const { book } = Astro.props;
 
-const amazonHref = AMAZON.link(book.amazonAsin);
+const amazonHref = AMAZON.link(book.amazonAsin, "book");
 const coverUrl = bookCover(book, "L");
 const related = relatedBooks(book.slug, 3);
 
