@@ -95,6 +95,27 @@ export const AMAZON = {
   },
 
   /**
+   * Appends Amazon's official custom-tracking param (&ascsubtag=<pageclass>)
+   * so the per-page click data we already have (Plausible/GA4/beacon) can be
+   * joined against Amazon's own order-report data per PAGE CLASS, not just
+   * per SITE — the fleet's biggest measurement gap (per-page revenue is
+   * currently modelled from per-site $/click, not measured). Value is a
+   * short slug (book, compare, palette, art-supplies, ...), no PII, no free
+   * text — safe to expose in a URL.
+   *
+   * Idempotent + no-op when `pageClass` is omitted, matching the discipline
+   * copy-forked from readinglist-school's components/BuyLinks.tsx: a URL
+   * carrying two ascsubtag params is worse than one carrying none (Amazon
+   * takes a single value; which of two survives is not ours to choose).
+   */
+  withSubtag(url: string, pageClass?: string): string {
+    if (!pageClass) return url;
+    if (/[?&]ascsubtag=/.test(url)) return url;
+    const sep = url.includes("?") ? "&" : "?";
+    return `${url}${sep}ascsubtag=${encodeURIComponent(pageClass)}`;
+  },
+
+  /**
    * True only for a real ISBN-10: 9 digits + a check digit (0-9 or X) that
    * satisfies the mod-11 weighted sum. Used to decide which links may be
    * geo-routed — see `link()`.
@@ -129,20 +150,28 @@ export const AMAZON = {
    * The ISBN-10 checksum — not a length check — is what gates the geo path,
    * because it is exactly the property that makes /dp/{id} resolve to the
    * same title on every marketplace.
+   *
+   * @param pageClass optional &ascsubtag= page-class slug (see withSubtag).
+   *   For the geo-routed /go/b/{isbn} path the tag itself is decided
+   *   server-side and never touches this URL — so pageClass instead rides as
+   *   `?c=<pageClass>`, a query param functions/go/b/[[isbn]].js reads and
+   *   re-appends as &ascsubtag= on whichever marketplace it resolves to.
+   *   Same idempotent, no-PII, short-slug discipline either way.
    */
-  link(asinOrUrl: string): string {
+  link(asinOrUrl: string, pageClass?: string): string {
     const isAsin = /^[A-Z0-9]{10}$/.test(asinOrUrl);
     if (isAsin && this.isIsbn10(asinOrUrl) && this.isLive) {
       // First-party, geo-routed. The tag is applied server-side so it can
       // differ per marketplace; it is deliberately absent from the HTML.
-      return `/go/b/${asinOrUrl}`;
+      const goUrl = `/go/b/${asinOrUrl}`;
+      return pageClass ? `${goUrl}?c=${encodeURIComponent(pageClass)}` : goUrl;
     }
     const base = isAsin
       ? `https://www.amazon.com/dp/${asinOrUrl}`
       : asinOrUrl;
     if (!this.isLive) return base;
     const sep = base.includes("?") ? "&" : "?";
-    return `${base}${sep}tag=${this.tag}`;
+    return this.withSubtag(`${base}${sep}tag=${this.tag}`, pageClass);
   },
 } as const;
 
@@ -407,6 +436,111 @@ export function relatedBooks(slug: string, count = 3): CuratedBook[] {
   ];
   return rotated.slice(0, count);
 }
+
+// ============================================================================
+// COLOR REFERENCE LIBRARY — standalone higher-price curated shelf
+// (added 2026-08-15, for /shop/color-reference-library)
+// ============================================================================
+
+/**
+ * Why this page exists, distinct from /shop: /shop converts at 73.3%
+ * (75 users → 55 Amazon clicks, 30d) — the highest-converting surface on the
+ * site — but it is a single page carrying the site's entire book rail while
+ * 2,862 humans/mo sit on /browse and /colors, converting at 0.6-0.9%. Those
+ * readers are mid-task (reading a palette, scanning a hue), not in a buying
+ * mindset; /shop's visitors already arrived wanting to browse the shelf.
+ * This page gives /browse and /colors a second, deliberate entry point into
+ * that same buying mindset, built around named reference works a colour
+ * researcher would actually go looking for by title — "Sanzo Wada colour
+ * dictionary", "Munsell colour system", "Pantone colour reference" — rather
+ * than the general museum-gift-shop framing of /shop.
+ *
+ * Every "why" line below is written fresh for this page's framing (not
+ * copy-pasted from FURTHER_READING) even where the book is the same one
+ * that also appears on /shop — four of six here are Wada Vol 1/2, Albers,
+ * and the Pantone Chronicle Books title, all already verified there. The
+ * other two (Gurney, Syme) are new additions, each ISBN checksum-verified
+ * and cross-checked against a live Open Library bibliographic record before
+ * being added (see verification notes inline). Zero-fabrication per
+ * fleet standard — no guessed ISBNs, no invented editions.
+ *
+ * Deliberately excluded: the Amazon-native Pantone Formula Guide (ASIN
+ * B0BJ13LVD4, already on the /shop art-supplies rail) — a $200+ professional
+ * ink-chip fan guide, not a "reference book" a browsing reader buys on
+ * impulse, and its price sits far outside this shelf's band.
+ */
+export const COLOR_REFERENCE_LIBRARY: CuratedBook[] = [
+  {
+    slug: "a-dictionary-of-color-combinations",
+    title: "A Dictionary of Color Combinations",
+    author: "Sanzo Wada",
+    note: "Seigensha, 2010 reprint of the 1933 original. Japanese import.",
+    amazonAsin: "4861522471",
+    isbn: "4861522471",
+    coverUrl: "/book-covers/wada-vol-1.jpg",
+    why: "The book this entire archive is a digitisation of — 348 combinations, organised by tone rather than hue, the way a working colourist actually sorts them. Every plate is free to browse here; this is the printed original, matte Seigensha binding and all.",
+  },
+  {
+    slug: "a-dictionary-of-color-combinations-vol-2",
+    title: "A Dictionary of Color Combinations Vol. 2",
+    author: "Sanzo Wada",
+    note: "Seigensha, 2020. Japanese import.",
+    amazonAsin: "4861527724",
+    isbn: "4861527724",
+    coverUrl: "/book-covers/wada-vol-2.jpg",
+    why: "Wada's 1935-1938 follow-up sets — 237 further plates across seasonal, fashion, interior and graphic-design colourways — none of them digitised in this archive, so this volume is the only place to see them.",
+  },
+  {
+    slug: "interaction-of-color",
+    title: "Interaction of Color",
+    author: "Josef Albers",
+    note: "50th Anniversary Edition, Yale University Press.",
+    amazonAsin: "0300179359",
+    isbn: "0300179359",
+    olCoverId: 13011097,
+    why: "Wada catalogues what combinations look like; Albers explains why they behave the way they do — the same colour reading as three different values depending on what sits next to it. The exercises are still how art schools teach relational colour.",
+  },
+  {
+    slug: "color-and-light-gurney",
+    title: "Color and Light: A Guide for the Realist Painter",
+    author: "James Gurney",
+    note: "Andrews McMeel, 2010.",
+    amazonAsin: "0740797719",
+    isbn: "0740797719",
+    // Verified 2026-08-15: ISBN-10 0740797719 checksum-valid; Open Library
+    // record confirms title/author/2010 date (OL work matches Amazon
+    // listing at /Color-Light-Realist-Painter-Gurney/dp/0740797719); genuine
+    // cover indexed at covers.openlibrary.org. Content match confirmed via
+    // publisher/retailer copy: the book teaches value/hue/chroma observation
+    // built directly on Munsell's hue-value-chroma notation.
+    why: "Not written by Munsell, and honestly billed as such: this is the working painter's field guide to his hue/value/chroma notation — the version of the Munsell system actually used at an easel rather than in a lab, from an artist who paints for a living.",
+  },
+  {
+    slug: "pantone-the-twentieth-century-in-color",
+    title: "Pantone: The Twentieth Century in Color",
+    author: "Leatrice Eiseman & Keith Recker",
+    note: "Chronicle Books, 2011.",
+    amazonAsin: "0811877566",
+    isbn: "0811877566",
+    // Open Library has no indexed cover for this ISBN; renders the "PT"
+    // fallback tile, same as its existing /shop listing.
+    why: "The Pantone Color Institute's own decade-by-decade account of how colour moved through design, advertising and product from 1900 to 2000 — a reference for tracing a palette back to the decade it belongs to.",
+  },
+  {
+    slug: "werners-nomenclature-of-colours",
+    title: "Werner's Nomenclature of Colours",
+    author: "Patrick Syme (after Abraham Gottlob Werner)",
+    note: "Smithsonian Books, 2018 facsimile of the 1821 edition.",
+    amazonAsin: "1588346218",
+    isbn: "1588346218",
+    // Verified 2026-08-15: ISBN-10 1588346218 checksum-valid; Open Library
+    // record (key OL26951463M) confirms "Werner's nomenclature of colours",
+    // author Patrick Syme, publish_date 2018, matching the Smithsonian
+    // Books facsimile edition sold on Amazon. No indexed OL cover; renders
+    // the fallback tile.
+    why: "The dictionary that came a century before Wada's — Syme matched 110 named colours to birds, minerals and plants so naturalists in the field could describe what they saw precisely. Darwin carried a copy on the Beagle. The same instinct as this whole archive, just 1821's version of it.",
+  },
+] as const;
 
 // ============================================================================
 // DESIGN TOOLS — higher-commission affiliate inventory beyond books

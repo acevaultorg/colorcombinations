@@ -2,6 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaletteCard from "@components/PaletteCard.astro";
+import ShelfCallout from "@components/ShelfCallout.astro";
 import { allPalettes } from "@data/palettes";
 
 const palettes = allPalettes();
@@ -179,8 +180,17 @@ const jsonLd = [
     </div>
   </section>
 
+  <ShelfCallout
+    href="/shop/color-reference-library/"
+    eyebrow="Named references"
+    title="Looking for a specific book?"
+    blurb="Wada's dictionary, the Albers classic, a Munsell field guide, Pantone's design history, and the 1821 dictionary that came a century before Wada's — six references, chosen deliberately."
+    cta="See the color reference library"
+  />
+
   <section class="container-narrow">
     <FurtherReading
+      pageClass="browse"
       title="The colour reference shelf"
       intro="The books behind the dictionary — colour theory, history and the references designers keep close. Recommended on Amazon."
       limit={3}

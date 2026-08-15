@@ -15,7 +15,7 @@
  * directive 2026-05-21: Bookshop.org retired; Amazon is the sole storefront.
  */
 
-import { AMAZON, FURTHER_READING, bookCover } from"@/config/monetization";
+import { AMAZON, FURTHER_READING, bookCover, type CuratedBook } from"@/config/monetization";
 
 export interface Props {
   title?: string;
@@ -26,6 +26,25 @@ export interface Props {
   offset?: number;
   /** Layout variant. */
   variant?:"full" |"compact" |"sidebar";
+  /**
+   * &ascsubtag= page-class slug forwarded to every book's Amazon link (see
+   * AMAZON.link()) — e.g. "palette", "home", "about", "shop", "compare".
+   * Defaults to this component's own honest, coarse bucket name so a caller
+   * that forgets to pass one still reports something true (this render IS a
+   * "further-reading" click) rather than silently pooling into a WRONG class.
+   * Pass the calling page's own class where it's known — this component
+   * renders on ~18 distinct page types, so an unqualified default pools all
+   * of them together and can't answer "which surface actually converts?".
+   */
+  pageClass?: string;
+  /**
+   * Override which array of books renders — defaults to the site-wide
+   * FURTHER_READING shelf. Pass a different CuratedBook[] (e.g.
+   * COLOR_REFERENCE_LIBRARY) to reuse this component's proven render/rotate/
+   * disclosure/compare-link logic for a standalone curated list without
+   * touching the default shelf every other caller relies on.
+   */
+  books?: CuratedBook[];
 }
 
 const {
@@ -34,12 +53,14 @@ const {
   limit,
   offset = 0,
   variant ="full",
+  pageClass ="further-reading",
+  books: sourceBooks = FURTHER_READING,
 } = Astro.props;
 
 // Rotate + slice. Keeps the rendered set stable per-URL (no random) while
 // giving different palette pages different book picks for impression variety.
 const books = (() => {
-  const rotated = [...FURTHER_READING.slice(offset), ...FURTHER_READING.slice(0, offset)];
+  const rotated = [...sourceBooks.slice(offset), ...sourceBooks.slice(0, offset)];
   return typeof limit ==="number" ? rotated.slice(0, limit) : rotated;
 })();
 
@@ -78,7 +99,7 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
       // without an ASIN fall back to an internal anchor (#) so the layout
       // doesn't break, but the FURTHER_READING dataset should have an ASIN
       // for every entry — this branch is defensive only.
-      const amazonHref = book.amazonAsin ? AMAZON.link(book.amazonAsin) :"#";
+      const amazonHref = book.amazonAsin ? AMAZON.link(book.amazonAsin, pageClass) :"#";
 
       return (
         <li class="further-reading__item">

@@ -1,0 +1,94 @@
+---
+/**
+ * ShelfCallout — full-card link banner pointing at a curated shelf page.
+ *
+ * Visual pattern copy-forked from the existing `.pillar-callout` block on
+ * /colors/[slug] (2026-08 era) rather than inventing a new one — same card
+ * shape (eyebrow / title / blurb / arrow-CTA), reused verbatim.
+ *
+ * Added 2026-08-15 to give /browse and /colors — 2,862 humans/mo converting
+ * at 0.6-0.9%, mid-task rather than in a buying mindset — a deliberate,
+ * visually distinct entry point into /shop/color-reference-library, without
+ * touching the embedded FurtherReading rail already on both pages.
+ */
+
+export interface Props {
+  href: string;
+  eyebrow: string;
+  title: string;
+  blurb: string;
+  cta: string;
+}
+
+const { href, eyebrow, title, blurb, cta } = Astro.props;
+---
+
+<section class="section shelf-callout-section" aria-labelledby="shelf-callout-heading">
+  <div class="container-wide">
+    <a href={href} class="shelf-callout">
+      <span class="shelf-callout__eyebrow">{eyebrow}</span>
+      <h2 id="shelf-callout-heading" class="shelf-callout__title">{title}</h2>
+      <p class="shelf-callout__blurb">{blurb}</p>
+      <span class="shelf-callout__cta">{cta} →</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .shelf-callout-section {
+    padding-top: 0;
+  }
+
+  .shelf-callout {
+    display: block;
+    padding: 1.75rem 2rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+
+  .shelf-callout:hover {
+    border-color: var(--color-ink-900);
+    transform: translateY(-1px);
+  }
+
+  .shelf-callout__eyebrow {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-500);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .shelf-callout__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 1.5vw + 0.75rem, 1.625rem);
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+    color: var(--color-ink-900);
+  }
+
+  .shelf-callout__blurb {
+    margin: 0 0 0.75rem;
+    color: var(--color-ink-700);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    max-width: 60ch;
+  }
+
+  .shelf-callout__cta {
+    display: inline-block;
+    color: var(--color-accent-500);
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+
+  .shelf-callout:hover .shelf-callout__cta {
+    color: var(--color-accent-600);
+  }
+</style>
