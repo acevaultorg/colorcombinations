@@ -17,9 +17,6 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 
-const title = "The 2026 Colors of the Year — Every Authority's Pick";
-const description =
-  "Every major authority's official 2026 Color of the Year in one place — Pantone Cloud Dancer, WGSN/Coloro Transformative Teal, and the paint brands (Benjamin Moore, Sherwin-Williams, Behr, Glidden and more) — plus the meta-trend tying 2026 together.";
 
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/color-trends-2026/";
@@ -54,6 +51,34 @@ const PICKS: Pick[] = [
   { brand: "Krylon", name: "Coffee Bean", code: "—", hex: "#4A3B30", exact: false, family: "Dark brown", blurb: "A dark, natural brown spray tone inspired by elements of the earth.", url: "https://www.krylon.com" },
   { brand: "Rust-Oleum", name: "Satin Lagoon", code: "—", hex: "#2E7C84", exact: false, family: "Teal", blurb: "A tranquil-yet-vibrant teal that pairs with both neutrals and bold hues.", url: "https://www.rustoleum.com" },
 ];
+
+/*
+ * TITLE/META — Bing CTR test, 2026-08-24 (TaskPeace mt79i08wgdw5ln).
+ *
+ * WHY THIS CHANGED. Bing is 98.8% of this site's search traffic. Per-page Bing
+ * data showed this page earning 2.95% CTR at position 4.9 while the homepage
+ * earns 6.93% at 4.1 — near-identical rank, 43% of the click rate. The sharpest
+ * signal was the query "color of the year 2026": 841 impressions, 3 clicks,
+ * 0.36% CTR at position 5.2. Page one, and almost nothing earned from it.
+ *
+ * Reading the live SERP settled the cause: every competing result that earns the
+ * click NAMES THE ACTUAL COLOUR in its title — "…Silhouette AF-655 | Benjamin
+ * Moore", "PANTONE 11-4201 Cloud Dancer | Color of the Year 2026", "Color of the
+ * Year 2026 - Hidden Gem | Behr". The old title said "Every Authority's Pick" and
+ * named none. The description already named them; the title is what Bing shows.
+ *
+ * Worth recording what this is NOT: a one-fact zero-click query. Those are
+ * structurally unclickable at any rank and no rewrite helps them. This one is
+ * genuinely plural — every brand picks a different colour — so the answer is
+ * LIST-shaped, which is the shape that does capture. That is why a title fix is
+ * the right lever here and would have been the wrong one on, say, a single-fact
+ * reference page.
+ *
+ * The count is COMPUTED from PICKS, never typed. A hardcoded "13" silently
+ * becomes a lie the moment a 15th authority is added.
+ */
+const title = `Color of the Year 2026: Pantone Cloud Dancer + ${PICKS.length - 1} More`;
+const description = `All ${PICKS.length} official 2026 Colors of the Year in one place — Pantone Cloud Dancer, Benjamin Moore Silhouette, Behr Hidden Gem, Sherwin-Williams Universal Khaki and more.`;
 
 // Luminance → readable swatch text colour (no fabrication; pure math).
 const textOn = (hex: string): string => {

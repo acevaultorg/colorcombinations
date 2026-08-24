@@ -9,7 +9,21 @@ const colors = allColors();
 const grouped = colorsByHue();
 const total = colors.length;
 
-const title = "Color Dictionary";
+/*
+ * TITLE — Bing CTR test, 2026-08-24 (TaskPeace mt79i08wgdw5ln).
+ *
+ * Was the bare "Color Dictionary", earning 1.50% CTR at Bing position 4.9 where
+ * the homepage earns 6.93% at 4.1. Generic, and it named neither the count nor
+ * the source.
+ *
+ * The site's own best-converting Bing queries point straight at the fix:
+ * "japanese dictionary of color combinations" pulls 10.73% CTR and "a dictionary
+ * of color combinations" 6.43%. The audience is looking for Sanzo Wada
+ * specifically — so the title should say so, and say how much is here.
+ *
+ * Count is computed from the archive, never typed.
+ */
+const title = `All ${total} Colors — Sanzo Wada's 1933 Japanese Color Dictionary`;
 const description = `All ${total} named colors from the archive — browse by hue family, see hex values, and discover which palettes use each color. A complete index of the historical color vocabulary from Sanzo Wada's 1933 Dictionary of Color Combinations.`;
 
 const hueOrder = ["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"] as const;

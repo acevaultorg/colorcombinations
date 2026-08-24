@@ -25,6 +25,11 @@ export interface Collection {
   slug: string;
   /** Display title — used as h1 and in meta. */
   title: string;
+  /** Optional <title> override. Falls back to `title` when absent.
+   *  Exists because `title` also renders the on-page H1 and the embed-snippet
+   *  label — so the search title cannot be tuned without it. Added 2026-08-24
+   *  for the Bing CTR test (TaskPeace mt79i08wgdw5ln). */
+  seoTitle?: string;
   /** One-line tagline for cards and hero. */
   tagline: string;
   /** Long-form description for the detail page intro + meta description. */
@@ -1829,6 +1834,12 @@ export const collections: Collection[] = [
   // =========================================================================
   {
     slug: "y2k",
+    // Bing: 541 impressions, 7 clicks, 1.29% CTR at position 4.7. The sibling
+    // /collections/japanese/ earns 6.05% from an identically-shaped title, so the
+    // gap between those two is query-fit, not snippet — this title names the
+    // actual colours the tagline already promises, which is the one lever that
+    // demonstrably moved the trends page's competitors.
+    seoTitle: "Y2K Color Palettes — Bubblegum Pink, Cyber Lilac & Sky Blue",
     title: "Y2K Color Palettes",
     tagline: "Bubblegum pink, cyber lilac, sky blue — the early-2000s revival, historically grounded.",
     description:

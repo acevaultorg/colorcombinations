@@ -54,7 +54,11 @@ if (downloadSwatches.length === 0 || downloadSwatches[0].hex.toLowerCase() !== c
 import { pillarForCollection } from "@data/pillarMap";
 const pillar = pillarForCollection(collection.slug);
 
-const title = collection.title;
+// `collection.title` also renders the H1 (below) and the embed-snippet label, so
+// the search title gets its own optional field rather than overloading this one.
+// Falls back to collection.title when seoTitle is absent — every other collection
+// is unchanged. 2026-08-24, Bing CTR test.
+const title = collection.seoTitle ?? collection.title;
 const description = collection.description.replace(/<[^>]+>/g, "");
 
 // Freshness signals for LLM citation + Google Freshness (Aleyda #9).
