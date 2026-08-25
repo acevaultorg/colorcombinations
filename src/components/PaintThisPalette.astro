@@ -80,7 +80,7 @@ const items: ArtSupply[] = (() => {
           </a>
         </h3>
         <p class="paint-kit__why">{item.why}</p>
-        {variant ==="full" && (
+        {(
           <a
             href={AMAZON.link(item.amazonAsin, "art-supplies")}
             rel="sponsored nofollow noopener"
@@ -231,6 +231,32 @@ const items: ArtSupply[] = (() => {
 
   .paint-kit__link {
     margin-top: 1rem;
+    min-height: 44px;
+  }
+
+  /* The money page (/palettes/[slug]) renders this in the sidebar variant.
+     Before 2026-08-25 the button was gated to variant="full", so the only
+     Amazon affordance there was a text link. Full-width button on the
+     conversion surface. */
+  .paint-kit--sidebar .paint-kit__link {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.75rem;
+  }
+
+  @media (max-width: 719px) {
+    .paint-kit__link {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.875rem;
+    }
+  }
+
+  .paint-kit__name a {
+    display: inline-block;
+    padding-block: 0.5rem;
   }
 
   .paint-kit__disclosure {
@@ -242,7 +268,8 @@ const items: ArtSupply[] = (() => {
   }
 
   .paint-kit--sidebar .paint-kit__disclosure {
-    font-size: 0.6875rem;
+    font-size: 0.8125rem;
+    line-height: 1.55;
     margin-top: 0.75rem;
   }
 </style>
