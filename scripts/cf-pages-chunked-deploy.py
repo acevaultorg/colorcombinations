@@ -25,7 +25,7 @@ Run-from-clean wrapper: scripts/deploy-cf-chunked.sh (build + prune + this).
 import base64, hashlib, json, mimetypes, os, pathlib, sys, time, uuid, urllib.request, urllib.error
 
 ACCOUNT = "72bfd26c5f3c935393a25e5c0dea6039"
-PROJECT = os.environ.get("CF_PAGES_PROJECT", "colorcombinations")
+PROJECT = os.environ.get("CF_PAGES_PROJECT", "color")  # was "askedwell" — copy-fork leftover that would clobber a live sibling
 BRANCH = "main"
 OUT_DIR = pathlib.Path(os.environ.get("OUT_DIR",
     str(pathlib.Path(__file__).resolve().parent.parent / "out"))).resolve()
@@ -49,10 +49,14 @@ API_TOKEN = _load_token()
 MAX_BATCH_FILES = 1000
 # CF_BATCH_MB / CF_UPLOAD_TIMEOUT env-overridable (2026-06-28): on a slow/throttled
 # upload path a 20MB batch POST hangs past the 60s per-batch timeout and every batch
-# fails. Drop to e.g. CF_BATCH_MB=8 + CF_UPLOAD_TIMEOUT=180 (and run in background,
+# fails. PROVEN zero-retry profile on a ~100KB/s throttled uplink (2026-07-14, 14,865
+# files / 640 batches / 9.3h / 1 retry): CF_HTTP2=1 CF_BATCH_MB=3 CF_UPLOAD_TIMEOUT=300.
+# CRITICAL: CF persists NOTHING from a killed run (no deployment = no cached hashes) —
+# the upload must complete in ONE run; never kill/restart to "resume", it restarts from 0.
+# Drop to e.g. CF_BATCH_MB=8 + CF_UPLOAD_TIMEOUT=180 (and run in background,
 # uncapped) for a large changed payload over a slow link. Defaults preserve prior behaviour.
 MAX_BATCH_BYTES = int(os.environ.get("CF_BATCH_MB", "20")) * 1024 * 1024  # 20MB raw (~27MB base64 body) — stays well under
-UPLOAD_TIMEOUT = int(os.environ.get("CF_UPLOAD_TIMEOUT", "60"))
+UPLOAD_TIMEOUT = int(os.environ.get("CF_UPLOAD_TIMEOUT", "180"))  # 60 was a foot-gun on throttled links: a 20MB batch can NEVER finish at ~100KB/s, so every batch exhausted 40 attempts and the run died (2026-07-14). Timeout is a ceiling, not a wait — generous is strictly safer.
 # the ~56MB/connection cap (each batch is a fresh Connection: close), but drops the
 # batch COUNT ~25× (1MB/8-file → ~1600 batches ≈ 23min; 20MB → ~48 batches ≈ 2-4min).
 # The per-batch connection/SSL-handshake overhead (~0.85s) dominated total upload time,
@@ -76,7 +80,11 @@ def http(url, method="GET", headers=None, data=None, timeout=120):
     import subprocess, tempfile
     # --http1.1: CF's assets/upload edge over a flaky/proxied path resets HTTP/2 streams,
     # surfacing as SSL_read/bad-record-mac; HTTP/1.1 + curl's own --retry is far more robust.
-    args = ["curl", "-sS", "--http1.1", "--retry", "3", "--retry-all-errors", "--max-time", str(timeout), "-X", method, "-w", "\n%{http_code}", url]
+    # --http1.1 by default (CF's upload edge historically resets HTTP/2 streams on a
+    # flaky path). But when egress is throttled, HTTP/2 can be several× faster on the
+    # SAME path — CF_HTTP2=1 opts in. Env-gated so default behaviour is unchanged. (2026-07-09)
+    proto = "--http2" if os.environ.get("CF_HTTP2") else "--http1.1"
+    args = ["curl", "-sS", proto, "--retry", "3", "--retry-all-errors", "--max-time", str(timeout), "-X", method, "-w", "\n%{http_code}", url]
     for k, v in (headers or {}).items():
         args += ["-H", f"{k}: {v}"]
     tmp = None
@@ -125,15 +133,11 @@ def check_missing(jwt, hashes):
         miss.extend(r.get("result", []))
     return miss
 
-# Pacing knobs (2026-07-16): CF's upload endpoint volume-throttles a fast burst
-# of batch POSTs from one IP — mid-run every connection then fails for a long
-# window (curl-level errors, NOT auth; the JWT refresh below was never the fix).
-# CF_BATCH_PAUSE seconds between batches avoids tripping it; CF_RETRY_MAX_SLEEP
-# lets backoff wait out a throttle window when it still trips.
-BATCH_PAUSE = float(os.environ.get("CF_BATCH_PAUSE", "0"))
-RETRY_MAX_SLEEP = int(os.environ.get("CF_RETRY_MAX_SLEEP", "30"))
-
 def upload(jwt, batch, attempts=40):
+    # Returns the (possibly refreshed) jwt — a batch that stalls in retries
+    # through a slow window can cross the token's 30-min TTL MID-batch, and
+    # the caller's proactive between-batch refresh never gets a chance. On an
+    # auth failure (403 / "Expired JWT") we mint a fresh token and keep going.
     body = json.dumps(batch).encode(); last = None
     for a in range(1, attempts+1):
         try:
@@ -141,10 +145,15 @@ def upload(jwt, batch, attempts=40):
                      headers={"Authorization": f"Bearer {jwt}", "Content-Type": "application/json", "Connection": "close"},
                      data=body, timeout=UPLOAD_TIMEOUT)
             if not r.get("success"): raise RuntimeError(f"upload failed: {r}")
-            if BATCH_PAUSE: time.sleep(BATCH_PAUSE)
-            return
+            return jwt
         except Exception as e:
-            last = e; s = min(RETRY_MAX_SLEEP, 2**(a-1))
+            last = e; s = min(30, 2**(a-1))
+            if "Expired JWT" in str(e) or "HTTP 403" in str(e):
+                try:
+                    jwt = get_jwt()
+                    sys.stderr.write("  ↻ upload JWT expired mid-batch — refreshed\n")
+                except Exception as je:
+                    sys.stderr.write(f"  ⚠ JWT refresh failed: {str(je)[:80]}\n")
             sys.stderr.write(f"  ⚠ batch {a}/{attempts}: {str(e)[:110]} — retry {s}s\n"); sys.stderr.flush()
             time.sleep(s)
     raise RuntimeError(f"batch failed after {attempts}: {last}")
@@ -190,13 +199,13 @@ def main():
             c, path = idx[h]
             if batch and (len(batch) >= MAX_BATCH_FILES or by + len(c) > MAX_BATCH_BYTES):
                 if time.time() - jwt_at > 1500: jwt = get_jwt(); jwt_at = time.time()  # refresh < 30min
-                upload(jwt, batch); nb += 1; up += len(batch); batch, by = [], 0
+                jwt = upload(jwt, batch); nb += 1; up += len(batch); batch, by = [], 0
                 if nb % 25 == 0: print(f"[+] {up}/{len(miss)} · {nb} batches · {int(time.time()-t0)}s")
             batch.append({"key": h, "value": base64.b64encode(c).decode("ascii"),
                           "metadata": {"contentType": mime(path)}, "base64": True}); by += len(c)
         if batch:
             if time.time() - jwt_at > 1500: jwt = get_jwt()
-            upload(jwt, batch); nb += 1; up += len(batch)
+            jwt = upload(jwt, batch); nb += 1; up += len(batch)
         print(f"[+] uploaded {up} files in {nb} batches · {int(time.time()-t0)}s")
     print("[+] creating deployment…")
     r = create_deployment(manifest)
