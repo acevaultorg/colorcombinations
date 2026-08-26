@@ -147,13 +147,22 @@ export const AMAZON = {
    * that the tag is no longer emitted into the HTML.
    *
    * WHY: gating ISBNs alone left the other half of the surface open — 1,025
-   * fully-tagged amazon.com hrefs across 406 built pages. Amazon reported 306
-   * clicks on this tag in 30d while the first-party beacon captured 24 (book 22,
-   * tool 2) — an 8% capture ratio, the low band the fleet reads as harvesting.
-   * The art-supplies anchors carry data-tool, so public/amazon-track.js does
-   * bucket them; two human clicks in 30 days against 1,025 exposed links is the
-   * links being fetched by something JS-blind, not a measurement gap. Same
-   * harvester the book gate was built for in 73196a4 — it had a second door.
+   * fully-tagged amazon.com hrefs across 406 built pages. That is a real
+   * harvest surface whether or not it is currently exploited, and the gate
+   * mechanism is already proven here (books gated since 2026-08-14).
+   *
+   * ⚠️ CORRECTED SAME DAY: this change was first justified by "306 Amazon
+   * clicks vs 24 beaconed = 8% capture, therefore harvested". That inference
+   * is WRONG. Amazon reported 35 ORDERS on those same 306 clicks, and every
+   * order needs a click — so there were more real human clicks than the beacon
+   * saw. The beacon undercounts; the ratio measures its coverage, not bot
+   * share. Bots do not order at 11.4%.
+   *
+   * RULE: never diagnose harvesting from a capture ratio alone. Check ORDERS
+   * first — orders exceeding beaconed clicks proves the instrument is broken,
+   * not the traffic. Harvesting is indicated only when orders are ~0 AND
+   * capture is low. Do not cite this change as precedent for gating another
+   * earning site on a ratio.
    *
    *   • Full URLs still pass through verbatim, so any hand-built SiteStripe or
    *     bounty URL added later is never rewritten by this function. A

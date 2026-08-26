@@ -17,17 +17,36 @@
 // B-prefix ASIN shipped as a raw, fully-tagged amazon.com href in the HTML:
 //   1,025 harvestable tagged links across 406 built pages.
 //
-// The evidence that they were being harvested, not clicked:
-//   • Amazon reported 306 clicks on colorcombinations-20 in 30d.
-//   • The first-party beacon captured 24 — book 22, tool 2 — an 8% capture
-//     ratio, in the low band the fleet treats as the harvest signature.
-//   • The art-supplies anchors DO carry data-tool, so public/amazon-track.js
-//     buckets them as `tool`. Two human clicks in 30 days against 1,025
-//     exposed links is not a measurement gap; it is the links being fetched
-//     by something that never runs JS.
-//   • That is the same JS-blind, referer-spoofing harvester the book gate was
-//     built for in commit 73196a4 — it simply had a second door open.
+// ⚠️ CORRECTED 2026-08-26, SAME DAY, BEFORE ANYONE BUILDS ON IT.
+// This file originally justified itself with: "Amazon reported 306 clicks, the
+// beacon captured 24 (8%), therefore the links are being harvested." That
+// inference is WRONG and must not be repeated.
 //
+// Amazon also reported 35 ORDERS on those 306 clicks in the same window. Every
+// order requires a click, so there were at least 35 real human clicks — more
+// than the 26 the beacon saw. The beacon is therefore UNDERCOUNTING humans, and
+// the 8% "capture ratio" measures beacon coverage, not bot share. An 11.4%
+// order rate is a healthy human audience, not a harvested one.
+//
+// THE DIAGNOSTIC RULE THAT FOLLOWS (worth more than this file):
+//   A low beacon-capture ratio is NOT evidence of harvesting on its own.
+//   Check the ORDER count first — bots do not order. Orders > beaconed clicks
+//   proves the beacon is the broken instrument, not the traffic.
+//   Only when orders are ~0 AND capture is low is harvesting indicated.
+//
+// SO WHY DOES THIS GATE STILL SHIP? On its own narrower merits, not the false
+// one: 1,025 fully-tagged links in the HTML are a real harvest surface whether
+// or not it is currently being exploited, the gate mechanism is already proven
+// on THIS site (the book path has been gated since 2026-08-14 and those 35
+// orders happened anyway, so it demonstrably does not break conversion), and a
+// normal click sets the cc_g cookie for an instant 302 — only JS-off clients
+// see the interstitial. Low cost, real surface removed.
+//
+// But be honest about the order of events: had the order data been read first,
+// the standing fleet guidance ("do not mass-gate; gating a proven earner risks
+// live revenue against a threat that has not materialised") would have argued
+// for flagging rather than shipping. Keep that guidance. Do NOT cite this file
+// as precedent for gating another earning site on a capture ratio alone.
 // Those clicks land on the FLEET-SHARED Associates account. Invalid activity
 // there is an account-level risk, and termination is -100% of every earning
 // fleet site, not a percentage of this one's $16/mo.
