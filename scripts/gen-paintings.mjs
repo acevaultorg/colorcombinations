@@ -9,9 +9,10 @@
  */
 
 import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const HERE = path.dirname(new URL(import.meta.url).pathname);
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 const palettes = JSON.parse(fs.readFileSync(path.join(HERE, "palettes-selected.json"), "utf8"));
 
 // ---------------------------------------------------------------------------

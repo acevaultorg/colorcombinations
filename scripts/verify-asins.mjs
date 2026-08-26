@@ -66,9 +66,10 @@
  * Exits 0 without CREATORS_API_* credentials so it can never break a build.
  */
 import fs from "fs";
+import { fileURLToPath } from "node:url";
 import path from "path";
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CONFIG = path.join(ROOT, "src/config/monetization.ts");
 const TAG = "colorcombinations-20";
 const JSON_OUT = process.argv.includes("--json");
