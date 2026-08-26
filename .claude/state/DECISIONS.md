@@ -322,3 +322,16 @@ Handoff: all URLs/IDs live behind `isLive` getters in `src/config/monetization.t
 - User accounts / saved palettes
 
 **Rationale:** The Algorithm — simplest change that satisfies the need. V1 must be deployable, indexable, and look credible enough for launch. Everything else can iterate post-launch based on real traffic data.
+
+## 2026-08-26 — Closed the "color of the year 2026" gap without disturbing the live Bing CTR test
+
+**Decision:** task `mta84bc3iqdd1n` proposed a new `/color-of-the-year-2026` page for a Bing-measured query cluster (1,394 imp/mo, 0.57% CTR, ranking position 2-8). That page already exists at `/trends/color-trends-2026` (built + primary-sourced, FAQPage-schema'd) and is 2 days into a 14-day Bing title/CTR experiment (commit `a0d4510`) on this exact cluster. Building a competing new URL would split ranking authority and confound the live experiment.
+
+Closed the gap additively instead, touching nothing on the experimental page's title/description/position surface:
+- `_redirects`: 8 guessed paths → the real page (301)
+- `trends/color-trends-2026.astro`: 1 new `FAQPage` entry for "What are the colours for 2026?" (British spelling, ranking position 2 at 0 clicks, previously unmatched)
+- `index.astro` + `browse.astro`: internal-linked the trends page from both — it had zero incoming links from either, and the task explicitly asked for this
+
+**Verify:** all 8 redirect variants live 301→200; new FAQ entry + both internal links confirmed on the deployed HTML. IndexNow (1,472 URLs) + direct Bing (200) + Yandex (202) submitted.
+
+**Reversibility:** fully reversible, `git revert` commit `25eff5c`. None of it touches the a0d4510 experiment's measured surface — the 14-day read stays clean.
