@@ -7,3 +7,19 @@
 # V2: if sumitome.com is later purchased as an alias, add:
 #   https://sumitome.com/*  https://colorcombinations.org/:splat  301
 /sitemap.xml /sitemap-index.xml 301
+
+# Bing-measured "color of the year 2026" gap (task mta84bc3iqdd1n, 2026-08-26).
+# The site ranks position 2-8 for this cluster on the REAL page at
+# /trends/color-trends-2026 — but every guessed/intuitive path 404s. Catch
+# them rather than leave a searcher or stray external link at a dead end.
+# NOTE: does not touch /trends/color-trends-2026 itself, which is mid a
+# 14-day Bing title/CTR experiment (commit a0d4510, 2026-08-24) — position
+# must not move for that read to stay clean.
+/color-of-the-year-2026 /trends/color-trends-2026 301
+/color-of-the-year /trends/color-trends-2026 301
+/coty-2026 /trends/color-trends-2026 301
+/2026 /trends/color-trends-2026 301
+/pantone-color-of-the-year-2026 /trends/color-trends-2026 301
+/pantone-colour-of-the-year-2026 /trends/color-trends-2026 301
+/color-trends-2026 /trends/color-trends-2026 301
+/colour-of-the-year-2026 /trends/color-trends-2026 301
