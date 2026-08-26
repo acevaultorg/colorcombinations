@@ -34,6 +34,15 @@ interface Pick {
   url: string;
 }
 
+// Each pick now has an ON-SITE destination. This page is the most-cited in the fleet,
+// and every card used to link straight out to the brand — pantone.com, benjaminmoore.com
+// and twelve more — so the reader it attracted was handed to a competitor and
+// /colors/cloud-dancer/ returned 404. The question this page provokes ("fine, what goes
+// WITH it?") is the one this site exists to answer, so the card now leads there and the
+// brand link stays as the authoritative code reference.
+const slugFor = (n: string) => n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const pairUrl = (n: string) => `/colors-that-go-with/${slugFor(n)}/walls/`;
+
 // Verified picks (names/codes/descriptions are each authority's own — see Sources).
 const PICKS: Pick[] = [
   { brand: "Pantone", name: "Cloud Dancer", code: "PANTONE 11-4201", hex: "#F0EEE9", exact: true, family: "Serene white", blurb: "A lofty, serene white symbolising calm, clarity and spaciousness — the first true white named Color of the Year since the program began in 1999.", url: "https://www.pantone.com" },
@@ -191,7 +200,7 @@ const grid = PICKS.slice(2);
 
     <section class="coty-featured container-narrow" aria-label="The two global picks">
       {featured.map((p) => (
-        <a class="coty-feature" href={p.url} target="_blank" rel="noopener noreferrer">
+        <a class="coty-feature" href={pairUrl(p.name)}>
           <span class="coty-feature__swatch" style={`background:${p.hex};color:${textOn(p.hex)}`}>
             <span class="coty-feature__hex">{p.hex}{!p.exact && <em> approx.</em>}</span>
           </span>
@@ -200,6 +209,7 @@ const grid = PICKS.slice(2);
             <span class="coty-feature__name">{p.name}</span>
             {p.code !== "—" && <span class="coty-feature__code">{p.code}</span>}
             <span class="coty-feature__blurb">{p.blurb}</span>
+            <span class="coty-feature__cta">See what goes with {p.name} &rarr;</span>
           </span>
         </a>
       ))}
@@ -216,14 +226,16 @@ const grid = PICKS.slice(2);
       <ul class="coty-grid" role="list">
         {grid.map((p) => (
           <li class="coty-card">
-            <a href={p.url} target="_blank" rel="noopener noreferrer">
+            <a href={pairUrl(p.name)}>
               <span class="coty-card__swatch" style={`background:${p.hex};color:${textOn(p.hex)}`}>
                 <span class="coty-card__hex">{p.hex}{!p.exact && <em> ~</em>}</span>
               </span>
               <span class="coty-card__brand">{p.brand}</span>
               <span class="coty-card__name">{p.name}{p.code !== "—" && <span class="coty-card__code"> · {p.code}</span>}</span>
               <span class="coty-card__blurb">{p.blurb}</span>
+              <span class="coty-card__cta">What goes with it &rarr;</span>
             </a>
+            <a class="coty-card__official" href={p.url} target="_blank" rel="noopener noreferrer">Official {p.brand} code &rarr;</a>
           </li>
         ))}
       </ul>
@@ -317,6 +329,10 @@ const grid = PICKS.slice(2);
   .coty-card__brand { padding: 0.7rem 0.85rem 0; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.62; }
   .coty-card__name { padding: 0.1rem 0.85rem 0; font-size: 1.02rem; font-weight: 620; }
   .coty-card__code { font-weight: 400; opacity: 0.6; font-size: 0.82rem; }
+  .coty-feature__cta { display:block; margin-top:.55rem; font-weight:600; font-size:.9rem; }
+  .coty-card__cta { display:block; margin-top:.5rem; font-weight:600; font-size:.85rem; }
+  .coty-card__official { display:inline-block; margin:.15rem 0 .1rem; font-size:.78rem; opacity:.72; }
+  .coty-card__official:hover { opacity:1; }
   .coty-card__blurb { padding: 0.45rem 0.85rem 1rem; font-size: 0.86rem; line-height: 1.5; opacity: 0.85; }
 
   .coty-trend p { font-size: 1.02rem; line-height: 1.7; max-width: 62ch; }

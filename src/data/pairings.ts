@@ -29,6 +29,30 @@ export interface CommonColor {
 }
 
 export const commonColors: CommonColor[] = [
+  // ---- 2026 colours of the year -------------------------------------------
+  // The 14 authorities' own 2026 picks, lifted from src/pages/trends/color-trends-2026.astro.
+  // WHY: /trends/color-trends-2026/ is the single most-cited page in the fleet (6,064
+  // citations). It named all 14 colours while linking every one of them OFF-SITE to
+  // pantone.com / benjaminmoore.com / behr.com and ten more, and /colors/cloud-dancer/
+  // returned 404 — so every reader it attracted was handed to a competitor. These entries
+  // give each colour a real destination through the pairing machinery that already exists,
+  // answering the question the trends page provokes: "fine, what goes WITH it?"
+  // Names, official codes and hexes are the authorities' own — see that page's Sources.
+  { slug: "cloud-dancer", name: "Cloud Dancer", hex: "#F0EEE9", descriptor: "serene white — Pantone's 2026 colour of the year, PANTONE 11-4201" },
+  { slug: "transformative-teal", name: "Transformative Teal", hex: "#1C7E84", descriptor: "blue-green teal — WGSN + Coloro's 2026 colour of the year, Coloro 100-31-15 (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "silhouette", name: "Silhouette", hex: "#57504C", descriptor: "burnt-umber charcoal — Benjamin Moore's 2026 colour of the year, AF-655" },
+  { slug: "universal-khaki", name: "Universal Khaki", hex: "#CBBBA1", descriptor: "warm tan neutral — Sherwin-Williams's 2026 colour of the year, SW 6150 (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "hidden-gem", name: "Hidden Gem", hex: "#5E7A72", descriptor: "smokey jade — Behr's 2026 colour of the year, N430-6A (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "warm-eucalyptus", name: "Warm Eucalyptus", hex: "#98A189", descriptor: "gray-green — Valspar's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "warm-mahogany", name: "Warm Mahogany", hex: "#7B473C", descriptor: "red-brown — Glidden's 2026 colour of the year, PPG1060-7 (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "midnight-garden", name: "Midnight Garden", hex: "#39463C", descriptor: "deep green — Dunn-Edwards's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "melodious-ivory", name: "Melodious Ivory", hex: "#EEE6D2", descriptor: "warm cream — Dutch Boy's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "divine-damson", name: "Divine Damson", hex: "#4C2E48", descriptor: "deep purple — Graham & Brown's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "epernay", name: "Epernay", hex: "#D6B96C", descriptor: "soft ochre — C2 Paint's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "special-walnut", name: "Special Walnut", hex: "#6B4A30", descriptor: "walnut wood — Minwax's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "coffee-bean", name: "Coffee Bean", hex: "#4A3B30", descriptor: "dark brown — Krylon's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "satin-lagoon", name: "Satin Lagoon", hex: "#2E7C84", descriptor: "teal — Rust-Oleum's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
+
   { slug: "sage-green", name: "Sage Green", hex: "#9CAF88", descriptor: "a soft, grey-tinged green" },
   { slug: "navy", name: "Navy", hex: "#1F2A44", descriptor: "a deep, near-black blue" },
   { slug: "terracotta", name: "Terracotta", hex: "#C66B3D", descriptor: "a warm clay orange-red" },
