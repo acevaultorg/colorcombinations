@@ -139,13 +139,25 @@ export const AMAZON = {
    * site's humans are in the EU, and amazon.com does not geo-redirect, so a
    * EUR 13 book arrives with ~80% import charges and the click dies.
    *
-   * EVERYTHING ELSE keeps the direct, unchanged amazon.com link:
-   *   • B-prefix ASINs (the 5 ART_SUPPLIES items, and the Seigensha Wada
-   *     two-volume set B094NTK2RB) are Amazon-internal identifiers with no
-   *     guarantee the same product exists on amazon.de. Routing them would
-   *     risk a dead or wrong-product landing — strictly worse than .com.
-   *   • Full URLs pass through verbatim, so any hand-built SiteStripe or
-   *     bounty URL added later is never rewritten by this function.
+   * NON-BOOK ASINs (B-prefix: the ART_SUPPLIES items and the Seigensha Wada
+   * set B094NTK2RB) now route through /go/p/{asin} — see functions/go/p/[[asin]].js.
+   * They are still NOT geo-routed, for the original reason: a B-prefix ASIN is
+   * an Amazon-internal identifier with no guarantee the same product exists on
+   * amazon.de, so .com stays the destination. What changed (2026-08-26) is only
+   * that the tag is no longer emitted into the HTML.
+   *
+   * WHY: gating ISBNs alone left the other half of the surface open — 1,025
+   * fully-tagged amazon.com hrefs across 406 built pages. Amazon reported 306
+   * clicks on this tag in 30d while the first-party beacon captured 24 (book 22,
+   * tool 2) — an 8% capture ratio, the low band the fleet reads as harvesting.
+   * The art-supplies anchors carry data-tool, so public/amazon-track.js does
+   * bucket them; two human clicks in 30 days against 1,025 exposed links is the
+   * links being fetched by something JS-blind, not a measurement gap. Same
+   * harvester the book gate was built for in 73196a4 — it had a second door.
+   *
+   *   • Full URLs still pass through verbatim, so any hand-built SiteStripe or
+   *     bounty URL added later is never rewritten by this function. A
+   *     hand-rebuilt bounty URL pays $0, so this function must never touch one.
    *
    * The ISBN-10 checksum — not a length check — is what gates the geo path,
    * because it is exactly the property that makes /dp/{id} resolve to the
@@ -164,6 +176,12 @@ export const AMAZON = {
       // First-party, geo-routed. The tag is applied server-side so it can
       // differ per marketplace; it is deliberately absent from the HTML.
       const goUrl = `/go/b/${asinOrUrl}`;
+      return pageClass ? `${goUrl}?c=${encodeURIComponent(pageClass)}` : goUrl;
+    }
+    if (isAsin && this.isLive) {
+      // Non-book ASIN → first-party product redirect. Not geo-routed (see the
+      // note above); the point is only that the tag leaves the HTML.
+      const goUrl = `/go/p/${asinOrUrl}`;
       return pageClass ? `${goUrl}?c=${encodeURIComponent(pageClass)}` : goUrl;
     }
     const base = isAsin
