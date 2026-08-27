@@ -28,7 +28,18 @@ const featuredCollections = ["websites", "branding", "autumn", "summer", "green"
     previewColors: paletteSetForCollection(c!).slice(0, 3).flatMap(p => p.colors.slice(0, 2).map(col => col.hex)).slice(0, 5),
   }));
 
-const title = "The Dictionary of Color Combinations";
+// ⚠️ ENTITY-MATCH (2026-08-27). The title was "The Dictionary of Color Combinations" —
+// the dataset's name, but never the PERSON the query is about. Measured: wadacolors.com
+// was registered 2026-06-03, i.e. YOUNGER than this domain, ranks for this query with
+// ~100 words and no schema, and the one observable difference is that its title reads
+// "Wada Dictionary of Colors — Sanzo Wada color combinations app". "Sanzo" appears 17x in
+// our body and 0x in our title/h1. The descriptive phrase is KEPT verbatim because it
+// already wins 45-57% Copilot citation share on "dictionary of colour combinations" and
+// "the color dictionary" — the entity is added in front of it, not swapped for it.
+// This is a cheap reversible hypothesis, not a certainty: wadacolors may hold referring
+// domains we cannot see. Metric to watch: Google/Bing position for "sanzo wada" and
+// "dictionary of color combinations" at 30 days.
+const title = "Sanzo Wada's Dictionary of Color Combinations";
 const description = `All ${wadaCount} combinations from Sanzo Wada's 1933 Dictionary of Color Combinations, free to browse, copy, and use. Plus ${totalCount - wadaCount} editorial deep-dives into the Japanese shikisai tradition.`;
 
 const keywords = [
@@ -60,13 +71,14 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title={title} description={description} keywords={keywords} image="/og/index.png" jsonLd={jsonLd}>
+<BaseLayout
+  bareTitle title={title} description={description} keywords={keywords} image="/og/index.png" jsonLd={jsonLd}>
   {/* ==================== HERO ==================== */}
   <section class="hero section">
     <div class="container-wide hero__inner">
       <p class="eyebrow">Sanzo Wada, 1933 — the complete dictionary</p>
       <h1 class="display-hero text-balance">
-        All <em>{wadaCount}</em> historical color combinations, free for working designers.
+        All <em>{wadaCount}</em> of Sanzo Wada's historical color combinations, free for working designers.
       </h1>
       <p class="hero__lede">
         The complete catalog of Sanzo Wada's 1933 <em>Dictionary of Color Combinations</em> — every plate, every hex value, every pairing — plus {totalCount - wadaCount} editorial deep-dives rooted in traditional Japanese shikisai. Free to browse, copy, and export.

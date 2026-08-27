@@ -28,6 +28,10 @@ export interface Props {
   modifiedTime?: string;
   /** Author name for OG article tag. */
   author?: string;
+  /** Use `title` verbatim, without the " — {siteName}" suffix. For pages whose
+   *  title already carries the brand (the homepage), where the suffix would
+   *  repeat "Dictionary of Color Combinations" inside one <title>. */
+  bareTitle?: boolean;
 }
 
 const {
@@ -43,6 +47,7 @@ const {
   publishedTime,
   modifiedTime,
   author = "The Dictionary of Color Combinations editorial",
+  bareTitle = false,
 } = Astro.props;
 
 // Default freshness anchors (matches detail-page JSON-LD).
@@ -51,7 +56,12 @@ const articlePublished = publishedTime ?? SITE_FIRST_PUBLISHED;
 const articleModified = modifiedTime ?? new Date().toISOString();
 
 const siteName = "The Dictionary of Color Combinations";
-const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
+// `bareTitle` is for pages whose own title ALREADY contains the brand — the
+// homepage leads with "Sanzo Wada's Dictionary of Color Combinations", and
+// appending the site name there produced an 84-char title that said "Dictionary
+// of Color Combinations" twice. Google truncates near 60, so the duplicate half
+// was the visible half.
+const fullTitle = bareTitle || title === siteName ? title : `${title} — ${siteName}`;
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).toString();
 
 // Default OG image must be a raster: every social surface (FB / X / LinkedIn /
