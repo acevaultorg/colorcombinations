@@ -3,9 +3,10 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import ColorHarmony from "@components/ColorHarmony.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 import BundleCta from "@components/BundleCta.astro";
 import ShareActions from "@components/ShareActions.astro";
-import { FURTHER_READING } from "@/config/monetization";
+import { FURTHER_READING, ART_SUPPLIES } from "@/config/monetization";
 import { allColors, colorBySlug, palettesForColor } from "@data/colors";
 import { COLOR_STORIES } from "@data/colorStories";
 import { bestTextColorOn, contrastRatio } from "@/lib/color";
@@ -82,6 +83,14 @@ const bookOffset =
   color.slug
     .split("")
     .reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % FURTHER_READING.length;
+
+// Deterministic supply rotation. Seeded off the same slug but shifted by its length
+// so it does NOT move in lockstep with bookOffset — a reader working through several
+// colours should meet the whole catalogue, not the same pairing every time.
+const supplyOffset =
+  (color.slug.split("").reduce((sum, ch) => sum + ch.charCodeAt(0), 0) +
+    color.slug.length) %
+  ART_SUPPLIES.length;
 
 const displayName = color.name + (color.nameJa ? ` (${color.nameJa})` : "");
 const title = displayName;
@@ -418,6 +427,19 @@ const jsonLd = [
           offset={bookOffset}
           title="Go deeper on colour"
           intro={`The books behind a colour like ${color.name} — theory, history and reference designers keep close.`}
+        />
+
+        {/* These 223 colour pages carried only ISBN book links (~$15). The art-supply
+            shelf — the same one /palettes/ already renders, incl. the Pantone Formula
+            Guide — was absent here despite these pages taking ~657 entrances/30d.
+            Order value, not conversion, is what separates earners in this fleet, and a
+            colour reference page is the honest place to name the materials. */}
+        <PaintThisPalette
+          title="Work with this colour"
+          intro={`You have the hex code. These are the materials a study of ${color.name} actually gets made with.`}
+          limit={2}
+          offset={supplyOffset}
+          variant="sidebar"
         />
       </aside>
     </div>
