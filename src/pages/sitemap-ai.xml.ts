@@ -175,6 +175,7 @@ export const GET: APIRoute = () => {
 
   // Tier 0.5 — commercial
   urls.push({ loc: `${SITE}/shop/`, priority: "0.5", changefreq: "monthly" });
+  urls.push({ loc: `${SITE}/gift-guide/`, priority: "0.5", changefreq: "monthly" });
 
   // No /privacy, /terms, /contact, /404, /og/*, /embed/*, /api/*.
   // Privacy + terms are not citation targets; OG/embed/api are

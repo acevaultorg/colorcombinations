@@ -1,0 +1,233 @@
+---
+/**
+ * /gift-guide — "gifts for color lovers & designers"
+ *
+ * WHY THIS PAGE EXISTS (data, not a hunch). BountyPilot lever 5: the 2026-08-24
+ * shelf-verdict read of the Amazon Associates dashboard confirmed this site
+ * IS an Amazon asset — real orders, not just clicks (task mrudi4pywoizow).
+ * The click demand is heavily concentrated on three books (the two Sanzo Wada
+ * dictionaries + Josef Albers's Interaction of Color — see
+ * /compare/wada-vol-1-vs-vol-2 for the full breakdown) with the art-supply
+ * shelf (PaintThisPalette) as the genuine second cluster once the intent-match
+ * shifted from "buy the reference" to "buy the materials to make one."
+ *
+ * This page is the trust-first buying-guide shape the task calls for: the
+ * proven picks named plainly, the compare page linked at the moment someone
+ * is choosing between the two Wada volumes, and the studio shelf for the
+ * reader who's here to make something rather than collect a book. Nothing
+ * new is invented — every item already lives in monetization.ts, verified
+ * live, with its own honest "why."
+ *
+ * Compliance: no prices anywhere (Associates policy), rel="sponsored
+ * nofollow noopener" on every outbound link (inherited from FurtherReading +
+ * PaintThisPalette), FTC disclosure adjacent (both components render their
+ * own), no fake scarcity, no "click to support us" framing.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
+import { FURTHER_READING } from "@/config/monetization";
+
+// The three proven picks, in their proven order (Vol 1, Vol 2, Interaction of
+// Color are the first three entries in FURTHER_READING — see that file's own
+// comments for the click data behind the ordering). Sliced explicitly rather
+// than by position alone so a future reorder of FURTHER_READING can't
+// silently swap this guide's picks without a visible diff here.
+const PROVEN_ASINS = new Set(["4861522471", "4861527724", "0300179359"]);
+const provenBooks = FURTHER_READING.filter((b) => PROVEN_ASINS.has(b.amazonAsin));
+
+const title = "Gift guide for color lovers & designers";
+const description =
+  "What to actually get someone who reads color plates for fun: Sanzo Wada's two dictionaries, Josef Albers on how colors behave together, and the materials a color study gets made with. No filler picks — every item here is one people already choose.";
+
+const pageUrl = new URL("/gift-guide", Astro.site).toString();
+
+const faq = [
+  {
+    q: "What's the single best gift for someone who loves color theory?",
+    a: "A Dictionary of Color Combinations Vol. 1 by Sanzo Wada — it's the book most people mean when they say \"Wada,\" the canonical 1933 set every other color reference cites, and a genuinely beautiful printed object (Japanese binding, matte plates). If they already own it, Vol. 2 is the better gift: 237 further plates that don't overlap with Vol. 1 and aren't reproduced anywhere on this site.",
+  },
+  {
+    q: "What if they already have both Wada volumes?",
+    a: "Josef Albers's Interaction of Color. It's a different kind of book — instructional rather than referential — and the one most designers eventually want alongside a Wada set: Wada gives you combinations, Albers explains why they read the way they do next to each other.",
+  },
+  {
+    q: "What's a good gift for someone who makes things, not just collects references?",
+    a: "Look at the studio shelf below instead of the books. A gansai watercolor set, a pad of cold-press paper, and a Pantone Formula Guide take someone from looking at a color plate to actually mixing and printing one — the materials a color study gets made with, not another book on the shelf.",
+  },
+  {
+    q: "Are these affiliate links?",
+    a: "Yes — Amazon Associates links, disclosed on this page and on the linked sections. Your price is unchanged; a small commission on qualifying purchases helps keep this archive free. We never show a price here (Amazon's own policy for affiliate content) and never suggest a pick that doesn't genuinely fit.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: pageUrl,
+    datePublished: "2026-08-27",
+    dateModified: "2026-08-27",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: [
+        ...provenBooks.map((b, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "Book",
+            name: b.title,
+            author: { "@type": "Person", name: b.author },
+          },
+        })),
+      ],
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Gift guide", item: pageUrl },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} image="/og-default.png" jsonLd={jsonLd}>
+  {/* ============ HERO — direct answer first (AEO/featured-snippet shape) ============ */}
+  <section class="gift-hero">
+    <div class="container-wide gift-hero__inner">
+      <p class="eyebrow">Gift guide</p>
+      <h1 class="display-hero text-balance">For color lovers & designers</h1>
+      <p class="gift-hero__lede">
+        <strong>Short answer: Sanzo Wada's Dictionary of Color Combinations
+        (Vol. 1 if they're new to it, Vol. 2 if they already own it), or
+        Josef Albers's Interaction of Color if they have both.</strong> If
+        they're a maker rather than a collector, skip the books and go
+        straight to the studio shelf below — the materials a color study
+        actually gets made with. No filler picks here; every item on this
+        page is one people who read color plates for fun already choose.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ HOW THESE WERE PICKED ============ */}
+  <section class="gift-prose section">
+    <div class="container-prose">
+      <h2 class="gift-h2">How these were picked</h2>
+      <p>
+        Nothing on this page is a guess. The three books below are the ones
+        readers of this archive already reach for — the two Wada dictionaries
+        and the Albers are, by a wide margin, the titles people click through
+        to Amazon from a palette page. (If the question is specifically
+        <em>which</em> Wada volume, <a href="/compare/wada-vol-1-vs-vol-2">the
+        full plate-by-plate comparison</a> answers it in more detail than
+        belongs on a gift guide.)
+      </p>
+      <p>
+        The studio shelf exists because a book isn't always the right gift.
+        Someone who reads a 1933 color plate is often about to try mixing
+        that palette themselves, not add another reference to a shelf — so
+        the materials below are picked for that reader specifically: pans
+        that behave like the flat printed color Wada's plates were made in,
+        paper that survives a wet wash, and the Pantone guide that translates
+        a palette from screen to print.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ THE THREE BOOKS ============ */}
+  <FurtherReading
+    pageClass="gift-guide"
+    title="The three books"
+    intro="Wada Vol. 1, Wada Vol. 2, and the Albers — in the order most people actually want them."
+    books={provenBooks}
+  />
+
+  {/* ============ THE STUDIO SHELF ============ */}
+  <PaintThisPalette
+    title="For the person who makes things"
+    intro="Gansai watercolors, the paper that takes them, and the print reference that matters once a palette leaves the screen."
+  />
+
+  {/* ============ FAQ ============ */}
+  <section class="gift-prose section">
+    <div class="container-prose">
+      <h2 class="gift-h2">Questions, answered</h2>
+      {faq.map((item) => (
+        <details class="gift-faq">
+          <summary>{item.q}</summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .gift-hero {
+    padding-block: var(--spacing-section);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .gift-hero__inner {
+    max-width: 72ch;
+  }
+
+  .gift-hero__lede {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: var(--color-ink-700);
+    margin-top: 1.25rem;
+  }
+
+  .gift-h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.375rem, 2vw + 1rem, 1.75rem);
+    line-height: 1.2;
+    margin: 0 0 1rem;
+  }
+
+  .gift-prose .container-prose > p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    margin: 0 0 1rem;
+  }
+
+  .gift-faq {
+    border-bottom: 1px solid var(--color-border);
+    padding-block: 0.875rem;
+  }
+
+  .gift-faq summary {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .gift-faq p {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-ink-700);
+    margin: 0.6rem 0 0;
+  }
+</style>
