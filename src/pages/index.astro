@@ -125,6 +125,12 @@ const jsonLd = {
 
       <div class="featured__footer">
         <a href="/browse" class="btn btn-secondary">See all {totalCount} combinations →</a>
+        {/* Routing, not persuasion: /shop turns entrances into affiliate clicks ~100x
+            better than this page (2.06 vs 0.019 per entrance, 30d), yet only ~1.5% of
+            home entrances reached it — every other /shop link sat below 64% of the
+            document. Wada's own volumes are this archive's subject, so surfacing them
+            beside "see all combinations" is editorial routing, not an upsell. */}
+        <a href="/shop" class="btn btn-secondary">The books behind the archive →</a>
       </div>
     </div>
   </section>
