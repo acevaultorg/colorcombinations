@@ -25,10 +25,18 @@ Run-from-clean wrapper: scripts/deploy-cf-chunked.sh (build + prune + this).
 import base64, hashlib, json, mimetypes, os, pathlib, sys, time, uuid, urllib.request, urllib.error
 
 ACCOUNT = "72bfd26c5f3c935393a25e5c0dea6039"
-PROJECT = os.environ.get("CF_PAGES_PROJECT", "color")  # was "askedwell" — copy-fork leftover that would clobber a live sibling
-BRANCH = "main"
+PROJECT = os.environ.get("CF_PAGES_PROJECT", "colorcombinations")
+# ^ VERIFIED against the CF API 2026-08-28: the account has NO project named
+# "color" (8000007 Project not found) — that default was a second copy-fork
+# leftover and every chunked deploy from this repo would have failed on it.
+# The project serving colorcombinations.org is "colorcombinations"
+# (domains: colorcombinations.pages.dev, colorcombinations.org).
+BRANCH = os.environ.get("CF_BRANCH", "main")
+# ^ env-overridable so a risky change (e.g. a new _worker.js, which takes over
+# ALL routing and can 404 the whole site) can be deployed to a PREVIEW branch
+# and verified before production. Required by rules/cloudflare-pages-epipe.md.
 OUT_DIR = pathlib.Path(os.environ.get("OUT_DIR",
-    str(pathlib.Path(__file__).resolve().parent.parent / "out"))).resolve()
+    str(pathlib.Path(__file__).resolve().parent.parent / "dist"))).resolve()
 
 def _load_token() -> str:
     # Pages:Edit token. Prefer explicit Pages vars (the session $CLOUDFLARE_API_TOKEN

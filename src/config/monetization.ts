@@ -819,10 +819,68 @@ export interface ArtSupply {
   /** One honest sentence on why it belongs next to a colour plate. */
   why: string;
   /** Grouping used for the section split. */
-  group: "paint" | "print";
+  group: "paint" | "print" | "calibrate";
 }
 
 export const ART_SUPPLIES: ArtSupply[] = [
+  // ── Colour management ─────────────────────────────────────────────────────
+  // Basket-size note (2026-08-28): measured across the fleet's six earning
+  // sites, commission RATE spans 1.34x (2.97-3.99%) while ITEM PRICE spans
+  // 29x ($10.94 - $322). Earnings track the price of the thing in the cart,
+  // not the rate and not the CTA. This site had the fleet's second-largest
+  // clean human pool (4,162/30d) on a $21 average item — the lowest yield per
+  // visitor in the fleet. These items are the genuine high-basket end of the
+  // SAME intent: a reader holding hex codes who needs them to survive the trip
+  // to print or to another screen. All ASINs read live off the /dp/ page
+  // 2026-08-28 (exact title + in-stock state below); low-stock items excluded
+  // on purpose — datacolor SpyderCheckr showed "only 14 left" and was dropped.
+  {
+    name: "Color Bridge Guide Set — coated & uncoated",
+    brand: "Pantone",
+    amazonAsin: "B0BJ147GF9",
+    verifiedTitle:
+      "Pantone GP6102B Color Bridge Guide Set Coated & Uncoated, Multi-Colour",
+    why: "This site hands you hex codes. Color Bridge is the deck that shows what an RGB or HTML value becomes as CMYK ink, and which Pantone spot sits nearest it — the translation step between a screen palette and a printed one. Coated and uncoated because the same ink is not the same colour on both stocks.",
+    group: "print",
+  },
+  {
+    name: "Color Bridge Guide — coated",
+    brand: "Pantone",
+    amazonAsin: "B0BJ12GV85",
+    verifiedTitle:
+      "Pantone Color Bridge Guide Coated | Pantone to CMYK, RGB & HTML Color Matching Fan Deck for Graphic Design, Branding & Print | GG6103B",
+    why: "The coated half on its own — Pantone to CMYK, RGB and HTML in a single fan. The smaller entry point if your work only ever goes onto coated stock.",
+    group: "print",
+  },
+  {
+    name: "ColorChecker Studio spectrophotometer",
+    brand: "Calibrite",
+    amazonAsin: "B0973JVF85",
+    verifiedTitle:
+      "Calibrite ColorChecker Studio Spectrophotometer for Complete Color Management for Display, Projector, Printer and Scanner Profiling",
+    why: "A spectrophotometer profiles the whole chain — display, printer, projector, scanner — so the colour you picked is the colour that comes out the other end. The full-fidelity option for work that ends up printed.",
+    group: "calibrate",
+  },
+  {
+    name: "Display Plus HL colorimeter kit",
+    brand: "Calibrite",
+    amazonAsin: "B0DPN7L6L5",
+    verifiedTitle:
+      "Calibrite Video Photo Kit with Display Plus HL Colorimeter and ColorChecker Passport Video 2, 10,000 Nit Monitor Calibration, Camera Color Matching",
+    why: "A colorimeter calibrates the monitor itself. Worth saying plainly: an uncalibrated screen is the most common reason a palette that looked right on your desk looks wrong everywhere else.",
+    group: "calibrate",
+  },
+  {
+    name: "ColorChecker Passport Photo 2",
+    brand: "Calibrite",
+    amazonAsin: "B0973HSH3V",
+    verifiedTitle:
+      "Calibrite ColorChecker Passport Photo 2 Portable Color Calibration Kit for Photo and Video, 4 Target Set for White Balance, Exposure and Creative Look",
+    why: "A pocket target for fixing white balance and exposure at the moment of capture — the step before any colour correction, if your palette starts from a photograph rather than a screen.",
+    group: "calibrate",
+  },
+
+  // ── Making ────────────────────────────────────────────────────────────────
   {
     name: "Gansai Tambi 24 — Art Nouveau",
     brand: "Kuretake",
