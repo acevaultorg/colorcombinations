@@ -335,3 +335,17 @@ Closed the gap additively instead, touching nothing on the experimental page's t
 **Verify:** all 8 redirect variants live 301→200; new FAQ entry + both internal links confirmed on the deployed HTML. IndexNow (1,472 URLs) + direct Bing (200) + Yandex (202) submitted.
 
 **Reversibility:** fully reversible, `git revert` commit `25eff5c`. None of it touches the a0d4510 experiment's measured surface — the 14-day read stays clean.
+
+## 2026-08-27 — Shipped /gift-guide after confirming the 2026-08-24 shelf verdict cleared its gate
+
+**Decision:** task `mry1jdydl0xfb9` ("gift-guide intersection around the proven Wada book cluster") was explicitly written as gated: build only if the linked verdict task (`mrudi4pywoizow`) showed the audience converts. Read that task's `result` field before starting anything — it was `status: done`, verdict "the site IS an Amazon asset" (306 clicks -> 35 orders -> $16.18/30d). Gate cleared; built the page.
+
+Reused rather than invented: `FurtherReading` (books={the exact 3 proven ASINs, sliced from `FURTHER_READING`}) and `PaintThisPalette` for the studio shelf — both already carry the compliant rel/disclosure/no-price rendering, so the new page adds zero new compliance surface to audit. Cross-linked from `/compare/wada-vol-1-vs-vol-2` and the footer Shop column so it isn't an orphan; registered in `sitemap-ai.xml` at the same 0.5 commercial tier as `/shop`.
+
+**Collision note:** the working tree carried an unrelated, uncommitted homepage title/H1 edit (`src/pages/index.astro`, a same-day entity-match SEO hypothesis) from a different in-flight session. Left it alone — staged and committed only the 4 files this task actually touched, pathspec-scoped, never `git add -A`.
+
+**IndexNow:** submitted only the 2 genuinely-changed content URLs (`/gift-guide/`, `/compare/wada-vol-1-vs-vol-2/`) directly via the API rather than running `scripts/indexnow-ping.mjs`'s full-sitemap blast (2128 URLs) — the footer/sitemap-ai edits don't warrant re-crawling every page, and Bing's batch-abuse detector is tuned to exactly this kind of oversized submission on a small real change (see fleet rule: prefer the changed set).
+
+**Verify:** build clean (2128 pages, 0 typecheck errors) · no content leaks · all 8 outbound links resolve to the right `/go/b/` + `/go/p/` shapes with `&c=` subtags · 3 JSON-LD blocks parse · deployed (Worker + Functions bundle) · live content + both gate shapes verified WITHOUT manufacturing a real Associates click (byte-compared the live interstitial against source; ran `tokenFresh()` as pure computation with a genuinely browser-minted token). Commit `c39682b`.
+
+**Reversibility:** fully reversible, `git revert c39682b`. No monetization-layer change — this is a conversion-surface ship on the existing Amazon Associates layer.

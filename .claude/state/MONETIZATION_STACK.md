@@ -53,3 +53,20 @@ None yet.
 
 ### Layer 3 Activation — 2026-04-24 16:25 UTC
 Robots.txt AI crawler allowlist deployed LIVE per v19.4 bot-harvest. 10 crawlers explicitly allowed (GPTBot, ClaudeBot, Claude-Web, PerplexityBot, Googlebot-Extended, Applebot-Extended, CCBot, Amazonbot, Bytespider, Meta-ExternalAgent). Verified via curl. Workaround path used (see rules/vercel-acevaultorg-deploy-workaround.md).
+
+### /gift-guide ship — 2026-08-27 (this file is stale above this line — the site's real revenue model as of mid-2026 is Amazon Associates, not the April AdSense/Ezoic plan described above; not corrected here, out of scope for this entry)
+Shipped `/gift-guide` (BountyPilot lever 5, task mry1jdydl0xfb9), gated behind
+task mrudi4pywoizow's shelf verdict which resolved 2026-08-24 positive: 306
+Amazon-counted clicks -> 35 orders -> $16.18 commissions/30d, confirming this
+site IS a converting Amazon asset, not the "clicks but zero orders" dead-end
+scenario. Page bundles the 3 proven-cluster ASINs (Wada Vol 1 4861522471,
+Wada Vol 2 4861527724, Interaction of Color 0300179359 — ~140/170 site-wide
+affiliate clicks per the compare page's own header) with the ART_SUPPLIES
+studio shelf, trust-first buying-guide shape, zero prices, rel=sponsored on
+every link, FTC disclosure inherited from FurtherReading + PaintThisPalette.
+No new revenue layer — this is an offer-quality/conversion-surface ship on
+the existing Amazon Associates layer, not a new monetization layer.
+Commit c39682b, deploy https://86a22f18.colorcombinations.pages.dev, live
+https://colorcombinations.org/gift-guide/. Both /go/b/ and /go/p/ link
+shapes verified live via byte-compare + pure-computation tokenFresh check
+(no real click manufactured on the shared Associates account).
