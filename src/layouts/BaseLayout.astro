@@ -142,6 +142,12 @@ const jsonLdArray = jsonLd
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
     <meta name="generator" content={Astro.generator} />
+    {/* Bing Webmaster verification. ACCOUNT-level token (the same value verifies every
+        fleet property), so this is safe to ship site-wide. It is the prerequisite for
+        Bing sitemap submission and the AI Performance report — and ChatGPT cites via the
+        Bing index, so for this site it matters more than Google: colorcombinations ranks
+        on Bing/DDG/Ecosia and is cited by ChatGPT while getting ~0 Google sessions. */}
+    <meta name="msvalidate.01" content="E99F14F043F0" />
 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />

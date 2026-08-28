@@ -238,7 +238,7 @@ export const AMAZON = {
  */
 export const PRIME_BOUNTY = {
   /** SiteStripe full link, generated 2026-08-27 for tag colorcombinations-20. */
-  url: "https://www.amazon.com/amazonprime?&linkCode=ll2&tag=colorcombinations-20&linkId=ce478672978b2ae0d059c64c9d3641f5&language=en_US&ref_=as_li_ss_tl",
+  url: "/go/prime",
 
   /** Honest, page-matched pitch. No price, no urgency, no "support us". */
   pitch:
