@@ -173,10 +173,21 @@ def upload(jwt, batch, attempts=40):
 # gate on 2026-08-26: every /go/ link 404'd because the worker was uploaded as a
 # static asset and Pages never entered advanced mode. Keep this list in sync with
 # wrangler's own special-file handling.
-# Scoped deliberately to the two ADVANCED-MODE files. _headers/_redirects are
-# read fine from the asset manifest on these sites today, and moving them to
-# form fields unverified would risk a header/redirect regression for no gain.
-SPECIAL_FILES = ("_worker.js", "_routes.json")
+# 2026-08-26: the "read fine from the asset manifest" claim above was never
+# actually verified and was WRONG. Live-tested on 2 sites (zipradar +
+# readinglist), and re-confirmed 2026-08-29 on sourcescore.org via a real
+# deploy through this exact fix (redirects fired correctly post-deploy): a
+# manifest-only _redirects is fetchable at its own URL (200, correct
+# content) but its RULES never fire -- every path that should 301 instead
+# 404s, on every deployment, indefinitely. Same root cause as the
+# _worker.js incident above: CF Pages only compiles _redirects into routing
+# config when it arrives as its own multipart field. _headers is untested
+# here but almost certainly the same failure shape -- added defensively.
+# Propagated from zipradar-org (2026-08-29, task mtdiyyenkatwon) after a
+# fleet sweep found this site ships 9 real rules in public/_redirects
+# (incl. /sitemap.xml and the 2026-08-26 color-of-the-year cluster) that
+# the stale list would silently kill on the next deploy.
+SPECIAL_FILES = ("_worker.js", "_routes.json", "_redirects", "_headers")
 
 def create_deployment(manifest, specials=None):
     b = f"----cf{uuid.uuid4().hex}"; parts = []
