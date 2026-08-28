@@ -203,6 +203,56 @@ export const AMAZON = {
 } as const;
 
 // ============================================================================
+// PRIME BOUNTY — flat-fee lane, independent of order value (added 2026-08-28)
+// ============================================================================
+
+/**
+ * Why this exists: this site's commission problem is NOT conversion. The
+ * Amazon read shows 306 clicks → 35 ORDERS (11.4%), which is a healthy
+ * audience that acts. It earns ~$16/mo anyway because those 35 orders
+ * average ~$0.46 of commission each — the items are cheap and books pay
+ * 4.5%. Order VALUE is the ceiling here, not traffic and not the CTA.
+ *
+ * A bounty sidesteps that ceiling entirely: it pays a FLAT fee per free-trial
+ * sign-up, earned off clicks the site already gets, and is unaffected by what
+ * (or whether) the reader subsequently buys. It stacks with the commission
+ * shelf, it never replaces it.
+ *
+ * The pitch is honest and tied to this page's own moment: someone who has
+ * just taken the hex codes and is ordering paint or paper genuinely benefits
+ * from fast free delivery and free returns, because a colour that arrives
+ * wrong is the failure mode of that purchase.
+ *
+ * HARD RULES (see ~/.claude memory `reference_prime_bounty_lane_rollout`):
+ *  - This URL is SiteStripe-generated and must stay BYTE-EXACT. The `linkId`
+ *    is issued server-side and cannot be invented — a hand-rebuilt bounty URL
+ *    pays $0. Never edit the linkId, never swap another site's tag into it.
+ *  - Do NOT route it through `/go/`. Unlike the ASIN links above, the bounty
+ *    keeps its raw href; `rel="sponsored nofollow"` is the control that
+ *    matters and a first-party hop buys nothing here.
+ *  - No price, no scarcity language, disclosure adjacent to the link.
+ *  - Bounties are NOT tag-attributable — every one reports under `Others` in
+ *    the Associates dashboard. The per-site tag is correct hygiene, not a
+ *    measurement channel. Do not expect this to show up under
+ *    colorcombinations-20.
+ */
+export const PRIME_BOUNTY = {
+  /** SiteStripe full link, generated 2026-08-27 for tag colorcombinations-20. */
+  url: "https://www.amazon.com/amazonprime?&linkCode=ll2&tag=colorcombinations-20&linkId=ce478672978b2ae0d059c64c9d3641f5&language=en_US&ref_=as_li_ss_tl",
+
+  /** Honest, page-matched pitch. No price, no urgency, no "support us". */
+  pitch:
+    "Ordering paint or paper for this palette? Amazon Prime's free 30-day trial includes fast free delivery and free returns — useful when a colour has to be right and a week's wait is how you find out it isn't.",
+
+  /** Link text. */
+  cta: "Start the free 30-day trial",
+
+  /** FTC disclosure, rendered adjacent to the link in every variant. */
+  disclosure:
+    "Affiliate link — we may earn a commission on qualifying sign-ups, at no extra cost to you. Current terms are on Amazon's page.",
+} as const;
+
+// ============================================================================
 // PRINTS — deferred, activated after first sales validate demand
 // ============================================================================
 
