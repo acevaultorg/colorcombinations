@@ -203,22 +203,26 @@ def mime(p):
 def main():
     t0 = time.time()
 
-# HARD GUARD (2026-08-28) — this repo's entire outage class is "the worker
-# didn't ship": /go/* 404'd in production because a chunked deploy shipped
-# static assets without the Function (rules/cloudflare-pages-epipe.md). The
-# generator (scripts/make-worker.mjs) emits dist/_worker.js; if functions/
-# exists but the worker is absent, deploying would reproduce the outage —
-# silently, with exit 0. So refuse. Escape hatch for a deliberate
-# worker-less deploy: SKIP_WORKER_CHECK=1.
-_repo = pathlib.Path(__file__).resolve().parent.parent
-if (_repo / "functions").is_dir() and not (OUT_DIR / "_worker.js").is_file():
-    if os.environ.get("SKIP_WORKER_CHECK") != "1":
-        print("[!] ABORT: functions/ exists but dist/_worker.js is MISSING.")
-        print("    A chunked (direct-upload) deploy CANNOT compile Pages Functions —")
-        print("    deploying now would 404 every /go/* buy link and /api/subscribe.")
-        print("    Fix: node scripts/make-worker.mjs   (or npm run build, which runs it)")
-        print("    Deliberate worker-less deploy: SKIP_WORKER_CHECK=1")
-        sys.exit(1)
+    # HARD GUARD (2026-08-28, re-landed correctly) — this repo's outage class is
+    # "the worker didn't ship": /go/* 404'd in production because a chunked
+    # deploy shipped static assets without the Function (see
+    # rules/cloudflare-pages-epipe.md). scripts/make-worker.mjs emits
+    # dist/_worker.js; if functions/ exists but the worker is absent, deploying
+    # would reproduce the outage silently, with exit 0. So refuse.
+    # NOTE: the first landing of this guard (c9f9565) was inserted at column 0
+    # inside this function, which turned the whole deploy body into the dead
+    # branch of this if — every deploy exited 0 having done NOTHING. Same
+    # failure smell it was written to prevent: exit 0 that didn't do the job.
+    # Verify placement by RUNNING the script, not just parsing it.
+    repo = pathlib.Path(__file__).resolve().parent.parent
+    if (repo / "functions").is_dir() and not (OUT_DIR / "_worker.js").is_file():
+        if os.environ.get("SKIP_WORKER_CHECK") != "1":
+            print("[!] ABORT: functions/ exists but dist/_worker.js is MISSING.")
+            print("    A chunked (direct-upload) deploy CANNOT compile Pages Functions -")
+            print("    deploying now would 404 every /go/* buy link and /api/subscribe.")
+            print("    Fix: node scripts/make-worker.mjs   (or npm run build, which runs it)")
+            print("    Deliberate worker-less deploy: SKIP_WORKER_CHECK=1")
+            sys.exit(1)
 
     print(f"[+] chunked deploy · project={PROJECT} · out={OUT_DIR}")
     entries = walk(OUT_DIR)
