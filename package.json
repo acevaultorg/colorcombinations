@@ -13,7 +13,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "indexnow": "node scripts/indexnow-ping.mjs",
-    "deploy": "npm run build && CLOUDFLARE_API_TOKEN=\"${CF_PAGES_TOKEN:?CF_PAGES_TOKEN required for a Pages deploy}\" npx wrangler pages deploy dist --branch main --commit-dirty=true --project-name=colorcombinations && npm run indexnow",
+    "deploy": "npm run build && CF_PAGES_TOKEN=\"${CF_PAGES_TOKEN:?CF_PAGES_TOKEN required for a Pages deploy}\" CF_BATCH_MB=6 python3 scripts/cf-pages-chunked-deploy.py && npm run indexnow",
+  "_deploy_note": "Uses the CHUNKED deployer, not `wrangler pages deploy` (2026-08-28). Raw wrangler CANNOT deploy this site: dist is ~174MB and CF Pages closes the upload socket at a hard ~56MB per connection. Worse, the image rasterization is not byte-deterministic, so every full build re-uploads EVERYTHING (`3961 need upload (0 cached)`) — the changed payload is always way over the cap, so wrangler fails deterministically, not intermittently. Measured: wrangler died at 2490/3959 files; the chunked deployer shipped all 3961 in 29 batches / 65s. A failed wrangler upload does NOT publish, so the symptom is a red deploy, not a broken site.",
     "make-worker": "node scripts/make-worker.mjs",
     "predeploy": "node scripts/predeploy-git-guard.mjs"
   },
