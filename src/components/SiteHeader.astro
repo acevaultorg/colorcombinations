@@ -182,7 +182,21 @@ const links = [
     padding-block: 0.4rem;
   }
 
-  @media (max-width: 767px) {
+  /* Breakpoint is 859px, not 767px, because the desktop nav's INTRINSIC width is
+     ~837px — seven nowrap links plus 1.75rem gaps. Measured with
+     tooling/55-fleet-dashboard/scripts/viewport-sweep.mjs:
+
+       width   document overflow   nav right edge
+       760     0                   (mobile menu — clean)
+       768     69px                837   <- iPad portrait, horizontal scroll
+       800     38px                838
+       860     0                   841   <- first width where it genuinely fits
+
+     At 767px the mobile menu correctly took over, so 375 and desktop both looked
+     fine and the defect sat in the 768-840 band — which is exactly iPad portrait.
+     `rules/fleet-mobile-standard.md` requires the body never scroll horizontally.
+     859 is the measured fit point, not a guess: 860 is the first clean width. */
+  @media (max-width: 859px) {
     .site-header__nav-desktop {
       display: none;
     }
