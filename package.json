@@ -14,7 +14,8 @@
     "astro": "astro",
     "indexnow": "node scripts/indexnow-ping.mjs",
     "deploy": "npm run build && CLOUDFLARE_API_TOKEN=\"${CF_PAGES_TOKEN:?CF_PAGES_TOKEN required for a Pages deploy}\" npx wrangler pages deploy dist --branch main --commit-dirty=true --project-name=colorcombinations && npm run indexnow",
-    "make-worker": "node scripts/make-worker.mjs"
+    "make-worker": "node scripts/make-worker.mjs",
+    "predeploy": "node scripts/predeploy-git-guard.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
