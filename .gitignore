@@ -22,3 +22,7 @@ bundle-source/*.zip
 .idea/
 # Local wrangler cache — never committed.
 .wrangler/
+
+# IndexNow: build metadata (a producer would write this); manifest IS tracked
+# so change detection survives a deploy from another machine.
+.changed-urls.json
