@@ -202,6 +202,24 @@ def mime(p):
 
 def main():
     t0 = time.time()
+
+# HARD GUARD (2026-08-28) — this repo's entire outage class is "the worker
+# didn't ship": /go/* 404'd in production because a chunked deploy shipped
+# static assets without the Function (rules/cloudflare-pages-epipe.md). The
+# generator (scripts/make-worker.mjs) emits dist/_worker.js; if functions/
+# exists but the worker is absent, deploying would reproduce the outage —
+# silently, with exit 0. So refuse. Escape hatch for a deliberate
+# worker-less deploy: SKIP_WORKER_CHECK=1.
+_repo = pathlib.Path(__file__).resolve().parent.parent
+if (_repo / "functions").is_dir() and not (OUT_DIR / "_worker.js").is_file():
+    if os.environ.get("SKIP_WORKER_CHECK") != "1":
+        print("[!] ABORT: functions/ exists but dist/_worker.js is MISSING.")
+        print("    A chunked (direct-upload) deploy CANNOT compile Pages Functions —")
+        print("    deploying now would 404 every /go/* buy link and /api/subscribe.")
+        print("    Fix: node scripts/make-worker.mjs   (or npm run build, which runs it)")
+        print("    Deliberate worker-less deploy: SKIP_WORKER_CHECK=1")
+        sys.exit(1)
+
     print(f"[+] chunked deploy · project={PROJECT} · out={OUT_DIR}")
     entries = walk(OUT_DIR)
     # Pull the configuration files out of the asset set — they ship as multipart
