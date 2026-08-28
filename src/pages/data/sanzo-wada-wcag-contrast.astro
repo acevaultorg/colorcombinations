@@ -94,8 +94,25 @@ const sorted = [...plates].sort((a, b) => b.best - a.best);
 const top5 = sorted.slice(0, 5);
 const bottom5 = sorted.slice(-5).reverse();
 
-const title = `Data Study: ${aaShare}% of Sanzo Wada's 1933 Color Combinations Pass Modern Text-Contrast Rules`;
-const description = `We tested all ${total} combinations in Sanzo Wada's 1933 Dictionary of Color Combinations against the WCAG 2.x accessibility standard. ${aaShare}% contain at least one AA text-safe pairing (≥4.5:1), ${pct(passAAA)}% reach AAA, and ${pct(failAll)}% fail every text level. Full tables, WCAG methodology, downloadable CSV.`;
+// TITLE HONESTY (2026-08-28). The previous title read "{aaShare}% of Sanzo Wada's
+// 1933 Color Combinations Pass Modern Text-Contrast Rules" — and aaShare is the
+// PLATE-level measure, where a plate counts as passing if ANY ONE of its pairs
+// reaches 4.5:1. The body has always said so ("contain at least one text-safe
+// pairing"), but the title dropped the qualifier, and the title is the string that
+// actually travels: it is what a SERP shows, what a writer copies, and what this
+// page emits as its schema.org Article headline (see `headline: title` below).
+//
+// The gap is not cosmetic. A designer pulling two colours from a plate at random
+// meets AA 18% of the time, not 39% — the loose number was on the page 11 times
+// against the strict one's 1. A citer quoting the title would have propagated the
+// flattering figure in good faith, which is precisely the way a data page loses the
+// trust it exists to earn.
+//
+// So: lead with the strict pair-level number, keep the plate-level one, and label
+// what each measures. Two defined numbers are also more useful to a citer than one
+// undefined one.
+const title = `Data Study: Just ${pairAAShare}% of Sanzo Wada's 1933 Color Pairs Pass WCAG AA (${aaShare}% of Plates Contain One)`;
+const description = `We tested all ${total} combinations in Sanzo Wada's 1933 Dictionary of Color Combinations against the WCAG 2.x accessibility standard. Of the ${totalPairs} colour pairs in the book, ${pairAAShare}% pass AA (≥4.5:1) — while ${aaShare}% of plates contain at least one AA-safe pairing, ${pct(passAAA)}% reach AAA, and ${pct(failAll)}% fail every text level. Full tables, WCAG methodology, downloadable CSV.`;
 const modified = new Date().toISOString();
 const published = "2026-07-16T00:00:00Z";
 const canonicalUrl = "https://colorcombinations.org/data/sanzo-wada-wcag-contrast/";
