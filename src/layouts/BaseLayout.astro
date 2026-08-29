@@ -61,7 +61,24 @@ const siteName = "The Dictionary of Color Combinations";
 // appending the site name there produced an 84-char title that said "Dictionary
 // of Color Combinations" twice. Google truncates near 60, so the duplicate half
 // was the visible half.
-const fullTitle = bareTitle || title === siteName ? title : `${title} — ${siteName}`;
+// Generalised 2026-08-29: the manual `bareTitle` flag above was only ever passed by
+// index.astro, but the defect it describes is not unique to the homepage. The two
+// Sanzo Wada book pages carried it too — "A Dictionary of Color Combinations — Sanzo
+// Wada — The Dictionary of Color Combinations" (86 chars) and the Vol. 2 page (93) —
+// saying the brand twice, with the duplicate half being the visible half at ~60.
+// Those are the site's money pages for "a dictionary of color combinations" (pos 3.7,
+// CTR 6.43% vs 13.33% site control) and "dictionary of color combinations" (pos 3.6,
+// 5.63%). Detect the duplication instead of hand-flagging each page, so a future book
+// or /learn/ page about the dictionary cannot reintroduce it silently.
+// Blast radius measured before shipping, not assumed: across 22 sampled pages spanning
+// /colors-that-go-with/, /palettes/, /colors/, /paintings/, /learn/ and /books/, exactly
+// TWO titles contain the brand twice. Every other page has it once, as the suffix, and
+// is unaffected.
+const BRAND_CORE = "Dictionary of Color Combinations";
+const fullTitle =
+  bareTitle || title === siteName || title.includes(BRAND_CORE)
+    ? title
+    : `${title} — ${siteName}`;
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).toString();
 
 // Default OG image must be a raster: every social surface (FB / X / LinkedIn /
