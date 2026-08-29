@@ -2,6 +2,8 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import BundleCta from "@components/BundleCta.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
+import { ART_SUPPLIES } from "@/config/monetization";
 import { bestTextColorOn, contrastRatio, hexToRgb } from "@/lib/color";
 import type { HexColor } from "@/types/palette";
 import {
@@ -23,6 +25,13 @@ const ctx = contextBySlug(ctxSlug ?? "");
 if (!color || !ctx) return Astro.redirect("/404");
 
 const matches = palettesFor(color.hex, ctx).slice(0, 8);
+
+// Deterministic supply rotation, same idiom as /colors/[slug] and /palettes/[slug].
+// Seeded off BOTH slugs so the 703 pages in this class do not all lead with the same
+// tool — a reader moving between contexts for one colour should meet the catalogue.
+const supplyOffset =
+  (`${color.slug}${ctx.slug}`.split("").reduce((sum, ch) => sum + ch.charCodeAt(0), 0)) %
+  ART_SUPPLIES.length;
 
 // ---- Partner families derived from the ACTUAL archive (the citable moat) ----
 function hsl(hex: string) {
@@ -295,7 +304,22 @@ const jsonLd = [
       </div>
     </section>
 
+    {/* Intent-matched supplies BEFORE the book shelf. Measured 2026-08-29: this page
+        class is 703 URLs (48% of the sitemap) and produced 861 entrances / 915 views
+        with ZERO Amazon clicks in 30d, while every section that already carries
+        PaintThisPalette converts (/shop 387, /home 15.1, /browse 10.5, /collections 9.0,
+        /colors 6.0, /palettes 4.0 clicks per 1k views). It was the ONLY page class
+        without it. The component's own note has the reason: the reader "is usually
+        about to MAKE something, not to buy an out-of-print import" — and these pages
+        offered only the colour-theory books, identically, whether the page said
+        "for a bedroom" or "for an outfit". */}
     <div class="mt-10">
+      <PaintThisPalette
+        title="Work with this pairing"
+        intro={`You have the hex codes for ${color.name} ${ctx.label === "clothes" ? "in clothes" : `for ${ctx.label}`}. These are the materials a colour study like this actually gets made with.`}
+        limit={2}
+        offset={supplyOffset}
+      />
       <BundleCta />
       <FurtherReading
       pageClass="colors-that-go-with"
