@@ -234,11 +234,41 @@ def assert_build_is_complete():
     if not root_index.exists():
         sys.exit(f"[x] REFUSING TO DEPLOY: {root_index} is missing — the build is "
                  f"truncated. A CF Pages deploy REPLACES the site.")
-    sitemap = OUT_DIR / "sitemap.xml"
-    if not sitemap.exists():
-        print("[!] no out/sitemap.xml — skipping per-URL completeness check")
+    # Resolve the sitemap the way the SITE emits it, not the way we assume.
+    # Astro's @astrojs/sitemap writes sitemap-index.xml + sitemap-0.xml and NO
+    # file called sitemap.xml, so the original single-filename lookup took the
+    # `return` below on every Astro site — meaning condition 2, the one that
+    # actually catches a truncated export, never ran. Seen live in this site's
+    # own 2026-08-29 deploy log ("[!] no out/sitemap.xml — skipping per-URL
+    # completeness check") on the very next deploy after the guard shipped.
+    #
+    # Follow the INDEX rather than globbing sitemap-*.xml. A glob also matches
+    # sitemap-ai.xml, which is a separate AI-crawler sitemap with a different
+    # URL set — it inflated this site 1469 -> 2206 when first written that way.
+    # The index names exactly the page-sitemap parts and nothing else.
+    def _page_sitemaps():
+        direct = OUT_DIR / "sitemap.xml"
+        if direct.exists():
+            return [direct]
+        index = OUT_DIR / "sitemap-index.xml"
+        if index.exists():
+            parts = re.findall(r"<loc>([^<]+)</loc>",
+                               index.read_text(encoding="utf-8", errors="ignore"))
+            files = [OUT_DIR / re.sub(r"^https?://[^/]+/", "", u) for u in parts]
+            return [f for f in files if f.exists()]
+        return []
+
+    sitemap_files = _page_sitemaps()
+    if not sitemap_files:
+        print("[!] no sitemap in out/ (tried sitemap.xml, then sitemap-index.xml) "
+              "— skipping per-URL completeness check")
         return
-    locs = re.findall(r"<loc>([^<]+)</loc>", sitemap.read_text(encoding="utf-8", errors="ignore"))
+    locs = []
+    for sm in sitemap_files:
+        locs += re.findall(r"<loc>([^<]+)</loc>",
+                           sm.read_text(encoding="utf-8", errors="ignore"))
+    print(f"[+] completeness source: {', '.join(f.name for f in sitemap_files)} "
+          f"({len(locs)} urls)")
     missing = []
     for loc in locs:
         rel = re.sub(r"^https?://[^/]+", "", loc).strip("/")
