@@ -321,7 +321,7 @@ const jsonLd = [
       title="Colour books worth owning"
       intro="The theory and reference behind palettes like this — recommended on Amazon."
       limit={3}
-      offset={3}
+      offset={collection.featuredBookOffset ?? 3}
     />
   </section>
 </BaseLayout>

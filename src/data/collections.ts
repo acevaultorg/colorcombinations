@@ -47,6 +47,18 @@ export interface Collection {
   limit?: number;
   /** Hero accent color — a hex drawn from one of the featured palettes. */
   accentHex: string;
+  /**
+   * Overrides the FurtherReading `offset` (default 3 site-wide, deliberately
+   * skipping the Wada dictionary — see the deliberate rotation scheme in
+   * commit 4573d5c) for THIS collection only. Set when Bing per-page data
+   * shows matched-intent for a specific book: on "japanese", the #1 query
+   * cluster is literally "[japanese] dictionary of color combinations"
+   * (170 clicks/30d) naming the exact book the default rotation excludes.
+   * TaskPeace mt7ddnseh4ehzf, 2026-08-30. offset=0 reuses the same rotation
+   * value already proven safe on / and /browse (Wada Vol.1/2 + Interaction
+   * of Color) rather than inventing a new book list.
+   */
+  featuredBookOffset?: number;
 }
 
 export const collections: Collection[] = [
@@ -709,6 +721,7 @@ export const collections: Collection[] = [
     match: (p) => p.moods.includes("refined") && p.era !== undefined,
     limit: 24,
     accentHex: "#B84E1F",
+    featuredBookOffset: 0,
   },
 
   // =========================================================================
