@@ -72,6 +72,13 @@ const year = new Date().getFullYear();
         <button id="cc-reopen" class="site-footer__cc-btn">Cookie Preferences</button>
       </nav>
     </div>
+    <div class="container-wide site-footer__pref-src">
+      <p>Like the archive? Get us in your Google results more often:</p>
+      <!-- Google Preferred Sources (developers.google.com/search/docs/appearance/preferred-sources)
+           — boosts this site in the reader's own Top Stories / AI Mode / AI Overviews. -->
+      <script is:inline async src="https://news.google.com/swg/js/v1/publisher.js"></script>
+      <div google-add-preferred-source-btn></div>
+    </div>
     <div class="container-wide site-footer__affiliate-disclosure">
       <p>
         Book links are Amazon Associates affiliate links. As an Amazon Associate we earn from
@@ -212,6 +219,17 @@ const year = new Date().getFullYear();
 
   .site-footer__cc-btn:hover {
     color: var(--color-ink-700);
+  }
+
+  .site-footer__pref-src {
+    margin-top: 1.25rem;
+    min-height: 48px;
+  }
+
+  .site-footer__pref-src p {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    color: var(--color-ink-500);
   }
 
   .site-footer__affiliate-disclosure {
