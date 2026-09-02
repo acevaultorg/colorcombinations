@@ -2,6 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 import BundleCta from "@components/BundleCta.astro";
 import ShareActions from "@components/ShareActions.astro";
 import {
@@ -322,6 +323,15 @@ const jsonLd = [
       intro="The theory and reference behind palettes like this — recommended on Amazon."
       limit={3}
       offset={collection.featuredBookOffset ?? 3}
+    />
+  </section>
+
+  {/* Studio shelf (2026-08-29, task mtdn38qeek38cv) — see index.astro for the
+      full rationale. Same narrowed scope: home + browse + collections only. */}
+  <section class="container-narrow">
+    <PaintThisPalette
+      title="Off the screen"
+      intro={`You have the ${collection.title.toLowerCase()} in front of you. These are the materials a colour study like this actually gets made with.`}
     />
   </section>
 </BaseLayout>

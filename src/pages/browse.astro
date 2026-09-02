@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import ShelfCallout from "@components/ShelfCallout.astro";
 import { allPalettes } from "@data/palettes";
@@ -198,6 +199,15 @@ const jsonLd = [
       intro="The books behind the dictionary — colour theory, history and the references designers keep close. Recommended on Amazon."
       limit={3}
       offset={0}
+    />
+  </section>
+
+  {/* Studio shelf (2026-08-29, task mtdn38qeek38cv) — see index.astro for the
+      full rationale. Same narrowed scope: home + browse + collections only. */}
+  <section class="container-narrow">
+    <PaintThisPalette
+      title="Studio shelf"
+      intro="Browsing 348 palettes is one way to study colour. Actually mixing one is another — these are the materials that get a study made."
     />
   </section>
 </BaseLayout>
