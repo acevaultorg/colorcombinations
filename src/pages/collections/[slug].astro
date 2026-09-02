@@ -66,13 +66,29 @@ const description = collection.description.replace(/<[^>]+>/g, "");
 const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
 const BUILD_DATE = new Date().toISOString();
 
+// Named human author (E-E-A-T / GEO "Credible" + "Recognizable"). Same @id as the
+// trends page so the entity is one Person site-wide. Task mtjaxsmk36hi9v, 2026-09-02.
+const SITE_URL = "https://colorcombinations.org/";
+const AUTHOR = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${SITE_URL}#person-paulo-de-vries`,
+  name: "Paulo de Vries",
+  jobTitle: "Founder + editor, The Dictionary of Color Combinations",
+  url: `${SITE_URL}about/`,
+  worksFor: { "@id": `${SITE_URL}#organization` },
+  sameAs: ["https://paulodevries.com/", "https://www.linkedin.com/in/paulomichaeldevries"],
+};
+
 const jsonLd = [
+  AUTHOR,
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: title,
     description,
     url: new URL(`/collections/${collection.slug}`, Astro.site).toString(),
+    author: { "@id": `${SITE_URL}#person-paulo-de-vries` },
     isPartOf: {
       "@type": "WebSite",
       name: "The Dictionary of Color Combinations",
@@ -195,6 +211,10 @@ const jsonLd = [
       <p class="eyebrow">Collection · {total} palettes</p>
       <h1 class="display-hero text-balance">{collection.title}</h1>
       <p class="collection-hero__tagline cc-collection-intro">{collection.tagline}</p>
+      <p class="collection-hero__byline">
+        Curated by <a href="/about/" rel="author">Paulo de Vries</a> · from Sanzo Wada's 1933
+        <em>Dictionary of Color Combinations</em> · updated <time datetime={BUILD_DATE.slice(0, 10)}>{BUILD_DATE.slice(0, 10)}</time>
+      </p>
       <div class="collection-hero__description" set:html={collection.description}></div>
       <ShareActions
         title={collection.title}
@@ -356,6 +376,9 @@ const jsonLd = [
 </script>
 
 <style>
+  .collection-hero__byline { font-size: 0.85rem; opacity: 0.75; margin: 0.5rem 0 0; }
+  .collection-hero__byline a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+
   .breadcrumb {
     padding-top: 1.5rem;
   }

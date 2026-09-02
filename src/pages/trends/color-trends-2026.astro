@@ -22,6 +22,19 @@ const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/color-trends-2026/";
 const PUBLISHED = "2026-06-20T00:00:00Z";
 const MODIFIED = new Date().toISOString();
+// Re-verified 2026-09-02 against NAHB, Young House Love, Dulux + the 14 authorities' own pages
+// (task mtjaxsmk36hi9v). Bump this date whenever the picks are re-checked, never automatically.
+const VERIFIED = "2026-09-02";
+const AUTHOR = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${siteUrl}#person-paulo-de-vries`,
+  name: "Paulo de Vries",
+  jobTitle: "Founder + editor, The Dictionary of Color Combinations",
+  url: `${siteUrl}about/`,
+  worksFor: { "@id": `${siteUrl}#organization` },
+  sameAs: ["https://paulodevries.com/", "https://www.linkedin.com/in/paulomichaeldevries"],
+};
 
 interface Pick {
   brand: string;
@@ -98,7 +111,53 @@ const textOn = (hex: string): string => {
   return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? "#1a1a1a" : "#ffffff";
 };
 
+const faq = [
+  {
+    q: "What is the Pantone Color of the Year 2026?",
+    a: "Pantone's 2026 Color of the Year is Cloud Dancer (PANTONE 11-4201), a soft, serene white — the first true white ever chosen since the program began in 1999.",
+  },
+  {
+    q: "What is the 2026 Color of the Year?",
+    a: "There is no single one — each authority names its own. Pantone chose Cloud Dancer (a serene white); WGSN and Coloro chose Transformative Teal; and the paint brands lean toward warm earthy neutrals and browns, including Benjamin Moore Silhouette, Sherwin-Williams Universal Khaki and Glidden Warm Mahogany.",
+  },
+  {
+    q: "What is the overall 2026 color trend?",
+    a: "Two linked moods: serene, near-weightless light (Pantone Cloud Dancer, Dutch Boy Melodious Ivory) and grounded, tactile earth tones (warm browns, deep greens and smokey teals). Together they read as an antidote to digital fatigue — a pull toward calm, nature and the hand-made.",
+  },
+  {
+    q: "What are the 2026 paint colors of the year?",
+    a: "Benjamin Moore Silhouette (AF-655), Sherwin-Williams Universal Khaki (SW 6150), Behr Hidden Gem (N430-6A), Valspar Warm Eucalyptus, Glidden Warm Mahogany (PPG1060-7), Dunn-Edwards Midnight Garden and Dutch Boy Melodious Ivory.",
+  },
+  {
+    q: "What are the colours for 2026?",
+    a: "Two linked moods: serene, near-weightless light (Pantone Cloud Dancer, Dutch Boy Melodious Ivory, Sherwin-Williams Universal Khaki) and grounded, tactile earth (Benjamin Moore Silhouette, Behr Hidden Gem, WGSN + Coloro's Transformative Teal, and more warm browns and deep greens). Full list and swatches below.",
+  },
+  {
+    q: "How is 2026 different from 2025 (Mocha Mousse)?",
+    a: "2025 was brown and plum: Pantone Mocha Mousse, Benjamin Moore Cinnamon Slate, Behr Rumors. 2026 swings to calm light and earth: Pantone Cloud Dancer is its first-ever white, and the paint brands move from reds and plums to khaki, jade, walnut and teal.",
+  },
+];
+
+// 2025 → 2026, same authority side by side. Names are each brand's own as recorded by
+// NAHB (Dec 2024) and Young House Love's 2025 guide; codes only where a primary source states one.
+const YEAR_OVER_YEAR: { brand: string; y2025: string; y2026: string; shift: string }[] = [
+  { brand: "Pantone", y2025: "Mocha Mousse (17-1230)", y2026: "Cloud Dancer (11-4201)", shift: "warm brown → serene white" },
+  { brand: "Benjamin Moore", y2025: "Cinnamon Slate (2113-40)", y2026: "Silhouette (AF-655)", shift: "heathered plum-brown → burnt-umber charcoal" },
+  { brand: "Sherwin-Williams", y2025: "Grounded", y2026: "Universal Khaki (SW 6150)", shift: "earthy brown → warm tan" },
+  { brand: "Behr", y2025: "Rumors (MQ1-15)", y2026: "Hidden Gem (N430-6A)", shift: "ruby red → smokey jade" },
+  { brand: "Valspar", y2025: "Encore", y2026: "Warm Eucalyptus", shift: "deep blue → gray-green" },
+  { brand: "Glidden", y2025: "Purple Basil (PPG1046-7)", y2026: "Warm Mahogany (PPG1060-7)", shift: "red-plum → red-brown" },
+  { brand: "Dunn-Edwards", y2025: "Caramelized", y2026: "Midnight Garden", shift: "terracotta brown → deep green" },
+  { brand: "Dutch Boy", y2025: "Mapped Blue", y2026: "Melodious Ivory", shift: "medium blue → warm cream" },
+  { brand: "Graham & Brown", y2025: "Elderton", y2026: "Divine Damson", shift: "brown → deep purple" },
+  { brand: "C2 Paint", y2025: "Raku", y2026: "Epernay", shift: "burnt red-brown → soft ochre" },
+  { brand: "Minwax", y2025: "Violet", y2026: "Special Walnut", shift: "violet stain → walnut wood" },
+  { brand: "Krylon", y2025: "Hammered Black", y2026: "Coffee Bean", shift: "black → dark brown" },
+  { brand: "Rust-Oleum", y2025: "Satin Warm Caramel", y2026: "Satin Lagoon", shift: "caramel → teal" },
+];
+
 const jsonLd = [
+  AUTHOR,
   {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -108,7 +167,7 @@ const jsonLd = [
     inLanguage: "en",
     datePublished: PUBLISHED,
     dateModified: MODIFIED,
-    author: { "@id": `${siteUrl}#organization` },
+    author: { "@id": `${siteUrl}#person-paulo-de-vries` },
     publisher: { "@id": `${siteUrl}#organization` },
     isPartOf: { "@id": `${siteUrl}#website` },
   },
@@ -127,33 +186,11 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "What is the Pantone Color of the Year 2026?",
-        acceptedAnswer: { "@type": "Answer", text: "Pantone's 2026 Color of the Year is Cloud Dancer (PANTONE 11-4201), a soft, serene white — the first true white ever chosen since the program began in 1999." },
-      },
-      {
-        "@type": "Question",
-        name: "What is the 2026 Color of the Year?",
-        acceptedAnswer: { "@type": "Answer", text: "There is no single one — each authority names its own. Pantone chose Cloud Dancer (a serene white); WGSN and Coloro chose Transformative Teal; and the paint brands lean toward warm earthy neutrals and browns, including Benjamin Moore Silhouette, Sherwin-Williams Universal Khaki and Glidden Warm Mahogany." },
-      },
-      {
-        "@type": "Question",
-        name: "What is the overall 2026 color trend?",
-        acceptedAnswer: { "@type": "Answer", text: "Two linked moods: serene, near-weightless light (Pantone Cloud Dancer, Dutch Boy Melodious Ivory) and grounded, tactile earth tones (warm browns, deep greens and smokey teals). Together they read as an antidote to digital fatigue — a pull toward calm, nature and the hand-made." },
-      },
-      {
-        "@type": "Question",
-        name: "What are the 2026 paint colors of the year?",
-        acceptedAnswer: { "@type": "Answer", text: "Benjamin Moore Silhouette (AF-655), Sherwin-Williams Universal Khaki (SW 6150), Behr Hidden Gem (N430-6A), Valspar Warm Eucalyptus, Glidden Warm Mahogany (PPG1060-7), Dunn-Edwards Midnight Garden and Dutch Boy Melodious Ivory." },
-      },
-      {
-        "@type": "Question",
-        name: "What are the colours for 2026?",
-        acceptedAnswer: { "@type": "Answer", text: "Two linked moods: serene, near-weightless light (Pantone Cloud Dancer, Dutch Boy Melodious Ivory, Sherwin-Williams Universal Khaki) and grounded, tactile earth (Benjamin Moore Silhouette, Behr Hidden Gem, WGSN + Coloro's Transformative Teal, and more warm browns and deep greens). Full list and swatches below." },
-      },
-    ],
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
   },
   {
     "@context": "https://schema.org",
@@ -175,6 +212,7 @@ const grid = PICKS.slice(2);
   description={description}
   canonical={pageUrl}
   type="article"
+  author="Paulo de Vries"
   publishedTime={PUBLISHED}
   modifiedTime={MODIFIED}
   keywords={[
@@ -198,7 +236,8 @@ const grid = PICKS.slice(2);
         complete set, side by side, with the meta-trend that ties them together.
       </p>
       <p class="coty-hero__meta">
-        Last verified <time datetime={PUBLISHED.slice(0, 10)}>20 June 2026</time>
+        By <a class="coty-hero__byline" href="/about/" rel="author">Paulo de Vries</a>
+        · Last verified <time datetime={VERIFIED}>2 September 2026</time>
         · {PICKS.length} authorities · sources cited below
       </p>
     </header>
@@ -275,6 +314,38 @@ const grid = PICKS.slice(2);
       </p>
     </section>
 
+    <section class="coty-yoy container-narrow">
+      <h2 id="2025-vs-2026">How 2026 compares with 2025</h2>
+      <p class="coty-yoy__answer">
+        2025 was brown and plum — Pantone Mocha Mousse, Benjamin Moore Cinnamon
+        Slate, Behr Rumors. 2026 swings to calm light and grounded earth: Pantone
+        Cloud Dancer is its first-ever white, and the paint brands move from reds
+        and plums to khaki, jade, walnut and teal.
+      </p>
+      <div class="coty-yoy__scroll">
+        <table class="coty-yoy__table">
+          <caption>Color of the Year by authority, 2025 versus 2026</caption>
+          <thead>
+            <tr><th scope="col">Authority</th><th scope="col">2025</th><th scope="col">2026</th><th scope="col">The shift</th></tr>
+          </thead>
+          <tbody>
+            {YEAR_OVER_YEAR.map((r) => (
+              <tr><th scope="row">{r.brand}</th><td>{r.y2025}</td><td>{r.y2026}</td><td>{r.shift}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="coty-note">
+        WGSN + Coloro's Transformative Teal has no like-for-like row because our
+        2025 sources don't record their 2025 pick. Sherwin-Williams' 2025 choice
+        is its own Color Capsule pick, Grounded; its HGTV Home line named Quietude.
+        Outside North America, Dulux named three 2026 colours instead of one — the
+        indigo family <em>The Rhythm of Blues</em> (Free Groove, Mellow Flow, Slow
+        Swing) — its first palette rather than a single shade, and a second vote
+        for the calm end of the spectrum.
+      </p>
+    </section>
+
     <section class="container-narrow">
       <FurtherReading
       pageClass="trends"
@@ -282,6 +353,16 @@ const grid = PICKS.slice(2);
         intro="The thinking behind these picks — colour theory, forecasting and the language of palettes. Books we recommend on Amazon."
         limit={6}
       />
+    </section>
+
+    <section class="coty-faq container-narrow">
+      <h2 id="faq">Frequently asked</h2>
+      {faq.map((item) => (
+        <details class="coty-faq__item">
+          <summary>{item.q}</summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
     </section>
 
     <section class="coty-sources container-narrow">
@@ -294,6 +375,8 @@ const grid = PICKS.slice(2);
         <li>WGSN + Coloro Colour of the Year 2026, Transformative Teal (<a href="https://www.wgsn.com/en/blog/colour-year-2026-transformative-teal" target="_blank" rel="noopener noreferrer">WGSN</a>).</li>
         <li>2026 paint Colors of the Year overview (<a href="https://www.hgtv.com/decorating/color/colors-of-the-year-pictures" target="_blank" rel="noopener noreferrer">HGTV</a>, <a href="https://www.younghouselove.com/2026-color-of-the-year/" target="_blank" rel="noopener noreferrer">Young House Love</a>, <a href="https://www.nahb.org/blog/2025/12/2026-colors-of-the-year" target="_blank" rel="noopener noreferrer">NAHB</a>).</li>
         <li>Benjamin Moore Silhouette AF-655 hex reference (<a href="https://encycolorpedia.com/57504c" target="_blank" rel="noopener noreferrer">Encycolorpedia</a>).</li>
+        <li>2025 Colors of the Year, for the year-over-year table (<a href="https://www.nahb.org/blog/2024/12/here-are-the-top-colors-for-2025" target="_blank" rel="noopener noreferrer">NAHB</a>, <a href="https://www.younghouselove.com/2025-color-of-the-year-guide/" target="_blank" rel="noopener noreferrer">Young House Love</a>).</li>
+        <li>Dulux Colours of the Year 2026, The Rhythm of Blues (<a href="https://www.dulux.co.uk/en/dulux-colours-of-the-year-2026" target="_blank" rel="noopener noreferrer">Dulux</a>).</li>
         <li>2026 selections design context (<a href="https://www.archdaily.com/1037721/2026-color-of-the-year-selections-highlight-tonal-depth-and-spatial-calm" target="_blank" rel="noopener noreferrer">ArchDaily</a>).</li>
       </ul>
       <p class="coty-method">
@@ -306,6 +389,33 @@ const grid = PICKS.slice(2);
 </BaseLayout>
 
 <style>
+  .coty-faq__item {
+    border-bottom: 1px solid var(--color-border);
+    padding-block: 0.875rem;
+  }
+
+  .coty-faq__item summary {
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .coty-faq__item p {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-ink-700);
+    margin: 0.6rem 0 0;
+  }
+
+  .coty-hero__byline { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+
+  .coty-yoy__answer { font-size: 1.05rem; line-height: 1.6; max-width: 60ch; }
+  .coty-yoy__scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 1rem; }
+  .coty-yoy__table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; min-width: 34rem; }
+  .coty-yoy__table caption { text-align: left; font-size: 0.85rem; opacity: 0.7; padding-bottom: 0.5rem; }
+  .coty-yoy__table th, .coty-yoy__table td { text-align: left; padding: 0.55rem 0.6rem; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+  .coty-yoy__table thead th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.75; }
+  .coty-yoy__table tbody th { font-weight: 600; white-space: nowrap; }
+
   .coty-hero { padding: 3rem 0 1.5rem; }
   .coty-hero__lede { font-size: 1.2rem; line-height: 1.6; max-width: 46ch; margin-top: 1rem; }
   .coty-hero__meta { margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; }
