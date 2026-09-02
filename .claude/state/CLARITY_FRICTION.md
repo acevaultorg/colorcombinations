@@ -57,7 +57,7 @@ yahoo                      7   14.3     53.1       50
 yandex                     4   25.0     39.4       14
 ```
 
-### 1 · 🔴 AI-referred visitors are the #1 external channel AND the least engaged
+### 1 · 🟡 AI-referred visitors are the #1 external channel — ~~AND the least engaged~~ **(engagement claim CORRECTED 2026-09-02, see below)**
 
 - **Page:** `/` and `/browse/` (where chatgpt.com traffic lands; `/?utm_source=chatgpt.com` alone is 80 sessions).
 - **Evidence:** Clarity 2026-09-02, 3d. chatgpt.com = **110 sessions**, more than Bing (42) and roughly equal to *every other search engine combined* (118). Its **25s active time is the lowest of any channel** — 43% below internal navigation (44s) and Bing (42s), at a similar 29.3% scroll.
@@ -65,6 +65,22 @@ yandex                     4   25.0     39.4       14
 - **Fix:** give an AI-referred visitor something the assistant's answer cannot contain — the interactive palette/browse surface, adjacent combinations, the copy-hex affordance — above the first screen on the landing page. Do **not** start by rewriting copy.
 - **Metric it should move:** `active_s` for source=chatgpt.com (25s → 40s+), then affiliate-click rate on that segment.
 - **Effort:** M. Needs the heatmap first to see where those 110 sessions actually click.
+
+> **⚠️ CORRECTION 2026-09-02 — the "least engaged" half of this item does not hold.**
+> The 25s-vs-44s figure is real but it is one metric (active seconds) on a 3-day Clarity window.
+> On 30-day GA4 (`ga4-sources.csv`, the same channel), AI-referred sessions here read **2.98
+> pageviews/session against organic's 2.95 — parity**, and fleet-wide there is no pattern at all:
+> 3 sites where AI engages MORE (readstacks 2.13×, holdlens 1.33×, conversionbench 1.25×), 2 where
+> it engages less, 4 at parity. **There is no "AI visitors bounce" law**, and this item should not be
+> read as one.
+>
+> What survives, and is bigger than the original claim: this site takes **903 of the fleet's 1,360
+> AI-referred sessions — 66% of all of it**, at normal engagement. It is not a leak to plug; it is
+> the fleet's one working citation→visit channel, and nobody has characterised why it works.
+> See card `mtje4qlqwqbj76`.
+>
+> The two readings are compatible (same pages, less time each), but the strong framing was not
+> earned. Fix at the source rather than acting on the stale version.
 
 ### 2 · 🟡 The top entry page shows a quarter of itself
 
