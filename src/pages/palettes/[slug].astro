@@ -453,19 +453,32 @@ const jsonLd = [
             </>
           )}
         </p>
+
+        {/*
+          PEAK-INTENT BUY BLOCK. Placement is the point: the reader has just
+          read the plate and has the hex codes; "what do I do with these" is
+          the question they actually hold at this line. It used to sit in the
+          sidebar as a rotating two-of-ten shelf, below the fold, which on many
+          pages surfaced two of the cheapest items in the catalogue.
+
+          This is a MOVE, not an addition — the sidebar shelf is gone, so the
+          page carries the same number of commercial blocks as before, at
+          better placement and with all three destinations guaranteed a slot.
+          Density stays inside the museum-identity constraint in
+          src/config/monetization.ts (no ad network, one tasteful block).
+        */}
+        <div class="palette-destination">
+          <PaintThisPalette
+            title={`Taking ${palette.title} off the screen`}
+            intro="A hex code is an instruction to a screen, not a colour. Where this palette is going decides what it needs next."
+            offset={supplyOffset}
+            variant="destination"
+          />
+        </div>
       </article>
 
       <aside class="palette-body__aside" aria-label="Export and metadata">
         <ExportPalette palette={palette} />
-
-        <div class="palette-studio plate">
-          <PaintThisPalette
-            intro="You have the hex codes. These are the materials a colour study like this actually gets made with."
-            limit={2}
-            offset={supplyOffset}
-            variant="sidebar"
-          />
-        </div>
 
         <div class="palette-meta plate">
           <h3>Details</h3>
@@ -998,6 +1011,25 @@ const jsonLd = [
       grid-template-columns: minmax(0, 1fr) 22rem;
       gap: 4rem;
     }
+  }
+
+  /* The destination block lives inside `.prose`, whose `ul`/`li` rules would
+     fight the component's own grid (padding-left + li margins). `.prose ul` is
+     0,2,0 and the component's scoped rule ties it, so order would decide —
+     make it explicit here instead of relying on bundle order. */
+  .palette-destination :global(ul) {
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+  }
+
+  .palette-destination :global(li) {
+    margin-bottom: 0;
+  }
+
+  .palette-destination {
+    margin-top: 3rem;
+    max-width: none;
   }
 
   .palette-body__prose h2:first-child {

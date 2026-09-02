@@ -33,7 +33,7 @@ export interface Props {
   /** Rotate the starting item so different palette pages lead with different tools. */
   offset?: number;
   /** Layout variant. */
-  variant?:"full" |"sidebar";
+  variant?:"full" |"sidebar" |"destination";
 }
 
 const {
@@ -53,6 +53,57 @@ const items: ArtSupply[] = (() => {
   const rotated = [...ART_SUPPLIES.slice(start), ...ART_SUPPLIES.slice(0, start)];
   return typeof limit ==="number" ? rotated.slice(0, limit) : rotated;
 })();
+
+/**
+ * DESTINATION variant — one verdict per destination, instead of a flat shelf.
+ *
+ * Why this exists (measured, per-tag report 2026-09-01, window Aug 03 - Sep 01):
+ * this site's constraint is NOT the call-to-action and NOT conversion. It is
+ * basket size.
+ *
+ *   425 clicks -> 42 orders -> 9.88%  (the fleet's best conversion rate)
+ *   $27.25 US commission               = $0.065 per click, the fleet's lowest
+ *   ~$21 average item                  vs fitmylens at ~$379/item, $0.55/click
+ *
+ * 251 of those 425 clicks went to three books at ~$20 each, earning ~$23. The
+ * catalogue already contains the genuine high-basket end of the SAME intent
+ * (the print and calibrate groups), but the rotating shelf shows an arbitrary
+ * two of ten, so a given page often surfaces two of the cheapest items.
+ *
+ * This variant guarantees each of the three destinations is represented once,
+ * with an explicit verdict rather than a list — the reader self-selects on
+ * where their palette is going, which is a real question they already have.
+ * Rotation still happens WITHIN each group via `offset`, so impressions stay
+ * spread and the HTML stays deterministic per URL (cacheable).
+ *
+ * No prices are rendered here, as everywhere else — Amazon's operating
+ * agreement forbids it and stale prices are worse than none.
+ */
+const DESTINATIONS: { key: ArtSupply["group"]; label: string; verdict: string }[] = [
+  {
+    key:"print",
+    label:"...onto paper",
+    verdict:"Start here if the palette gets printed. Screen colour and ink colour are not the same colour, and this is the deck that translates between them.",
+  },
+  {
+    key:"calibrate",
+    label:"...onto a screen you can trust",
+    verdict:"Start here if it stays digital. An uncalibrated monitor is the single most common reason a palette that looked right on your desk looks wrong everywhere else.",
+  },
+  {
+    key:"paint",
+    label:"...by hand",
+    verdict:"Start here if you are mixing it. Wada's plates were flat printed colour; gansai pans are the closest everyday medium to them.",
+  },
+];
+
+const destinations = DESTINATIONS.map((d) => {
+  const pool = ART_SUPPLIES.filter((a) => a.group === d.key);
+  if (pool.length === 0) return null;
+  // Deterministic pick within the group — same URL always yields the same item.
+  const item = pool[(((offset % pool.length) + pool.length) % pool.length)]!;
+  return { ...d, item };
+}).filter((d): d is typeof d & { item: ArtSupply } => d !== null);
 ---
 
 <section class:list={["paint-kit", `paint-kit--${variant}`]}>
@@ -62,6 +113,41 @@ const items: ArtSupply[] = (() => {
     {intro && <p class="paint-kit__intro">{intro}</p>}
   </header>
 
+  {variant ==="destination" ? (
+    <ul class="paint-kit__dest" role="list">
+      {destinations.map(({ label, verdict, item }) => (
+        <li class="paint-kit__dest-item">
+          <p class="paint-kit__dest-label">{label}</p>
+          <p class="paint-kit__dest-verdict">{verdict}</p>
+          <p class="paint-kit__brand">{item.brand}</p>
+          <h3 class="paint-kit__name">
+            <a
+              href={AMAZON.link(item.amazonAsin,"palette-destination")}
+              rel="sponsored nofollow noopener"
+              target="_blank"
+              data-event="amazon_click"
+              data-tool={item.name}
+              aria-label={`${item.name} by ${item.brand} on Amazon`}
+            >
+              {item.name}
+            </a>
+          </h3>
+          <p class="paint-kit__why">{item.why}</p>
+          <a
+            href={AMAZON.link(item.amazonAsin,"palette-destination")}
+            rel="sponsored nofollow noopener"
+            target="_blank"
+            class="btn btn-secondary paint-kit__link"
+            data-event="amazon_click"
+            data-tool={item.name}
+            aria-label={`${item.name} by ${item.brand} on Amazon`}
+          >
+            View on Amazon <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  ) : (
   <ul class="paint-kit__list" role="list">
     {items.map((item) => (
       <li class="paint-kit__item">
@@ -95,6 +181,7 @@ const items: ArtSupply[] = (() => {
       </li>
     ))}
   </ul>
+  )}
 
   {/*
     Prime free-trial bounty — a FLAT fee per sign-up, so it is unaffected by
@@ -132,6 +219,57 @@ const items: ArtSupply[] = (() => {
 
   .paint-kit--sidebar {
     padding-block: 0;
+  }
+
+  /* ── destination variant ────────────────────────────────────────────────
+     Three cards, one per destination. Grid at >=760px so the three verdicts
+     are comparable side by side; a single stacked column below that, where
+     comparison is impossible anyway and vertical rhythm reads better.
+     Buttons are min-height 44px per the fleet mobile standard. */
+  .paint-kit__dest {
+    display: grid;
+    /* auto-fit against the CONTAINER, not the viewport. A viewport media query
+       is wrong here: .palette-body becomes `minmax(0,1fr) 22rem` at >=960px, so
+       between ~960 and ~1100px the prose column is only ~550-650px wide while a
+       `min-width: 760px` query would already be forcing three columns into it
+       (~170px each). auto-fit gives 1 column at 375px, 2 in a narrow prose
+       column, 3 when there is genuinely room — with no breakpoint to guess. */
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .paint-kit__dest-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-top: 1.1rem;
+    border-top: 2px solid var(--rule, currentColor);
+  }
+
+  .paint-kit__dest-label {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .paint-kit__dest-verdict {
+    margin: 0 0 0.35rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  .paint-kit__dest-item .paint-kit__link {
+    margin-top: auto;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 14px;
   }
 
   .paint-kit__head {
