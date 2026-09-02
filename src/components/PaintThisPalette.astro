@@ -132,7 +132,16 @@ const destinations = DESTINATIONS.map((d) => {
               {item.name}
             </a>
           </h3>
-          <p class="paint-kit__why">{item.why}</p>
+          {/*
+            The catalogue `why` is deliberately NOT rendered here. Measured at
+            375px it made the block 1175px tall — about 1.5 phone screens of
+            commerce mid-article — and it was largely REPEATING the verdict
+            above it ("this is the deck that translates between them" vs "this
+            is the shared vocabulary between you and the press"). Cutting it is
+            shorter and it is better writing; the verdict already carries the
+            reason. The full `why` still renders in the "full" and "sidebar"
+            variants, where it is the only explanation present.
+          */}
           <a
             href={AMAZON.link(item.amazonAsin,"palette-destination")}
             rel="sponsored nofollow noopener"
