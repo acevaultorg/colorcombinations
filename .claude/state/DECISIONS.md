@@ -336,6 +336,100 @@ Closed the gap additively instead, touching nothing on the experimental page's t
 
 **Reversibility:** fully reversible, `git revert` commit `25eff5c`. None of it touches the a0d4510 experiment's measured surface — the 14-day read stays clean.
 
+## 2026-09-02 — Protected the money path on every deploy, then raised basket size on 378 palette pages
+
+**Context.** Chief directive from the 90-day revenue study: this is the #3 earner
+($27 US NET / 425 clicks / $0.06 per click) and it lost ~10 clicks/day across two
+`/go/*` 404 windows on Aug 27-28. Protect first, then raise basket size.
+
+**Three ships, in dependency order.**
+
+**1. The click beacon was blind to two of three link shapes.** `public/amazon-track.js`
+matched affiliate clicks against an ENUMERATED list of href shapes. When non-book
+ASINs moved to `/go/p/{asin}` on 2026-08-26 they became same-origin, matching neither
+that pattern nor the `amazon\.` fallback, so the handler returned before ANY sink
+fired — no Clarity, no GA4, no fleet beacon. `/go/prime` was never counted at all.
+Verified live before changing anything: one palette page serves 4 `/go/p/` and 3
+`/go/b/` links; against the built dist, 1,286 `/go/p/` and 229 `/go/prime` links were
+uncounted.
+
+The cost was not the missing count, it was what the count SAID.
+`amazon_clicks_by_position_30d` read `{book: 107, tool: 2}`, which reads as "the
+art-supply shelf does not convert" and means "is not counted" — an argument for
+deleting the one surface built to raise basket size. Fixed by making the match
+STRUCTURAL (same-origin + pathname starts with `/go/`, which is by construction the
+affiliate-gate prefix here) rather than enumerated, so a fourth shape counts on the
+day it ships. A header comment warning about this exact failure was already in the
+file and had not prevented instances 2 or 3, so the fix is a guard:
+`scripts/verify-beacon-coverage.mjs`, wired into `predeploy`.
+
+**2. Deploy-integrity guard (`scripts/verify-deploy-integrity.mjs`).** `make-worker.mjs`
+already fixed the CAUSE of the Aug 27-28 outage — dist is ~92MB so every deploy takes
+the chunked direct-upload path, which ships static assets only and cannot compile a
+Pages Function, so the four handlers are merged into `dist/_worker.js`. Nothing checked
+the RESULT. `--pre` inspects dist before upload (worker present, parses, all four
+routes plus the ASSETS fallthrough, gesture gate, page-count sanity) so a bad deploy
+aborts without touching production; `--post` probes production afterwards. Both wired
+into `npm run deploy`.
+
+Non-US earnings (EUR 17.78 DE + GBP 4.15 GB / 30d — this is the fleet's only material
+international earner) are protected by CODE-READ, not probe: Cloudflare overwrites
+`cf-ipcountry`, so a live EU probe is impossible. `--pre` asserts `caslonmedia-21` is
+present, AT/BE/IE/PT/DK/FI are still in `EU_ROUTED`, and DE/NL/FR/IT/ES/PL/SE are still
+ABSENT (routing a Global-Earning country through .de credits the wrong tag). An honest
+code-read beats a probe that cannot run. No probe ever generates an affiliate click:
+every 302 check uses `redirect: "manual"` and reads the Location header.
+
+**3. Basket size — the actual constraint.** Per-tag, window Aug 03-Sep 01: 425 clicks
+→ 42 orders → 9.88%, the fleet's BEST conversion, earning $0.065/click, the fleet's
+LOWEST, on a ~$21 average item. 251 of those clicks went to three ~$20 books earning
+~$23. The audience acts; it is being handed cheap items. The catalogue already held the
+high-basket end of the same intent (the print and calibrate groups) but the shelf
+rendered a rotating two-of-ten in the sidebar, so many pages surfaced two of the
+cheapest items and neither high-basket group.
+
+Moved to peak intent — main prose column, straight after "Historical context", where
+the reader has the hex codes — as three destination verdicts (…onto paper / …onto a
+screen you can trust / …by hand). A MOVE, not an addition: the sidebar block is gone,
+so page density is unchanged. Extended `PaintThisPalette` with a `destination` variant
+rather than writing a new component, so zero new compliance surface. Result: **378 of
+378 palette pages now carry both a print and a calibrate item**, where the old rotation
+guaranteed neither.
+
+**Measurement beat eyeballing, twice.** Headless screenshots proved an unreliable 375px
+instrument — text clipped at the right edge in both `--headless` and `--headless=new`.
+The control settled it: the same clipping appears on LIVE production, which does not
+contain the new block, so it was a screenshot artifact. Switched to reading real
+geometry from the rendered page: zero horizontal overflow at 375/768/1000/1400px, 52px
+buttons everywhere (clears the 44px standard), and the block trimmed from 1175px to
+886px on mobile by dropping the catalogue `why`, which was repeating the verdict above
+it. Separately, the first version of the deploy guard's tracker check PASSED against
+production when it should have failed — its needle existed in the old tracker too. A
+control that both the good and the bad artifact satisfy is not a control; corrected to
+assert the discriminating property.
+
+**Verify.** Build 2128 pages, 0 typecheck errors, 0 content leaks. Deployed
+`945766c1`, 3962 files, `_worker.js` in specials. Post-deploy: 14/14 pass. Live on 3
+palette pages spanning the catalogue: 3 destination cards, 6 `/go/p/` links carrying
+`c=palette-destination`, 3 book links intact, `rel="sponsored nofollow noopener"` on
+all 10, FTC disclosure present, **zero prices**, **zero raw tagged Amazon hrefs**.
+Sitemap 1469 = 1469, no page drop; 9 untouched page types all 200.
+
+**IndexNow deliberately skipped.** Dry run reported 1,415 changed URLs, because the
+same-day footer attribution commit re-hashed every page. Submitting 1,415 URLs for a
+footer line plus a buy-block move is the batch-abuse shape Bing's detector is tuned
+for, and neither change alters search intent. Manifest left unwritten, so these URLs
+ride along with the next genuinely content-bearing deploy.
+
+**Reversibility.** Fully reversible: `git revert 79d225a 46224da` for the AOV surface,
+`9beddee` for the beacon. No monetization-layer change — same Amazon Associates layer,
+same tag, same gate.
+
+**Open, not done.** The 1000px viewport band gets a 1-column block because the 22rem
+sidebar squeezes prose to 504px and two 240px columns need 508px — a 4px miss that
+`minmax(14rem, …)` would win back. Left as is rather than spending a 9-minute rebuild.
+The embed / CC BY dataset link-magnet promotion in the chief directive is untouched.
+
 ## 2026-08-27 — Shipped /gift-guide after confirming the 2026-08-24 shelf verdict cleared its gate
 
 **Decision:** task `mry1jdydl0xfb9` ("gift-guide intersection around the proven Wada book cluster") was explicitly written as gated: build only if the linked verdict task (`mrudi4pywoizow`) showed the audience converts. Read that task's `result` field before starting anything — it was `status: done`, verdict "the site IS an Amazon asset" (306 clicks -> 35 orders -> $16.18/30d). Gate cleared; built the page.
