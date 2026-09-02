@@ -69,6 +69,18 @@ const books = (() => {
 // pasted in yet, so the disclosure is an always-on compliance surface.
 const showDisclosure = true;
 
+// One disclosure string, two placements. On a LONG list the trailing disclosure
+// alone sits ~2,000 CSS px below the first buy link at 375px (measured on
+// /trends/color-trends-2026/, 2026-09-02: 18 CTAs spanning y=7691-9507, sole
+// in-content disclosure at y=9664) - i.e. the reader passes every affiliate link
+// before seeing one. The already-fixed /palettes/ sidebar keeps that gap <=690px,
+// which is the standard this restores. Short lists are unchanged.
+const DISCLOSURE_TEXT =
+  variant ==="sidebar"
+    ?"Affiliate links — as an Amazon Associate we earn from qualifying purchases."
+    :"Book links are Amazon Associates affiliate links. Your price is unchanged; a small commission supports the archive. As an Amazon Associate we earn from qualifying purchases.";
+const showLeadDisclosure = showDisclosure && variant !=="sidebar" && books.length >= 5;
+
 // When the rendered set includes either Wada dictionary (the two highest-click
 // books on the site — 150+ Amazon clicks/30d combined), route undecided
 // readers to the on-site comparison instead of losing them at the buy fork.
@@ -84,6 +96,12 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
     <h2 class="text-balance">{title}</h2>
     {intro && <p class="further-reading__intro">{intro}</p>}
   </header>
+
+  {showLeadDisclosure && (
+    <p class="further-reading__disclosure further-reading__disclosure--lead">
+      {DISCLOSURE_TEXT}
+    </p>
+  )}
 
   <ul class="further-reading__list" role="list">
     {books.map((book) => {
@@ -179,9 +197,7 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
 
   {showDisclosure && (
     <p class="further-reading__disclosure">
-      {variant ==="sidebar"
-        ?"Affiliate links — as an Amazon Associate we earn from qualifying purchases."
-        :"Book links are Amazon Associates affiliate links. Your price is unchanged; a small commission supports the archive. As an Amazon Associate we earn from qualifying purchases."}
+      {DISCLOSURE_TEXT}
     </p>
   )}
 </section>
@@ -420,6 +436,23 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
     margin-block-start: 1.25rem;
     font-size: 0.9375rem;
     color: var(--color-ink-soft, inherit);
+  }
+
+  /* Lead disclosure sits ABOVE a long list; the trailing one keeps its top margin. */
+  .further-reading__disclosure--lead {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+  }
+
+  /* 44px tap floor on the buy CTA at mobile (fleet-mobile-standard). This class
+     overrides the global .btn padding (0.75rem -> 0.4rem), which rendered the
+     "View on Amazon" button at 36px measured at 375px - 8px under the floor, on
+     the money path of the site's most-cited page. Mobile-scoped so the desktop
+     compact look is untouched. */
+  @media (max-width: 640px) {
+    .further-reading__link {
+      min-height: 44px;
+    }
   }
 
   .further-reading__disclosure {
