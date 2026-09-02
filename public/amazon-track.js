@@ -44,5 +44,50 @@
    endpoint unattributed. This site is the fleet's #2 earner by click volume,
    so "which surface earns" was unanswerable on the second-largest sample we
    have. One param closes that. Falls back to 'untagged' (fleet convention)
-   rather than omitting the key, so the field is always present and countable. */
-(function(){var B='https://fleet.promptprio.com/c?s=colorcombinations.org';function t(e){try{var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.href||'';try{if(a.host===location.host&&a.pathname&&a.pathname.indexOf('/go/')===0){document.cookie='cc_g='+Date.now().toString(36)+'; Path=/; Max-Age=600; SameSite=Lax; Secure';}}catch(g){}var isGo=/\/go\/b\/[0-9X]{10}\/?(?:[?#].*)?$/i.test(h);if(!isGo&&!/amazon\.|amzn\.to|amzn\.eu/i.test(h))return;var m=h.match(/\/(?:dp|gp\/product|gp\/aw\/d|go\/b)\/([A-Z0-9]{10})/i);var asin=m?m[1].toUpperCase():'';var dest=/amzn\.to|audible/i.test(h)?'audible':'amazon';var shelf=a.dataset.from==='prime-bounty'?'prime':(a.dataset.tool?'tool':(a.dataset.book?'book':''));if(window.clarity){window.clarity('event','amazon_click');if(shelf){window.clarity('event','amazon_click_'+shelf);window.clarity('set','amazon_shelf',shelf);}}if(window.gtag)window.gtag('event','amazon_click',{page:location.pathname,asin:asin,dest:dest,shelf:shelf});if(navigator.sendBeacon)navigator.sendBeacon(B+'&f='+encodeURIComponent(shelf||'untagged')+(window.__FLEET_AGENT__?'&a=1':''));}catch(x){}}document.addEventListener('click',t,true);document.addEventListener('auxclick',function(e){if(e.button===1)t(e);},true);})();
+   rather than omitting the key, so the field is always present and countable.
+
+   2026-09-02 — THE SAME BUG, SECOND TIME, 15 DAYS LATER. The 2026-08-11 note
+   above says it plainly: geo-routing "MOVED the thing this file matches on".
+   On 2026-08-26 the NON-BOOK ASINs moved the same way — every ART_SUPPLIES
+   link stopped being an amazon.com href and became /go/p/{asin} (see
+   AMAZON.link() in src/config/monetization.ts). This file was not updated, so
+   the guard below dropped every one of them before any sink fired: no Clarity
+   event, no GA4 event, no first-party beacon. Dark for 7 days across every
+   template that renders PaintThisPalette (palettes/[slug], colors/[slug],
+   collections/[slug], colors-that-go-with/*, paintings/[slug], index, browse,
+   shop, gift-guide, learn/why-painting-colours-shift) — 4 links on a single
+   palette page, verified live 2026-09-02.
+
+   What it cost: `amazon_clicks_by_position_30d` read {book:107, tool:2}, which
+   reads exactly like "the art-supply shelf does not convert" and is instead
+   "the art-supply shelf is not counted". That is the more expensive kind of
+   wrong — it argues for REMOVING the one surface built to raise basket size
+   ($21 avg item is this site's binding constraint, not CTA rate: 425 clicks →
+   42 orders → 9.88% is already the fleet's best conversion).
+
+   Fix is /go/[bp]/ rather than /go/b/. Kept narrow deliberately: the only
+   other route is /go/prime, which has no 10-char segment, so a wider
+   /go/[a-z]+/ would buy nothing and risk matching a future non-affiliate
+   route.
+
+   ...and then the THIRD instance turned up in the same pass: PRIME_BOUNTY.url
+   is "/go/prime", which has no 10-char segment, so an enumerated /go/[bp]/
+   pattern drops it too. `amazon_bounty_clicks_30d: 0` is therefore also
+   "not counted", not "not clicked".
+
+   So this is no longer patched by enumeration. `isGo` is now the STRUCTURAL
+   test — same-origin AND pathname starts with /go/ — which is by construction
+   the affiliate-gate prefix on this site (functions/go/b, /go/p, /go/prime are
+   its only inhabitants; see rules/affiliate-link-gate.md). It is the exact same
+   boolean the gesture cookie already needed, so the two are now computed ONCE
+   and cannot drift apart again. A fourth /go/ product shape counts on the day
+   it ships, with no edit here.
+
+   The trade this makes, stated plainly: a future NON-affiliate /go/ route would
+   be counted as an Amazon click. That failure is loud (clicks appear on a
+   surface that has none) and there is no such route. The failure it replaces is
+   silent, has now happened twice, and the second time produced a metric that
+   argued for deleting a working surface. Prefer the loud one. If you ever add a
+   non-affiliate /go/ route, exclude it here explicitly — do not go back to
+   enumerating the affiliate ones. */
+(function(){var B='https://fleet.promptprio.com/c?s=colorcombinations.org';function t(e){try{var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.href||'';var isGo=false;try{isGo=a.host===location.host&&!!a.pathname&&a.pathname.indexOf('/go/')===0;if(isGo){document.cookie='cc_g='+Date.now().toString(36)+'; Path=/; Max-Age=600; SameSite=Lax; Secure';}}catch(g){}if(!isGo&&!/amazon\.|amzn\.to|amzn\.eu/i.test(h))return;var m=h.match(/\/(?:dp|gp\/product|gp\/aw\/d|go\/[bp])\/([A-Z0-9]{10})/i);var asin=m?m[1].toUpperCase():'';var dest=/amzn\.to|audible/i.test(h)?'audible':'amazon';var shelf=a.dataset.from==='prime-bounty'?'prime':(a.dataset.tool?'tool':(a.dataset.book?'book':''));if(window.clarity){window.clarity('event','amazon_click');if(shelf){window.clarity('event','amazon_click_'+shelf);window.clarity('set','amazon_shelf',shelf);}}if(window.gtag)window.gtag('event','amazon_click',{page:location.pathname,asin:asin,dest:dest,shelf:shelf});if(navigator.sendBeacon)navigator.sendBeacon(B+'&f='+encodeURIComponent(shelf||'untagged')+(window.__FLEET_AGENT__?'&a=1':''));}catch(x){}}document.addEventListener('click',t,true);document.addEventListener('auxclick',function(e){if(e.button===1)t(e);},true);})();
