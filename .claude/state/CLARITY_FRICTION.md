@@ -75,10 +75,41 @@ yandex                     4   25.0     39.4       14
 - **Metric:** scroll-to-CTA; affiliate-click rate on `/browse/`.
 - **Effort:** S.
 
-### 3 · 🟢 `/colors/` and `/collections/` quickback above their own baseline
+### 3 · ~~🟢 `/colors/` and `/collections/` quickback above their own baseline~~ **REFUTED 2026-09-02 — these are WORKING indexes, do not "fix" them**
 
-- 17.6% and 20.4% vs a site baseline nearer 6–11%. Both are index pages — the same shape as readinglist's list-index finding, which suggests a pattern worth testing across sites rather than a defect unique to one page.
-- **Effort:** defer until the readinglist recordings verdict lands; it likely answers both.
+I flagged 17.6% and 20.4% quickback against a site baseline nearer 6–11%. That reading was wrong,
+and the same control that overturned it on readinglist overturns it here.
+
+**Quickback cannot tell "sampling an index" apart from "leaving".** Pageviews-per-session for
+sessions that LANDED on the page can: you cannot accumulate 4 pageviews by landing and bouncing.
+GA4 holds it, over 30 days, at zero Clarity quota.
+
+`/ga4-probe`, property 294106772, `dims=landingPagePlusQueryString`, `mets=sessions,screenPageViews`, 30d:
+
+```
+page             sessions    pv    pv/session    rank of 77 pages >=8 sess
+/colors/              119    520      4.37            3rd
+/collections/          60    262      4.37            4th
+/                    2346   7102      3.03           11th
+/browse/              669   1318      1.97           25th
+median of the 77 ..............  1.45
+```
+
+`/colors/` and `/collections/` are the **3rd and 4th most-sampled landing pages on the site** — 3×
+the median. Visitors land, open a palette, come back, open another. That is the index doing its job;
+Clarity scores it as friction only because it cannot see that the next action is another row on the
+same list. Same signature computer 2 measured on readinglist `/banned-books` (7.00 pv/session).
+
+**Positive control passes** — the method produces low numbers too: `/colors/shu/` and
+`/learn/heian-court-color-theory/` both read 1.00 at the bottom of the same ranking. So the flagged
+pages topping it is real, not uniform inflation.
+
+**Tenant caveat checked and closed:** the probe warns the property may hold several hostnames. It
+holds 3; colorcombinations.org is 6,766 of 6,772 sessions (**99.9%**). The rows are this host.
+
+**Note `/browse/` reads 1.97 — mid, 25th of 77.** It does *not* carry the sampling signature, so its
+27.3% scroll depth remains a live question (item 2 above stands). Low scroll and low sampling on the
+site's busiest page are a different shape from the two index pages here.
 
 ### ❓ Google is absent from the referrer list — do not act on this yet
 
