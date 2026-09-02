@@ -38,3 +38,48 @@ It is an UPPER BOUND — one session can trip two frictions and be counted twice
 - Clarity samples; it is not a census. Treat ordering as signal, exact percentages as approximate.
 - Rage-click reads 0.0 across the whole fleet in this window. That is plausible for static
   content sites, but treat a 0 as 'not observed in 3 days', never as 'cannot happen'.
+
+---
+
+## DIAGNOSIS — ranked friction list (2026-09-02, Clarity Friction Pilot c1)
+
+Channel breakdown pulled the same day via `dimension=URL&dimension2=Source` (one call, cross-tabbed):
+
+```
+source                  sess    qb%   scroll%   active_s
+colorcombinations.org    766   11.0     31.3       44      (internal navigation)
+(none) / direct          252    6.7     23.2       36
+chatgpt.com              110   11.8     29.3       25   <-- #1 external referrer
+bing                      42   11.9     38.8       42
+duckduckgo.com            41    2.4     33.0       35
+www.ecosia.org            24    8.3     23.2       34
+yahoo                      7   14.3     53.1       50
+yandex                     4   25.0     39.4       14
+```
+
+### 1 · 🔴 AI-referred visitors are the #1 external channel AND the least engaged
+
+- **Page:** `/` and `/browse/` (where chatgpt.com traffic lands; `/?utm_source=chatgpt.com` alone is 80 sessions).
+- **Evidence:** Clarity 2026-09-02, 3d. chatgpt.com = **110 sessions**, more than Bing (42) and roughly equal to *every other search engine combined* (118). Its **25s active time is the lowest of any channel** — 43% below internal navigation (44s) and Bing (42s), at a similar 29.3% scroll.
+- **Read:** these visitors arrive with an answer already in hand from the assistant, glance, and go. That is the citation→click gap `ai-citation-channel.md` names as the fleet's biggest unexploited lever, visible here in on-site behaviour for the first time.
+- **Fix:** give an AI-referred visitor something the assistant's answer cannot contain — the interactive palette/browse surface, adjacent combinations, the copy-hex affordance — above the first screen on the landing page. Do **not** start by rewriting copy.
+- **Metric it should move:** `active_s` for source=chatgpt.com (25s → 40s+), then affiliate-click rate on that segment.
+- **Effort:** M. Needs the heatmap first to see where those 110 sessions actually click.
+
+### 2 · 🟡 The top entry page shows a quarter of itself
+
+- **Page:** `/browse/` — 230 sessions, the site's busiest, **27.3% scroll** at 58s active. Homepage `/` 27.0% at 26s.
+- **Evidence:** Clarity 2026-09-02, 3d.
+- **Read:** 58s of engagement at 27% scroll means people are using the top of the page, not abandoning. But anything below ~30% of page height is not seen by the median visitor.
+- **Fix:** audit what sits below that line on `/browse/`; if a monetized or routing element is there, raise it. Verify at mobile-375 first.
+- **Metric:** scroll-to-CTA; affiliate-click rate on `/browse/`.
+- **Effort:** S.
+
+### 3 · 🟢 `/colors/` and `/collections/` quickback above their own baseline
+
+- 17.6% and 20.4% vs a site baseline nearer 6–11%. Both are index pages — the same shape as readinglist's list-index finding, which suggests a pattern worth testing across sites rather than a defect unique to one page.
+- **Effort:** defer until the readinglist recordings verdict lands; it likely answers both.
+
+### ❓ Google is absent from the referrer list — do not act on this yet
+
+No `google` row appears at all, while duckduckgo (41) and ecosia (24) do. That is either a Clarity attribution artifact (Google traffic may be landing in the 252 `(none)` rows) or a genuine ranking gap. **I have not established which**, and the two have opposite implications. Resolve against Search Console before anyone treats it as a finding.
