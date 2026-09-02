@@ -100,6 +100,12 @@ const organizationSchema = {
   name: siteName,
   alternateName: "Dictionary of Color Combinations",
   url: siteUrl,
+  parentOrganization: {
+    "@type": "Organization",
+    "@id": "https://caslonmedia.com/#organization",
+    name: "Caslon Media",
+    url: "https://caslonmedia.com/",
+  },
   logo: {
     "@type": "ImageObject",
     url: `${siteUrl.replace(/\/$/, "")}/favicon.svg`,
