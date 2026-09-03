@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 import { PAIRS, FORMATS } from "@/data/converterPairs";
 
 const title = "Color Converter — HEX, RGB, HSL, HSV, CMYK, OKLCH";
@@ -108,6 +109,40 @@ const formatRows = [
     </div>
   </section>
 
+  {/*
+    Instrument block, 2026-09-03. The /tools/ surface carried ZERO commercial
+    components — no PaintThisPalette, no FurtherReading, no BundleCta across all
+    8 tool files (control: src/pages/colors/ returns 1, so the grep was sound) —
+    on 378 pageviews/30d. Same gap class as /trends/color-trends-2026 before its
+    A1 block.
+
+    Placed after the converter output and before the explainer essay: the reader
+    has just produced a value, which is the peak-intent line used on
+    /palettes/, /colors/, /collections/ and /trends/.
+
+    This page is the strongest intent fit on the surface — it mentions CMYK 12
+    times, and the print verdict already says "screen colour and ink colour are
+    not the same colour, and this is the deck that translates between them".
+    Someone converting RGB to CMYK is preparing for print; that is not an upsell,
+    it is the next thing they need.
+
+    offset={1} for the same reason as /trends/: offset 0 surfaces the Calibrite
+    ColorChecker Studio (~$1,900), which is a print-production instrument and the
+    wrong recommendation here. offset 1 gives the Display Plus HL colorimeter
+    (~$270) plus a Pantone Color Bridge (~$200).
+
+    NOT added to /tools/ (the hub) on purpose: a hub visitor is choosing a tool
+    and holds no result, so it fails the peak-intent test this block is placed on.
+  */}
+  <section class="container-narrow tool-destination">
+    <PaintThisPalette
+      title="When the number has to match a real colour"
+      intro="A converted value is exact on screen and approximate everywhere else. Which reference you need depends on where the colour is going."
+      offset={1}
+      variant="destination"
+    />
+  </section>
+
   <section class="cv-pairs section">
     <div class="container-wide">
       <h2 class="cv-pairs__title">Direct conversions</h2>
@@ -205,6 +240,13 @@ const formatRows = [
 </script>
 
 <style>
+  /* Instrument block spacing. Matches `.color-destination`,
+     `.palette-destination`, `.collection-destination` and `.coty-instrument`
+     so the block reads identically on every surface that carries it. */
+  .tool-destination {
+    margin-block: 3rem;
+  }
+
   .tool-hero { padding-top: 3rem; padding-bottom: 1.5rem; }
   .tool-hero__inner { max-width: 62rem; }
   .tool-hero__inner .eyebrow a { color: var(--color-accent-500); text-decoration: none; }

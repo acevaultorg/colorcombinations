@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 import { allPalettes } from "@data/palettes";
 
 const title = "Palette Finder — Start from one color";
@@ -103,6 +104,28 @@ const jsonLd = [
 
       </div>
     </div>
+  </section>
+
+  {/*
+    Instrument block, 2026-09-03. See tools/color-converter/index.astro for the
+    full rationale: the /tools/ surface carried ZERO commercial components across
+    all 8 files on 378 pageviews/30d. Placed after the tool output and before the
+    explainer essay — the reader is holding a result, which is the peak-intent
+    line used on /palettes/, /colors/, /collections/ and /trends/.
+
+    offset=2 avoids offset 0, which surfaces the ~$1,900 ColorChecker Studio —
+    a print-production instrument and the wrong recommendation for this reader.
+
+    The /tools/ HUB is deliberately excluded: a hub visitor is choosing a tool
+    and holds no result, so it fails the peak-intent test.
+  */}
+  <section class="container-narrow tool-destination">
+    <PaintThisPalette
+      title="Taking these palettes off the screen"
+      intro="You have matching palettes and their hex codes. Where they are going decides what they need next."
+      offset={2}
+      variant="destination"
+    />
   </section>
 
   <section class="explainer section">
@@ -296,6 +319,13 @@ const jsonLd = [
 </script>
 
 <style>
+  /* Instrument block spacing. Matches `.color-destination`,
+     `.palette-destination`, `.collection-destination` and `.coty-instrument`
+     so the block reads identically on every surface that carries it. */
+  .tool-destination {
+    margin-block: 3rem;
+  }
+
   /* ── Hero ────────────────────────────────────────────────────────────── */
   .tool-hero {
     padding-top: 3rem;

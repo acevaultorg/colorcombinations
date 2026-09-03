@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 
 const title = "Color Palette from Image — extract colors in your browser";
 const description =
@@ -70,6 +71,28 @@ const jsonLd = [
       <div class="pi__palette" id="pi-palette"></div>
       <canvas id="pi-canvas" hidden></canvas>
     </div>
+  </section>
+
+  {/*
+    Instrument block, 2026-09-03. See tools/color-converter/index.astro for the
+    full rationale: the /tools/ surface carried ZERO commercial components across
+    all 8 files on 378 pageviews/30d. Placed after the tool output and before the
+    explainer essay — the reader is holding a result, which is the peak-intent
+    line used on /palettes/, /colors/, /collections/ and /trends/.
+
+    offset=1 avoids offset 0, which surfaces the ~$1,900 ColorChecker Studio —
+    a print-production instrument and the wrong recommendation for this reader.
+
+    The /tools/ HUB is deliberately excluded: a hub visitor is choosing a tool
+    and holds no result, so it fails the peak-intent test.
+  */}
+  <section class="container-narrow tool-destination">
+    <PaintThisPalette
+      title="Taking an extracted palette off the screen"
+      intro="Colours pulled from a photograph are screen colours. Reproducing them anywhere physical needs a reference."
+      offset={1}
+      variant="destination"
+    />
   </section>
 
   <section class="explainer section">
@@ -178,6 +201,13 @@ const jsonLd = [
 </script>
 
 <style>
+  /* Instrument block spacing. Matches `.color-destination`,
+     `.palette-destination`, `.collection-destination` and `.coty-instrument`
+     so the block reads identically on every surface that carries it. */
+  .tool-destination {
+    margin-block: 3rem;
+  }
+
   .tool-hero { padding-top: 3rem; padding-bottom: 1.5rem; }
   .tool-hero__inner { max-width: 62rem; }
   .tool-hero__inner .eyebrow a { color: var(--color-accent-500); text-decoration: none; }
