@@ -596,3 +596,58 @@ of dollars, not hundreds. It is worth doing because it is ~20 lines reusing
 components that already exist, and because an owned list outlives any affiliate
 program. It is **not** the biggest lever here — that remains Mediavine
 (`mtlst3czyav7re`, ~$190–300/mo vs ~$27/mo Amazon) and it is operator-gated.
+
+### 2026-09-04 — CI ran none of this repo's guards; and the CC-BY dataset shipped 447 dead URLs
+
+**Two defects, same shape: a thing that exists and is never exercised.**
+
+**1. The money-path guard was orphaned by my own correction.**
+`verify-deploy-integrity.mjs` has existed since e1839f3 and CI had *never* called
+it. It is wired to `npm run deploy` — the laptop path — and I changed
+`_deploy_note` to "DEPLOY VIA CI, NOT FROM A LAPTOP" earlier the same day after
+measuring that CI overwrites direct uploads. Correcting the deploy path silently
+disabled the guard. CI calls `npx astro build` and `wrangler` directly, so no npm
+`pre*`/`post*` hook fires either: `predeploy-git-guard` and
+`verify-beacon-coverage` are bypassed the same way. **Installed is not invoked.**
+
+Fixed in `a9543b3` (guard, `--post` only — `--pre` asserts `dist/_worker.js`
+which CI correctly does not build) and `d06ee14` (page-count floor, which the
+guard only had in `--pre`; `wrangler pages deploy` REPLACES the directory, so a
+short build deletes live pages). Both pipelines green.
+
+Added a `SUBSCRIBERS` KV binding assertion while there — `/api/subscribe`
+returning 405 proves the Function is alive and says nothing about whether a
+signup is *stored*, because it returns `ok:true` when unbound.
+
+Two things that check taught me about itself, both kept:
+- It first read `CLOUDFLARE_API_TOKEN` only, which locally is DNS-scoped and
+  cannot read Pages, and reported UNVERIFIED while the answer sat in
+  `CF_PAGES_TOKEN`. It now tries every candidate token.
+- A WARN now propagates into the summary, so "integrity OK" can no longer print
+  while a check silently did not run.
+
+**Its CI-side verdict is UNKNOWN, not passing.** Reading the job log needs a
+GitLab token with `Job: Read`; ours returns `insufficient_granular_scope`. A
+green pipeline proves only that the step exited 0 — which a WARN also does.
+
+**2. `og_url` advertised `.svg` for 447 records that only ship `.png`.**
+`dist/og` holds 389 `.png` against 11 `.svg`, and every `.svg` is a static site
+page (about, browse, index, learn…), never a palette. 378 + 69 = 447 dead URLs
+in a CC-BY-4.0 dataset whose entire purpose is attracting attribution links —
+consumers rendering our own `og_url` got a 404 from us. Fixed in `0ba7d3b`;
+live-verified `200 image/png`.
+
+Then checked **every** URL column rather than stopping at the one I sampled:
+40 probes across all 10 columns in all three CSVs, all 200, control 404 correct.
+
+**Three of my own readings in this session were wrong and are worth keeping:**
+- Reported the dataset had no visible licence. It has a full "License +
+  attribution" section; I searched `"CC BY"` and the page writes `CC-BY-4.0`.
+  Wrong vocabulary, not a missing licence.
+- Called `/embed` broken. That string is prose describing a **CSV column**, not a
+  route — the 404 was correct. The real `embed_url` works (4/4, control 404s).
+- Nearly read `grep -c` returning 2 on `.gitlab-ci.yml` as "a page-count floor
+  exists". Both matches were the leak gate's `wc -l`. `grep -c` counts LINES.
+
+The lesson under all three: **test a URL taken from the data, never one you
+constructed**, and read the matches rather than the count.
