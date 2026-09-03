@@ -34,6 +34,25 @@ export interface Props {
   offset?: number;
   /** Layout variant. */
   variant?:"full" |"sidebar" |"destination";
+  /**
+   * Short slug forwarded as `?c=` on every /go/ link, which the worker
+   * re-appends as `&ascsubtag=` on whichever marketplace it resolves to.
+   *
+   * WHY THIS EXISTS (2026-09-03). This variant's subtag was hardcoded to
+   * "palette-destination", so by today six different surfaces — /palettes/,
+   * /colors/, /trends/color-trends-2026 and all six /tools/ result pages —
+   * were reporting as ONE bucket. The next per-tag Associates read could not
+   * have answered which of them converts, which is the same failure
+   * FurtherReading already solved with its own `pageClass` prop (see the note
+   * at its Props). Only 112 of 355 beacon clicks carry a position label at
+   * all, so collapsing surfaces on top of that makes the sparse signal
+   * useless.
+   *
+   * Defaults preserve the previous values exactly, so /palettes/ keeps
+   * continuity with the data already collected under "palette-destination"
+   * and the full/sidebar shelves keep "art-supplies".
+   */
+  pageClass?: string;
 }
 
 const {
@@ -42,7 +61,12 @@ const {
   limit,
   offset = 0,
   variant ="full",
+  pageClass,
 } = Astro.props;
+
+// Preserve the historical defaults per variant when no override is given.
+const destTag = pageClass ??"palette-destination";
+const shelfTag = pageClass ??"art-supplies";
 
 // Deterministic rotation — stable per URL (no randomness, so the HTML is
 // cacheable and the same reader sees the same shelf on reload), but spread
@@ -122,7 +146,7 @@ const destinations = DESTINATIONS.map((d) => {
           <p class="paint-kit__brand">{item.brand}</p>
           <h3 class="paint-kit__name">
             <a
-              href={AMAZON.link(item.amazonAsin,"palette-destination")}
+              href={AMAZON.link(item.amazonAsin, destTag)}
               rel="sponsored nofollow noopener"
               target="_blank"
               data-event="amazon_click"
@@ -143,7 +167,7 @@ const destinations = DESTINATIONS.map((d) => {
             variants, where it is the only explanation present.
           */}
           <a
-            href={AMAZON.link(item.amazonAsin,"palette-destination")}
+            href={AMAZON.link(item.amazonAsin, destTag)}
             rel="sponsored nofollow noopener"
             target="_blank"
             class="btn btn-secondary paint-kit__link"
@@ -163,7 +187,7 @@ const destinations = DESTINATIONS.map((d) => {
         <p class="paint-kit__brand">{item.brand}</p>
         <h3 class="paint-kit__name">
           <a
-            href={AMAZON.link(item.amazonAsin, "art-supplies")}
+            href={AMAZON.link(item.amazonAsin, shelfTag)}
             rel="sponsored nofollow noopener"
             target="_blank"
             class=""
@@ -177,7 +201,7 @@ const destinations = DESTINATIONS.map((d) => {
         <p class="paint-kit__why">{item.why}</p>
         {(
           <a
-            href={AMAZON.link(item.amazonAsin, "art-supplies")}
+            href={AMAZON.link(item.amazonAsin, shelfTag)}
             rel="sponsored nofollow noopener"
             target="_blank"
             class="btn btn-secondary paint-kit__link"
