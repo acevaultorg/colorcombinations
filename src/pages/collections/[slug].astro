@@ -246,6 +246,40 @@ const jsonLd = [
     </div>
   </section>
 
+  {/* Studio shelf (2026-08-29, task mtdn38qeek38cv) — see index.astro for the
+      full rationale. Same narrowed scope: home + browse + collections only.
+
+      MOVED TO PEAK INTENT 2026-09-03. It used to sit at the very bottom of this
+      725-line page: below the pillar, below BundleCta, below FurtherReading —
+      and, decisively, BELOW the "Other collections" block, which is an exit
+      affordance. Every reader who took that exit never saw the shelf at all.
+      It now renders directly after the palette grid, the line where the reader
+      is actually holding the collection's colours.
+
+      Sized on measurement, not on a guess: the full GA4 30d pull over all 1,320
+      paths (n=1320, untruncated — the default 15-row response hides exactly this
+      and the probe says so in its own truncation_note) puts /collections/ at
+      1,600 pageviews across 71 pages = 22.5 pv/path, the HIGHEST of any
+      multi-page surface on the site — 2.5x /palettes/ (8.9) and 1.8x /colors/
+      (12.5).
+
+      VARIANT DELIBERATELY UNCHANGED. `full` with no `limit` returns the whole
+      ART_SUPPLIES array, so this surface already shows all ten items including
+      the high-basket print and calibrate groups — it never had the
+      "arbitrary two of ten" defect that `variant="destination"` was built to
+      fix on /colors/ and /palettes/. Switching it here would CUT coverage from
+      ten items to three. The measured defect was placement; only placement is
+      changed.
+
+      A MOVE, not an addition — the bottom instance is removed, so commercial
+      density on the page is unchanged. */}
+  <section class="container-narrow collection-destination">
+    <PaintThisPalette
+      title="Off the screen"
+      intro={`You have the ${collection.title.toLowerCase()} in front of you. These are the materials a colour study like this actually gets made with.`}
+    />
+  </section>
+
   {/* ============ EMBED WIDGET ============ */}
   <section class="section collection-embed-section" aria-labelledby="collection-embed-heading">
     <div class="container-wide collection-embed-inner">
@@ -346,14 +380,8 @@ const jsonLd = [
     />
   </section>
 
-  {/* Studio shelf (2026-08-29, task mtdn38qeek38cv) — see index.astro for the
-      full rationale. Same narrowed scope: home + browse + collections only. */}
-  <section class="container-narrow">
-    <PaintThisPalette
-      title="Off the screen"
-      intro={`You have the ${collection.title.toLowerCase()} in front of you. These are the materials a colour study like this actually gets made with.`}
-    />
-  </section>
+  {/* The studio shelf used to render here, at the page bottom. It now sits
+      directly after the palette grid — see the rationale at that call site. */}
 </BaseLayout>
 
 <script>
@@ -376,6 +404,15 @@ const jsonLd = [
 </script>
 
 <style>
+  /* Studio shelf at peak intent. It previously sat last on the page, where the
+     surrounding sections supplied their own padding; mid-flow between the
+     palette grid and the embed section it needs its own. Matches the
+     `.color-destination` / `.palette-destination` rule on the two surfaces that
+     already made this move. */
+  .collection-destination {
+    margin-block: 3rem;
+  }
+
   .collection-hero__byline { font-size: 0.85rem; opacity: 0.75; margin: 0.5rem 0 0; }
   .collection-hero__byline a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
 
