@@ -348,6 +348,32 @@ const jsonLd = [
     <ColorHarmony hex={color.hex} name={color.name} />
   </div>
 
+  {/*
+    PEAK-INTENT BUY BLOCK — same move already shipped on /palettes/[slug].
+    Placed directly after ColorHarmony because that is the line where the reader
+    is holding hex codes (the harmony swatches) and the question "what do I do
+    with these" is the one they actually have. It used to sit in the sidebar as a
+    rotating two-of-ten shelf, which on many pages surfaced two of the cheapest
+    items in the catalogue and neither high-basket group.
+
+    Sized on measurement, not on a guess: GA4 30d over all 1,320 paths puts
+    /colors/[slug] at 2,057 pageviews (12.9%) across 212 pages — the second
+    largest programmatic surface after /palettes/[slug] (3,261 pv, 20.5%). A
+    first read of the same probe returned only its top 15 rows and made this
+    bucket look like zero; the full pull is what this placement rests on.
+
+    A MOVE, not an addition — the sidebar block is gone, so commercial density on
+    the page is unchanged.
+  */}
+  <div class="container-narrow color-destination">
+    <PaintThisPalette
+      title={`Taking ${color.name} off the screen`}
+      intro="A hex code is an instruction to a screen, not a colour. Where this one is going decides what it needs next."
+      offset={supplyOffset}
+      variant="destination"
+    />
+  </div>
+
   <section class="color-details section">
     <div class="container-wide color-details__grid">
       <div class="color-details__main">
@@ -429,18 +455,6 @@ const jsonLd = [
           intro={`The books behind a colour like ${color.name} — theory, history and reference designers keep close.`}
         />
 
-        {/* These 223 colour pages carried only ISBN book links (~$15). The art-supply
-            shelf — the same one /palettes/ already renders, incl. the Pantone Formula
-            Guide — was absent here despite these pages taking ~657 entrances/30d.
-            Order value, not conversion, is what separates earners in this fleet, and a
-            colour reference page is the honest place to name the materials. */}
-        <PaintThisPalette
-          title="Work with this colour"
-          intro={`You have the hex code. These are the materials a study of ${color.name} actually gets made with.`}
-          limit={2}
-          offset={supplyOffset}
-          variant="sidebar"
-        />
       </aside>
     </div>
   </section>
@@ -550,6 +564,14 @@ const jsonLd = [
 </script>
 
 <style>
+  /* Peak-intent buy block. The component brings its own grid; this only gives it
+     breathing room in the page flow. `.container-narrow` is a global width
+     utility with no list rules, so unlike the palette page there is no `.prose
+     ul` specificity fight to override here. */
+  .color-destination {
+    margin-block: 3rem;
+  }
+
   .breadcrumb {
     padding-top: 1.5rem;
   }
