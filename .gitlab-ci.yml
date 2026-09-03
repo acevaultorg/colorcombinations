@@ -5,6 +5,20 @@
 # the "Get the next study" email capture; KV binding SUBSCRIBERS already set on
 # the project) actually ships. Static Astro build, no DB/secret at build time.
 # ONE secret CI/CD variable required: CLOUDFLARE_API_TOKEN (Cloudflare Pages:Edit).
+#
+# POST-DEPLOY ASSERTION (added 2026-09-03). `wrangler pages deploy` can exit 0
+# having uploaded nothing; nothing here would have noticed. The assertion below
+# polls the CF Pages API and fails unless a production deployment whose
+# commit_hash equals $CI_COMMIT_SHA reached `success`.
+#
+# WHY THE commit_hash FORM IS VALID HERE (it is NOT valid everywhere — verify
+# per repo before copying this): this job deploys with `wrangler ...
+# --commit-dirty=true`, which attaches git metadata. Confirmed empirically
+# 2026-09-03 — CI pipeline SHAs ee37f767, d105e072 and 79d225ab each appear as
+# `commit_hash` on a CF production deployment. Sibling repos that deploy via
+# scripts/cf-pages-chunked-deploy.py post only `manifest` + `branch`, so CF
+# records commit_hash=None and this exact assertion would FALSE-RED on every
+# run (readstacks asserts the deployment id instead, for that reason).
 stages: [deploy]
 
 deploy_cf_pages:
@@ -14,10 +28,67 @@ deploy_cf_pages:
   interruptible: true
   variables:
     CLOUDFLARE_ACCOUNT_ID: "72bfd26c5f3c935393a25e5c0dea6039"
+    CF_PAGES_PROJECT: "colorcombinations"
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
   script:
     - node -v
     - npm ci --no-audit --no-fund
     - npx astro build
-    - npx --yes wrangler@latest pages deploy dist --project-name=colorcombinations --branch main --commit-dirty=true
+    # AFFILIATE LEAK GATE. This site routes every Amazon link through /go/
+    # (Design-B gesture gate, affiliate-link-gate.md), so a raw tagged link in
+    # static HTML is a leak. The CONTROL is the point: tagged=0 proves nothing
+    # if the grep or the build is broken. `|| true` is required — grep exits 1
+    # on zero matches, which under set -e kills the job.
+    # Measured 2026-09-03 before adding: tagged=0, control=1693, 36846 /go/ links.
+    - |
+      LEAK=$( (grep -rlE 'tag=[a-z0-9]+-20' dist --include='*.html' || true) | wc -l | tr -d ' ')
+      CONTROL=$( (grep -rl "colorcombinations" dist --include='*.html' || true) | wc -l | tr -d ' ')
+      echo "leak gate: tagged=$LEAK (must be 0)  control=$CONTROL files mention the brand (must be >0)"
+      if [ "$CONTROL" = "0" ]; then echo "ABORT: control found 0 files — the grep or the build is broken, so tagged=0 proves nothing"; exit 1; fi
+      if [ "$LEAK" != "0" ]; then echo "ABORT: $LEAK page(s) leaked the affiliate tag into static HTML"; exit 1; fi
+    - npx --yes wrangler@latest pages deploy dist --project-name="$CF_PAGES_PROJECT" --branch main --commit-dirty=true
+    # POST-DEPLOY ASSERTION. Never trust wrangler's exit code alone.
+    - |
+      cat > /tmp/assert.mjs <<'JS'
+      const acc = process.env.CLOUDFLARE_ACCOUNT_ID;
+      const tok = process.env.CLOUDFLARE_API_TOKEN;
+      const prj = process.env.CF_PAGES_PROJECT;
+      const sha = process.env.CI_COMMIT_SHA;
+      const url = `https://api.cloudflare.com/client/v4/accounts/${acc}/pages/projects/${prj}/deployments?per_page=10&env=production`;
+      for (let i = 1; i <= 10; i++) {
+        let body;
+        try {
+          const res = await fetch(url, { headers: { Authorization: `Bearer ${tok}` } });
+          body = await res.json();
+        } catch (e) {
+          console.error(`  attempt ${i}: CF API unreachable — ${e.message}`);
+          await new Promise(s => setTimeout(s, 15000));
+          continue;
+        }
+        // An API that cannot answer is a FAILURE, never a pass.
+        if (!body.success) {
+          console.error('ASSERTION FAILED: CF API returned success:false —', JSON.stringify(body.errors || []).slice(0, 300));
+          process.exit(1);
+        }
+        const list = body.result || [];
+        if (list.length === 0) {
+          console.error('ASSERTION FAILED: CF reports zero production deployments for this project.');
+          process.exit(1);
+        }
+        const mine = list.find(d => ((d.deployment_trigger || {}).metadata || {}).commit_hash === sha);
+        if (mine) {
+          const st = (mine.latest_stage || {}).status;
+          if (st === 'success') { console.log(`VERIFIED: production deployment ${mine.id} is live for ${sha.slice(0,8)}.`); process.exit(0); }
+          if (st === 'failure' || st === 'canceled') { console.error(`ASSERTION FAILED: deployment for ${sha.slice(0,8)} ended '${st}'.`); process.exit(1); }
+          console.log(`  attempt ${i}: found deployment for ${sha.slice(0,8)}, stage '${st}' — waiting.`);
+        } else {
+          console.log(`  attempt ${i}: newest is ${((list[0].deployment_trigger||{}).metadata||{}).commit_hash?.slice(0,8) || 'direct-upload'} — waiting for ${sha.slice(0,8)}.`);
+        }
+        await new Promise(s => setTimeout(s, 15000));
+      }
+      console.error(`ASSERTION FAILED: after ~2.5 min no successful production deployment exists for ${sha.slice(0,8)}.`);
+      console.error('wrangler exited 0 but nothing reached production — the green-and-wrong case this assertion exists to catch.');
+      process.exit(1);
+      JS
+      node /tmp/assert.mjs
