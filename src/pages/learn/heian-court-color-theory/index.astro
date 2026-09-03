@@ -9,6 +9,7 @@
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
 import BundleCta from "@components/BundleCta.astro";
+import FurtherReading from "@components/FurtherReading.astro";
 import ShareActions from "@components/ShareActions.astro";
 import PillarNav from "@components/PillarNav.astro";
 
@@ -281,6 +282,24 @@ const jsonLd = [
       </p>
 
       <p class="article-end">— colorcombinations.org editorial</p>
+
+      {/* Books, 2026-09-03. These 11 /learn/ essays carried BundleCta (the
+          site's own bundle) and NO Amazon path at all — a reader who finished
+          the piece had no way to click through. 263 pv/30d across the cluster
+          at 20.2 pv/path, the best-engaged multi-page surface after the
+          indexes. Books, not instruments: 109 of 112 position-labelled beacon
+          clicks on this site are books, and recommending a $270 colorimeter to
+          someone reading about Heian court colour would be padding.
+          Placed BEFORE the nav/bundle exit for the reason measured on
+          /collections/ — a commercial block below an exit link is unseen by
+          everyone who takes the exit. */}
+      <FurtherReading
+        pageClass="learn"
+        title="Go deeper on Heian court colour"
+        intro="The books behind this piece — colour theory, history and reference that designers keep close."
+        limit={4}
+        offset={2}
+      />
 
       <PillarNav current="heian-court-color-theory" />
 
