@@ -443,3 +443,109 @@ Reused rather than invented: `FurtherReading` (books={the exact 3 proven ASINs, 
 **Verify:** build clean (2128 pages, 0 typecheck errors) · no content leaks · all 8 outbound links resolve to the right `/go/b/` + `/go/p/` shapes with `&c=` subtags · 3 JSON-LD blocks parse · deployed (Worker + Functions bundle) · live content + both gate shapes verified WITHOUT manufacturing a real Associates click (byte-compared the live interstitial against source; ran `tokenFresh()` as pure computation with a genuinely browser-minted token). Commit `c39682b`.
 
 **Reversibility:** fully reversible, `git revert c39682b`. No monetization-layer change — this is a conversion-surface ship on the existing Amazon Associates layer.
+
+## 2026-09-03 — Extended the peak-intent buy block to every surface that earns it, and rejected four that don't
+
+**Decision:** carried the 2026-09-02 basket-size move (`/palettes/`) across the rest of the
+site. Six more surfaces now carry a buy block at peak intent — the line where the reader is
+holding a result, not choosing what to look at: `/colors/[slug]` (212 pages, moved off a
+`limit={2}` sidebar shelf), `/collections/[slug]` (71 pages), `/trends/color-trends-2026`
+(chief A1, board card `mtkltehvk2qm2l`), all six `/tools/` result pages, and the 11 `/learn/`
+essays. 174 `/go/` affordances added to pages that previously had **zero**.
+
+**The rejections are the more useful half of this entry.** Four candidates were measured and
+NOT shipped; re-opening any of them is re-doing settled work:
+
+- **`/colors/` + `/collections/` index hubs** (654 + 544 pv, the 3rd and 4th biggest single
+  pages, both with no block — so they look like the obvious next target). `CLARITY_FRICTION.md`
+  records them as the 3rd and 4th most-sampled LANDING pages at 4.37 pv/session, 3x the median:
+  readers land, open a palette, come back, open another. Their job is routing readers INTO the
+  pages that now carry the blocks, and only ~27-30% of page height is seen by the median
+  visitor, so a block above the grid pushes the grid down and risks the loop that feeds the
+  monetized pages. **The index is the funnel, not the destination.**
+- **`/colors-that-go-with/`** (1,000 pv / 572 paths — the largest programmatic surface, still on
+  the old `limit={2}` pattern, so converting it looks obvious). Its 12 contexts are
+  `accent-wall, bathroom, bedroom, cabinets, curtains, front-door, kitchen, living-room, nursery,
+  walls` + `an-outfit, clothes` — **ten of twelve are interior-decor paint intent.** The
+  destination variant would show that reader a Pantone print deck and a monitor colorimeter, and
+  the catalogue's "paint" group is *watercolour* supplies (Gansai Tambi, Strathmore), not house
+  paint. **No variant fixes this: the catalogue has no decor product.** Real fix needs verified
+  ASINs for paint fan decks / peel-and-stick samples — ASIN-gated, not buildable here, and a
+  fabricated ASIN is a broken buy link or the wrong product.
+- **`/embed/` link magnets** (closes the "untouched" item left open in the 2026-09-02 entry).
+  658 pages built, `noindex,nofollow`, absent from the sitemap, no analytics (bare `<html>` by
+  design, not BaseLayout), and the full untruncated 69-row referrer pull contains **ZERO embed
+  hosts** — every third-party referrer is a search engine, AI assistant or social shortener. No
+  demand. Also declined to add analytics: firing GA4/Clarity inside an iframe on a third party's
+  site with no consent banner is real GDPR exposure, and this site's numbers are trusted
+  precisely because it is the fleet's only ungated earner.
+- **`/tools/` hub, `/random/`, `/data/`, `/methodology/`.** A hub visitor holds no result.
+  `/random/` looked like the biggest miss at 185 pv until sessions showed **17** (~11 palettes
+  flipped per visit). `/data/` is the CC BY open-dataset page — an authority/citation asset that
+  affiliate links would undercut.
+
+**Coverage is now measured, not assumed.** Joining the untruncated GA4 pull (1,320 paths,
+`n=1320`; `limit=` is silently ignored by `/ga4-probe`) against the `/go/` count of every built
+page: **1,272 of 1,296 eligible pages carry a buy path.** The remainder is 6 result pages
+totalling 77 sessions/30d.
+
+**Measurement fix shipped in the same session, and it was a defect in the above.**
+`PaintThisPalette`'s destination variant hardcoded its subtag to `palette-destination`, so all
+six new instrument surfaces reported as ONE bucket — the next per-tag Associates read could not
+have answered which converts. `FurtherReading` already solved this with `pageClass` and says so
+in its Props comment. Added the same prop; defaults preserve prior behaviour exactly, so
+`/palettes/` keeps continuity under its existing label. Surfaces now distinct:
+`palette-destination` / `color-destination` / `collection-shelf` / `trends-destination` /
+`tools-destination`, plus the book subtags.
+
+**Google: open question CLOSED, and closed rather than actioned.** `CLARITY_FRICTION.md` carried
+"either a Clarity attribution artifact or a genuine ranking gap — I have not established which."
+It is the ranking gap: GA4 names `google` as its own row at **28 sessions** against bing 662 and
+duckduckgo 901, and GA4 is trustworthy here because this is the only ungated site. Not a
+technical block — robots.txt allows all bar `/og/` and `/go/`, 0 CF-managed injection, Googlebot
+200, no `meta robots`, sitemap-index 200. **GSC is verified via DNS TXT, NOT a meta tag** — the
+home page has Bing's `msvalidate.01` but no `google-site-verification` meta, so a meta-only check
+yields a false "unverified" and a wasted operator card; I nearly filed exactly that. Not actioned
+because REVENUE-STUDY-2026-09-02 already documents it fleet-wide as "Google structurally dead...
+**more pages hurt**".
+
+**Deploy method corrected.** `package.json`'s note told the next session to use the chunked
+deployer as though it were the only way to ship. Measured: **CI overwrote three local chunked
+deploys within ~3 minutes of each push** (CF `c2da7fa0` commit 70cfb7a9 15:33 -> `a4f5d839`
+DIRECT-UPLOAD 15:40 -> `56304e44` commit 3b8d6e4e 15:43, which went live). The two paths are
+different BUILDS, not two ways to ship one: CI runs `npx astro build`, never `make-worker.mjs`,
+so no `_worker.js` and wrangler compiles `functions/` natively. Advanced mode did NOT break
+`_redirects` here — measured on the direct-upload deployment that actually carried `_worker.js`,
+`/sitemap.xml` and all 8 COTY rules still 301. And `/_worker.js` 404s in BOTH modes, so it cannot
+distinguish them; the valid instrument is the CF deployments API trigger metadata.
+
+**Verify:** every ship built clean (astro check 0 errors, 2,128 pages, no page drop) and went out
+via CI with its post-deploy assertion green (`1e90a5c5`, `2fe92fc7`). `verify-deploy-integrity
+--pre/--post` passed on all six deploys; money path 14/14 each time. Affiliate leak gate 0 raw
+amazon hrefs and 0 `tag=` across all built HTML on every deploy, with the `/go/` count as the
+control — and the deltas matched the work exactly (41,912 -> 41,933 = +21 for three tool pages;
+-> 42,065 = +132 for eleven learn pages; -> 42,086 = +21 for the last three tools). Live
+fingerprints confirmed per surface, `cf-cache-status: DYNAMIC`. `offset` chosen per page to keep
+the ~$1,900 ColorChecker Studio off every new block — verified 0 occurrences live on all of them.
+IndexNow deltas stayed honest as the manifest healed: 1,415 (genuine site-wide, BaseLayout +
+SiteFooter had changed) -> 71 -> 5 -> 3.
+
+**Mobile:** code-read only, NOT a rendered check — no Chrome MCP on this device. The destination
+grid is `repeat(auto-fit, minmax(15rem,1fr))` (container-based, 1 column at 375px) with
+`min-height: 44px` links per the fleet mobile standard, and the added wrappers only set
+`margin-block`. Low risk by construction; a real 375px pass is still owed per
+`mobile-perfection-default`.
+
+**Reversibility:** every surface is a separate commit and independently revertable. The subtag
+change is additive with prior-behaviour defaults. No monetization-layer change anywhere — same
+Associates layer, same tag, same gate.
+
+**Open, not done.** (1) The decor-catalogue gap above — the largest programmatic surface has
+demand for paint/decor products the catalogue does not contain; ASIN-gated. (2) `$/order`
+($0.649) and clicks/user (0.097) both read from the next per-tag Associates export — worth
+pulling now, because for the first time it can attribute per surface. (3) A rendered 375px pass
+on the ~20 pages changed today. (4) The `{book:109, tool:2}` split should NOT be used to rank the
+instrument shelf on this window: tool links were dark 08-26 -> 09-02, so it is partly "not
+counted", not "does not convert" — the tracker's own header calls this "the more expensive kind
+of wrong". All 42,086 `/go/` anchors are now labelled (0 untagged, measured), so the caveat
+expires at the next read.
