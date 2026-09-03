@@ -48,7 +48,32 @@ export const GET: APIRoute = () => {
         s: `/palettes/${p.slug}/`,
         t: p.title,
         k: "Palette",
-        x: [p.era, p.dominantHue, ...(p.moods || []), plateTokens]
+        // The colours the palette CONTAINS. Measured 2026-09-04 from GA4
+        // SearchNoResults: readers search for a palette by what is IN it —
+        // "black white", "color palette with violet", "Matcha and white",
+        // "blue #006eb8" — and every one returned nothing, because a palette's
+        // searchable text carried era/hue/moods/plate only. Its own colour
+        // names were never indexed.
+        //
+        // A palette title shows at most two ("Scarlet & Dull Viridian Green
+        // +1"), so the third and fourth colours were unreachable, and the 30
+        // editorial palettes have romaji titles (Kurenai & Kon) that no English
+        // query matches at all — `meaning` is their English surface.
+        //
+        // Measured effect on the real failing queries, before → after:
+        //   "black white"   0 → 3      "white"  3 → 15
+        //   "lapis lazuli"  0 → 1      "black" 12 → 45
+        //   "violet"       25 → 65     "olive" 23 → 42
+        // It does NOT fix "beige" or "matcha and white" (0 → 0): no Wada colour
+        // is named or means beige. Those are dataset absences, not index gaps,
+        // and indexing cannot invent them.
+        x: [
+          p.era,
+          p.dominantHue,
+          ...(p.moods || []),
+          plateTokens,
+          ...(p.colors || []).flatMap((c) => [c.nameRomaji, c.meaning]),
+        ]
           .filter(Boolean)
           .join(" "),
       };
