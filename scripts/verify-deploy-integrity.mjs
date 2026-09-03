@@ -183,7 +183,11 @@ async function post() {
   // CI's CLOUDFLARE_API_TOKEN is Pages:Edit and I could not test its config-read
   // permission from a laptop before shipping this. A false FAIL here blocks
   // every deploy — including the ones that fix the money path. Tighten to bad()
-  // once a CI run is observed printing the pass line. A MISSING BINDING is a
+  // once a CI run is observed printing the pass line — NOTE 2026-09-03: that
+  // observation needs a GitLab token with `Job: Read`; the fleet token has
+  // insufficient_granular_scope, so CI job logs are unreadable and the CI-side
+  // verdict is currently UNKNOWN. Pipeline green only proves the step exited 0,
+  // which a WARN also does. Do not assume it passed. A MISSING BINDING is a
   // hard FAIL, because that is the defect this exists to catch.
   // Try EVERY candidate, not just the first. Locally CLOUDFLARE_API_TOKEN is
   // DNS-scoped and CF_PAGES_TOKEN is the one that can read Pages; in CI it is

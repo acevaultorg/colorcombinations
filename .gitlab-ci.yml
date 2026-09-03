@@ -47,6 +47,25 @@ deploy_cf_pages:
       echo "leak gate: tagged=$LEAK (must be 0)  control=$CONTROL files mention the brand (must be >0)"
       if [ "$CONTROL" = "0" ]; then echo "ABORT: control found 0 files — the grep or the build is broken, so tagged=0 proves nothing"; exit 1; fi
       if [ "$LEAK" != "0" ]; then echo "ABORT: $LEAK page(s) leaked the affiliate tag into static HTML"; exit 1; fi
+    # PAGE-COUNT FLOOR. `wrangler pages deploy` REPLACES the whole directory, so
+    # a short build does not merely under-deliver — it DELETES live pages. This
+    # is the fleet's dormbyschool case (repo built 177 pages while the site
+    # served 1,250; deploying would have removed 86% of a live earning site).
+    #
+    # The guard script has this check, but only in --pre, which cannot run here
+    # (it also asserts dist/_worker.js, which CI correctly does not build). So
+    # the floor has to live in CI directly.
+    #
+    # No separate control is needed: a broken find or a missing dist yields 0,
+    # and 0 < floor aborts. The blind case fails closed.
+    - |
+      PAGES=$(find dist -name '*.html' | wc -l | tr -d ' ')
+      echo "page-count floor: $PAGES html files in dist (floor 1500; 2128 on 2026-09-03)"
+      if [ "$PAGES" -lt 1500 ]; then
+        echo "ABORT: only $PAGES pages built — deploying would DELETE live pages."
+        echo "Fix the build. Do NOT lower this floor to make the pipeline green."
+        exit 1
+      fi
     - npx --yes wrangler@latest pages deploy dist --project-name="$CF_PAGES_PROJECT" --branch main --commit-dirty=true
     # POST-DEPLOY ASSERTION. Never trust wrangler's exit code alone.
     - |
