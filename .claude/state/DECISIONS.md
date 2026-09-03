@@ -549,3 +549,50 @@ instrument shelf on this window: tool links were dark 08-26 -> 09-02, so it is p
 counted", not "does not convert" — the tracker's own header calls this "the more expensive kind
 of wrong". All 42,086 `/go/` anchors are now labelled (0 untagged, measured), so the caveat
 expires at the next read.
+
+### 2026-09-03 (later) — the bundle CTA pointed at an empty invisible element
+
+**Found by asking what the site's OTHER money path does.** `bundle_interest_click`
+= 64/30d in GA4 — 30% of `amazon_click` volume, and I had flagged it twice as
+"worth a look" without looking. It was worth looking.
+
+`BundleCta` links to `/shop#bundle-coming-soon`. That anchor was literally:
+
+```astro
+<section id="bundle-coming-soon" aria-hidden="true" />
+```
+
+A zero-height, screen-reader-hidden element. So 64 clicks/month of purchase
+intent scrolled to **nothing** and landed staring at the closing note. The
+"Launching soon" line a visitor reads is the CTA they just clicked, not a
+destination — I mistook it for a graceful holding state on first pass and had to
+open the source to see there was no destination at all.
+
+**Why capture and not a buy button:** `BUNDLE.checkoutUrl` is still
+`/shop#bundle-coming-soon`; the config comment says "paste the Gumroad URL here
+once the operator creates the product." No product exists. Creating one is
+operator-gated (money). Shipping a buy button for a thing that isn't for sale
+would be the dishonest fix.
+
+**The trap that nearly made this worse.** `functions/api/subscribe.js` returns
+`ok:true, pending:true` when `env.SUBSCRIBERS` is missing — "so the form never
+*looks* broken while the binding propagates." That means a missing binding is
+invisible: the form thanks the visitor and discards the address. Adding capture
+on top of a broken binding would have been worse than the dead end. Verified via
+the CF Pages project config API that `SUBSCRIBERS` **is** bound in production
+(`2c0331068e074cafaf215ee6af1666b3`) before shipping. Same family as
+`positive-control-before-absence`: an instrument that returns the reassuring
+answer when it cannot see.
+
+**Not verified:** current subscriber count. The Pages-scoped token has no KV read
+scope (`Authentication error` on the keys endpoint), so list size is **unread**,
+not zero.
+
+`source="bundle-waitlist"` segments these from homepage newsletter signups in
+the same KV, so a launch email goes to people who asked for *this*.
+
+**Honest EV.** 64 clicks/mo is real intent but small; at a $3–5 PWYW this is tens
+of dollars, not hundreds. It is worth doing because it is ~20 lines reusing
+components that already exist, and because an owned list outlives any affiliate
+program. It is **not** the biggest lever here — that remains Mediavine
+(`mtlst3czyav7re`, ~$190–300/mo vs ~$27/mo Amazon) and it is operator-gated.

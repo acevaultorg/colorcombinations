@@ -46,6 +46,8 @@ let fails = 0;
 const ok = (m) => console.log(`  pass  ${m}`);
 const bad = (m) => { fails++; console.error(`  FAIL  ${m}`); };
 const check = (cond, m) => (cond ? ok(m) : bad(m));
+let warns = 0;
+const warn = (m) => { warns++; console.log(`  WARN  ${m}`); };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PHASE A — the artifact, before it is uploaded
@@ -170,6 +172,55 @@ async function post() {
   const sub = await head("/api/subscribe");
   check(sub.status === 405, `/api/subscribe 405s a bare GET (got ${sub.status}) — function alive, not 404-dead`);
 
+  // A 405 proves the Function is ALIVE. It proves nothing about whether a
+  // signup is STORED. subscribe.js returns ok:true when env.SUBSCRIBERS is
+  // missing — deliberately, "so the form never *looks* broken while the binding
+  // propagates" — so an unbound namespace is invisible from the outside: the
+  // visitor is thanked and the address is discarded. The only instrument that
+  // can see the binding is the Pages config API.
+  //
+  // Cannot-answer is a WARN, not a FAIL, and that is a deliberate compromise:
+  // CI's CLOUDFLARE_API_TOKEN is Pages:Edit and I could not test its config-read
+  // permission from a laptop before shipping this. A false FAIL here blocks
+  // every deploy — including the ones that fix the money path. Tighten to bad()
+  // once a CI run is observed printing the pass line. A MISSING BINDING is a
+  // hard FAIL, because that is the defect this exists to catch.
+  // Try EVERY candidate, not just the first. Locally CLOUDFLARE_API_TOKEN is
+  // DNS-scoped and CF_PAGES_TOKEN is the one that can read Pages; in CI it is
+  // the reverse. Picking "the first one set" reported UNVERIFIED while the
+  // answer was sitting in the other variable.
+  const cfToks = [process.env.CLOUDFLARE_API_TOKEN, process.env.CF_PAGES_TOKEN].filter(Boolean);
+  const cfAcc = process.env.CLOUDFLARE_ACCOUNT_ID || "72bfd26c5f3c935393a25e5c0dea6039";
+  const cfPrj = process.env.CF_PAGES_PROJECT || "colorcombinations";
+  if (!cfToks.length) {
+    warn("SUBSCRIBERS KV binding UNVERIFIED (no CF token in env) — this is NOT a pass");
+  } else {
+    let answered = null, lastErr = "";
+    for (const t of cfToks) {
+      try {
+        const cfr = await fetch(
+          `https://api.cloudflare.com/client/v4/accounts/${cfAcc}/pages/projects/${cfPrj}`,
+          { headers: { Authorization: `Bearer ${t}` } },
+        );
+        const cfb = await cfr.json();
+        if (cfb.success) { answered = cfb; break; }
+        lastErr = JSON.stringify(cfb.errors || []).slice(0, 140);
+      } catch (e) {
+        lastErr = e.message;
+      }
+    }
+    if (!answered) {
+      warn(`SUBSCRIBERS KV binding UNVERIFIED — no CF token could read the project config (${lastErr})`);
+    } else {
+      const kv =
+        (((answered.result || {}).deployment_configs || {}).production || {}).kv_namespaces || {};
+      check(
+        Object.prototype.hasOwnProperty.call(kv, "SUBSCRIBERS"),
+        "SUBSCRIBERS KV bound in production (unbound = /api/subscribe silently discards every signup)",
+      );
+    }
+  }
+
   // The tracker must be served AND still mint the cookie the gate requires.
   const trk = await fetch(`${ORIGIN}/amazon-track.js`);
   const trkBody = trk.ok ? await trk.text() : "";
@@ -215,6 +266,6 @@ if (mode === "post") {
 console.log(
   fails
     ? `\n${fails} failure(s) — the money path is at risk. ${mode === "pre" ? "Deploy ABORTED before touching production." : "PRODUCTION IS SERVING THIS. Investigate now."}\n`
-    : `\ndeploy integrity OK (${mode}) — /go/b, /go/p, /go/prime, /api/subscribe and the EU routing all intact.\n`,
+    : `\ndeploy integrity OK (${mode}) — /go/b, /go/p, /go/prime, /api/subscribe and the EU routing all intact.${warns ? `\n${warns} check(s) could not run — see WARN above. Not a clean pass.` : ""}\n`,
 );
 process.exit(fails ? 1 : 0);

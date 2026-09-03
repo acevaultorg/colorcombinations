@@ -92,3 +92,19 @@ deploy_cf_pages:
       process.exit(1);
       JS
       node /tmp/assert.mjs
+    # MONEY-PATH GATE. Runs LAST, after the assertion above has confirmed THIS
+    # commit's deployment is live — otherwise it would probe the previous deploy
+    # and go green while the new one is broken.
+    #
+    # This guard existed since e1839f3 and was NEVER RUN BY CI. It is attached to
+    # `npm run deploy` (the laptop path), and package.json's own _deploy_note now
+    # says "DEPLOY VIA CI, NOT FROM A LAPTOP" — so correcting the deploy path
+    # silently orphaned the guard. CI calls `npx astro build` and `wrangler`
+    # directly, so no npm pre*/post* hook fires either. Installed is not invoked.
+    #
+    # --post ONLY, never --pre: --pre asserts dist/_worker.js, which CI correctly
+    # does not build (CI uses native Pages Functions compilation from functions/;
+    # _worker.js is the advanced-mode artifact the local chunked deployer needs).
+    # Adding --pre here would fail every build. Do not "fix" that by adding it.
+    - node scripts/verify-deploy-integrity.mjs --post
+
