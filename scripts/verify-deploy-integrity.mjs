@@ -88,6 +88,23 @@ async function pre() {
   // Tags + EU routing. This site is the fleet's only material non-US earner.
   check(w.includes("colorcombinations-20"), "own Associates tag present (US/global path)");
   check(w.includes("caslonmedia-21"), "EU OneLink tag present — non-US earnings depend on it");
+  // WHY THIS IS ASSERTED IN THE SOURCE AND NOT AS SERVED BEHAVIOUR.
+  // The routing reads `request.headers.get("cf-ipcountry")`, and Cloudflare
+  // OVERWRITES that header from the client IP at the edge. So you cannot probe
+  // it with `curl -H cf-ipcountry:AT` — the header is replaced and every
+  // request answers for wherever you actually are.
+  //
+  // Measured 2026-09-04 from NL: no-header, AT, DE, US and GB all returned the
+  // identical 302 to www.amazon.com?tag=colorcombinations-20. That is CORRECT
+  // (cdn-cgi/trace said loc=NL, and NL is deliberately absent from EU_ROUTED
+  // because Global Earning covers it), but five identical .com responses read
+  // exactly like "EU routing is dead" and would cost someone an emergency.
+  //
+  // Verifying the EU_ROUTED branch for real needs egress from an EU country
+  // that Global Earning does NOT cover (AT/BE/LU/PT/IE/…). Absent that, the
+  // source-level assertion below is the strongest honest check available — it
+  // is not a weaker substitute for a behaviour test, it is the only one that
+  // can actually run here. Do not "upgrade" it to a header probe.
   for (const c of ["AT", "BE", "IE", "PT", "DK", "FI"])
     check(new RegExp(`"${c}"`).test(w), `EU_ROUTED still contains ${c}`);
   // Global-Earning countries must stay OUT: routing them through .de sends them
