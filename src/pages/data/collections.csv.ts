@@ -48,7 +48,7 @@ export const GET: APIRoute = () => {
         cell((c.keywords ?? []).join("|")),
         cell(`https://colorcombinations.org/collections/${c.slug}/`),
         cell(`https://colorcombinations.org/api/collections/${c.slug}.json`),
-        cell(`https://colorcombinations.org/og/collections/${c.slug}.svg`),
+        cell(`https://colorcombinations.org/og/collections/${c.slug}.png`),
         cell(`https://colorcombinations.org/embed/collection/${c.slug}/`),
       ].join(",")
     );

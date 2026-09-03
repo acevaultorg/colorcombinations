@@ -66,7 +66,7 @@ export const GET: APIRoute = () => {
       cell(`https://colorcombinations.org/palettes/${p.slug}/`),
       cell(`https://colorcombinations.org/api/palettes/${p.slug}.json`),
       cell(`https://colorcombinations.org/embed/${p.slug}/`),
-      cell(`https://colorcombinations.org/og/${p.slug}.svg`)
+      cell(`https://colorcombinations.org/og/${p.slug}.png`)
     );
     rows.push(row.join(","));
   }
