@@ -315,7 +315,31 @@ const jsonLd = [
     });
   });
 
-  // Initial search with default value
+  // Accept ?hex= so the header search can route a pasted hex straight here with
+  // the value already applied.
+  // MEASURED 2026-09-03 (GA4 dims=searchTerm, 30d): 41 hex searches — "#71406B",
+  // "#df6616", "00908a", "F0CCAC" — ALL zero-resulted, because the search box had
+  // no hex path and this tool had no way to receive one. Routing here without
+  // prefill would have made the reader retype the hex they had just pasted, which
+  // is a dead end with extra steps.
+  // Accepts both "#RRGGBB" and bare "RRGGBB"; anything else falls through to the
+  // existing default, so a malformed param can never blank the tool.
+  const seededHex = (() => {
+    try {
+      const raw = new URLSearchParams(location.search).get("hex");
+      if (!raw) return null;
+      const v = "#" + raw.trim().replace(/^#/, "").toLowerCase();
+      return /^#[0-9a-f]{6}$/.test(v) ? v : null;
+    } catch {
+      return null;
+    }
+  })();
+  if (seededHex) {
+    hexInput.value = seededHex.toUpperCase();
+    picker.value = seededHex;
+  }
+
+  // Initial search with the seeded value when present, else the default
   search(picker.value);
 </script>
 
