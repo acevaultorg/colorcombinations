@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 
 const title = "Color Blindness Simulator — test a palette for CVD";
 const description =
@@ -93,6 +94,28 @@ const rows = [
     </div>
   </section>
 
+  {/*
+    Instrument block, 2026-09-03. Completes the /tools/ surface: the first three
+    result pages shipped earlier today, these are the remaining three. Leaving a
+    surface half-covered is its own defect — a reader on the contrast checker had
+    no way to click while a reader on the converter did.
+
+    Placed after the tool output and before the explainer essay, the peak-intent
+    line used on every surface shipped today. The /tools/ HUB stays excluded: a
+    hub visitor is choosing a tool and holds no result.
+
+    offset=1 avoids offset 0, which surfaces the ~$1,900 ColorChecker Studio.
+    This page is about how colour is PERCEIVED, so the calibrate verdict is the on-topic one; print and paint follow it rather than lead.
+  */}
+  <section class="container-narrow tool-destination">
+    <PaintThisPalette
+      title="Checking this on something other than your screen"
+      intro="A simulation is only as honest as the display showing it. Where the colour is going decides what it needs next."
+      offset={1}
+      variant="destination"
+    />
+  </section>
+
   <section class="explainer section">
     <div class="container-wide explainer-inner">
       <h2 class="explainer-title">Designing for color vision deficiency</h2>
@@ -167,6 +190,11 @@ const rows = [
 </script>
 
 <style>
+  /* Instrument block spacing — matches the other tool pages. */
+  .tool-destination {
+    margin-block: 3rem;
+  }
+
   .tool-hero { padding-top: 3rem; padding-bottom: 1.5rem; }
   .tool-hero__inner { max-width: 62rem; }
   .tool-hero__inner .eyebrow a { color: var(--color-accent-500); text-decoration: none; }

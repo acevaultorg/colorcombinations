@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 
 const title = "CSS Gradient Generator — linear & radial, copy the code";
 const description =
@@ -73,6 +74,28 @@ const jsonLd = [
         <button class="gg__copy" id="gg-copy" type="button" data-event="GradientCopy" data-tool="gradient-generator">Copy CSS</button>
       </div>
     </div>
+  </section>
+
+  {/*
+    Instrument block, 2026-09-03. Completes the /tools/ surface: the first three
+    result pages shipped earlier today, these are the remaining three. Leaving a
+    surface half-covered is its own defect — a reader on the contrast checker had
+    no way to click while a reader on the converter did.
+
+    Placed after the tool output and before the explainer essay, the peak-intent
+    line used on every surface shipped today. The /tools/ HUB stays excluded: a
+    hub visitor is choosing a tool and holds no result.
+
+    offset=1 avoids offset 0, which surfaces the ~$1,900 ColorChecker Studio.
+    Banding on output is a gamut problem, which is what the print and calibrate groups speak to.
+  */}
+  <section class="container-narrow tool-destination">
+    <PaintThisPalette
+      title="Taking a gradient off the screen"
+      intro="Gradients band and shift the moment they leave sRGB. Where this one is going decides what it needs next."
+      offset={1}
+      variant="destination"
+    />
   </section>
 
   <section class="explainer section">
@@ -171,6 +194,11 @@ const jsonLd = [
 </script>
 
 <style>
+  /* Instrument block spacing — matches the other tool pages. */
+  .tool-destination {
+    margin-block: 3rem;
+  }
+
   .tool-hero { padding-top: 3rem; padding-bottom: 1.5rem; }
   .tool-hero__inner { max-width: 62rem; }
   .tool-hero__inner .eyebrow a { color: var(--color-accent-500); text-decoration: none; }

@@ -127,6 +127,42 @@ holds 3; colorcombinations.org is 6,766 of 6,772 sessions (**99.9%**). The rows 
 27.3% scroll depth remains a live question (item 2 above stands). Low scroll and low sampling on the
 site's busiest page are a different shape from the two index pages here.
 
-### ❓ Google is absent from the referrer list — do not act on this yet
+### ~~❓ Google is absent from the referrer list — do not act on this yet~~ **RESOLVED 2026-09-03 — genuine ranking gap, NOT a Clarity artifact. Closed; do not re-investigate.**
+
+The open question was which of two opposite readings applied. It is the ranking one, established
+with an instrument Clarity does not have: **GA4 names `google` explicitly as its own row.**
+
+Full untruncated `sessionSource` pull (69 rows, 6,658 sessions, `n=` not `limit=`):
+
+```
+(direct) 3042 · chatgpt.com 926 · duckduckgo 901 · bing 662 · ecosia 387 · yandex.ru 220 · google 28
+```
+
+`google` is a named row at 28, not missing — so the traffic is being attributed and is genuinely
+tiny. GA4 is trustworthy here specifically: this is the fleet's only ungated earner, so its numbers
+are not consent-suppressed (`ai-citation-channel.md`).
+
+**Not a technical block — all four checks pass:** robots.txt is `User-agent: * / Allow: /` with only
+`/og/` and `/go/` disallowed and **0** Cloudflare-managed injection; Googlebot gets **200**, byte-identical
+in status to a browser and to bingbot; content pages carry **no** `meta robots`; `sitemap-index.xml`
+returns 200 and robots.txt declares **2** Sitemap directives, which Google does read.
+
+**GSC IS verified** — `google-site-verification=AMF4ZAvRLxjPXBFZBBhiWCGOQn7YKE0nXUfL-799HHM` in DNS
+TXT (control: 2 TXT records present, so the read is valid). ⚠️ Note for whoever checks next: the
+home page has **no** `google-site-verification` meta tag, and the Bing one (`msvalidate.01`) IS
+present — so a meta-tag-only check produces a FALSE "GSC unverified" and a wasted operator card.
+Verification lives in DNS. Check `dig +short TXT` before concluding anything.
+
+**It is fleet-wide and already documented**, so this is not a colorcombinations defect:
+REVENUE-STUDY-2026-09-02 records "Google structurally dead (13% of pages have any impression,
+pos 44-82; **more pages hurt**)" and, for fitmylens, "42 Bing vs 2 Google clicks".
+
+**Consequence — the actionable part:** the correct response is NOT to chase Google with content.
+The study's own measurement says more pages hurt there. Bing/DDG/Ecosia (1,950 sessions) plus
+chatgpt.com (926) are where this site's readers actually come from, and IndexNow reaches Bing and
+Yandex but **not Google, which does not support the protocol** — so the Bing-heavy skew is partly
+the pipeline working as designed.
+
+
 
 No `google` row appears at all, while duckduckgo (41) and ecosia (24) do. That is either a Clarity attribution artifact (Google traffic may be landing in the 252 `(none)` rows) or a genuine ranking gap. **I have not established which**, and the two have opposite implications. Resolve against Search Console before anyone treats it as a finding.
