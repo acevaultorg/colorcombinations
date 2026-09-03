@@ -16,6 +16,7 @@
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 
 
 const siteUrl = "https://colorcombinations.org/";
@@ -285,6 +286,65 @@ const grid = PICKS.slice(2);
       </ul>
     </section>
 
+    {/*
+      INSTRUMENT BLOCK AT THE LEAD CTA SLOT (2026-09-03, chief A1, board card
+      mtkltehvk2qm2l).
+
+      WHY THIS PAGE. Until now its only commercial block was FurtherReading —
+      six books at ~$20 — and it still carries it, below, untouched. This is
+      additive and reversible.
+
+      WHY AN INSTRUMENT, measured: per-tag Amazon (Jul 29-Aug 27) has this site
+      taking 1.42x fitmylens' clicks (425 v 300) and 3.50x its orders (42 v 12)
+      while earning 7.3x LESS ($27.25 v $200.01). AOV ~$19 against ~$418. The
+      constraint is basket size — not the call-to-action, and not conversion,
+      which at 9.88% is the best in the fleet. The beacon's labelled clicks run
+      {book:109, tool:2} — 55:1 to books — while the catalogue's genuine
+      high-basket end (the print and calibrate groups) sat on this page not at
+      all.
+
+      WHY HERE SPECIFICALLY, and this is the part that makes it honest rather
+      than an upsell: the section immediately above tells the reader, in its own
+      words, that "physical paint and Pantone colours don't map to a single exact
+      hex, so each brand's official colour code is the source of truth." The page
+      states the problem; a colour deck and a calibrated screen are the answer to
+      it. The destination verdicts already say exactly that ("screen colour and
+      ink colour are not the same colour" / "an uncalibrated monitor is the
+      single most common reason a palette that looked right on your desk looks
+      wrong everywhere else"), so no new copy was needed.
+
+      variant="destination" is the right shape here, unlike on /collections/:
+      it guarantees one item from EACH of print / calibrate / paint, which is
+      what puts an instrument in front of this reader at all. `full` would also
+      work but renders every catalogue `why` — measured at 1175px tall on a
+      375px screen, about 1.5 phone screens of commerce inside an editorial
+      article.
+
+      offset={1} IS A DELIBERATE EDITORIAL CHOICE, NOT A DEFAULT. offset 0 would
+      surface the Calibrite ColorChecker Studio (~$1,900) — the highest-basket
+      item on the site and the wrong recommendation for this reader. A Color of
+      the Year visitor is an inspiration-seeker, not a print-production buyer;
+      chief's own brief makes the same caveat. offset 1 gives the Display Plus
+      HL colorimeter (~$270), which genuinely solves the problem this page
+      names, plus a Pantone Color Bridge (~$200). Recommending the
+      spectrophotometer to hit a bigger basket would be padding, and padding is
+      what loses the reader.
+
+      THE METRIC, per chief: Amazon per-tag $/order, currently $0.649 — read
+      from the next per-tag Associates pull, NOT from the beacon (only 112 of
+      355 beacon clicks carry a position label, so the 55:1 split holds within
+      the labelled third only). Expected +$8 to +$27/mo. This is an experiment
+      with a named metric, not a certainty.
+    */}
+    <section class="container-narrow coty-instrument">
+      <PaintThisPalette
+        title="Getting the 2026 colours right off-screen"
+        intro="Every swatch above is an approximate sRGB rendering — the brand's own code is the real colour. Which of these you need depends on where the colour is going."
+        offset={1}
+        variant="destination"
+      />
+    </section>
+
     <section class="coty-trend container-narrow">
       <h2 id="meta-trend">The 2026 meta-trend: calm earth</h2>
       <p>
@@ -389,6 +449,16 @@ const grid = PICKS.slice(2);
 </BaseLayout>
 
 <style>
+  /* Instrument block sits between the picks grid and the meta-trend essay, so
+     it needs its own separation from both — the sibling sections here carry
+     their spacing on `.container-narrow` content rather than the section. Same
+     3rem rule as `.color-destination`, `.palette-destination` and
+     `.collection-destination` on the three surfaces that already made this
+     move, so the block reads identically site-wide. */
+  .coty-instrument {
+    margin-block: 3rem;
+  }
+
   .coty-faq__item {
     border-bottom: 1px solid var(--color-border);
     padding-block: 0.875rem;
