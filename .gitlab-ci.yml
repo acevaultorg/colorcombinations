@@ -32,6 +32,41 @@ deploy_cf_pages:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
   script:
+    # DOCS-ONLY SHORT-CIRCUIT. A build here is ~8-10 min against a 400-minute
+    # free monthly budget for the WHOLE acevault-lab namespace — roughly 40-50
+    # deploys a month for every repo combined. On 2026-09-04 the namespace hit
+    # ci_quota_exceeded and all fleet deploys stopped; two of the builds that
+    # got it there were commits that touched only .claude/ and changed no
+    # shipped byte.
+    #
+    # Nothing under .claude/ can affect the output: the only two references to
+    # it in src/ are inside COMMENTS (monetization.ts, index.astro), and there
+    # are no .md files under src/, so no content collection reads it.
+    #
+    # FAILS OPEN. If the diff cannot be computed — first push, all-zero
+    # before-SHA, or a shallow clone that lacks the parent — we BUILD. Skipping
+    # a build we should have run would silently diverge repo from live, which
+    # is far worse than spending the minutes.
+    - |
+      SKIP=no
+      BEFORE="${CI_COMMIT_BEFORE_SHA:-}"
+      if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] \
+         && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+        CHANGED=$(git diff --name-only "$BEFORE" "$CI_COMMIT_SHA" 2>/dev/null || true)
+        if [ -n "$CHANGED" ] && [ -z "$(printf '%s\n' "$CHANGED" | grep -v '^\.claude/' || true)" ]; then
+          SKIP=yes
+        fi
+      fi
+      if [ "$SKIP" = "yes" ]; then
+        echo "=============================================================="
+        echo "SKIPPED: every changed path is under .claude/ — nothing that"
+        echo "reaches the built site. NO BUILD AND NO DEPLOY HAPPENED."
+        echo "Production still serves the previous commit, which is correct."
+        printf '%s\n' "$CHANGED" | sed 's/^/  /'
+        echo "=============================================================="
+        exit 0
+      fi
+      echo "docs-only check: building (changed paths include non-.claude files)"
     - node -v
     - npm ci --no-audit --no-fund
     - npx astro build
