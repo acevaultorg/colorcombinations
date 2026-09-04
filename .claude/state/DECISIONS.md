@@ -697,3 +697,50 @@ and the result is observable.
 (`Job: Read`) and namespace usage. Without traces, a green pipeline only proves
 the step exited 0 — a WARN does that too, which is why the SUBSCRIBERS KV
 assertion's CI-side verdict is still UNKNOWN rather than passing.
+
+### 2026-09-04 — CSS colour-name aliases: computed, measured, NOT shipped
+
+Follow-on from the search work. `beige` and `fennel` return nothing; the idea was
+to alias modern colour words to their nearest Wada colour so the 210-colour
+dictionary is reachable by contemporary vocabulary.
+
+**The mechanism works.** Using the installed `color-name` package (the canonical
+CSS list, 148 names) against the 210 Wada hexes with a redmean-weighted RGB
+distance: 55 names land within 30, 89 within 50. `white` → Shiro at distance 0.
+`beige` → Gofun (15) — Gofun is chalk white and is genuinely what beige is.
+
+**Filtering to aliases that would add something:** 19 of the 89 already match by
+text today (Wada names contain "blue", "pink", "green"…), leaving **70 new**.
+
+**Not shipped, three reasons:**
+
+1. **Measured demand is one term.** Of 39 distinct zero-result terms sampled
+   across windows, exactly one (`beige`) is in the 70. `fennel` is not a CSS
+   colour, so this would not fix it. Perhaps 10-15 of the 70 are plausible human
+   searches; the rest (`papayawhip`, `blanchedalmond`, `lightgoldenrodyellow`)
+   are spec artifacts nobody types.
+
+2. **Numerically close can be semantically wrong, and the distance hides it.**
+   `azure` → Shiro (WHITE) at 26, because CSS `azure` is #F0FFFF — nearly white.
+   A reader typing "azure" expects blue. Same trap: `lavenderblush` → Kinari,
+   `mintcream` → Shiro, `honeydew` → Kinari. All near-whites in the spec whose
+   NAMES imply a hue. Shipping these would put confident wrong answers where
+   there is currently an honest "no match" — worse on this site than nothing.
+
+3. **Unverifiable right now.** CI is quota-blocked, so impact could not be
+   observed after shipping.
+
+**The worst matches are the commonest words, which is why this matters less than
+it looks:** `blue` 249, `cyan` 213, `lime` 257, `magenta`/`fuchsia` 261. No 1933
+pigment approaches an sRGB primary. But those words already work through Wada
+names, so the alias layer was never going to help the high-frequency queries.
+
+**If demand grows, build it curated, not wholesale:** require the CSS name's own
+hue family to agree with the matched Wada colour, so `azure` is rejected rather
+than mapped to white. Compute at build time and put it in `/search-index.json`
+(fetched once, gzipped) — NEVER in the BaseLayout inline script, which ships in
+all 2,128 pages and is already 6.9KB.
+
+`color-name` is present only as a TRANSITIVE dependency. Anything built on it
+should either declare it in package.json or bake its output into a committed
+data file — do not silently rely on a transitive dep for build-time correctness.
