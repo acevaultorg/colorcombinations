@@ -916,3 +916,39 @@ a cited task's live status before repeating it, especially in an operator-facing
 summary, especially the Nth time you say it.**
 
 Filed as its own reference so this doesn't repeat: `mtm97...` (Fleet Dashboard).
+
+### 2026-09-04 — CI page-count floor verified offline; and `$?` after a pipe is not the script's status
+
+`a30cfd1` and `d06ee14` shipped guards into a pipeline I could not run (quota
+blocked). The first build after the quota returns is the one that must not fail,
+so both were tested offline against the real `dist` and against synthetic ones.
+
+**Page-count floor — all four cases correct:**
+
+    real build      2129 pages  -> exit 0   passes
+    short build       40 pages  -> exit 1   ABORTS, deploy prevented
+    exactly 1500    1500 pages  -> exit 0   boundary right (guard is -lt)
+    dist/ MISSING      0 pages  -> exit 1   FAILS CLOSED
+
+The last row is the one that mattered. A missing `dist` is the blind case, and
+the guard treats it as catastrophic rather than passing on empty output.
+
+**But I nearly filed a critical bug against my own guard, on a broken harness.**
+My first missing-dist test was:
+
+    bash floor.sh 2>&1 | tail -3; echo "exit=$?"
+
+which printed `exit=0` next to the word ABORT — the signature of a guard that
+announces failure and returns success, the worst kind. **`$?` after a pipeline is
+the LAST command's status**, so I was reading `tail`, not the script. Unpiped it
+exits 1 correctly. `PIPESTATUS[0]` is the script's real status.
+
+Same family as everything else caught tonight: an instrument that returns the
+reassuring-shaped answer while measuring something other than what you asked.
+Here it produced a false ALARM rather than a false absence — which is the cheaper
+direction, but only because I re-ran it instead of writing it up.
+
+**Rule: never read `$?` through a pipe when the exit status is the thing you are
+testing.** Run the command bare, or read `PIPESTATUS[0]`. This applies to every
+guard, gate and predeploy check the fleet has, since they are all exit-status
+contracts and all naturally get piped to `tail`/`head` when inspected.
