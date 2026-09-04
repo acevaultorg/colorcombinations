@@ -1,0 +1,207 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const title = "Copyright + Licensing";
+const description =
+  "What is ours, what is not, how to reuse it, and how to send a copyright notice — the licensing and takedown policy for The Dictionary of Color Combinations.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: title,
+  description,
+  url: new URL("/copyright", Astro.site).toString(),
+  isPartOf: {
+    "@type": "WebSite",
+    name: "The Dictionary of Color Combinations",
+    url: Astro.site?.toString(),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="legal-page section">
+    <div class="container-prose">
+      <header class="legal-page__header">
+        <p class="eyebrow">Legal</p>
+        <h1>Copyright + Licensing</h1>
+        <p class="legal-page__updated">Last updated: September 2026</p>
+      </header>
+
+      <div class="prose">
+        <p>
+          This archive sits on top of a public-domain historical work, so it is worth being
+          precise about which layer is whose. The short version: the colours and their names
+          are facts and free; our compositions, writing, and curation are ours and are given
+          away under a permissive licence; the digitisation layer belongs to someone else and
+          is credited. The full method is documented on the
+          <a href="/methodology">methodology page</a>.
+        </p>
+
+        <h2>What is ours</h2>
+        <p>
+          The following are original work of The Dictionary of Color Combinations
+          (<strong>colorcombinations.org</strong>), published by
+          <a href="https://caslonmedia.com/" rel="publisher">Caslon Media</a>:
+        </p>
+        <ul>
+          <li>
+            <strong>The 30 editorial palette compositions</strong> — original combinations built
+            with Wada's method, not reproductions of his plates.
+          </li>
+          <li>
+            <strong>Editorial writing</strong> — palette descriptions, colour meanings, usage
+            guidance, collection essays, and the learn/reference articles.
+          </li>
+          <li><strong>Curation and structure</strong> — the collections, tagging, and site architecture.</li>
+          <li><strong>Design and code</strong> — layout, typography, components, and the tools.</li>
+          <li>
+            <strong>Generated imagery</strong> — the social and Pinterest cards rendered by this
+            site for each page.
+          </li>
+        </ul>
+        <p>
+          All of it is released under
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>.
+          You may copy, adapt, and use it commercially, including for machine-learning training,
+          provided you credit <strong>colorcombinations.org</strong>. A link back is the simplest
+          way to do that.
+        </p>
+
+        <h2>What is not ours</h2>
+        <ul>
+          <li>
+            <strong>The 348 historical plates.</strong> Sanzo Wada's <em>A Dictionary of Color
+            Combinations</em> (1933, six volumes) is in the public domain by age. We claim no
+            rights over it.
+          </li>
+          <li>
+            <strong>Colour names and hex values are facts.</strong> A colour and its name cannot
+            be owned. Use them freely, from us or from anywhere else.
+          </li>
+          <li>
+            <strong>The digitisation layer belongs to its author.</strong> Our plate data derives
+            from
+            <a href="https://github.com/mattdesl/dictionary-of-colour-combinations" target="_blank" rel="noopener noreferrer">mattdesl/dictionary-of-colour-combinations</a>,
+            which is MIT-licensed. If you reuse the plate data, carry that credit: this site for
+            the curation, <strong>mattdesl</strong> for the digitisation, and <strong>Sanzo
+            Wada</strong> for the original work.
+          </li>
+          <li>
+            <strong>Book covers and product images</strong> shown beside recommendation and
+            affiliate links identify the item being linked and remain the property of their
+            respective publishers and rights-holders.
+          </li>
+          <li>
+            <strong>Paintings.</strong> Works in the painting palettes are public-domain pieces;
+            each entry records its licence status and its sources on the page itself.
+          </li>
+        </ul>
+
+        <h2>Trademarks</h2>
+        <p>
+          "A Dictionary of Color Combinations" is the title of Sanzo Wada's work as reprinted by
+          Seigensha Art Publishing (2010). This site is an independent reference project and is
+          not affiliated with, endorsed by, or connected to Seigensha Art Publishing or the Wada
+          estate. Other product and company names mentioned are the marks of their respective
+          owners.
+        </p>
+
+        <h2>Notice and takedown</h2>
+        <p>
+          If you believe material on this site infringes your copyright, email
+          <a href="mailto:hello@colorcombinations.org?subject=Copyright+notice">hello@colorcombinations.org</a>
+          with the subject line <strong>"Copyright notice"</strong> and include:
+        </p>
+        <ul>
+          <li>The URL(s) of the material in question.</li>
+          <li>Identification of the copyrighted work you say has been infringed.</li>
+          <li>Your name, address, and a contact email.</li>
+          <li>
+            A statement that you have a good-faith belief the use is not authorised by the
+            rights-holder, its agent, or the law.
+          </li>
+          <li>
+            A statement that the information in your notice is accurate and that you are the
+            rights-holder or authorised to act on their behalf, together with your signature
+            (electronic is fine).
+          </li>
+        </ul>
+        <p>
+          We acknowledge notices within 5 business days and remove or disable material that is
+          clearly infringing while we look into it. If you believe your material was removed in
+          error, send a counter-notice to the same address and we will reinstate it if the claim
+          does not hold up. These terms are governed by the laws of the Netherlands, consistent
+          with our <a href="/terms">terms of service</a>.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Licensing, attribution, or permission questions:
+          <a href="mailto:hello@colorcombinations.org?subject=Licensing+inquiry">hello@colorcombinations.org</a>
+        </p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    padding-block: var(--spacing-section);
+  }
+
+  .legal-page__header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .legal-page__header h1 {
+    font-family: var(--font-serif);
+    font-size: var(--text-display-xl);
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin: 0.5rem 0 0;
+  }
+
+  .legal-page__updated {
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+    margin-top: 0.75rem;
+  }
+
+  .prose h2 {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose p,
+  .prose ul,
+  .prose ol {
+    color: var(--color-ink-700);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose ul {
+    padding-left: 1.5rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.75rem;
+  }
+
+  .prose a {
+    color: var(--color-link);
+    text-decoration-line: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose a:hover {
+    color: var(--color-link-hover);
+  }
+</style>

@@ -8,6 +8,17 @@ import { bestTextColorOn } from "@/lib/color";
 const colors = allColors();
 const grouped = colorsByHue();
 const total = colors.length;
+/*
+ * PROVENANCE SPLIT — computed, never typed.
+ *
+ * Only the colors that appear in at least one of the 348 `wada-NNN-` plates come
+ * from Sanzo Wada's 1933 dictionary; the rest are traditional Japanese shikisai
+ * names used only in our 30 editorial palettes, which /methodology states plainly
+ * are "not derived from the Wada source". Calling all 210 "Wada's dictionary"
+ * was a provenance claim the data does not support.
+ */
+const wadaTotal = colors.filter((c) => c.paletteSlugs.some((s) => s.startsWith("wada-"))).length;
+const editorialTotal = total - wadaTotal;
 
 /*
  * TITLE — Bing CTR test, 2026-08-24 (TaskPeace mt79i08wgdw5ln).
@@ -23,8 +34,8 @@ const total = colors.length;
  *
  * Count is computed from the archive, never typed.
  */
-const title = `All ${total} Colors — Sanzo Wada's 1933 Japanese Color Dictionary`;
-const description = `All ${total} named colors from the archive — browse by hue family, see hex values, and discover which palettes use each color. A complete index of the historical color vocabulary from Sanzo Wada's 1933 Dictionary of Color Combinations.`;
+const title = `${wadaTotal} Wada Dictionary Colors + ${editorialTotal} Editorial — ${total} Named Colors`;
+const description = `All ${total} named colors in the archive: the ${wadaTotal} colors of Sanzo Wada's 1933 Dictionary of Color Combinations plus ${editorialTotal} traditional Japanese shikisai names from our 30 editorial palettes. Browse by hue, see hex values, and find every palette that uses each color.`;
 
 const hueOrder = ["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"] as const;
 
@@ -65,13 +76,13 @@ const jsonLd = [
 <BaseLayout title={title} description={description} image="/og/colors.png" jsonLd={jsonLd}>
   <section class="colors-hero">
     <div class="container-wide colors-hero__inner">
-      <p class="eyebrow">{total} named colors</p>
+      <p class="eyebrow">{total} named colors · {wadaTotal} from Wada's dictionary · {editorialTotal} editorial</p>
       <h1 class="display-hero text-balance">Color Dictionary.</h1>
       <p class="colors-hero__lede">
-        The complete color dictionary from Sanzo Wada's 1933 <em>Dictionary of Color
-        Combinations</em> — every named color in the archive, from Hermosa Pink to Cossack Green.
-        Each entry links to every palette that uses it, so you can trace one color across the
-        whole dictionary.
+        Every named color in the archive — the {wadaTotal} colors Sanzo Wada used across the 348
+        plates of his 1933 <em>Dictionary of Color Combinations</em> (Seigensha Art Publishing 2010
+        reprint), plus {editorialTotal} traditional Japanese colour names from our 30 editorial
+        palettes. Each entry links to every palette that uses it.
       </p>
       <aside class="colors-hero__glossary">
         <p class="colors-hero__glossary-eyebrow">Reference</p>

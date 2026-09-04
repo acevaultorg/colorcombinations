@@ -109,9 +109,15 @@ const ogImage = `/og/${palette.slug}.png`;
 // hue, mood, era, and a computed contrast finding) instead of a shared
 // boilerplate paragraph. Every fact derives from the dataset — nothing invented.
 const plateMatch = palette.slug.match(/^wada-(\d+)-/);
+// Provenance gate. The 348 Wada plates carry the `wada-NNN-` slug prefix AND the
+// "wada" tag (the two agree on all 378 palettes); the 30 editorial palettes carry
+// neither. EVERY provenance claim below branches on this: the editorial set is an
+// original composition and is NOT from the 1933 dictionary — see /methodology,
+// "They are not derived from the Wada source."
+const isWada = plateMatch !== null || (palette.tags ?? []).includes("wada");
 const plateLabel = plateMatch
   ? `Plate ${Number(plateMatch[1])} of Wada's 348`
-  : "This combination from Wada's catalog";
+  : "This editorial combination";
 const colorNames = palette.colors.map((c) => c.nameRomaji ?? c.hex);
 const colorList =
   colorNames.length <= 1
@@ -192,6 +198,13 @@ const keywords = [
 // datePublished: first site publication. dateModified: current build.
 // Source: Sanzo Wada, A Dictionary of Color Combinations (1933).
 const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
+// Human-readable form of the constant above — derived, never typed, so the prose
+// and the JSON-LD can never drift apart.
+const FIRST_PUBLISHED_LABEL = new Date(SITE_FIRST_PUBLISHED).toLocaleDateString("en-US", {
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
 const BUILD_DATE = new Date().toISOString();
 
 const jsonLd = [
@@ -206,15 +219,25 @@ const jsonLd = [
     keywords: keywords.join(", "),
     datePublished: SITE_FIRST_PUBLISHED,
     dateModified: BUILD_DATE,
-    dateCreated: "1933-01-01",
+    ...(isWada ? { dateCreated: "1933-01-01" } : { dateCreated: SITE_FIRST_PUBLISHED }),
     inLanguage: "en",
-    isBasedOn: {
-      "@type": "Book",
-      name: "A Dictionary of Color Combinations",
-      author: { "@type": "Person", name: "Sanzo Wada" },
-      datePublished: "1933",
-      publisher: "Seigensha Art Publishing (2010 reprint)",
-    },
+    ...(isWada
+      ? {
+          isBasedOn: {
+            "@type": "Book",
+            name: "A Dictionary of Color Combinations",
+            author: { "@type": "Person", name: "Sanzo Wada" },
+            datePublished: "1933",
+            publisher: "Seigensha Art Publishing (2010 reprint)",
+          },
+        }
+      : {
+          creator: {
+            "@type": "Organization",
+            name: "The Dictionary of Color Combinations",
+            url: "https://colorcombinations.org",
+          },
+        }),
     license: "https://creativecommons.org/licenses/by/4.0/",
     publisher: {
       "@type": "Organization",
@@ -261,7 +284,7 @@ const jsonLd = [
         name: `What colors are in the "${palette.title}" palette?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `${palette.title}${palette.titleJa ? ` (${palette.titleJa})` : ""} contains ${palette.colors.length} colors: ${palette.colors.map((c) => `${c.nameRomaji ?? c.hex} (${c.hex})`).join(", ")}. From Sanzo Wada's "A Dictionary of Color Combinations" (1933).`,
+          text: `${palette.title}${palette.titleJa ? ` (${palette.titleJa})` : ""} contains ${palette.colors.length} colors: ${palette.colors.map((c) => `${c.nameRomaji ?? c.hex} (${c.hex})`).join(", ")}. ${isWada ? `From Sanzo Wada's "A Dictionary of Color Combinations" (1933).` : `An original editorial palette by colorcombinations.org, using traditional Japanese colour names.`}`,
         },
       },
       {
@@ -269,7 +292,9 @@ const jsonLd = [
         name: `When was the "${palette.title}" palette created?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `This palette is from Sanzo Wada's 1933 reference work "A Dictionary of Color Combinations" (Seigensha Art Publishing 2010 reprint). Wada documented historical Japanese color combinations from the ${palette.era} era and earlier periods. The source work is in the public domain.`,
+          text: isWada
+            ? `This palette is from Sanzo Wada's 1933 reference work "A Dictionary of Color Combinations" (Seigensha Art Publishing 2010 reprint). The source work is in the public domain.`
+            : `This palette was composed by the editors of colorcombinations.org and first published in ${FIRST_PUBLISHED_LABEL}. It uses traditional Japanese colour names associated with the ${palette.era} era; it is not a plate from Sanzo Wada's 1933 dictionary.`,
         },
       },
       {
@@ -285,7 +310,9 @@ const jsonLd = [
         name: `Can I use the "${palette.title}" palette in my own design?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Yes. The source palette by Sanzo Wada (1933) is in the public domain. This page's curation and metadata are CC BY 4.0 licensed — attribution to colorcombinations.org appreciated but not required for the colors themselves.`,
+          text: isWada
+            ? `Yes. The source palette by Sanzo Wada (1933) is in the public domain. This page's curation and metadata are CC BY 4.0 licensed — attribution to colorcombinations.org appreciated but not required for the colors themselves.`
+            : `Yes. This editorial palette and its metadata are CC BY 4.0 licensed — attribution to colorcombinations.org appreciated; the hex values themselves are facts and free to use.`,
         },
       },
     ],
@@ -390,7 +417,7 @@ const jsonLd = [
         Copy hex values
       </button>
       <a
-        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${palette.title}${palette.titleJa ? ` (${palette.titleJa})` : ""} — ${palette.era}-era palette\n${palette.colors.map((c) => c.hex).join("  ")}\n#ColorPalette #DesignInspiration #JapaneseColors`)}&url=${encodeURIComponent(`https://colorcombinations.org/palettes/${palette.slug}/`)}`}
+        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${palette.title}${palette.titleJa ? ` (${palette.titleJa})` : ""} — ${isWada ? `a plate from Sanzo Wada's 1933 Dictionary of Color Combinations` : `a ${palette.era}-era-inspired editorial palette from colorcombinations.org`}\n${palette.colors.map((c) => c.hex).join("  ")}\n#ColorPalette #DesignInspiration #JapaneseColors`)}&url=${encodeURIComponent(`https://colorcombinations.org/palettes/${palette.slug}/`)}`}
         class="quick-share__btn quick-share__btn--tweet"
         target="_blank"
         rel="noopener"
@@ -441,11 +468,25 @@ const jsonLd = [
 
         <h2>Historical context</h2>
         <p>
-          {plateLabel} anchors {colorList} in the {palette.dominantHue} family —
-          a {palette.colors.length}-colour grouping with a {palette.moods.join(", ")}
-          {" "}character, recorded in the {eraLabel}-era volumes of Sanzo Wada's 1933
-          <em> Dictionary of Color Combinations</em>, where these shikisai names have
-          sat in the public domain for generations.
+          {isWada ? (
+            <>
+              {plateLabel} anchors {colorList} in the {palette.dominantHue} family —
+              a {palette.colors.length}-colour grouping with a {palette.moods.join(", ")}
+              {" "}character, recorded in Sanzo Wada's 1933
+              <em> Dictionary of Color Combinations</em> (six volumes; Seigensha Art
+              Publishing 2010 reprint), and in the public domain by age.
+            </>
+          ) : (
+            <>
+              {plateLabel} anchors {colorList} in the {palette.dominantHue} family —
+              a {palette.colors.length}-colour grouping with a {palette.moods.join(", ")}
+              {" "}character. It is an original composition by the editors of
+              colorcombinations.org, built with Wada's method from traditional Japanese
+              {" "}<em>shikisai</em> colour names associated with the {eraLabel} era; it is
+              not one of the 348 plates in Wada's 1933
+              <em> Dictionary of Color Combinations</em>.
+            </>
+          )}
           {palette.colors.length >= 2 && (
             <>
               {" "}Its strongest pairing — {pairNameA} on {pairNameB} — reaches a
