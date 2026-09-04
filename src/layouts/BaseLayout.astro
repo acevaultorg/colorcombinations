@@ -274,6 +274,25 @@ const jsonLdArray = jsonLd
 
     {/* Amazon affiliate-click measurement (Clarity amazon_click + GA4 + first-party /c beacon) */}
     <script is:inline src="/amazon-track.js"></script>
+    {/* Mediavine Journey ad script — site 0e3765cf-7571-4481-9b28-bc96fd84b4e4.
+        Approved for Journey 2026-09-04.
+
+        is:inline is REQUIRED. Without it Astro bundles/rewrites the tag and drops the
+        data-noptimize / data-cfasync attributes the Mediavine wrapper relies on.
+
+        Placed last in <head> per Mediavine's own onboarding text: "just before the
+        closing </head> tag (recommended)".
+
+        DELIBERATELY NOT added to src/pages/embed/*.astro — those layouts render the
+        embeddable widgets that run inside OTHER people's sites. The Master Publisher
+        Agreement grants exclusivity over Ads on "the Property"; serving Mediavine ads
+        from a third-party page is out of scope and a policy risk.
+
+        ⚠️ The site id is 0e3765cf (zero-E). A 0c… variant returns HTTP 200 with a
+        ZERO-BYTE body, so a status-code check cannot tell the two apart — verify by
+        response SIZE (~171KB) if this ever needs re-checking. */}
+    <script is:inline type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/0e3765cf-7571-4481-9b28-bc96fd84b4e4.js"></script>
+
   </head>
   <body>
     {/* Event tracking — connects data-event attributes to the analytics sinks.
