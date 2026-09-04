@@ -37,9 +37,28 @@
  *    Mediavine; Mediavine publishes no public density spec for the Journey tier
  *    (checked 2026-09-04 — no dedicated Journey page exists on their site).
  *
- *    NO AD CODE IS INSTALLED (verified live: 0 mediavine references, control
- *    gtag=12). Do not install it, and do not "clean up" this contradiction by
- *    deleting either side. The operator resolves it.
+ *    ~~NO AD CODE IS INSTALLED (verified live: 0 mediavine references, control
+ *    gtag=12). Do not install it.~~ **FALSE — corrected 2026-09-04. It was the
+ *    GREP that was wrong, not the site.** The Journey tag ships from
+ *    scripts.scriptwrapper.com, a URL containing none of the strings
+ *    "mediavine", "grow.me" or "journeymv". Grepping the vendor NAME returns
+ *    zero while the vendor SCRIPT is on every page. The gtag=12 control proved
+ *    the fetch worked; it could not prove the search TERM was right — a control
+ *    validates the instrument, never your query terms. TWO independent sessions
+ *    reached this same wrong conclusion. Verify with a marker that actually
+ *    ships: `scriptwrapper` or the site id `0e3765cf`, and confirm the tag
+ *    returns ~171KB (a 0c… id variant returns HTTP 200 with a ZERO-BYTE body,
+ *    so a status code cannot tell the two apart).
+ *
+ *    MEASURED STATE 2026-09-04: ad code IS installed (8e738e3) and IS serving
+ *    on /, /browse and /trends/color-trends-2026/ (scriptwrapper=1, siteid=1,
+ *    control G-QT7PC59PV6=3 on each). ads.txt is Mediavine-managed. Site is
+ *    approved and launched on Journey.
+ *
+ *    STILL UNRESOLVED, STILL THE OPERATOR'S: whether the museum identity
+ *    tolerates Journey's ad density. Approval and installation did not settle
+ *    that question — they only changed the default. Do not "clean up" this
+ *    contradiction by deleting either side.
  *  - No dark patterns, no fake urgency, no inflated price anchors.
  *
  * See DECISIONS.md 2026-04-10 ("Monetization V1.1 reality check") for the
