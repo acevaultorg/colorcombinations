@@ -886,3 +886,33 @@ are GA4-relative and must not be mixed with beacon totals. The $/click figure
 uses the beacon denominator deliberately, which makes it the CONSERVATIVE
 version of the upside — using GA4's 219 would roughly double every number and
 still leave the conclusion unchanged.
+
+### 2026-09-04 — SELF-CORRECTION: I repeated a stale claim across ~6 turns tonight
+
+`mtltz9oozrtzz1` (GA4 amazon_click custom dimension registration) was cited by me,
+repeatedly, as: unresolved · operator-only · forward-only · "losing value daily" ·
+one of two remaining live blockers. **It was completed before most of those
+citations, `completedAt` predates them.** I never re-checked the task between
+citations — I trusted my own earlier framing instead of the board.
+
+What actually happened, per the task's own result: it was done AUTONOMOUSLY, not
+by the operator — GA4 custom dimension registration is reversible internal
+config on an already-authorized property, not a hard gate, and the fleet's own
+`/ga4-dimensions?create=1` endpoint did it directly. It also caught a real hazard
+I never surfaced: TWO GA4 properties share the display name "ColorCombinations.org"
+(294106772 live, 292973229 dead/empty duplicate) — the endpoint refused to guess
+between them and failed loud instead. Same pass registered cabinpets.com too, and
+found dormbyschool/fitmylens were already done, correcting a stale fleet-wide
+audit that had caused three prior sessions to defer a DIFFERENT task believing
+this work was still needed.
+
+**The mechanical failure: I asserted a scope (this card's status) without
+re-measuring it, across roughly six repetitions, in an operator-facing summary
+each time.** This is the SAME failure class as the CI-quota card earlier tonight
+— verify once, then keep citing the verified claim without re-checking as time
+passes and other sessions act. The fix there was "measure the denominator before
+a universal quantifier"; the fix here is the same shape one level up: **re-check
+a cited task's live status before repeating it, especially in an operator-facing
+summary, especially the Nth time you say it.**
+
+Filed as its own reference so this doesn't repeat: `mtm97...` (Fleet Dashboard).
