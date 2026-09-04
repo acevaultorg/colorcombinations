@@ -23,10 +23,22 @@
  *   --post  Probe PRODUCTION after the upload. Catches the case where the
  *           artifact was right and the deploy still went wrong.
  *
- * ⚠️ NEVER GENERATES AN AFFILIATE CLICK. The 302 probes read the Location header
- * with `redirect: "manual"` and never request Amazon. Minting a fresh token and
- * FOLLOWING it would be a real click on the fleet-shared Associates account —
- * that is the thing this file exists to protect, not to spend.
+ * ⚠️ NEVER GENERATES AN AFFILIATE CLICK, AND NEVER PRESENTS A CREDENTIAL.
+ * Every live probe here is tokenless — no cc_g, no ?t=, no Sec-Fetch headers —
+ * and uses `redirect: "manual"` so nothing is ever followed. The POSITIVE path
+ * (does a real click still reach Amazon with the right tag) is asserted offline
+ * in pre(), against the artifact that ships.
+ *
+ * ~~Minting a fresh token and reading Location without following it reaches
+ * Amazon never, so it is safe.~~ SUPERSEDED 2026-09-04. That is mechanically
+ * true and it is not sufficient. Since f5a1dce the gate also requires
+ * Sec-Fetch-Mode:navigate + Sec-Fetch-Site:same-origin, so a probe that PASSES
+ * must forge the complete human-navigation credential set — the one bypass the
+ * gate's own source documents — automatically, on every deploy, one deleted
+ * `redirect: "manual"` away from spending real clicks on the fleet-shared
+ * Associates account. Do not re-add it.
+ * Canonical: ~/.claude/rules/affiliate-link-gate.md
+ *            § "Verifying the POSITIVE path — settled 2026-09-04".
  *
  * ⚠️ EU ROUTING IS CODE-READ, NOT PROBED. Cloudflare overwrites cf-ipcountry, so
  * curl cannot spoof a country and a live probe of the EU path is impossible.
@@ -112,6 +124,77 @@ async function pre() {
   for (const c of ["DE", "NL", "FR", "IT", "ES", "PL", "SE"])
     check(!new RegExp(`"${c}"`).test(w), `${c} correctly ABSENT from EU_ROUTED (Global Earning covers it)`);
 
+  // ── THE POSITIVE PATH — asserted on the artifact, never probed live ────────
+  // Added 2026-09-04, replacing the live mint-and-read probe in post(). See the
+  // long note there for why that probe cannot exist on a Sec-Fetch gate. This
+  // is the doctrine-prescribed alternative (affiliate-link-gate.md § Design B):
+  // assert the shipping artifact, then run its own logic as pure computation.
+  // dist/_worker.js is a near-verbatim concatenation of the four Functions —
+  // make-worker.mjs only renames the exported handlers — so an assertion here
+  // is an assertion about the code that actually serves.
+
+  // The destination template. NEITHER the marketplace host NOR the /dp/ path
+  // was asserted anywhere before: the live probe was the only cover, and it
+  // exercised only the US branch. This covers both.
+  check(
+    w.includes("https://${geo.host}/dp/${m[1].toUpperCase()}?tag=${geo.tag}"),
+    "book destination template intact (https://<host>/dp/<ISBN>?tag=<tag>)",
+  );
+  check(
+    w.includes('{ host: "www.amazon.com", tag: TAG }'),
+    "non-EU branch targets www.amazon.com with this site's own tag",
+  );
+  check(
+    w.includes('{ host: "www.amazon.de", tag: EU_TAG }'),
+    "EU branch targets www.amazon.de with the OneLink tag",
+  );
+
+  // The gate composition (f5a1dce). Losing any part of this re-opens the
+  // harvest hole SILENTLY — nothing 404s, nothing looks wrong, and tagged
+  // clicks start accruing against the fleet-shared account again.
+  check(/const tokenOk = navOk &&/.test(w), "tokenOk still requires navOk AND a token (no token-only path)");
+  check(
+    /mode === "navigate"/.test(w) && /site === "same-origin"/.test(w),
+    "navOk asserts Sec-Fetch navigate + same-origin",
+  );
+  check(
+    (w.match(/Response\.redirect\(`\$\{url\.origin\}\/`, 302\)/g) || []).length >= 2,
+    "tokenless fallback still redirects home (no auto-minting interstitial)",
+  );
+  check(
+    !/<!doctype|text\/html/i.test(w),
+    "no HTML interstitial in the worker — the self-minting surface stays removed",
+  );
+
+  // Pure computation, against the helpers EXTRACTED FROM THE ARTIFACT — not a
+  // re-typed copy, which would only ever test the copy. Extraction failing is a
+  // FAIL, never a silent skip: a check that quietly does nothing still prints
+  // like a pass, which is worse than having no check at all.
+  const mIsbn = w.match(/\nfunction isIsbn10\(s\) \{\n[\s\S]*?\n\}/);
+  const mTok = w.match(/const tokenFresh = \(s\) => \{[\s\S]*?\n  \};/);
+  if (!mIsbn || !mTok) {
+    bad(
+      `could not extract the gate helpers from ${WORKER} (isIsbn10:${!!mIsbn} tokenFresh:${!!mTok}) — `
+      + `the offline logic check CANNOT RUN, so the positive path is UNVERIFIED. Do not treat this as a pass.`,
+    );
+  } else {
+    const isIsbn10 = eval(`(${mIsbn[0].replace(/^\nfunction isIsbn10/, "function")})`);
+    const tokenFresh = eval(`(${mTok[0].replace(/^const tokenFresh = /, "").replace(/;$/, "")})`);
+    // Both directions. A validator that only ever returns true is not a check.
+    check(
+      isIsbn10("0300179359") && isIsbn10("043942089X")
+        && !isIsbn10("1234567890") && !isIsbn10("B0BJ147GF9") && !isIsbn10("030017935"),
+      "isIsbn10 discriminates (real ISBN + X check digit pass; bad checksum, ASIN, short fail)",
+    );
+    check(
+      tokenFresh(Date.now().toString(36))
+        && !tokenFresh(Date.now().toString(16))
+        && !tokenFresh((Date.now() - 7200000).toString(36))
+        && !tokenFresh("ABC!!!") && !tokenFresh("1") && !tokenFresh(""),
+      "tokenFresh discriminates (fresh base36 accepted; hex, 2h-stale, junk, empty rejected)",
+    );
+  }
+
   // Page-drop guard. `wrangler pages deploy`/chunked upload replaces the whole
   // directory, so shipping a short build deletes live pages.
   const html = [];
@@ -149,35 +232,77 @@ async function post() {
   const ISBN = "0300179359"; // Interaction of Color — 43 clicks/30d
   const b = await head(`/go/b/${ISBN}`);
   check(b.status !== 404, `/go/b/${ISBN} is not 404 (got ${b.status}) — THE Aug 27-28 failure`);
-  check(b.status === 200, `/go/b/${ISBN} serves the interstitial to a tokenless request (got ${b.status})`);
 
-  // Tokenless must never hand out a tagged URL, and the interstitial must carry
-  // nothing harvestable.
+  // ⚠️ REWRITTEN 2026-09-04 (f5a1dce). Until that commit a tokenless GET got a
+  // 200 interstitial, so these probes asserted `status === 200`. The
+  // interstitial SELF-MINTED a fresh ?t= on page load, which handed a valid
+  // credential to any JS-executing crawler that merely followed a /go/ href —
+  // the same defect fixed on fitmylens. It is gone by design: a tokenless GET
+  // now 302s to our own origin, the "never a dead end" fallback already used
+  // for unrecognised /go/ shapes. These assertions were stale, not broken.
+  //
+  // Refusal is asserted by DESTINATION (affiliate-link-gate.md: "the real pass
+  // criterion is no probe reaches an Amazon URL carrying tag="). The `302` half
+  // is NOT redundant with that: a 200 here would mean the self-minting
+  // interstitial is back, which is the harvest hole itself, and a
+  // destination-only check would sail straight past it.
+  const HOME = new URL(ORIGIN).origin + "/";
+  const refusedHome = (r) => r.status === 302 && r.location === HOME;
+  check(
+    refusedHome(b),
+    `tokenless /go/b → 302 own origin (got ${b.status} ${b.location || "none"}) — a 200 means the auto-minting interstitial returned`,
+  );
+
+  // The refusal must carry nothing harvestable. Scan the Location AND the body
+  // TOGETHER: post-f5a1dce the body is empty, so the old body-only scan passed
+  // vacuously against any response at all and measured nothing.
   const bodyText = b.status === 200 ? await b.body.text() : "";
   check(
-    !/amazon\.[a-z]|tag=|colorcombinations-20|atob\(/i.test(bodyText),
-    "interstitial contains zero harvestable strings (no amazon url, no tag, no atob)",
+    !/amazon\.[a-z]|tag=|colorcombinations-20|atob\(/i.test(`${b.location} ${bodyText}`),
+    "refusal exposes zero harvestable strings (no amazon url, no tag, no atob)",
   );
 
-  // Gated 302, read WITHOUT following — no request reaches Amazon, no click.
-  const t = Date.now().toString(36);
-  const gated = await head(`/go/b/${ISBN}`, { cookie: `cc_g=${t}` });
-  check(gated.status === 302, `fresh cookie → 302 (got ${gated.status})`);
-  check(
-    gated.location === `https://www.amazon.com/dp/${ISBN}?tag=colorcombinations-20`,
-    `302 target carries the right tag (got: ${gated.location || "none"})`,
-  );
-
-  // Stale token must NOT redirect — this is the harvester gate doing its job.
+  // Stale token must be refused the same way.
   const stale = await head(`/go/b/${ISBN}?t=1`);
-  check(stale.status === 200, `stale ?t= refused, no 302 (got ${stale.status})`);
-
-  // Checksum-invalid ISBN goes home, never to a guessed Amazon URL.
-  const junk = await head("/go/b/1234567890", { cookie: `cc_g=${t}` });
   check(
-    junk.status === 302 && !/amazon/i.test(junk.location),
-    `checksum-invalid ISBN → home not amazon (got ${junk.status} ${junk.location})`,
+    refusedHome(stale),
+    `stale ?t= refused to own origin (got ${stale.status} ${stale.location || "none"})`,
   );
+
+  // Unrecognised shape must not 404 and must not leak. NOTE, honestly: this no
+  // longer exercises the mod-11 checksum — every tokenless request goes home
+  // now, so it would pass with isIsbn10 deleted entirely. The checksum is
+  // tested for real in pre(), as pure computation. What this still proves is
+  // that the route is alive and leaks nothing, which is the Aug 27-28 class.
+  const junk = await head("/go/b/1234567890");
+  check(
+    junk.status !== 404 && !/amazon/i.test(junk.location),
+    `junk ISBN shape → not 404, not amazon (got ${junk.status} ${junk.location || "none"})`,
+  );
+
+  // ⚠️ THE POSITIVE PATH IS ASSERTED OFFLINE IN pre(). THAT IS DELIBERATE.
+  // A probe here used to mint a fresh cc_g and read Location without following
+  // it, reasoning that nothing reaches Amazon so no click is fabricated. That
+  // reasoning is mechanically CORRECT, and it is not why the probe is gone.
+  //
+  // It is gone because f5a1dce added navOk(): tokenOk now requires
+  // Sec-Fetch-Mode:navigate + Sec-Fetch-Site:same-origin as well as the token.
+  // Repairing the probe therefore means sending the COMPLETE forged
+  // human-navigation credential set on every deploy — precisely the bypass the
+  // gate's own source names as its known weakness ("does NOT stop a standalone
+  // HTTP client that deliberately sends fabricated Sec-Fetch header values").
+  // A deploy-time fixture impersonating the attacker the gate was built to
+  // describe is wrong independently of whether Amazon counts it, and its safety
+  // rests entirely on one `redirect: "manual"` that a future edit can delete
+  // silently, on a fleet-shared, irreversible account.
+  //
+  // Coverage went UP, not down: pre() now asserts the destination TEMPLATE,
+  // both marketplace hosts and the gate composition against the shipping
+  // artifact, and runs isIsbn10 + tokenFresh as pure computation extracted from
+  // it. The host and the /dp/ path had never been asserted anywhere — the live
+  // probe was the only cover, and it only ever exercised the US branch.
+  // Do NOT "restore" this probe. See affiliate-link-gate.md
+  // § "Verifying the POSITIVE path — settled 2026-09-04".
 
   // The other two money paths, dark until 2026-09-02 and easy to forget.
   const p = await head("/go/p/B0BJ147GF9");
