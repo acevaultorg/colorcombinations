@@ -293,8 +293,13 @@ const jsonLdArray = jsonLd
 
     <slot name="head" />
 
-    {/* Amazon affiliate-click measurement (Clarity amazon_click + GA4 + first-party /c beacon) */}
-    <script is:inline src="/amazon-track.js"></script>
+    {/* Amazon affiliate-click measurement (Clarity amazon_click + GA4 + first-party /c beacon).
+        defer attribute added 2026-09-04 (LCP fix mtncwponxsc3i5): this external script tag had
+        no async or defer attribute, so it blocked the HTML parser on a network round-trip before
+        this site's Mediavine tag. The file only attaches document-level click/auxclick listeners
+        — no dependency on running before DOMContentLoaded, no user can click within that window
+        — so deferring it costs nothing functionally and removes it from the critical path. */}
+    <script is:inline defer src="/amazon-track.js"></script>
     {/* Mediavine Journey ad script — site 0e3765cf-7571-4481-9b28-bc96fd84b4e4.
         Approved for Journey 2026-09-04.
 
@@ -321,8 +326,15 @@ const jsonLdArray = jsonLd
         been a dead sink since the subscription lapsed 2026-06-28 — every custom
         event on the site (shares, exports, hex copies, CTA clicks) was invisible.
         Now fires GA4 (what the fleet metrics layer reads) + Clarity (filterable
-        tag) as well. Plausible was removed 2026-07-30 (subscription lapsed 2026-06-28). */}
-    <script is:inline>
+        tag) as well. Plausible was removed 2026-07-30 (subscription lapsed 2026-06-28).
+
+        type="module" (2026-09-04, LCP fix mtncwponxsc3i5): a delegated click listener has no
+        reason to execute during the parse/paint critical path — module scripts are deferred by
+        spec (parsed but not executed until after HTML parsing), which pulls this off the main
+        thread during first paint without changing behavior (still attached well before any real
+        user can click). All names referenced here are locals inside the IIFE; nothing else on
+        the page reads them, so strict-mode module scoping changes nothing observable. */}
+    <script is:inline type="module">
     (function(){
       document.addEventListener('click', function(e) {
         var el = e.target.closest('[data-event]');
@@ -399,7 +411,13 @@ const jsonLdArray = jsonLd
       .cc-none a{color:var(--color-accent,#b8860b)}
     </style>
 
-    <script is:inline>
+    {/* type="module" added 2026-09-04 (LCP fix mtncwponxsc3i5): this is the largest single
+        inline script on the page (search index lookup + hex routing + rendering), and it
+        only wires up event listeners at load — the actual data fetch it depends on is
+        already lazy (fires on first focus/input). Deferring it via module semantics moves
+        its parse+execute cost off the initial paint/LCP critical path; nothing here needs
+        to run before the browser has painted the page. */}
+    <script is:inline type="module">
       (function(){
       var q=document.getElementById("cc-q"),box=document.getElementById("cc-results");if(!q||!box)return;
       var idx=null,idxP=null,items=[],sel=-1,last="",lt,rt,exactMiss=false;

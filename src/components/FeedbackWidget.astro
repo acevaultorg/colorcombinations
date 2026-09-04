@@ -57,7 +57,9 @@
     @media (max-width: 420px) { .cc-fb-row { flex-direction: column; } .cc-fb-row button { width: 100%; } }
   </style>
 
-  <script is:inline>
+  {/* type="module" added 2026-09-04 (LCP fix mtncwponxsc3i5): below-the-fold form handler,
+      no reason to execute before first paint. */}
+  <script is:inline type="module">
     (function () {
       var f = document.getElementById("cc-fb-form");
       if (!f) return;

@@ -249,7 +249,9 @@ const year = new Date().getFullYear();
   }
 </style>
 
-<script is:inline>
+{/* type="module" added 2026-09-04 (LCP fix mtncwponxsc3i5): footer-only cookie-preferences
+    reopen link, never needed before first paint. */}
+<script is:inline type="module">
   var ccReopen = document.getElementById('cc-reopen');
   if (ccReopen) {
     ccReopen.addEventListener('click', function () {

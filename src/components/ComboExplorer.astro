@@ -137,7 +137,10 @@ const colors = allColors().sort((a, b) => b.paletteCount - a.paletteCount);
   }
 </style>
 
-<script is:inline>
+{/* type="module" added 2026-09-04 (LCP fix mtncwponxsc3i5): the dataset fetch is already
+    first-interaction-lazy (see doc comment above); the listener setup itself has no reason
+    to run during initial paint. Deferring via module semantics only. */}
+<script is:inline type="module">
   (function () {
     var grid = document.getElementById("ex-grid");
     var results = document.getElementById("ex-results");
