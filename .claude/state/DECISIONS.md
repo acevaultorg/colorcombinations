@@ -759,18 +759,46 @@ Reinforces what `ai-citation-channel.md` already says: fleet-wide the
 citation→session rate is 0.21% median and colorcombinations is the lone live
 exception. Growth work here should weight AI citation far above its fleet norm.
 
-**NOT VERIFIED — do not repeat as fact.** The peer reports that 6 of the 7 named
-earners carry a CONSENT-GATED flag (GA4 counts only consented visitors while the
-/c beacon fires regardless, inflating per-visitor rates), with this site the
-exception. I could not confirm it: `consent_gated` reads None for every domain in
-the `by_domain` projection I can fetch. The field's absence is a property of my
-instrument, not evidence either way.
+**VERIFIED 2026-09-04 (corrected in place — I first recorded this as
+unverifiable, and that was my instrument error, not a gap in the data).**
+6 of the 7 named earners carry a CONSENT-GATED flag; **colorcombinations.org is
+the sole exception.** GA4 counts only consented visitors while the /c beacon
+fires regardless, so per-visitor click and conversion rates on the other six read
+high by an unmeasured factor.
 
-**The part worth acting on regardless of who is right:** before benchmarking any
-fleet site's per-visitor click or conversion rate against this one, check whether
-the two denominators are built the same way. The peer retracted a "27% click
-rate" on watchspecdb tonight for exactly this. Same family as the crawler-share
-trap in `measured-vs-expected` — a rate is a claim about its denominator first.
+    fitmylens.com          $176.89   CONSENT-GATED
+    readinglist.school     $ 44.60   CONSENT-GATED
+    dormbyschool.com       $ 32.85   CONSENT-GATED
+    colorcombinations.org  $ 27.34   —  clean denominator
+    cabinpets.com          $ 22.50   CONSENT-GATED
+    sourdoughhydration.com $  3.30   CONSENT-GATED
+    meeplepick.com         $  2.31   CONSENT-GATED
+
+**The flag is a SUBSTRING in `flags[].t`, not a boolean field:**
+
+    any('CONSENT-GATED' in (f['t'] if isinstance(f,dict) else str(f))
+        for f in row.get('flags') or [])
+
+16 rows carry it feed-wide. Control discriminates properly — colorcombinations
+False, fitmylens True — so it is not matching everything.
+
+**My mistake, worth more than the finding.** I probed named keys with `if k in r`
+and reported "consent_gated reads None, so my instrument is blind". The data was
+there the whole time under a different shape. I never ran `print(list(r.keys()))`
+— one line that would have shown `flags` immediately. `ai-citation-channel.md`
+already carries this exact lesson for `GroundingQuery` vs `Query` ("before
+trusting any empty result, dump Object.keys(rows[0])") and I did not apply it.
+**"The field is absent" and "I looked for the wrong field" are different claims,
+and only one of them is about the world.** Dump the keys before declaring
+blindness. Note also the full feed row has 68 keys against the MCP `by_domain`
+projection's 10 — absence in the projection is never evidence about the data.
+
+**The consequence, now confirmed rather than conditional:** this is the fleet's
+only trustworthy per-visitor denominator among earners. Any benchmark of another
+earner's click or conversion rate against this site is biased in the OTHER
+site's favour. A peer retracted a "27% click rate" on watchspecdb for exactly
+this. Same family as the crawler-share trap in `measured-vs-expected` — a rate is
+a claim about its denominator first.
 
 For reference here: ga4_users_30d 4281, affiliate_clicks_30d 426 → 9.95%
 clicks-per-user. direct_share 45.7, so some crawler presence, but pv/session on
