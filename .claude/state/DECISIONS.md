@@ -651,3 +651,49 @@ Then checked **every** URL column rather than stopping at the one I sampled:
 
 The lesson under all three: **test a URL taken from the data, never one you
 constructed**, and read the matches rather than the count.
+
+### 2026-09-04 (late) — CI quota exhausted; two commits are pushed but NOT deployed
+
+**READ THIS BEFORE DEPLOYING ANYTHING HERE.** Repo and live have diverged.
+
+`ci_quota_exceeded` on the acevault-lab namespace, tonight. The job never starts
+(`duration: null`), so this is not a code failure and not the new deploy gates.
+readinglist-school deployed fine at 23:05 and this repo failed minutes later, so
+the ceiling is namespace-wide — every GitLab-deployed fleet site is affected.
+
+**Undeployed, in order:**
+- `6389ac0` search: palettes findable by the colours they contain
+- `a30cfd1` ci: docs-only short-circuit
+
+Production still serves `321c2ae`. Both ship on the first successful CI run; no
+action needed beyond restoring minutes. Operator card: `mtm6ocq8bs46ms`.
+
+**I deliberately did NOT laptop-deploy them.** `npm run deploy` works and is
+guarded, but it ships advanced-mode `dist/_worker.js` instead of CI's native
+Functions compilation. That is a live mode change on the site carrying the
+fleet's entire non-US Amazon business, and with CI down there would be **no way
+to recover via CI** if it went wrong. A search improvement does not justify that
+asymmetry. If something revenue-critical needs shipping before minutes return,
+the laptop path is available and the guard covers it — the money path is
+currently GREEN and untouched either way.
+
+**My share of the cause, recorded so it is not repeated.** A build here is ~8-10
+min against 400 compute-minutes/month for the WHOLE namespace — roughly 40-50
+deploys a month across every repo. Two of tonight's builds were mine and touched
+only `.claude/`, shipping no byte. `a30cfd1` makes that structurally impossible:
+a commit whose paths are all under `.claude/` now exits before any build work.
+Nothing under `.claude/` can reach the output — its only two mentions in `src/`
+are inside comments, and there are no `.md` files under `src/`.
+
+**Deliberately NOT done: a node_modules cache in CI.** There is no `cache:` block
+and `npm ci` runs cold every build, which is a real cost. I did not add one
+because I cannot test it — CI is blocked, and job logs are unreadable with this
+token (`Job: Read` scope missing), so I could neither verify the config nor
+measure the saving. A broken cache would fail the first build after the quota
+returns, which is precisely the build that must succeed. Do it when CI is live
+and the result is observable.
+
+**Also unreadable with the current token, and worth fixing once:** CI job traces
+(`Job: Read`) and namespace usage. Without traces, a green pipeline only proves
+the step exited 0 — a WARN does that too, which is why the SUBSCRIBERS KV
+assertion's CI-side verdict is still UNKNOWN rather than passing.
