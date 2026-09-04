@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------
+   Metric-matched fallback for EB Garamond (CLS fix, 2026-09-04)
+   MEASURED, not guessed: rendered both faces at 100px in headless
+   Chrome and compared. Georgia is 15% WIDER than EB Garamond
+   (1093.86px vs 950.50px for the same string), so the webfont swap
+   reflows every serif block — measured CLS 0.1606 from font swap
+   alone (ads blocked in both arms of the controlled comparison).
+   Scaling Georgia to 86.89% and matching its box to EB Garamond's
+   makes the swap visually invisible.
+   Georgia is deliberate: it ships metric-identical on macOS AND
+   Windows. The sans fallback was NOT given the same treatment —
+   system-ui resolves to San Francisco / Segoe UI / Roboto depending
+   on platform, so any override measured on one would mis-tune the
+   others and could make CLS worse than doing nothing.
+   ------------------------------------------------------------ */
+@font-face {
+  font-family: "EB Garamond Fallback";
+  src: local("Georgia"), local("Times New Roman");
+  size-adjust: 86.89%;
+  ascent-override: 116.23%;
+  descent-override: 34.52%;
+  line-gap-override: 0%;
+}
+
 /* ============================================================
    The Dictionary of Color Combinations — Brand System
    A museum-plate feel. Serif editorial + clean sans UI.
@@ -8,7 +32,7 @@
 
 @theme {
   /* ---------- Typography ---------- */
-  --font-serif: "EB Garamond", Georgia, "Times New Roman", serif;
+  --font-serif: "EB Garamond", "EB Garamond Fallback", Georgia, "Times New Roman", serif;
   --font-sans: "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
