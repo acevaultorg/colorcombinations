@@ -220,13 +220,34 @@ const jsonLdArray = jsonLd
       <link rel="alternate" type="application/json" title={`${title} — JSON data`} href={jsonAlternate} />
     )}
 
-    <!-- Editorial fonts — EB Garamond for serif, Inter for UI -->
+    <!-- Editorial fonts — EB Garamond for serif, Inter for UI.
+         Loaded non-blocking (2026-09-04): a synchronous cross-origin <link rel="stylesheet">
+         here is a render-blocking request that Lighthouse measured at ~1.3s wasted (mobile,
+         throttled) — the CSSOM can't finish until this round-trip completes. The stylesheet
+         only contains @font-face declarations (already using display=swap for the font
+         FILES), so nothing else on the page depends on it loading synchronously. Preload +
+         media=print/onload swap keeps the font request starting immediately (same priority
+         as before) while letting the browser paint without waiting on it; <noscript> keeps
+         the fonts working with JS disabled. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="stylesheet"
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap"
+      media="print"
+      onload="this.media='all'; this.onload=null;"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap"
+      />
+    </noscript>
 
     {jsonLdArray.map((entry) => (
       <script
