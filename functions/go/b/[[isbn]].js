@@ -107,23 +107,44 @@ export const onRequestGet = ({ request }) => {
   //   • Real on-page clicks: public/amazon-track.js writes a cc_g cookie in its
   //     capture-phase click handler (SameSite=Lax rides the navigation,
   //     including middle-click new tabs) → instant 302, fast path preserved.
-  //   • Referer-less humans (pasted links): the interstitial below self-mints a
-  //     fresh ?t= and re-navigates — one invisible hop, then 302.
-  //   • JS-blind crawlers (spoofed UA + spoofed Referer): no cookie, no ?t=,
-  //     and the interstitial no longer embeds the target URL in ANY encoding.
-  //     The previous interstitial shipped atob("<base64 tagged amazon URL>") —
-  //     harvestable by anyone who can call atob. There is now nothing to
-  //     harvest and no tagged click occurs.
+  //   • JS-blind crawlers: no cookie, no ?t= → 302 home. Nothing to harvest.
+  //
+  //   ⚠️ GATE TIGHTENED 2026-09-04 (fitmylens task mtmmdre3p9n2ex; the same
+  //   defect class found there). Referer-less humans used to get a 200
+  //   interstitial that SELF-MINTED a fresh ?t= on page load with NO click
+  //   required -- any JS-executing crawler that merely followed a /go/b/
+  //   href got a valid token this way, no gesture, no cookie. This site's
+  //   amazon-track.js already gesture-gates the FAST path correctly (unlike
+  //   fitmylens, which needed a new click handler built from scratch); the
+  //   only bug here was the interstitial FALLBACK undoing that guarantee.
+  //   Fixed: no-token GET now redirects home immediately, same "never a dead
+  //   end" fallback already used for unrecognised /go/ shapes below. Humans
+  //   without a JS-set cookie (pasted links, JS off) now also just bounce
+  //   home instead of getting one extra hop -- an acceptable trade given
+  //   that path was also the harvester's entry point.
+  //
+  //   ADDED: navOk() requires Sec-Fetch-Mode:navigate + Sec-Fetch-Site
+  //   same-origin|same-site, fail-closed when absent. Honest scope: this
+  //   stops browser-hosted JS (fetch()/XHR cannot forge these per the Fetch
+  //   spec) and therefore the GENERIC crawler class this fix targets -- it
+  //   does NOT stop a standalone HTTP client (curl, a scraper library) that
+  //   deliberately sends fabricated Sec-Fetch header values, since there is
+  //   no spec restriction outside a browser (verified live on fitmylens
+  //   2026-09-04). A targeted, informed attacker needs server-side-secret
+  //   binding to stop; not built here, same as fitmylens -- watch
+  //   colorcombinations-20 clicks/day after this ships.
   // Freshness window 10 min; base36 keeps the token compact + unremarkable.
-  // Trade-off accepted: JS-off humans lose the redirect (noscript message,
-  // link home). They previously passed via referer — the exact spoofed path —
-  // and are a rounding error of real traffic.
   const tokenFresh = (s) => {
     if (!s || !/^[0-9a-z]{6,12}$/.test(s)) return false;
     const ts = parseInt(s, 36);
     return Number.isFinite(ts) && Math.abs(Date.now() - ts) < 600000;
   };
-  const tokenOk = (() => {
+  const navOk = (() => {
+    const mode = request.headers.get("sec-fetch-mode");
+    const site = request.headers.get("sec-fetch-site");
+    return mode === "navigate" && (site === "same-origin" || site === "same-site");
+  })();
+  const tokenOk = navOk && (() => {
     const m = (request.headers.get("cookie") || "").match(
       /(?:^|;\s*)cc_g=([^;\s]+)/,
     );
@@ -137,7 +158,7 @@ export const onRequestGet = ({ request }) => {
   // a freshly minted ?t=. The ?t= lives in the query string, so the pathname
   // match below is unaffected. If a ?t= was already present and still rejected
   // (stale clock, replayed URL), it goes home — no reload loop.
-  const go = (target, dest = "Amazon") =>
+  const go = (target) =>
     tokenOk
       ? new Response(null, {
           status: 302,
@@ -149,17 +170,7 @@ export const onRequestGet = ({ request }) => {
             "x-robots-tag": "noindex, nofollow",
           },
         })
-      : new Response(
-          `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>One moment…</title></head><body style="font-family:system-ui;padding:2rem"><p>Taking you to ${dest}…</p><noscript><p>JavaScript is off — <a href="/">return to Color Combinations</a>.</p></noscript><script>var u=new URL(location.href);if(u.searchParams.has("t")){location.replace("/")}else{u.searchParams.set("t",Date.now().toString(36));location.replace(u.pathname+u.search)}</script></body></html>`,
-          {
-            status: 200,
-            headers: {
-              "content-type": "text/html; charset=utf-8",
-              "cache-control": "no-store",
-              "x-robots-tag": "noindex, nofollow",
-            },
-          },
-        );
+      : Response.redirect(`${url.origin}/`, 302);
 
   // Parse from the pathname rather than params so a trailing slash, or any
   // stray extra segment, is handled identically.
