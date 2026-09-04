@@ -29,7 +29,42 @@
   # converter in the fleet (readinglist is 3.1%). A measurement bug, not a conversion
   # problem, and it was actively misdirecting where work went. sendBeacon needs only
   # connect-src (nothing is loaded FROM there), so script-src is deliberately unchanged.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://news.google.com https://www.clarity.ms https://scripts.clarity.ms https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.clarity.ms https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://static.cloudflareinsights.com https://cloudflareinsights.com https://fleet.promptprio.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://forms.example.com
+  #
+  # 2026-09-04 — Mediavine ad network added. Third time this file decides whether a
+  # vendor works or silently does nothing, so the reasoning is written out.
+  #
+  # The tag is: <script src="//scripts.scriptwrapper.com/tags/0e3765cf-...js">
+  # scripts.scriptwrapper.com was NOT in the old script-src, so the browser would have
+  # refused to load it: the tag sits in the HTML, every grep "passes", the site looks
+  # perfect, and zero ads ever render. frame-src had no entry at all and fell back to
+  # default-src 'self', which blocks every ad IFRAME — i.e. every actual ad — and
+  # media-src likewise blocked video ads. Both are now explicit.
+  #
+  # Why the ad directives are `https:` and not a host allowlist. Programmatic ads are
+  # not enumerable: the wrapper loads Google Ad Manager, then a rotating set of prebid
+  # adapters (Magnite, PubMatic, Xandr, Index, Criteo, OpenX, Amazon TAM...), and the
+  # creatives render in iframes served from ARBITRARY advertiser domains. Mediavine
+  # changes partners without telling publishers. A hand-written allowlist is therefore
+  # guaranteed to go stale and to fail the SAME SILENT WAY as the two incidents above —
+  # no error, no console line anyone will see, just less revenue with no signal saying
+  # why. A partial allowlist is worse than none: it looks like protection and behaves
+  # like a slow leak.
+  #
+  # What that costs in security, honestly: less than it looks. script-src has carried
+  # 'unsafe-inline' from the start (JSON-LD via set:html), and 'unsafe-inline' already
+  # lets any HTML injection execute script. The host list only ever stopped external
+  # FILES from unlisted origins; it never stopped the inline path. The loss is bounded
+  # by default-src 'self' — every directive NOT named below is still same-origin only.
+  #
+  # Deliberately NOT relaxed, because these still do real work:
+  #   frame-ancestors 'none' — clickjacking (with X-Frame-Options: DENY above)
+  #   base-uri 'self'        — stops <base> injection rewriting every relative URL
+  #   form-action 'self' ... — stops a form being repointed at an attacker
+  #   object-src 'none'      — NEW; strictly tighter than the old default-src fallback
+  # Previously-named analytics origins (kept here for a future tightening, now covered
+  # by https:): news.google.com, *.clarity.ms, googletagmanager, *.google-analytics.com,
+  # *.analytics.google.com, static.cloudflareinsights.com, fleet.promptprio.com.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; font-src 'self' data: https:; img-src 'self' data: https:; media-src 'self' https:; frame-src https:; worker-src 'self' blob:; connect-src 'self' https:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://forms.example.com
 
 # Embed widgets — deliberately iframe-embeddable on any origin.
 # Overrides the global X-Frame-Options: DENY + frame-ancestors 'none'

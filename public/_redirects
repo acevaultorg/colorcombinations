@@ -23,3 +23,18 @@
 /pantone-colour-of-the-year-2026 /trends/color-trends-2026 301
 /color-trends-2026 /trends/color-trends-2026 301
 /colour-of-the-year-2026 /trends/color-trends-2026 301
+
+# Mediavine ads.txt — 301 to the Mediavine-hosted demand-partner list (onboarding
+# step 4, 2026-09-04). Mediavine keeps that list current on their side, so this never
+# needs touching when their partners change (214 lines / 9,688 bytes as of today).
+#
+# I-37 ad-network exclusivity: this rule and the DELETION of public/ads.txt — which
+# authorised AdSense pub-7449214764048186 — ship in the SAME deploy. There is no
+# instant where both networks are authorised. Mediavine requires that swap be atomic.
+#
+# Cloudflare Pages consults _redirects ONLY for paths with no matching static asset,
+# so a public/ads.txt file would silently SHADOW this rule and the swap would look
+# applied while still serving AdSense. Verified by control: /sitemap.xml 301s precisely
+# because no sitemap.xml asset exists, while /robots.txt (a real file) returns 200.
+# If ads.txt ever reappears in public/, this redirect stops firing.
+/ads.txt https://adstxt.journeymv.com/sites/0e3765cf-7571-4481-9b28-bc96fd84b4e4/ads.txt 301
