@@ -744,3 +744,58 @@ all 2,128 pages and is already 6.9KB.
 `color-name` is present only as a TRANSITIVE dependency. Anything built on it
 should either declare it in package.json or bake its output into a committed
 data file — do not silently rely on a transitive dep for build-time correctness.
+
+### 2026-09-04 — this site is the fleet's AI-traffic outlier, and possibly its only clean denominator
+
+From a peer session (device4-autopilot), re-verified here rather than taken on trust.
+
+**VERIFIED, exactly.** `ai_sessions_30d` = **969**, which is **69.2%** of the
+fleet's entire 1,400 AI-referred sessions, at **2.96 pageviews/session**. That
+last number matters: an AI-referred session at ~1.0 pv/session is a crawler;
+2.96 is a person browsing. So this site is not merely cited, it is the one place
+in the fleet where citation converts into real readers. `ai_share` 14.1.
+
+Reinforces what `ai-citation-channel.md` already says: fleet-wide the
+citation→session rate is 0.21% median and colorcombinations is the lone live
+exception. Growth work here should weight AI citation far above its fleet norm.
+
+**NOT VERIFIED — do not repeat as fact.** The peer reports that 6 of the 7 named
+earners carry a CONSENT-GATED flag (GA4 counts only consented visitors while the
+/c beacon fires regardless, inflating per-visitor rates), with this site the
+exception. I could not confirm it: `consent_gated` reads None for every domain in
+the `by_domain` projection I can fetch. The field's absence is a property of my
+instrument, not evidence either way.
+
+**The part worth acting on regardless of who is right:** before benchmarking any
+fleet site's per-visitor click or conversion rate against this one, check whether
+the two denominators are built the same way. The peer retracted a "27% click
+rate" on watchspecdb tonight for exactly this. Same family as the crawler-share
+trap in `measured-vs-expected` — a rate is a claim about its denominator first.
+
+For reference here: ga4_users_30d 4281, affiliate_clicks_30d 426 → 9.95%
+clicks-per-user. direct_share 45.7, so some crawler presence, but pv/session on
+the AI segment is 2.96 and the site is NOT flagged crawler-inflated.
+
+### 2026-09-04 — sitemap has no lastmod: confirmed, and deliberately left alone
+
+Confirmed with the correct method: 1,469 `<loc>`, **0** `<lastmod>`. The file is
+minified to a single line, so `grep -c '<loc>'` reports **1** — demonstrated live.
+Use `grep -o '<loc>' | wc -l`. (Also: robots declares `/sitemap-index.xml` whose
+only child is `/sitemap-0.xml`; a probe that does not follow one level down sees
+1 URL and can read as "this site has no pages".)
+
+A sitemap without lastmod is VALID — it is only a crawl-scheduling hint — and
+there is no measurement that its absence costs anything here. The peer was
+careful not to overclaim it, and I agree with not shipping.
+
+**One reason to add, which strengthens the case for NOT doing it cheaply:** the
+lazy implementation is actively harmful. Emitting build-time lastmod on all 1,469
+URLs asserts that every page changed today, which is false, and a sitemap where
+every lastmod is identical is a well-known low-trust signal — worse than having
+none. Doing it honestly requires real per-page modification dates (the
+`data/page-lastmod.json` pattern other fleet sites use, which has its own guard
+because a sitemap disagreeing with that file is itself a defect class).
+
+So the trade is not "marginal unmeasured gain vs a little work". It is "marginal
+unmeasured gain vs either real work or an actively harmful shortcut". Skip until
+someone measures a crawl-freshness problem.
