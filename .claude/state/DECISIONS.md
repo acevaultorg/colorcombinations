@@ -827,3 +827,62 @@ because a sitemap disagreeing with that file is itself a defect class).
 So the trade is not "marginal unmeasured gain vs a little work". It is "marginal
 unmeasured gain vs either real work or an actively harmful shortcut". Skip until
 someone measures a crawl-freshness problem.
+
+### 2026-09-04 — STOP optimising this site on-site. The remaining upside is ~$5/mo, measured.
+
+Went looking for the basket-size lever and found instead that the on-site work here
+is finished. Recording the numbers so nobody re-derives this.
+
+**Where the clicks actually come from (GA4, 30d):**
+
+    page            views   /go/ links   clicks   rate
+    /                3031        31         46     1.5%
+    /browse/         2279        30         21     0.9%
+    /shop/            175        54         70    40.0%
+    /tools/           220         0          0      —
+    /random/          185         0          0      —
+    /paintings/       162         0          0      —
+
+Only 33 of 1,325 paths with views produce any click at all.
+
+**Two premises I had were wrong, both from page-count thinking:**
+
+1. `/colors-that-go-with/` is the largest page class (703 pages) and I assumed it
+   was the traffic and the basket opportunity — decorating intent, higher-ticket
+   than $20 books. **It does not appear in the top 15 pages by views at all.**
+   Built ≠ trafficked, again.
+2. I said `/paintings/` had no buy affordance. **The detail pages carry 30 /go/
+   links each.** Only the index and `/paintings/methodology/` have zero. I got
+   this wrong twice in one session — first claiming it, withdrawing correctly,
+   then re-asserting it after checking only the index and a methodology
+   sub-page. An index is not its class.
+
+**The upside of every remaining on-site optimisation, at the measured $0.064/click:**
+
+    3 unmonetised hubs (567 views) @1.5%   ->  +$0.55/mo
+    same @3%                                ->  +$1.09/mo
+    / + /browse/ from 1.3% to 2.0%          ->  +$2.52/mo
+    / + /browse/ from 1.3% to 2.5%          ->  +$4.22/mo
+    ---------------------------------------------------
+    realistic total                          ~  +$5/mo
+
+On a site earning **$27.34/mo**. Mediavine, which is operator-gated, is
+**$190-300/mo — 7 to 11 times the entire site.** Every hour of on-site CRO here
+is competing against a single operator click worth an order of magnitude more.
+
+**So: further on-site conversion work on colorcombinations is below the bar.**
+Not "low priority" — measured at single-digit dollars per month. The next
+session that feels an urge to add a buy block to `/tools/` or re-tune `/browse/`
+should read this and go do something else.
+
+**One instrument caveat that binds any future read of the table above.** GA4 and
+the beacon disagree by **1.95x** on the same quantity: `amazon_click` = 219,
+`affiliate_clicks_30d` = 426, over the same 30 days on a site that is NOT
+consent-gated. Cause not determined here (a plausible one is that the beacon
+counts /go/ hits including non-JS clients while GA4 only sees JS browsers, which
+would make the BEACON inflated rather than GA4 deflated — the fleet already
+documents beacon-vs-Amazon divergence). Consequence: the per-page rates above
+are GA4-relative and must not be mixed with beacon totals. The $/click figure
+uses the beacon denominator deliberately, which makes it the CONSERVATIVE
+version of the upside — using GA4's 219 would roughly double every number and
+still leave the conclusion unchanged.
