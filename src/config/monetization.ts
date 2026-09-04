@@ -18,8 +18,28 @@
  *     focused) once pageviews exceed 20,000/month. Not active at launch.
  *
  * Explicit non-goals:
- *  - No display ads (AdSense/Mediavine) at any traffic level — museum identity
- *    forbids multi-slot ad networks. Carbon Ads is the only exception.
+ *  - ~~No display ads (AdSense/Mediavine) at any traffic level — museum identity
+ *    forbids multi-slot ad networks. Carbon Ads is the only exception.~~
+ *    **CONTESTED 2026-09-04 — DO NOT ACT ON EITHER READING WITHOUT THE OPERATOR.**
+ *    colorcombinations.org was submitted to Mediavine Journey at the operator's
+ *    explicit request ("can you do it? take over computer") and was APPROVED the
+ *    same day. So the operator has knowingly reopened this, and the line above is
+ *    no longer a standing prohibition you can rely on.
+ *
+ *    But it is not simply void either. The April reasoning (DECISIONS.md
+ *    2026-04-10) was BRAND, not math: "Mediavine/Raptive make the most money at
+ *    scale but destroy the museum identity (4-8 slots, video autoplay, sticky
+ *    banners)". Applying to a programme is not the same decision as agreeing to
+ *    serve 4-8 slots on every page, and there is no evidence the April tradeoff
+ *    was re-examined before applying.
+ *
+ *    Unverified: Journey's actual ad density. The 4-8 figure describes FULL
+ *    Mediavine; Mediavine publishes no public density spec for the Journey tier
+ *    (checked 2026-09-04 — no dedicated Journey page exists on their site).
+ *
+ *    NO AD CODE IS INSTALLED (verified live: 0 mediavine references, control
+ *    gtag=12). Do not install it, and do not "clean up" this contradiction by
+ *    deleting either side. The operator resolves it.
  *  - No dark patterns, no fake urgency, no inflated price anchors.
  *
  * See DECISIONS.md 2026-04-10 ("Monetization V1.1 reality check") for the
