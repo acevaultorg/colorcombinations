@@ -82,7 +82,7 @@ yandex                     4   25.0     39.4       14
 > The two readings are compatible (same pages, less time each), but the strong framing was not
 > earned. Fix at the source rather than acting on the stale version.
 
-### 2 · 🟡 The top entry page shows a quarter of itself
+### 2 · ~~🟡 The top entry page shows a quarter of itself~~ **SHIPPED 2026-09-05 (commit `b51c559`) — the audit found it and the callout is now above the grid**
 
 - **Page:** `/browse/` — 230 sessions, the site's busiest, **27.3% scroll** at 58s active. Homepage `/` 27.0% at 26s.
 - **Evidence:** Clarity 2026-09-02, 3d.
@@ -90,6 +90,37 @@ yandex                     4   25.0     39.4       14
 - **Fix:** audit what sits below that line on `/browse/`; if a monetized or routing element is there, raise it. Verify at mobile-375 first.
 - **Metric:** scroll-to-CTA; affiliate-click rate on `/browse/`.
 - **Effort:** S.
+
+**What the audit found (2026-09-05).** The routing element was already fine — the search/era/hue/mood
+filter form sits directly under the H1, above the grid. The *monetized* elements were all three below
+it: `ShelfCallout`, `FurtherReading` ("The colour reference shelf") and `PaintThisPalette` ("Studio
+shelf") were rendered **after all 378 palette cards**, i.e. far past the 27.3% line. The sharpest part
+is that `ShelfCallout.astro`'s own doc comment (2026-08-15) states its purpose as *"a deliberate,
+visually distinct entry point"* for exactly these mid-task browsers converting at 0.6–0.9% — so the
+component was built for this job and then positioned where the median visitor could never see it. A
+correct fix, shipped to the wrong place.
+
+**Shipped:** moved the single lightweight `ShelfCallout` (eyebrow + title + blurb + one CTA) to
+directly after the filter/count block, ahead of the grid. `FurtherReading` and the Studio shelf were
+deliberately **left where they are** — `/browse/` is an index page whose primary job is browsing, and
+per the page-ROLE lesson those heavier card sections are the right deeper-scroll layer for visitors
+who are already engaged. This raises one callout, not the whole shelf.
+
+**Verified live** (not just built): `shelf-callout` at byte 68,310 precedes `palette-grid` at 80,074
+on the served page · HTTP 200, `cf-cache-status: DYNAMIC` · 0 `undefined`/`NaN`/`[object]` · 0 raw
+affiliate-tag leaks · both `/go/b/` and `/go/p/` still reject a tokenless probe 302→own-origin while
+`/` and `/collections/y2k/` return 200 (so the 302 is the gate, not a site-wide redirect) ·
+`/shop/color-reference-library/` (the CTA target) returns 200. Deployed via CI pipeline 2823127254.
+
+⚠️ **Not verified at mobile-375** — this session had no Chrome MCP viewport tool. The change is a
+single existing responsive card moved earlier in the same document flow (it already rendered on this
+page, just lower), so the risk is low, but the "verify at mobile-375 first" line above was **not**
+satisfied and a later session with Chrome MCP should glance at it.
+
+**Metric to check, forward-only:** `amazon_clicks_by_position_30d` and the `/browse/` affiliate-click
+rate. Baseline at ship time: whole-site `book` 134 · `tool` 20 · `reviewprobe` 1 clicks/30d, site
+conversions_30d reading 0 (that 0 is a dashboard bug, not reality — see Fleet Dashboard task
+`mtoj9hfntqggp6`).
 
 ### 3 · ~~🟢 `/colors/` and `/collections/` quickback above their own baseline~~ **REFUTED 2026-09-02 — these are WORKING indexes, do not "fix" them**
 
