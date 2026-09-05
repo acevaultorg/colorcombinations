@@ -316,3 +316,25 @@ on conversion instead.
 **So: no retitle.** The y2k title anomaly is real and cosmetic; fixing it is not measured to move
 anything, and this fleet's missing-page/retitle hypotheses are 0-for-8. The remaining half of the
 question — who actually wins `y2k colors` — needs a browser and stays open.
+
+### 9. GetKeywordStats confirms the same floor documented on fitmylens — do not re-derive it
+
+Tried to validate demand for `y2k colors` (§8's open external question) via Bing's keyword-volume
+tool. Same floor `ai-citation-channel.md` already documents:
+
+```
+'sanzo wada'              Impressions=4    (Bing PAGE data: 93 impr, 51 for the fuller phrase — real)
+'y2k colors'              NO-DATA           (Bing PAGE data: 651 impr — the site's own 2nd-largest collection)
+'color of the year 2026'  Impressions=77    (Bing PAGE data: ~2,154 across the family — real, owned by Pantone)
+control 'a dictionary of color combinations'  Impressions=14  (real: 3,283+ across the family)
+```
+
+Every query with confirmed real traffic reads at or near the tool's noise floor, and one goes
+NO-DATA outright. This is the exact signature already recorded on fitmylens — the tool is a floor
+on THIS instrument, not evidence the demand doesn't exist. No new finding; confirms doctrine holds
+on a second site. Also note for future sessions: the API requires `country=us&language=` (empty but
+present) and rejects `language=en`/`1033`/`0` — the error message names the wrong parameter, which
+cost several rounds before the control (`youtube`) passed.
+
+**§8's open external question stays open.** It needs a browser (ask the engine, read who it cites),
+not this tool.
