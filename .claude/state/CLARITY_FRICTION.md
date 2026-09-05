@@ -122,6 +122,27 @@ rate. Baseline at ship time: whole-site `book` 134 · `tool` 20 · `reviewprobe`
 conversions_30d reading 0 (that 0 is a dashboard bug, not reality — see Fleet Dashboard task
 `mtoj9hfntqggp6`).
 
+**`/colors/` had the SAME defect and is fixed too (commit `8fa4f36`, 2026-09-05).** Measured on the
+live page before the move: callout markup at **84.2%** of body against this page's own **36.5%**
+median scroll — more than twice as deep as the median visitor goes. Now 4.6%. Note this does NOT
+contradict item 3 below: that refutation says `/colors/`'s *quickback* is a working index sampling,
+not friction — which is true, and says nothing about whether its one monetized affordance is
+reachable. A high-sampling index (4.37 pv/session, 3rd of 77 landing pages) with an invisible
+callout is the same structural gap, on genuinely engaged traffic.
+
+⚠️ **Instrument note, worth more than the fix.** The first verification of the `/browse/` change
+compared raw byte positions of the string `shelf-callout` — which matched the **hoisted component
+CSS in `<head>`**, not the markup. The conclusion happened to be right; the instrument could not
+have told a right answer from a wrong one. The valid check is a markup-anchored regex
+(`<section[^>]*class="[^"]*shelf-callout-section`) measured as a percentage of `<body>`, compared
+against that page's own median scroll depth. Astro hoists every component's styles, so this trap
+applies to any before/after DOM-order check on this site.
+
+**Scope of this defect class is now closed:** `ShelfCallout` had exactly two real usages
+(`browse.astro`, `colors/index.astro`), both fixed. The third grep hit,
+`shop/color-reference-library.astro`, is a doc-comment *mention*, not a usage — a mention is not a
+usage, and the live page carries no callout markup.
+
 ### 3 · ~~🟢 `/colors/` and `/collections/` quickback above their own baseline~~ **REFUTED 2026-09-02 — these are WORKING indexes, do not "fix" them**
 
 I flagged 17.6% and 20.4% quickback against a site baseline nearer 6–11%. That reading was wrong,
