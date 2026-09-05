@@ -116,3 +116,59 @@ it omits. Its 1.42% cannot be diagnosed from this instrument. Anyone picking thi
 - A money-path regression: re-run the body-percentage measurement after any template change.
 - Pantone family: only a *conversion* or *citation* metric can judge it. CTR cannot.
 - `/colors/`: a per-page query source. Until then its CTR is unexplained, not bad.
+
+### 5. `/colors-that-go-with/` — 48% of the sitemap, 0.09% of impressions — and it is NOT a defect
+
+`/colors-that-go-with/<color>/<context>/` is **702 pages** (54 colors × 13 contexts) = 48% of the
+1,470-URL sitemap, the largest template on the site. In the Bing feed **11 pages carry 17
+impressions** — 0.09% of the site's 18,975.
+
+That shape (huge built surface, ~no impressions) is the `realized-demand-discipline` fork: either
+normal programmatic long-tail, or a **blocked asset** whose blocker is cheap to remove. The rule
+says name the blocker or say there is none. Measured, in order:
+
+| check | result |
+|---|---|
+| HTTP | 200 |
+| `<meta name="robots">` | **none — fully indexable** |
+| canonical | self-canonical, correct |
+| unique body words | **~2,350/page** — substantial, not thin |
+| linked from `/`, `/colors/`, `/browse/`, `/collections/` | **yes — 1 link each, to the hub** |
+| hub → leaf links | **702** |
+| position when it does surface | **1.0–5.0** (it WINS when shown) |
+
+**There is no blocker.** Indexable, self-canonical, substantial, linked at depth 2 from every
+major hub, and ranking 1–5 when it surfaces. The binding constraint is impressions — i.e. demand
+or discovery — not quality, indexation, or the link graph.
+
+**Do NOT expand this template on the strength of its CTR.** The 11 pages show 9 clicks on 12
+impressions, and that ~75% is a **selection artifact**: the queries array is click-selected, so
+zero-click queries in this family are precisely what it omits. Per `affiliate-team-standard`
+§ the intersection law, the ranking signal for a cross-cut is **demand for the intersection**,
+not the availability of two dimensions to multiply — and readinglist's `decade × grade` shipped
+98 pages for 0 impressions on exactly that mistake. Demand here is **UNKNOWN from this
+instrument**. Measure it (GSC page-query pairs, or a keyword source) before adding a 14th context
+or a 55th color.
+
+What IS sound from a click-selected feed is **presence**: the queries occur, and they are deep
+long-tail — "what colours go with a mauve wedding guest", "what colour goes with mustard wallpaper
+in bedroom", "what colors go with red maroon for clothes". We rank 1–2 for several.
+
+Unmeasured observation, recorded without a proposed fix: the hub carries all 702 links on one
+page. Whether that dilutes crawl or equity here has **not** been measured, and the pages are
+indexed regardless, so no work is filed on it.
+
+### 🔴 Instrument note — I made the SAME over-specified-pattern error twice in one session
+
+Both times a trailing slash produced a confident false ABSENCE:
+
+```
+href="/shop/"                 -> homepage "has no shop link"   FALSE (7 links, real href is /shop)
+href="/colors-that-go-with/"  -> "surface is ORPHANED"          FALSE (real nav href has no slash)
+```
+
+The second one had already reached a written finding ("blocker named: orphaned") before the
+positive control — grepping the hub, which *must* contain those links — returned 702 and exposed
+the pattern as blind. **When probing for the presence of a link, path or attribute, start with the
+shortest distinctive prefix and only then narrow.** Every character added to a pattern is another
+assumption, and an over-specified pattern fails silently in the reassuring direction.
