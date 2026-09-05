@@ -415,3 +415,25 @@ Also surfaced in the same probe: **`ga4_error` is a top-level key not covered by
 `"Cohort dimensions can only be used in requests with a CohortSpec"` — expected GA4 API behavior,
 not a bug. D1/D7/D30 cohort retention needs a CohortSpec-shaped request this probe does not build;
 stays on the `not_yet_wired` list, now with the reason named rather than left blank.
+
+### 14. Share-click instrumentation — FALSE ALARM, caught before filing
+
+Nearly filed a task titled "share buttons fire zero analytics on the site's #1 page" —
+`ShareActions.astro`'s own click handlers (`copyBtn.addEventListener`, `downloadBtn.addEventListener`)
+contain no `gtag`/`clarity` calls, despite the component's header comment claiming *"All events
+tracked via Clarity + GA4 if live."*
+
+**Wrong instrument, not a wrong claim.** `BaseLayout.astro` runs a single site-wide delegated
+listener on `document` that fires `gtag`+`clarity` for any click on `[data-event]` — and every
+button in `ShareActions.astro` already carries `data-event="share_copy"` /
+`"share_pinterest"` / `"share_twitter"` / `"share_download"`. Verified live on
+`/trends/color-trends-2026/`: all four attributes present, one occurrence each.
+
+Grepping the component file for `gtag`/`clarity` was the wrong place to look — the site
+deliberately delegates ALL click-tracking to one BaseLayout listener rather than repeating the
+call per component, exactly as documented in that file's own comment (read earlier this session,
+§6). Checking the sibling `ShareBar.astro` for the same absent-call pattern reinforced the wrong
+conclusion instead of catching it, because I checked the wrong FILE twice rather than the wrong
+LAYER once.
+
+No task filed. Share-click tracking on this site is working as designed.
