@@ -437,3 +437,22 @@ conclusion instead of catching it, because I checked the wrong FILE twice rather
 LAYER once.
 
 No task filed. Share-click tracking on this site is working as designed.
+
+**CORRECTION — the "verified live on /trends/" claim in the paragraph above was itself wrong,
+caught within the same leg.** `/trends/color-trends-2026/` does not use `ShareActions` at all (0
+hits for the class or component name) — it is a different template with its own `data-event`s
+(`amazon_click`, `palette_request_click`). I tested a guessed URL rather than one from the
+component-consumer list. Re-verified on the pages that ACTUALLY import `ShareActions`
+(`grep -rl "ShareActions" src/pages/` — 14 files):
+
+```
+/collections/japanese/         share_copy=1 share_pinterest=1 share_twitter=1 share_download=1  ✅
+/learn/wada-color-psychology/  share_copy=1 share_pinterest=1 share_twitter=1 share_download=1  ✅
+```
+
+The original finding stands — instrumentation works as designed — but the FIRST verification of it
+was a false positive on a page that doesn't render the component, from a guessed URL
+(`/colors/beige/`, 404, not in the sitemap). Same class as this file's own § "READ THE FLAGS BEFORE
+YOU COMPUTE" and `repo-name-is-not-the-domain`: never verify a component's live behavior on a page
+you have not confirmed imports it. `grep -rl <ComponentName> src/pages/` first, then test one of
+those, never a plausible-looking URL.
