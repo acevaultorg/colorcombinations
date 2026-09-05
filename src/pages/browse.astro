@@ -160,6 +160,22 @@ const jsonLd = [
     </div>
   </section>
 
+  {/* 2026-09-05 — moved ABOVE the grid (was below all 378 palette cards).
+      Clarity friction data (2026-09-02, 230 sessions, the site's busiest page,
+      27.3% median scroll depth / 58s active) shows the median /browse/ visitor
+      never reaches this far down, so the callout's own stated purpose (a
+      "deliberate, visually distinct entry point" for mid-task browsers — see
+      ShelfCallout.astro's 2026-08-15 doc comment) was structurally unreachable
+      for ~73% of visitors. Grid, FurtherReading and the Studio shelf below are
+      untouched — this moves one lightweight callout, not the full shelf. */}
+  <ShelfCallout
+    href="/shop/color-reference-library/"
+    eyebrow="Named references"
+    title="Looking for a specific book?"
+    blurb="Wada's dictionary, the Albers classic, a Munsell field guide, Pantone's design history, and the 1821 dictionary that came a century before Wada's — six references, chosen deliberately."
+    cta="See the color reference library"
+  />
+
   <section class="browse-grid-section">
     <div class="container-wide">
       <div class="palette-grid" role="list" data-browse-grid>
@@ -183,14 +199,6 @@ const jsonLd = [
       </p>
     </div>
   </section>
-
-  <ShelfCallout
-    href="/shop/color-reference-library/"
-    eyebrow="Named references"
-    title="Looking for a specific book?"
-    blurb="Wada's dictionary, the Albers classic, a Munsell field guide, Pantone's design history, and the 1821 dictionary that came a century before Wada's — six references, chosen deliberately."
-    cta="See the color reference library"
-  />
 
   <section class="container-narrow">
     <FurtherReading
