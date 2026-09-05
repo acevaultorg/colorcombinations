@@ -1,0 +1,446 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import DesignTools from "@components/DesignTools.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import { wadaCatalog } from "@data/palettes";
+import type { HexColor } from "@/types/palette";
+
+const title = "Material Design Color: M2 vs M3, and how to seed a theme";
+const description =
+  "Material Design's color system changed completely between M2 (a fixed 19-hue palette) and M3 (a dynamic system built on the HCT color space). What each one actually is, how the Material Theme Builder generates a tonal palette from a single seed color, and how to turn a Wada archive plate into a working M3 theme.";
+
+const pageUrl = new URL("/material-design", Astro.site).toString();
+
+/** Real, computed pick — never a hand-picked/fabricated example. Chroma = max−min
+    of the normalised RGB channels; the highest-chroma swatch in a palette is the
+    most vivid one, which is also the more defensible seed for HCT-based tonal
+    generation — a near-neutral seed produces a flatter, less differentiated
+    tonal ramp. */
+function chromaOf(hex: HexColor): number {
+  const clean = hex.replace("#", "");
+  const r = parseInt(clean.slice(0, 2), 16) / 255;
+  const g = parseInt(clean.slice(2, 4), 16) / 255;
+  const b = parseInt(clean.slice(4, 6), 16) / 255;
+  return Math.max(r, g, b) - Math.min(r, g, b);
+}
+
+const seedPalette = wadaCatalog()[0];
+const seedColor = [...seedPalette.colors].sort(
+  (a, b) => chromaOf(b.hex) - chromaOf(a.hex),
+)[0];
+
+const faq = [
+  {
+    q: "What's the difference between Material 2 and Material 3 color?",
+    a: "Material 2 (2014–2021) ships a fixed palette: 19 named hues (Red, Indigo, Teal, and so on), each provided as a 10-step scale from 50 to 900 plus optional A100–A700 accents. You pick a primary and an accent hue from that fixed set. Material 3 (2021, 'Material You') replaces this with dynamic color: you provide any single seed color, and Google's HCT (Hue, Chroma, Tone) system generates a full set of tonal palettes and role assignments from it — the palette is derived, not chosen from a menu.",
+  },
+  {
+    q: "What is HCT and why did Google build it?",
+    a: "HCT stands for Hue, Chroma, Tone. It's a color space Google built specifically for Material 3, combining perceptual attributes from CAM16 (a color-appearance model) with the L* lightness channel from CIELAB. The goal is a space where you can hold hue and chroma constant while sweeping tone (lightness) and get colors that look evenly graduated to a human eye — which is what a usable light/dark tonal palette needs.",
+  },
+  {
+    q: "How many tonal stops does a Material 3 palette have?",
+    a: "Thirteen: 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99 and 100 — 0 is pure black, 100 is pure white, and the app generates one such 13-stop ramp for each of six roles: primary, secondary, tertiary, neutral, neutral-variant and error.",
+  },
+  {
+    q: "What is the Material Theme Builder?",
+    a: "It's Google's official tool for generating an M3 theme — available as a Figma plugin and as a web app at m3.material.io/theme-builder. You paste in one seed color (or up to one per role, for finer control), and it computes the full set of tonal palettes and role assignments for both light and dark schemes, exportable to Android XML, Jetpack Compose, CSS custom properties, or Figma variables.",
+  },
+  {
+    q: "Can I use a historical color palette as a Material 3 seed?",
+    a: "Yes — the Theme Builder only needs one hex value per role. Any palette with a clear dominant color works; pick its most saturated swatch as the seed, since a near-neutral or muted seed produces a flatter tonal ramp with less contrast between roles.",
+  },
+  {
+    q: "Is Material 2 still supported?",
+    a: "Yes. Material 2 components and the fixed palette still ship in current Material libraries for teams that need a static brand system rather than per-user dynamic theming — it's a design choice, not a deprecated one.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: title,
+    description,
+    url: pageUrl,
+    datePublished: "2026-09-06",
+    dateModified: "2026-09-06",
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    about: [
+      { "@type": "Thing", name: "Material Design" },
+      { "@type": "Thing", name: "HCT color space" },
+      { "@type": "Thing", name: "Material Theme Builder" },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Material Design Color", item: pageUrl },
+    ],
+  },
+];
+
+const rows = [
+  { dim: "Introduced", m2: "2014", m3: "2021, alongside Android 12 (“Material You”)" },
+  { dim: "Color model", m2: "Fixed palette — 19 named hues", m3: "Dynamic — generated from any seed color" },
+  { dim: "Underlying space", m2: "No formal color space; hand-picked swatches", m3: "HCT (Hue, Chroma, Tone) — built on CAM16 + CIELAB L*" },
+  { dim: "Base structure", m2: "Primary hue + accent hue (2 choices)", m3: "Primary / secondary / tertiary / neutral / neutral-variant / error (6 tonal palettes)" },
+  { dim: "Tonal stops per hue", m2: "10 (50–900) + 4 accent (A100–A700)", m3: "13 (0, 10, 20… 90, 95, 99, 100)" },
+  { dim: "Personalization", m2: "Same palette across every app", m3: "Can derive from device wallpaper or one brand seed color" },
+  { dim: "Primary tool", m2: "Static Material color swatches", m3: "Material Theme Builder (Figma plugin + web app)" },
+  { dim: "Best for", m2: "Fixed brand systems, legacy Android/web", m3: "Adaptive theming with light/dark parity" },
+];
+---
+
+<BaseLayout title={title} description={description} image="/og-default.png" jsonLd={jsonLd} adContent>
+  <section class="cmp-hero">
+    <div class="container-wide cmp-hero__inner">
+      <p class="eyebrow">Design systems</p>
+      <h1 class="display-hero text-balance">Material Design Color: M2 vs M3</h1>
+      <p class="cmp-hero__lede">
+        Google rebuilt Material's color system from the ground up in 2021.
+        <strong>Material 2 gives you a fixed palette of 19 hues to choose
+        from; Material 3 generates an entire theme from a single seed
+        color.</strong> Here's what changed, what HCT actually is, and how to
+        turn one of this archive's plates into a working Material 3 theme.
+      </p>
+    </div>
+  </section>
+
+  <section class="cmp-table-wrap section">
+    <div class="container-wide">
+      <h2 class="cmp-h2">At a glance</h2>
+      <div class="cmp-table-scroll">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th scope="col">&nbsp;</th>
+              <th scope="col">Material 2</th>
+              <th scope="col">Material 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <th scope="row">{r.dim}</th>
+                <td>{r.m2}</td>
+                <td>{r.m3}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="cmp-prose section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">Material 2: a fixed, 19-hue palette</h2>
+      <p>
+        The original Material Design color system (2014) ships as a
+        <strong>closed set of 19 named hues</strong> — Red, Pink, Purple,
+        Deep Purple, Indigo, Blue, Light Blue, Cyan, Teal, Green, Light
+        Green, Lime, Yellow, Amber, Orange, Deep Orange, Brown, Grey, Blue
+        Grey — each supplied as a ten-step scale from <code>50</code>
+        (near-white) to <code>900</code> (near-black), with several also
+        offering four punchier accent variants (<code>A100–A700</code>).
+        You build a brand by picking one hue as your primary and another as
+        your accent. It's simple, well-tested, and completely static: every
+        app using Material 2's Indigo 500 shows the exact same blue.
+      </p>
+
+      <h2 class="cmp-h2">Material 3: dynamic color, built on HCT</h2>
+      <p>
+        Material 3 (2021, launched with <em>Material You</em> on Android
+        12) inverts the model. Instead of choosing from a fixed menu, you
+        hand it <strong>one seed color</strong> — a brand hex, or on
+        Android, a color extracted from the user's wallpaper — and the
+        system derives everything else. It does this in <strong>HCT</strong>
+        (Hue, Chroma, Tone), a color space Google built specifically for this
+        purpose by combining the perceptual hue/chroma attributes of the
+        CAM16 color-appearance model with the L* lightness channel from
+        CIELAB. HCT lets the system hold hue and chroma fixed while sweeping
+        tone smoothly from black to white, producing tonal palettes that read
+        as evenly graduated to a human eye.
+      </p>
+      <p>
+        From one seed, Material 3 generates <strong>six tonal
+        palettes</strong> (primary, secondary, tertiary, neutral,
+        neutral-variant, error), each with <strong>13 stops</strong>
+        (0, 10, 20… 90, 95, 99, 100). Roles — <code>primary</code>,
+        <code>on-primary</code>, <code>primary-container</code>,
+        <code>on-primary-container</code>, and their equivalents for every
+        other palette — are then assigned fixed tone values from those
+        ramps, separately for light and dark schemes, which is what gives M3
+        apps automatic, contrast-safe dark mode without a designer hand-tuning
+        every color a second time.
+      </p>
+
+      <h2 class="cmp-h2">Seed a Material 3 theme from a Wada plate</h2>
+      <p>
+        Because the whole system only needs one hex value to start, any
+        palette in this archive can become a Material 3 seed. Take
+        <strong>{seedPalette.title}</strong>, the first plate in the archive:
+        its most saturated swatch is <code>{seedColor.hex}</code>
+        {seedColor.nameRomaji && <> (<em>{seedColor.nameRomaji}</em>)</>}. Paste
+        that hex into the <strong>Material Theme Builder</strong> —
+        Google's official tool, shipped as a Figma plugin and as a web app at
+        <code>m3.material.io/theme-builder</code> — and it computes the
+        full six-palette, light-and-dark theme in seconds, exportable to
+        Android XML, Jetpack Compose, CSS custom properties, or Figma
+        variables. The most saturated swatch in a palette is the better seed
+        choice: a near-neutral seed produces a flatter tonal ramp with less
+        contrast between the generated roles.
+      </p>
+
+      <h2 class="cmp-h2">Which should you use?</h2>
+      <ul class="cmp-list">
+        <li>
+          <strong>Building a static brand system, or targeting older
+          Android/web?</strong> Material 2's fixed palette is simpler to
+          reason about and doesn't require a theme-generation step.
+        </li>
+        <li>
+          <strong>Want automatic, contrast-safe dark mode from one brand
+          color?</strong> Material 3's dynamic color does that derivation
+          for you.
+        </li>
+        <li>
+          <strong>Designing per-user or per-wallpaper theming?</strong> Only
+          Material 3's HCT-based generation supports that — Material 2
+          has no mechanism for deriving a palette from arbitrary input.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cmp-faq section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">Questions, answered</h2>
+      <dl class="cmp-faq__list">
+        {faq.map((item) => (
+          <div class="cmp-faq__item">
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <div class="cmp-tools">
+    <div class="container-wide">
+      <DesignTools
+        title="Tools for building the theme"
+        intro="Once you have a seed color, these are the tools that take it the rest of the way — into a Figma theme, a production app, or a client deliverable."
+      />
+    </div>
+  </div>
+
+  <div class="cmp-books">
+    <div class="container-wide">
+      <FurtherReading
+        pageClass="material-design"
+        title="Go deeper on color systems"
+        intro="Design-system color owes a lot to color theory that predates any of these tools. These are the books on why palettes work, not just how to generate one."
+        limit={6}
+      />
+    </div>
+  </div>
+
+  <section class="cmp-related section">
+    <div class="container-prose">
+      <p class="eyebrow">Keep exploring</p>
+      <p class="cmp-related__lede">
+        More tool comparisons: <a href="/compare/adobe-vs-coolors">Adobe Color vs Coolors</a>
+        and <a href="/compare/hsl-vs-lch">HSL vs LCH</a>. Checking contrast on
+        a generated theme? Use the <a href="/tools/contrast-checker">contrast
+        checker</a>. Or browse <a href="/browse">the palette archive</a> for
+        more seed candidates, and read <a href="/methodology">how the archive
+        is built</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cmp-hero {
+    padding-top: clamp(3rem, 8vw, 7rem);
+    padding-bottom: clamp(1.5rem, 5vw, 3.5rem);
+  }
+
+  .cmp-hero__inner {
+    max-width: 62rem;
+  }
+
+  .cmp-hero .eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .cmp-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.4vw + 0.75rem, 1.375rem);
+    line-height: 1.6;
+    color: var(--color-ink-700);
+    max-width: 60ch;
+    margin-top: 1.5rem;
+  }
+
+  .cmp-h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.2vw + 1rem, 2.125rem);
+    line-height: 1.2;
+    margin: 0 0 1.25rem;
+  }
+
+  .cmp-table-wrap {
+    background-color: var(--color-paper-50);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .cmp-table-scroll {
+    overflow-x: auto;
+  }
+
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    min-width: 42rem;
+  }
+
+  .cmp-table th,
+  .cmp-table td {
+    text-align: left;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .cmp-table thead th {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    border-bottom: 2px solid var(--color-ink-900);
+  }
+
+  .cmp-table tbody th {
+    font-weight: 600;
+    color: var(--color-ink-900);
+    white-space: nowrap;
+  }
+
+  .cmp-table tbody td {
+    color: var(--color-ink-700);
+  }
+
+  .cmp-prose .cmp-h2 {
+    margin-top: 2.5rem;
+  }
+
+  .cmp-prose .cmp-h2:first-child {
+    margin-top: 0;
+  }
+
+  .cmp-prose p,
+  .cmp-list li {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    margin-bottom: 1.25rem;
+    max-width: 68ch;
+  }
+
+  .cmp-prose code {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.9em;
+    background-color: var(--color-paper-100);
+    padding: 0.05em 0.35em;
+    border-radius: 0.25rem;
+  }
+
+  .cmp-list {
+    padding-left: 1.25rem;
+  }
+
+  .cmp-list li {
+    margin-bottom: 0.875rem;
+  }
+
+  .cmp-faq {
+    background-color: var(--color-paper-50);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .cmp-faq__list {
+    margin: 0;
+  }
+
+  .cmp-faq__item {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-border);
+    max-width: 70ch;
+  }
+
+  .cmp-faq__item dt {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin-bottom: 0.5rem;
+  }
+
+  .cmp-faq__item dd {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-700);
+  }
+
+  .cmp-tools {
+    border-block: 1px solid var(--color-border);
+  }
+
+  .cmp-books {
+    background-color: var(--color-paper-100);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .cmp-related .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .cmp-related__lede {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    max-width: 64ch;
+  }
+
+  .cmp-related__lede a {
+    color: var(--color-accent-500);
+    text-underline-offset: 3px;
+  }
+</style>
