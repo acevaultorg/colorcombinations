@@ -376,3 +376,14 @@ deliberately disallowed.
 no trend (normal churn, not a regression). No indexation problem exists on this site.
 
 Closes one `not_yet_wired` item with a real measurement rather than leaving it unknown.
+
+### 12. New-vs-returning — healthy, no defect
+
+`newVsReturning` (30d): new 4,468 sessions (2.27 pv/sess, 1.01 sess/user), returning 1,555 sessions
+(**3.35** pv/sess, 2.29 sess/user) — returning visitors are meaningfully deeper, a healthy signal.
+
+`(not set)` bucket (955 sessions, 0.90 pv/sess) checked before dismissing: crossed with channel, it
+spreads proportionally across EVERY channel (Organic Search 439 · Direct 346 · AI Assistant 107 ·
+Referral 59) all at ~0.88–0.95 pv/session uniformly. That is the standard GA4 consent-declined /
+ITP-restricted signature (no engagement pageview fires before the session ends), not a defect
+specific to any channel or a hidden bot pocket. No action.
