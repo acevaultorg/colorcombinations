@@ -199,6 +199,7 @@ const destinations = DESTINATIONS.map((d) => {
           </a>
         </h3>
         <p class="paint-kit__why">{item.why}</p>
+        <p class="paint-kit__listing">Listed on Amazon as <span>{item.verifiedTitle}</span></p>
         {(
           <a
             href={AMAZON.link(item.amazonAsin, shelfTag)}
@@ -415,6 +416,30 @@ const destinations = DESTINATIONS.map((d) => {
     line-height: 1.6;
     color: var(--color-ink-700);
     margin: 0.5rem 0 0;
+  }
+
+  /* PROVENANCE, not a headline. `name` is deliberately the short display name
+     ("not the full Amazon title, which is keyword soup" — see ArtSupply in
+     src/config/monetization.ts), so the exact listing title goes here, muted and
+     below the reason. It exists because the short name and the Amazon listing can
+     name different things: "Display Plus HL colorimeter kit" lands on a BUNDLE
+     (Calibrite Video Photo Kit ... + ColorChecker Passport Video 2). A buyer who
+     sees the real listing title before clicking is not surprised on arrival.
+     This is an expectation-match fix, not a CRO tweak — it is justified
+     independently of any click measurement. */
+  .paint-kit__listing {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-ink-500, var(--color-ink-700));
+    margin: 0.35rem 0 0;
+  }
+
+  .paint-kit__listing span {
+    font-style: italic;
+  }
+
+  .paint-kit--sidebar .paint-kit__listing {
+    font-size: 0.6875rem;
   }
 
   .paint-kit--sidebar .paint-kit__why {
