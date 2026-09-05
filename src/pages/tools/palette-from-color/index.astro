@@ -51,7 +51,7 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd} adContent>
   <!-- Palette index embedded for client-side search (no extra fetch) -->
   <script id="palette-data" type="application/json" set:html={JSON.stringify(paletteIndex)} />
 

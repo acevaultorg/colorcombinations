@@ -72,7 +72,7 @@ const jsonLd = [
 const siblings = PAIRS.filter((p) => p.slug !== pair.slug && (p.from === pair.from || p.to === pair.to)).slice(0, 5);
 ---
 
-<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd} type="article">
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd} type="article" adContent>
   <section class="tool-hero">
     <div class="container-wide tool-hero__inner">
       <p class="eyebrow">
