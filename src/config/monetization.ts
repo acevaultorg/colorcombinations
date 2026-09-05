@@ -909,6 +909,14 @@ export interface ArtSupply {
   why: string;
   /** Grouping used for the section split. */
   group: "paint" | "print" | "calibrate";
+  /**
+   * Physical form, drives the generated CSS/SVG glyph. NOT a product photo:
+   * Amazon images may only be used via PA-API/SiteStripe (shared Associates
+   * account — one breach hits every fleet site), so the visual is a
+   * type-glyph that says "this is a fan deck / a puck / a pan set", labelled
+   * by the verified title underneath. Accurate by construction, zero requests.
+   */
+  form: "fan" | "puck" | "target" | "pans" | "pad" | "pen";
 }
 
 export const ART_SUPPLIES: ArtSupply[] = [
@@ -931,6 +939,7 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Pantone GP6102B Color Bridge Guide Set Coated & Uncoated, Multi-Colour",
     why: "This site hands you hex codes. Color Bridge is the deck that shows what an RGB or HTML value becomes as CMYK ink, and which Pantone spot sits nearest it — the translation step between a screen palette and a printed one. Coated and uncoated because the same ink is not the same colour on both stocks.",
     group: "print",
+    form: "fan",
   },
   {
     name: "Color Bridge Guide — coated",
@@ -940,6 +949,7 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Pantone Color Bridge Guide Coated | Pantone to CMYK, RGB & HTML Color Matching Fan Deck for Graphic Design, Branding & Print | GG6103B",
     why: "The coated half on its own — Pantone to CMYK, RGB and HTML in a single fan. The smaller entry point if your work only ever goes onto coated stock.",
     group: "print",
+    form: "fan",
   },
   {
     name: "ColorChecker Studio spectrophotometer",
@@ -949,6 +959,7 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Calibrite ColorChecker Studio Spectrophotometer for Complete Color Management for Display, Projector, Printer and Scanner Profiling",
     why: "A spectrophotometer profiles the whole chain — display, printer, projector, scanner — so the colour you picked is the colour that comes out the other end. The full-fidelity option for work that ends up printed.",
     group: "calibrate",
+    form: "puck",
   },
   {
     name: "Display Plus HL colorimeter kit",
@@ -958,6 +969,7 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Calibrite Video Photo Kit with Display Plus HL Colorimeter and ColorChecker Passport Video 2, 10,000 Nit Monitor Calibration, Camera Color Matching",
     why: "A colorimeter calibrates the monitor itself. Worth saying plainly: an uncalibrated screen is the most common reason a palette that looked right on your desk looks wrong everywhere else.",
     group: "calibrate",
+    form: "puck",
   },
   {
     name: "ColorChecker Passport Photo 2",
@@ -967,6 +979,7 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Calibrite ColorChecker Passport Photo 2 Portable Color Calibration Kit for Photo and Video, 4 Target Set for White Balance, Exposure and Creative Look",
     why: "A pocket target for fixing white balance and exposure at the moment of capture — the step before any colour correction, if your palette starts from a photograph rather than a screen.",
     group: "calibrate",
+    form: "target",
   },
 
   // ── Making ────────────────────────────────────────────────────────────────
@@ -978,6 +991,7 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Kuretake GANSAI TAMBI Watercolor Paint Set 24 Colors II - Art Nouveau",
     why: "Gansai are traditional Japanese watercolour pans — dense, matte and easy to mix, the closest everyday medium to the flat printed colour Wada's plates were made in. This is the Art Nouveau-themed 'II' edition, a different 24 to the standard set.",
     group: "paint",
+    form: "pans",
   },
   {
     name: "Gansai Tambi 36",
@@ -987,6 +1001,7 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Kuretake GANSAI TAMBI Watercolor Paint Set 36 Colors",
     why: "The larger pan set. More range means mixing toward a specific plate rather than approximating it from six colours.",
     group: "paint",
+    form: "pans",
   },
   {
     name: "300 Series watercolour pad, 140 lb cold press",
@@ -996,6 +1011,7 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Strathmore 300 Series Tape Bound Watercolor Pad, 140 lb. Cold Press, 11 X 15 inches, White, 12 Sheets (360-111)",
     why: "140 lb cold press is the weight that takes a wet wash without buckling — the paper most colour studies end up on.",
     group: "paint",
+    form: "pad",
   },
   {
     name: "Fude Touch brush sign pen",
@@ -1005,6 +1021,7 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Pentel Fude Touch Sign Pen, Black, Felt Pen Like Brush Stroke (SES15C-A) 3 Pieces",
     why: "A felt brush tip for the labelling and linework around a swatch study — the annotation half of a colour notebook.",
     group: "paint",
+    form: "pen",
   },
   {
     name: "Formula Guide — coated & uncoated",
@@ -1014,5 +1031,6 @@ export const ART_SUPPLIES: ArtSupply[] = [
       "Pantone Formula Guide – Coated & Uncoated | Professional PMS Color Matching System for Print, Packaging & Graphic Design | GP1601B",
     why: "When a palette leaves the screen, this is the shared vocabulary between you and the press. Coated and uncoated because the same ink is not the same colour on both.",
     group: "print",
+    form: "fan",
   },
 ];

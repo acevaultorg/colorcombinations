@@ -121,6 +121,25 @@ const DESTINATIONS: { key: ArtSupply["group"]; label: string; verdict: string }[
   },
 ];
 
+
+const glyph = (form: ArtSupply["form"]): string => {
+  const c = `fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"`;
+  switch (form) {
+    case "fan":
+      return `<g ${c}><path d="M18 52 L38 14 L44 17 L26 54 Z"/><path d="M26 54 L47 22 L52 26 L33 56 Z"/><path d="M33 56 L55 31 L59 36 L40 58 Z"/><path d="M40 58 L60 42 L62 48 L46 60 Z"/><circle cx="20" cy="56" r="3.5"/></g>`;
+    case "puck":
+      return `<g ${c}><ellipse cx="36" cy="40" rx="20" ry="12"/><path d="M16 40 V30 a20 12 0 0 1 40 0 V40"/><path d="M36 18 v-6"/><circle cx="36" cy="30" r="4"/></g>`;
+    case "target":
+      return `<g ${c}><rect x="12" y="20" width="48" height="34" rx="3"/><rect x="18" y="26" width="9" height="9"/><rect x="31.5" y="26" width="9" height="9"/><rect x="45" y="26" width="9" height="9"/><rect x="18" y="39" width="9" height="9"/><rect x="31.5" y="39" width="9" height="9"/><rect x="45" y="39" width="9" height="9"/></g>`;
+    case "pans":
+      return `<g ${c}><rect x="10" y="18" width="52" height="36" rx="3"/>${[0,1,2,3].map(i=>[0,1].map(j=>`<rect x="${15+i*12}" y="${23+j*14}" width="9" height="10" rx="1.5"/>`).join("")).join("")}</g>`;
+    case "pad":
+      return `<g ${c}><rect x="16" y="14" width="40" height="46" rx="2"/><path d="M16 22 H56"/><path d="M22 14 v-3 M30 14 v-3 M38 14 v-3 M46 14 v-3"/><path d="M24 36 c6 -6 12 6 18 0" opacity=".6"/></g>`;
+    case "pen":
+      return `<g ${c}><path d="M22 56 L48 14 L56 20 L30 60 Z"/><path d="M22 56 L20 64 L30 60"/><path d="M42 24 L50 30"/></g>`;
+  }
+};
+
 const destinations = DESTINATIONS.map((d) => {
   const pool = ART_SUPPLIES.filter((a) => a.group === d.key);
   if (pool.length === 0) return null;
@@ -143,19 +162,25 @@ const destinations = DESTINATIONS.map((d) => {
         <li class="paint-kit__dest-item">
           <p class="paint-kit__dest-label">{label}</p>
           <p class="paint-kit__dest-verdict">{verdict}</p>
-          <p class="paint-kit__brand">{item.brand}</p>
-          <h3 class="paint-kit__name">
-            <a
-              href={AMAZON.link(item.amazonAsin, destTag)}
-              rel="sponsored nofollow noopener"
-              target="_blank"
-              data-event="amazon_click"
-              data-tool={item.name}
-              aria-label={`${item.name} by ${item.brand} on Amazon`}
-            >
-              {item.name}
-            </a>
-          </h3>
+          <div class="paint-kit__row">
+            <svg class="paint-kit__glyph" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true" set:html={glyph(item.form)} />
+            <div>
+              <p class="paint-kit__brand">{item.brand}</p>
+              <h3 class="paint-kit__name">
+                <a
+                  href={AMAZON.link(item.amazonAsin, destTag)}
+                  rel="sponsored nofollow noopener"
+                  target="_blank"
+                  data-event="amazon_click"
+                  data-tool={item.name}
+                  aria-label={`${item.name} by ${item.brand} on Amazon`}
+                >
+                  {item.name}
+                </a>
+              </h3>
+            </div>
+          </div>
+          <p class="paint-kit__listing">Listed on Amazon as <span>{item.verifiedTitle}</span></p>
           {/*
             The catalogue `why` is deliberately NOT rendered here. Measured at
             375px it made the block 1175px tall — about 1.5 phone screens of
@@ -184,20 +209,25 @@ const destinations = DESTINATIONS.map((d) => {
   <ul class="paint-kit__list" role="list">
     {items.map((item) => (
       <li class="paint-kit__item">
-        <p class="paint-kit__brand">{item.brand}</p>
-        <h3 class="paint-kit__name">
-          <a
-            href={AMAZON.link(item.amazonAsin, shelfTag)}
-            rel="sponsored nofollow noopener"
-            target="_blank"
-            class=""
-            data-event="amazon_click"
-            data-tool={item.name}
-            aria-label={`${item.name} by ${item.brand} on Amazon`}
-          >
-            {item.name}
-          </a>
-        </h3>
+        <div class="paint-kit__row">
+          <svg class="paint-kit__glyph" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true" set:html={glyph(item.form)} />
+          <div>
+            <p class="paint-kit__brand">{item.brand}</p>
+            <h3 class="paint-kit__name">
+              <a
+                href={AMAZON.link(item.amazonAsin, shelfTag)}
+                rel="sponsored nofollow noopener"
+                target="_blank"
+                class=""
+                data-event="amazon_click"
+                data-tool={item.name}
+                aria-label={`${item.name} by ${item.brand} on Amazon`}
+              >
+                {item.name}
+              </a>
+            </h3>
+          </div>
+        </div>
         <p class="paint-kit__why">{item.why}</p>
         <p class="paint-kit__listing">Listed on Amazon as <span>{item.verifiedTitle}</span></p>
         {(
@@ -410,6 +440,34 @@ const destinations = DESTINATIONS.map((d) => {
   .paint-kit__name a:focus-visible {
     border-bottom-color: currentColor;
   }
+
+  /* Glyph + text row. Glyph box is fixed 72x72 -> zero layout shift. */
+  .paint-kit__row {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+  }
+
+  .paint-kit__glyph {
+    flex: 0 0 72px;
+    width: 72px;
+    height: 72px;
+    padding: 6px;
+    color: var(--color-ink-800, #2b2b28);
+    background: var(--color-paper-100, #f7f7f4);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  .paint-kit--sidebar .paint-kit__glyph {
+    flex-basis: 56px;
+    width: 56px;
+    height: 56px;
+  }
+
+
+
+
 
   .paint-kit__why {
     font-size: 0.875rem;
