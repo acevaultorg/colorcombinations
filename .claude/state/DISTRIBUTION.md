@@ -456,3 +456,24 @@ was a false positive on a page that doesn't render the component, from a guessed
 YOU COMPUTE" and `repo-name-is-not-the-domain`: never verify a component's live behavior on a page
 you have not confirmed imports it. `grep -rl <ComponentName> src/pages/` first, then test one of
 those, never a plausible-looking URL.
+
+### 15. Verified the GA4 dimension fix is landing correctly — reporting lag confirmed, registration intact
+
+Followed up on §5's fix (registering `search_term`/`results`/`fallback_shown`/`color_name`). Ran a
+positive control first: `dims=eventName` for today returns `Search: 2` and `SearchNoResults: 2`
+among 16 event types — confirms the events themselves reach GA4 correctly.
+
+Cross-checking with the parameter (`dims=eventName,customEvent:search_term`) returns every row as
+`(not set)`, including both search events. Before reading that as the fix having failed, re-ran the
+audit endpoint: `existing` still lists all four dimensions, `missing: []` — **the registration is
+intact.**
+
+**This is GA4's documented reporting-pipeline lag, not a regression.** Custom dimensions typically
+take 24–48h after registration before the *Reporting API* surfaces non-null values, even though raw
+event ingestion (which the eventName control proved) is immediate. Registered at ~14:2X UTC today;
+checked ~90 minutes later — too soon for the reporting side to have caught up.
+
+**Not a finding, not a task.** Recorded so a future session checks back tomorrow (2026-09-06+)
+rather than re-diagnosing this as a fix-that-didn't-work. If `search_term` values are STILL
+`(not set)` after 48h with real Search/SearchNoResults event volume in between, THAT would be the
+real defect to file.
