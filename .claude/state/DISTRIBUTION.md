@@ -359,3 +359,20 @@ real-user PASS.**
 
 That closes the `health: warn` status — every flag on this site has now been individually run down
 to a verified verdict, not just read.
+
+### 11. Indexation coverage — answered, one of the site's `not_yet_wired` gaps closed
+
+`get_project_data`'s `not_yet_wired` list names *"Discover: indexation coverage (indexed vs
+sitemap)"* as unmeasured for this site. `bing-probe?method=GetCrawlStats` answers it directly (per
+§9's lesson: `chars=200000`, sort by the embedded epoch, read the LATEST row — the raw feed is NOT
+date-sorted).
+
+Latest (2026-09-04): **`InIndex: 1940`** vs the sitemap's 1,470 URLs — full coverage plus non-
+sitemap surfaces Bing has independently discovered (feeds, older URLs, etc.). `BlockedByRobotsTxt:
+66` is expected and correct — the `/go/` affiliate-gate endpoints (§ affiliate-link-gate) are
+deliberately disallowed.
+
+7-day trend, all fields: `InIndex` rising steadily (1924 → 1940, +16), `Code4xx` bouncing 0–15 with
+no trend (normal churn, not a regression). No indexation problem exists on this site.
+
+Closes one `not_yet_wired` item with a real measurement rather than leaving it unknown.
