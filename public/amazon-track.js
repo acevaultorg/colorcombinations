@@ -58,6 +58,24 @@
    shop, gift-guide, learn/why-painting-colours-shift) — 4 links on a single
    palette page, verified live 2026-09-02.
 
+   2026-09-05 — SYNTHETIC-CLICK GAP CLOSED. This file's mint (`document.cookie=
+   'cc_g='+...`) and analytics (Clarity/GA4/beacon) both lived inside the same
+   `t(e)` capture-phase click handler, with no check that `e` was a REAL user
+   gesture. A `.click()` or `dispatchEvent(new MouseEvent('click'))` call —
+   trivial from any script running in a full browser context (a headless
+   crawler, a browser extension, injected page JS) — fires this handler
+   exactly like a human click: mints a fresh cc_g cookie, then a normal
+   `location.href=` navigation to /go/b/{isbn} sends genuine Sec-Fetch-Mode:
+   navigate + Sec-Fetch-Site:same-origin headers (real browser navigation,
+   not fakeable the way a bare HTTP client's headers are) — passing BOTH
+   halves of the gate with zero human involved. Same failure class already
+   closed on dormbyschool (eef1392d) and documented on readstacks/fitmylens:
+   `isTrusted` is a browser-enforced, read-only property — `true` only for
+   events the browser itself dispatched from real input, `false` for any
+   script-dispatched event, and JS cannot forge it. One check at the top of
+   `t(e)` closes both halves at once (the mint AND the fabricated analytics
+   event) since they share the same handler here.
+
    What it cost: `amazon_clicks_by_position_30d` read {book:107, tool:2}, which
    reads exactly like "the art-supply shelf does not convert" and is instead
    "the art-supply shelf is not counted". That is the more expensive kind of
@@ -90,4 +108,4 @@
    argued for deleting a working surface. Prefer the loud one. If you ever add a
    non-affiliate /go/ route, exclude it here explicitly — do not go back to
    enumerating the affiliate ones. */
-(function(){var B='https://fleet.promptprio.com/c?s=colorcombinations.org';function t(e){try{var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.href||'';var isGo=false;try{isGo=a.host===location.host&&!!a.pathname&&a.pathname.indexOf('/go/')===0;if(isGo){document.cookie='cc_g='+Date.now().toString(36)+'; Path=/; Max-Age=600; SameSite=Lax; Secure';}}catch(g){}if(!isGo&&!/amazon\.|amzn\.to|amzn\.eu/i.test(h))return;var m=h.match(/\/(?:dp|gp\/product|gp\/aw\/d|go\/[bp])\/([A-Z0-9]{10})/i);var asin=m?m[1].toUpperCase():'';var dest=/amzn\.to|audible/i.test(h)?'audible':'amazon';var shelf=a.dataset.from==='prime-bounty'?'prime':(a.dataset.tool?'tool':(a.dataset.book?'book':''));if(window.clarity){window.clarity('event','amazon_click');if(shelf){window.clarity('event','amazon_click_'+shelf);window.clarity('set','amazon_shelf',shelf);}}if(window.gtag)window.gtag('event','amazon_click',{page:location.pathname,asin:asin,dest:dest,shelf:shelf});if(navigator.sendBeacon)navigator.sendBeacon(B+'&f='+encodeURIComponent(shelf||'untagged')+(window.__FLEET_AGENT__?'&a=1':''));}catch(x){}}document.addEventListener('click',t,true);document.addEventListener('auxclick',function(e){if(e.button===1)t(e);},true);})();
+(function(){var B='https://fleet.promptprio.com/c?s=colorcombinations.org';function t(e){try{if(!e.isTrusted)return;var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.href||'';var isGo=false;try{isGo=a.host===location.host&&!!a.pathname&&a.pathname.indexOf('/go/')===0;if(isGo){document.cookie='cc_g='+Date.now().toString(36)+'; Path=/; Max-Age=600; SameSite=Lax; Secure';}}catch(g){}if(!isGo&&!/amazon\.|amzn\.to|amzn\.eu/i.test(h))return;var m=h.match(/\/(?:dp|gp\/product|gp\/aw\/d|go\/[bp])\/([A-Z0-9]{10})/i);var asin=m?m[1].toUpperCase():'';var dest=/amzn\.to|audible/i.test(h)?'audible':'amazon';var shelf=a.dataset.from==='prime-bounty'?'prime':(a.dataset.tool?'tool':(a.dataset.book?'book':''));if(window.clarity){window.clarity('event','amazon_click');if(shelf){window.clarity('event','amazon_click_'+shelf);window.clarity('set','amazon_shelf',shelf);}}if(window.gtag)window.gtag('event','amazon_click',{page:location.pathname,asin:asin,dest:dest,shelf:shelf});if(navigator.sendBeacon)navigator.sendBeacon(B+'&f='+encodeURIComponent(shelf||'untagged')+(window.__FLEET_AGENT__?'&a=1':''));}catch(x){}}document.addEventListener('click',t,true);document.addEventListener('auxclick',function(e){if(e.button===1)t(e);},true);})();
