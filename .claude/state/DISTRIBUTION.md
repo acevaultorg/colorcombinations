@@ -230,3 +230,50 @@ attribute. Reading it first is what stopped this becoming a filed emergency.
 
 **Watch item, not a finding:** September's partial month is running below August's daily rate. GSC
 lags 2–3 days and 5 days is a thin sample — re-check in October before reading anything into it.
+
+### 7. Segmentation (2026-09-05) — this site is the fleet's #1 AI-referred-human property by 14x
+
+`/ga4-probe?prop=294106772&dims=<d>&mets=sessions,screenPageViews,totalUsers&days=30` — all three
+pulls complete (`truncated: false`, returned == row_count), so no selection caveat applies.
+
+**Channel — the headline:**
+
+| channel | sessions | share | pv/sess | sess/user |
+|---|--:|--:|--:|--:|
+| Direct | 3,185 | 45.8% | 1.64 | 1.29 |
+| Organic Search | 2,439 | 35.1% | 2.98 | 1.86 |
+| **AI Assistant** | **1,042** | **15.0%** | **2.91** | 1.50 |
+| Referral | 224 | 3.2% | 2.35 | 2.57 |
+
+**1,028 of the fleet's 1,474 AI-referred sessions are this site — 70%, at the highest engagement
+depth of any fleet property (2.92 pv/session).** `ai-citation-channel.md` already names why this
+number is the one to trust: colorcombinations is the only UNGATED earner, so its GA4 is not
+consent-suppressed the way every other site's is.
+
+Read `ai_sessions_30d` · `ai_share` · `ai_pageviews_per_session` from
+`fleet.promptprio.com/data.json` — **not** from `get_fleet_data`, whose 10-field projection omits
+them (absence there is a property of the projection, not of the data).
+
+**Device — no gap, do not chase one:** desktop 3,610 (52.3%, 2.21 pv/sess) vs mobile 3,229 (46.8%,
+**2.45** pv/sess). Mobile is *deeper* than desktop here. There is no mobile deficit to fix.
+
+**Geo — an instrument nuance worth stating, not acting on:**
+
+| country | sessions | share | pv/sess | sess/user |
+|---|--:|--:|--:|--:|
+| United States | 1,484 | 21.0% | 2.81 | 1.82 |
+| **Singapore** | **1,271** | **18.0%** | **1.07** | **1.01** |
+| **China** | 311 | 4.4% | **1.31** | **1.04** |
+
+Singapore and China carry the **crawler signature** (≈1.0 sessions/user AND ≈1.0 pageviews/session)
+— ~22% of sessions. Yet the fleet's `crawler_shaped_share` correctly reports this site at **0.0%**,
+because that test runs per CHANNEL and Direct here is 1.29 s/u · 1.64 pv/s, comfortably human.
+
+**Both readings are right.** The channel test is not broken — it is answering a different question.
+The generalisable point: **channel-level shape detection can miss country-concentrated crawler
+traffic**, because datacenter traffic distributed across several channels never trips a per-channel
+threshold.
+
+**No decision changes, so no work is filed.** Even discounting SG+CN entirely, visitors run ~3,000
+against a 1,500 goal — on-track either way. Recorded so nobody later "discovers" the 22% and reads
+it as a contradiction of the 0.0% flag.
