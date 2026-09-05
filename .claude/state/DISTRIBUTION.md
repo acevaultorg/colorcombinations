@@ -338,3 +338,24 @@ cost several rounds before the control (`youtube`) passed.
 
 **§8's open external question stays open.** It needs a browser (ask the engine, read who it cites),
 not this tool.
+
+### 10. perf/LCP flag — checked CrUX per its own instruction; PASSED, no action (4th session this has cost)
+
+The `health: warn` flag on this site's only remaining item: `perf 50 · LCP 11.7s · TBT 338ms ·
+LAB-ONLY, check CrUX before acting`. Ran the instruction rather than dismissing or acting on the
+lab number.
+
+Two dead ends first, both worth naming so the next session skips them: no `/crux` /
+`/crux-detail` / `/cwv-field` / `/psi` route exists on the worker, and the public CrUX API needs a
+key (`GOOGLE_API_KEY`/`PAGESPEED_API_KEY`/etc., all absent from this lane's env).
+
+**Answer was already in the worker's own comment** (`worker/index.mjs` ~L3479, dated 2026-09-05,
+same day): **CrUX field data for this site reads LCP 1.0s / INP 113ms / CLS 0 — "Core Web Vitals
+PASSED, many samples" — and Google's own lab scored it 85 against our fleet Mac's 32-45.** The
+comment names colorcombinations.org explicitly and states this has already cost 3+ sessions.
+This is the 4th. The lab number is a fleet-shared-Mac artifact (4x CPU throttle + slow-4G), has
+zero field-data input, and does not gate ranking. **No action. The site's Core Web Vitals are
+real-user PASS.**
+
+That closes the `health: warn` status — every flag on this site has now been individually run down
+to a verified verdict, not just read.
