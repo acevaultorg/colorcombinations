@@ -113,6 +113,22 @@ const jsonLd = [
     </div>
   </section>
 
+  {/* 2026-09-05 — moved ABOVE the grid, same fix as browse.astro (commit
+      b51c559). MEASURED on the live page before the move: the callout markup
+      sat at 84.2% of the document body while this page's own Clarity median
+      scroll depth is 36.5% (2026-09-02, 74 sessions) — so the "deliberate,
+      visually distinct entry point" ShelfCallout.astro was built to be
+      (2026-08-15 doc comment) was unreachable for the median visitor here too.
+      The hue-family nav, FurtherReading and the Studio shelf below are
+      untouched: this raises one lightweight callout, not the shelf. */}
+  <ShelfCallout
+    href="/shop/color-reference-library/"
+    eyebrow="Named references"
+    title="Looking for a specific book?"
+    blurb="Wada's dictionary, the Albers classic, a Munsell field guide, Pantone's design history, and the 1821 dictionary that came a century before Wada's — six references, chosen deliberately."
+    cta="See the color reference library"
+  />
+
   <section class="colors-grid-section section">
     <div class="container-wide">
       <div class="colors-grid" role="list" id="color-grid">
@@ -172,14 +188,6 @@ const jsonLd = [
       </ul>
     </div>
   </nav>
-
-  <ShelfCallout
-    href="/shop/color-reference-library/"
-    eyebrow="Named references"
-    title="Looking for a specific book?"
-    blurb="Wada's dictionary, the Albers classic, a Munsell field guide, Pantone's design history, and the 1821 dictionary that came a century before Wada's — six references, chosen deliberately."
-    cta="See the color reference library"
-  />
 
   <section class="container-narrow">
     <FurtherReading
