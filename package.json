@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build && node scripts/make-worker.mjs",
+    "build": "bash scripts/build-locked.sh",
     "bundle": "node scripts/build-bundle.mjs",
     "generate:wada": "node scripts/generate-wada-palettes.mjs",
     "preview": "astro preview",

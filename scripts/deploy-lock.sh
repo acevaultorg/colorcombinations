@@ -60,4 +60,10 @@ acquire_deploy_lock() {
   echo "$$" > "$LOCK_DIR/pid"
   echo "${DEPLOY_LOCK_STAGE:-unknown}" > "$LOCK_DIR/stage"
   trap 'rm -rf "$LOCK_DIR"' EXIT
+  # RE-ENTRANCY (2026-09-05, card mtohx0krb9ggai): `export` in a sourced function
+  # persists in THIS shell and is inherited by every child process it spawns —
+  # including `npm run build`'s own subprocess. scripts/build-locked.sh reads this
+  # to skip acquiring a SECOND lock when it's already running inside deploy.sh
+  # (which would self-deadlock: deploy.sh holds the lock, then waits on itself).
+  export DEPLOY_LOCK_HELD=1
 }
