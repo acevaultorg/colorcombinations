@@ -48,3 +48,71 @@
 
 2026-04-27 21:29 | task:api-learn-slug (PR #89) | archetype:dataset_json_api × +70 | projected:+5-12 LLM-citation referrals/wk over 90d (per-pillar editorial JSON exposes outline + cited terms with pronunciation + meaning — extractable structure beyond what palettes/colors/collections provide) | confidence:0.55
 2026-04-27 21:29 | api-learn-slug (PR #89) | 6 new endpoints /api/learn/[slug].json + jsonAlternate on all 6 /learn/[slug]/ + /api/index.json + sitemap-ai pillar JSON twin + llms.txt | @distributor (self) | SEO 0.4 · Share 0.4 · Channel 0.95 · Loop 0.85 · Moat 0.75 | **mean 0.67** PASS | archetype: dataset_json_api × +70 | no 🔴
+
+---
+
+## Channel Reality — measured NEGATIVES (2026-09-05, Bing page+query pull)
+
+Four hypotheses tested against live data. **All four came back clean — no defect, no work
+filed.** Recorded so the next session does not re-derive them; on this fleet the missing-page
+hypothesis is now **0-for-8** and re-deriving it has cost multiple sessions.
+
+**Instrument:** `fleet.promptprio.com/bing-detail?site=colorcombinations.org&limit=5000` →
+139 page rows / 924 query rows / 18,975 page impressions. Money-path positions measured on the
+LIVE pages as a **percentage of `<body>` length** with a markup-anchored regex (`href="/go/`,
+`href="/shop`) — never a raw string search, because Astro hoists component CSS into `<head>` and
+a bare class-name match lands in the stylesheet rather than the markup.
+
+### 1. Money path on the top-traffic pages — HEALTHY, no action
+
+| page | Bing impr | body | `/go/` links | first `/go/` | ad target |
+|---|--:|--:|--:|--:|--:|
+| `/trends/color-trends-2026/` | 6,777 | 65,076 | 25 | **30%** | 1 |
+| `/` (home) | 6,585 | 109,214 | 31 | **5%** | 1 |
+| `/collections/japanese/` | 1,446 | 87,096 | 30 | **50%** | 1 |
+| `/collections/y2k/` | 651 | 65,588 | 30 | **35%** | 1 |
+
+All four carry a money path above or near the fold and a `.mv-content` ad target. This is NOT
+the buried-callout defect fixed today on `/browse/` and `/colors/` — those were a *callout*
+component sitting past the median scroll line, and both are now at 1.5% / 4.6%.
+
+### 2. 🔴 The site's blended CTR is an OWNERSHIP artifact, not a defect — do NOT retitle
+
+The query set splits cleanly into two families at nearly identical positions:
+
+| family | impr | clicks | CTR | who owns the canonical answer |
+|---|--:|--:|--:|---|
+| "dictionary of color combinations" / Sanzo Wada | ~3,283 | 214 | **6.5%** (pos 3.0–3.6) | **we do** |
+| "color of the year 2026" / Pantone | ~2,154 | ~9 | **0.42%** (pos 5.4–7.4) | **Pantone** |
+
+The decisive row is **`what are the colours for 2026` — position 2.0, 43 impressions, ZERO
+clicks.** At position 2 ranking cannot be the explanation. Pantone owns that answer and the
+engine serves it inline. Per `affiliate-team-standard` § THE OWNERSHIP LAW this family is a
+**citation/conversion surface, never a title-CTR target** — a rewrite spends a leg to move
+nothing.
+
+Consequence for reading this site's numbers: `/trends/color-trends-2026/` at 2.70% CTR is a
+**blend** of an owned family and a Pantone-owned family, not underperformance. Do not rank it
+against `/collections/japanese/` (6.09%) as though they compete for the same kind of query.
+
+### 3. Missing-page hypothesis — REFUTED (0-for-8 fleet-wide)
+
+"sanzo wada" (93 impr, pos 7.7) and "sanzo wada color combinations" (51 impr, pos 6.9) sit
+3–4 positions below the Wada-dictionary cluster, which looks like a missing entity hub.
+**354 Wada URLs already exist in the sitemap** (`/compare/wada-*`, `/learn/wada-*`,
+`/data/sanzo-wada-*`). There is no supply gap. Sanzo Wada the *person* has an institutional
+owner (Wikipedia), so position ~7.5 on the biographical phrasing is the ownership law again,
+not an absence.
+
+### 4. What is NOT measurable here — stated rather than guessed
+
+`/colors/` takes 2,183 impressions at 1.42% CTR (pos 5.0) and **no query in the feed attributes
+to it.** The `queries` array is click-selected (doctrine: 4.5–5.8× CTR-inflated, a clicked-query
+sample rather than a census), so the low-CTR queries that drive `/colors/` are exactly the ones
+it omits. Its 1.42% cannot be diagnosed from this instrument. Anyone picking this up needs
+`GetQueryStats` filtered per-page, or GSC page-query pairs — not a harder look at this feed.
+
+### What would change these verdicts
+- A money-path regression: re-run the body-percentage measurement after any template change.
+- Pantone family: only a *conversion* or *citation* metric can judge it. CTR cannot.
+- `/colors/`: a per-page query source. Until then its CTR is unexplained, not bad.
