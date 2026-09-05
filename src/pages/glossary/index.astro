@@ -1,0 +1,726 @@
+---
+/**
+ * /glossary/ — design-terminology DefinedTerm hub.
+ *
+ * Distinct from /learn/japanese-color-glossary/ (20 traditional Japanese
+ * COLOR NAMES). This page defines the general-purpose COLOR THEORY /
+ * DESIGN VOCABULARY used everywhere else on the site (hue, saturation,
+ * complementary, WCAG contrast, RGB/CMYK, etc.) — the terms a reader
+ * needs to understand any other page here.
+ *
+ * Genuine information-gain over a generic glossary: four of the relational
+ * terms (Complementary / Analogous / Triadic / Monochromatic) carry a
+ * WORKED EXAMPLE computed at build time from the real 348-plate Sanzo Wada
+ * archive — not an invented pair. Hue is derived per-color from its hex
+ * value; classification is by measured hue distance, with a chroma floor
+ * to exclude near-neutral colors (hue is meaningless on grey/black/white).
+ *
+ * TaskPeace ref: colorcombinations backlog "P2 BUILD /glossary/ design-
+ * terminology DefinedTerm hub [archetype:llm_citation_quote_ready x +75]",
+ * re-ranked BUILD FIRST 2026-09-05 (highest remaining Oracle weight on the
+ * site that is 70% of all fleet AI-referred human sessions).
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import ShareActions from "@components/ShareActions.astro";
+import { wadaCatalog } from "@data/palettes";
+import { bestTextColorOn } from "@/lib/color";
+import type { HexColor, Palette } from "@/types/palette";
+
+const title = "Color & Design Glossary: 22 Terms Every Palette Page Uses";
+const description =
+  "Hue, saturation, value, tint, shade, tone, complementary, analogous, triadic, split-complementary, tetradic, monochromatic, RGB, CMYK, HSL, Pantone, contrast ratio, WCAG AA/AAA, color temperature, color blindness, gamut, achromatic — defined in plain language, with four relational terms illustrated by a real example computed from the 348-plate Sanzo Wada archive.";
+
+const keywords = [
+  "color theory glossary",
+  "design terminology",
+  "what is complementary color",
+  "what is analogous color",
+  "triadic color scheme",
+  "color glossary",
+  "hue saturation value",
+  "wcag contrast ratio",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-09-06T00:00:00Z";
+const BUILD_DATE = new Date().toISOString();
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}glossary/`;
+
+// ---------------------------------------------------------------------------
+// Build-time color math — self-contained (mirrors the pattern already used
+// in /learn/wada-color-psychology/, which computes its own hue classifier
+// rather than importing a shared one). Standard HSL hue derivation.
+// ---------------------------------------------------------------------------
+function hueOf(hex: HexColor): number {
+  const clean = hex.replace("#", "");
+  const r = parseInt(clean.slice(0, 2), 16) / 255;
+  const g = parseInt(clean.slice(2, 4), 16) / 255;
+  const b = parseInt(clean.slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  if (d < 1e-6) return 0;
+  let h: number;
+  if (max === r) h = ((g - b) / d) % 6;
+  else if (max === g) h = (b - r) / d + 2;
+  else h = (r - g) / d + 4;
+  h *= 60;
+  return h < 0 ? h + 360 : h;
+}
+
+function chromaOf(hex: HexColor): number {
+  const clean = hex.replace("#", "");
+  const r = parseInt(clean.slice(0, 2), 16) / 255;
+  const g = parseInt(clean.slice(2, 4), 16) / 255;
+  const b = parseInt(clean.slice(4, 6), 16) / 255;
+  return Math.max(r, g, b) - Math.min(r, g, b);
+}
+
+/** Circular hue distance, 0-180. */
+function hueDist(a: number, b: number): number {
+  const d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+
+const CHROMA_FLOOR = 0.12; // below this, hue is noise (near-grey/black/white)
+
+const catalog = wadaCatalog();
+const chromatic = catalog.filter((p) => p.colors.every((c) => chromaOf(c.hex) >= CHROMA_FLOOR));
+
+type Example = { palette: Palette; note: string } | null;
+
+function firstComplementary(): { ex: Example; count: number } {
+  let count = 0;
+  let first: Palette | null = null;
+  for (const p of chromatic) {
+    if (p.colors.length !== 2) continue;
+    const d = hueDist(hueOf(p.colors[0].hex), hueOf(p.colors[1].hex));
+    if (d >= 150 && d <= 210) {
+      count++;
+      if (!first) first = p;
+    }
+  }
+  return {
+    ex: first ? { palette: first, note: `hue distance ${Math.round(hueDist(hueOf(first.colors[0].hex), hueOf(first.colors[1].hex)))}°` } : null,
+    count,
+  };
+}
+
+function firstAnalogous(): { ex: Example; count: number } {
+  let count = 0;
+  let first: Palette | null = null;
+  for (const p of chromatic) {
+    if (p.colors.length !== 2) continue;
+    const d = hueDist(hueOf(p.colors[0].hex), hueOf(p.colors[1].hex));
+    if (d > 0 && d <= 35) {
+      count++;
+      if (!first) first = p;
+    }
+  }
+  return {
+    ex: first ? { palette: first, note: `hue distance ${Math.round(hueDist(hueOf(first.colors[0].hex), hueOf(first.colors[1].hex)))}°` } : null,
+    count,
+  };
+}
+
+function firstTriadic(): { ex: Example; count: number } {
+  let count = 0;
+  let first: Palette | null = null;
+  for (const p of chromatic) {
+    if (p.colors.length !== 3) continue;
+    const hues = p.colors.map((c) => hueOf(c.hex));
+    const d01 = hueDist(hues[0], hues[1]);
+    const d12 = hueDist(hues[1], hues[2]);
+    const d02 = hueDist(hues[0], hues[2]);
+    if ([d01, d12, d02].every((d) => d >= 95 && d <= 145)) {
+      count++;
+      if (!first) first = p;
+    }
+  }
+  return { ex: first ? { palette: first, note: "three hues ~120° apart" } : null, count };
+}
+
+function firstMonochromatic(): { ex: Example; count: number } {
+  let count = 0;
+  let first: Palette | null = null;
+  for (const p of chromatic) {
+    if (p.colors.length < 2 || p.colors.length > 3) continue;
+    const hues = p.colors.map((c) => hueOf(c.hex));
+    const maxD = Math.max(...hues.flatMap((h, i) => hues.slice(i + 1).map((h2) => hueDist(h, h2))));
+    if (maxD <= 15) {
+      count++;
+      if (!first) first = p;
+    }
+  }
+  return { ex: first ? { palette: first, note: "same hue family, different value" } : null, count };
+}
+
+const complementary = firstComplementary();
+const analogous = firstAnalogous();
+const triadic = firstTriadic();
+const monochromatic = firstMonochromatic();
+
+// ---------------------------------------------------------------------------
+// Term data — accurate, standard color-theory / design definitions. No
+// external claim needing citation; these are established terminology
+// (equivalent to any color-theory textbook), stated in the site's own voice.
+// ---------------------------------------------------------------------------
+interface Term {
+  slug: string;
+  name: string;
+  paragraph: string;
+  example?: { count: number; note: string; slug: string; title: string; colors: readonly HexColor[] };
+}
+
+interface Section {
+  heading: string;
+  intro: string;
+  terms: Term[];
+}
+
+function exampleFor(res: { ex: Example; count: number }) {
+  if (!res.ex) return undefined;
+  return {
+    count: res.count,
+    note: res.ex.note,
+    slug: res.ex.palette.slug,
+    title: res.ex.palette.title,
+    colors: res.ex.palette.colors.map((c) => c.hex) as readonly HexColor[],
+  };
+}
+
+const SECTIONS: Section[] = [
+  {
+    heading: "Color relationships",
+    intro:
+      "How two or more hues sit relative to each other on the color wheel — the choice that decides whether a palette reads as calm, energetic, or balanced.",
+    terms: [
+      {
+        slug: "complementary",
+        name: "Complementary",
+        paragraph:
+          "Two colors positioned roughly opposite each other on the color wheel — around 180° apart in hue. Complementary pairs create the strongest possible contrast between two hues, which is why they're the default choice for anything that needs to grab attention (a call-to-action button against its background, a sports team's colors).",
+        example: exampleFor(complementary),
+      },
+      {
+        slug: "analogous",
+        name: "Analogous",
+        paragraph:
+          "Colors that sit next to each other on the wheel — typically within about 30–35° of hue. Analogous schemes feel cohesive and low-tension because no color is fighting another for attention; they're the natural choice for backgrounds, gradients, and anything meant to feel calm rather than urgent.",
+        example: exampleFor(analogous),
+      },
+      {
+        slug: "triadic",
+        name: "Triadic",
+        paragraph:
+          "Three colors spaced evenly around the wheel, roughly 120° apart. A triadic scheme is vibrant even when none of the three colors is especially saturated, because the eye reads the even spacing as balance. It's harder to use well than a two-color scheme — one hue usually needs to dominate and the other two act as accents.",
+        example: exampleFor(triadic),
+      },
+      {
+        slug: "split-complementary",
+        name: "Split-complementary",
+        paragraph:
+          "A base color plus the two hues adjacent to its direct complement, rather than the complement itself — for example a blue paired with yellow-orange and red-orange instead of plain orange. It keeps most of the contrast of a complementary pair with less visual tension, and is a common way to soften a bold two-color scheme without losing its energy.",
+      },
+      {
+        slug: "tetradic",
+        name: "Tetradic (square)",
+        paragraph:
+          "Four colors formed by two complementary pairs, spaced evenly (roughly 90° apart) around the wheel. The richest and hardest of the standard schemes to balance — with four hues in play, one color almost always needs to lead and the rest need to be used in deliberately unequal amounts, or the palette reads as noisy.",
+      },
+      {
+        slug: "monochromatic",
+        name: "Monochromatic",
+        paragraph:
+          "A single hue, varied only by lightness and saturation — one color family expressed as a light tint, a mid-tone, and a dark shade. It is the safest scheme to get right (nothing can clash with itself) and the one most likely to feel flat without enough contrast in value between the steps.",
+        example: exampleFor(monochromatic),
+      },
+    ],
+  },
+  {
+    heading: "Color attributes",
+    intro:
+      "The three independent dimensions that describe any single color, plus the three ways of systematically varying one.",
+    terms: [
+      {
+        slug: "hue",
+        name: "Hue",
+        paragraph:
+          "The attribute that answers “what color is it” in the everyday sense — red, orange, yellow, green, blue, purple — independent of how light, dark, or muted it is. Technically, hue is the angle (0–360°) around the color wheel; every computed example on this page is classified purely by hue angle.",
+      },
+      {
+        slug: "saturation",
+        name: "Saturation (chroma)",
+        paragraph:
+          "How intense or muted a color is at a given hue and lightness — from a vivid, pure hue at full saturation down to a grey at zero saturation, with the hue itself unchanged. Two swatches can share the exact same hue and still look completely different in mood purely because one is desaturated.",
+      },
+      {
+        slug: "value",
+        name: "Value (lightness)",
+        paragraph:
+          "How light or dark a color is, independent of hue or saturation — the dimension that would survive if a photo were converted to black and white. Value is the single biggest factor in whether text is readable against a background, which is why contrast-ratio math (below) is built on lightness, not hue.",
+      },
+      {
+        slug: "tint",
+        name: "Tint",
+        paragraph:
+          "A hue with white mixed in — raising its value while lowering its saturation. Tints are what most “pastel” palettes are built from: the same underlying hue, pushed lighter and softer.",
+      },
+      {
+        slug: "shade",
+        name: "Shade",
+        paragraph:
+          "A hue with black mixed in — lowering its value. Shades are how a single brand color becomes a workable palette on its own: a shade of the primary color reads as intentional depth rather than a different color entirely.",
+      },
+      {
+        slug: "tone",
+        name: "Tone",
+        paragraph:
+          "A hue with grey mixed in — lowering its saturation without necessarily changing its value. Toned colors are the ones that read as “sophisticated” or “muted” rather than bright, because the grey desaturates the hue while leaving its lightness roughly where it was.",
+      },
+    ],
+  },
+  {
+    heading: "Color models",
+    intro:
+      "The systems used to specify an exact color for screens, print, or a manufactured product.",
+    terms: [
+      {
+        slug: "rgb",
+        name: "RGB",
+        paragraph:
+          "Red-Green-Blue — the additive model every screen uses. Each channel runs 0–255; mixing all three at full intensity produces white, and all three at zero produces black. Every hex code on this site (like #9A2A2A) is RGB written in base-16, two digits per channel.",
+      },
+      {
+        slug: "cmyk",
+        name: "CMYK",
+        paragraph:
+          "Cyan-Magenta-Yellow-Key(black) — the subtractive model used in printing, where ink absorbs light rather than emitting it. CMYK and RGB cover different, only partly overlapping ranges of visible color (their “gamut” — see below), which is why a color that looks vivid on screen can print duller: it fell outside what CMYK ink can reproduce.",
+      },
+      {
+        slug: "hsl",
+        name: "HSL / HSV",
+        paragraph:
+          "Hue-Saturation-Lightness (or Hue-Saturation-Value/Brightness) — the same information as RGB, reorganized so a designer can adjust one perceptual dimension at a time instead of three interdependent channels. This page's own hue/chroma math is computed by converting each hex color into this space first.",
+      },
+      {
+        slug: "pantone",
+        name: "Pantone (spot color)",
+        paragraph:
+          "A proprietary, numbered color-matching system used mainly in print and manufacturing, where a color needs to be identical across different printers, materials, and countries — something RGB or CMYK values alone can't guarantee, since the same code can render slightly differently on different equipment.",
+      },
+    ],
+  },
+  {
+    heading: "Perception & accessibility",
+    intro:
+      "How color is actually experienced by a viewer — not every combination that looks fine to one person is usable by everyone, or reproducible on every device.",
+    terms: [
+      {
+        slug: "contrast-ratio",
+        name: "Contrast ratio",
+        paragraph:
+          "A number from 1:1 (identical colors) to 21:1 (pure black on pure white) describing how distinguishable two colors are, computed from their relative luminance — not their hue. Two colors can look very different in hue and still fail a contrast check if their lightness is too close; this site's own /tools/contrast-checker/ computes this exact ratio for any two hex values you enter.",
+      },
+      {
+        slug: "wcag",
+        name: "WCAG AA / AAA",
+        paragraph:
+          "The Web Content Accessibility Guidelines' minimum contrast-ratio thresholds: 4.5:1 (AA) or 7:1 (AAA) for normal body text, with lower thresholds (3:1 / 4.5:1) for large text. These are the numbers a contrast checker is testing your pairing against — a pass means the text is legible to most people with low vision, not merely legible to you.",
+      },
+      {
+        slug: "color-temperature",
+        name: "Color temperature (warm / cool)",
+        paragraph:
+          "The everyday split between hues that read as “warm” (reds, oranges, yellows — roughly hue 0– 85° and 345–360°) and “cool” (greens, blues, violets). It's a perceptual grouping, not a physical temperature, and it's the same hue-angle math used elsewhere on this page — warm and cool sit on opposite arcs of the same wheel.",
+      },
+      {
+        slug: "color-blindness",
+        name: "Color vision deficiency (color blindness)",
+        paragraph:
+          "A reduced ability to distinguish certain hues, most commonly red-green (affecting roughly 1 in 12 men, 1 in 200 women). It's the practical reason contrast ratio and value — not hue alone — are the load-bearing signals for accessible design: a red/green pairing with matched lightness can be functionally invisible as “two different colors” to a colorblind viewer even though it reads clearly to most people.",
+      },
+      {
+        slug: "gamut",
+        name: "Gamut",
+        paragraph:
+          "The full range of colors a specific device, ink set, or color model can actually reproduce. No system covers all colors humans can perceive; sRGB (the standard for the web), a printer's CMYK gamut, and a human eye's full range are three different, overlapping shapes — which is why a color can look right on one screen and slightly off on another.",
+      },
+      {
+        slug: "achromatic",
+        name: "Achromatic",
+        paragraph:
+          "A color with zero saturation — pure black, pure white, or any grey between them. Achromatic colors have no hue at all, which is exactly why the hue math on this page excludes them: dividing by a near-zero chroma value produces noise, not a meaningful angle.",
+      },
+    ],
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Color theory",
+    wordCount: 2100,
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Glossary" },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    name: "Color & Design Terminology",
+    url: articleUrl,
+    hasDefinedTerm: SECTIONS.flatMap((s) =>
+      s.terms.map((t) => ({
+        "@type": "DefinedTerm",
+        "@id": `${articleUrl}#${t.slug}`,
+        name: t.name,
+        description: t.paragraph.replace(/°/g, " degrees"),
+        termCode: t.slug,
+        inDefinedTermSet: articleUrl,
+      })),
+    ),
+  },
+];
+---
+
+<BaseLayout
+  adContent
+  title={title}
+  description={description}
+  keywords={keywords}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li aria-current="page">Glossary</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Reference · Glossary</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          The 22 color-theory and design terms used across this site,
+          in plain language — with four relational terms illustrated
+          by a real pairing computed from the 348-plate Sanzo Wada
+          archive, not an invented example. Cite a single term by
+          jumping to <code>/glossary/#complementary</code>.
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og-default.png", Astro.site).toString()}
+          description={description}
+          heading="Share this glossary"
+          download={{
+            kind: "page",
+            slug: "glossary",
+            title,
+            subtitle: "22 color-theory and design terms — defined, with four illustrated by a real archive example.",
+            eyebrow: "Reference · Glossary",
+            accentHex: "#1a1714",
+          }}
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        These are the terms that come up on almost every other page
+        here — the six relationship types behind any two- or
+        three-color scheme, the three independent attributes of a
+        single color, the models used to specify one exactly, and the
+        perceptual and accessibility rules that decide whether a
+        pairing actually works for a real viewer. For named colors
+        themselves, see <a href="/colors/">the full color dictionary</a>
+        (211+ entries) or <a href="/learn/japanese-color-glossary/">the
+        Japanese color glossary</a> (20 traditional named colors) —
+        this page defines the vocabulary those pages assume you know.
+      </p>
+
+      {SECTIONS.map((section) => (
+        <section class="glossary-section">
+          <h2 class="glossary-section__heading">{section.heading}</h2>
+          <p class="glossary-section__intro">{section.intro}</p>
+
+          <div class="term-list">
+            {section.terms.map((term) => (
+              <article id={term.slug} class="term-entry">
+                <h3 class="term-entry__name">{term.name}</h3>
+                <p class="term-entry__paragraph" set:html={term.paragraph} />
+                {term.example && (
+                  <div class="term-entry__example">
+                    <p class="term-entry__example-label">
+                      Worked example — Wada archive plate <a href={`/palettes/${term.example.slug}/`}>{term.example.title}</a> ({term.example.note})
+                    </p>
+                    <div class="term-entry__swatches">
+                      {term.example.colors.map((hex) => (
+                        <span
+                          class="term-entry__swatch"
+                          style={`background:${hex}; color:${bestTextColorOn(hex) === "dark" ? "#1a1714" : "#f5f2ec"};`}
+                        >
+                          {hex}
+                        </span>
+                      ))}
+                    </div>
+                    <p class="term-entry__example-count">
+                      {term.example.count} of the archive's 348 plates fit this pattern.
+                    </p>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      <h2 id="see-also">See also</h2>
+      <p>
+        For color science applied at length rather than defined in
+        one paragraph, read <a href="/learn/wada-color-psychology/">Color
+        Psychology in Wada's System</a> (the same hue math on this page,
+        applied across the full 348-plate archive), or use
+        <a href="/tools/contrast-checker/">the contrast checker</a> and
+        <a href="/tools/palette-from-image/">palette-from-image tool</a>
+        to apply these terms to your own colors directly. The
+        <a href="/colors/">full color dictionary</a> and
+        <a href="/palettes/">palette archive</a> are the site's two
+        primary reference indexes.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      {/* Books, 2026-09-06. Same placement rule as the other /learn essays
+          (2026-09-03 note): this reference page has no natural decor/paint
+          intent, so books are the correctly-matched product — colour theory
+          references belong next to a page that just taught colour theory
+          vocabulary. Placed before the nav/bundle exit per the /collections/
+          measurement (a commercial block below an exit link goes unseen). */}
+      <FurtherReading
+        pageClass="glossary"
+        title="Go deeper on color theory"
+        intro="The books behind the terms on this page — color theory, history, and reference that designers keep close."
+        limit={4}
+        offset={2}
+      />
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--color-ink-300);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .article-hero__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+    max-width: 60ch;
+  }
+
+  .article-hero__lede code {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    padding: 0.0625rem 0.375rem;
+    font-size: 0.85em;
+  }
+
+  .article-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .article-body > p {
+    max-width: 65ch;
+    margin: 0 0 2rem;
+  }
+
+  .article-body p a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .article-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .glossary-section {
+    margin-bottom: 3rem;
+  }
+
+  .glossary-section__heading {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    line-height: 1.2;
+    margin: 0 0 0.5rem;
+  }
+
+  .glossary-section__intro {
+    color: var(--color-ink-700);
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    font-style: italic;
+  }
+
+  .term-list {
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  .term-entry {
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--color-border);
+    scroll-margin-top: 1rem;
+  }
+
+  .term-entry__name {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+    color: var(--color-ink-900);
+  }
+
+  .term-entry__paragraph {
+    margin: 0;
+    color: var(--color-ink-800);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    max-width: 65ch;
+  }
+
+  .term-entry__example {
+    margin-top: 0.875rem;
+    padding: 0.875rem 1rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    max-width: 65ch;
+  }
+
+  .term-entry__example-label {
+    margin: 0 0 0.625rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink-700);
+  }
+
+  .term-entry__example-label a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+  }
+
+  .term-entry__swatches {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .term-entry__swatch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 84px;
+    height: 34px;
+    padding: 0 0.5rem;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+    letter-spacing: 0.02em;
+    border: 1px solid var(--color-border);
+  }
+
+  .term-entry__example-count {
+    margin: 0.625rem 0 0;
+    font-size: 0.75rem;
+    color: var(--color-ink-500);
+  }
+
+  h2[id="see-also"] {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    margin: 2.5rem 0 1rem;
+  }
+
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>
