@@ -172,3 +172,61 @@ positive control — grepping the hub, which *must* contain those links — retu
 the pattern as blind. **When probing for the presence of a link, path or attribute, start with the
 shortest distinctive prefix and only then narrow.** Every character added to a pattern is another
 assumption, and an over-specified pattern fails silently in the reassuring direction.
+
+### 6. Google is 0.02x of Bing here — and it is NOT a demotion. Do not diagnose it as one.
+
+Measured 2026-09-05. This site's channel mix is inverted by two orders of magnitude versus every
+normal site, and it looks alarming until you pull the history.
+
+| engine | impressions | clicks | avg position |
+|---|--:|--:|--:|
+| Bing (28d) | 15,853 | **519** | 3.6–5.0 on top queries |
+| Google (30d) | 342 | **4** | **58.3** site-level |
+
+On the site's own brand-defining entity query, `a dictionary of color combinations`:
+**Google position 79.9 / 0 clicks · Bing position 3.6 / 104 clicks.** A ~76-position gap on the same
+query, same content, same month.
+
+**Everything technical is clean** — checked before hypothesising: `robots.txt` is
+`User-agent: * Allow: /`; Googlebot receives a full 200 with 2,831 words and no `noindex`, byte-comparable
+to bingbot and to Chrome (no cloaking); canonical and `og:url` are consistent apex;
+`www.colorcombinations.org` does not resolve, so there is no host split; the GSC property is
+`sc-domain:colorcombinations.org`, a **domain property**, so scope covers every host and protocol.
+
+**The GSC instrument is not blind** — fleet control: 365,601 GSC impressions vs 157,452 Bing across
+the fleet (2.32x the other way), readinglist alone at 254,377 GSC impressions. The pull works.
+
+**Google's coverage is broad, not missing** — 86 distinct pages take impressions across 12 templates
+(/palettes, /collections, /colors, /compare, /colors-that-go-with, …). Google has crawled the site.
+The constraint is position, not indexation.
+
+#### 🔴 The history refutes the demotion reading
+
+`fleet.promptprio.com/gsc-daily.csv`, monthly rollup for this site:
+
+```
+2026-06   133 impr    2 clicks
+2026-07   223 impr    9 clicks
+2026-08   376 impr    5 clicks      <- rising, +183% since June
+2026-09    18 impr    1 click       <- 5 partial days, GSC lags 2-3d: NOT a signal
+```
+
+**There is no drop.** Google impressions are flat-to-rising. This site has never ranked on Google —
+it is the slow Google authority clock, not a penalty, not an HCU hit, and not something a ship broke.
+Bing simply rewards a young niche site far earlier than Google does.
+
+Which means the standing Fleet Dashboard reference card **mtc0hoiiln1lqd — "READ BEFORE DIAGNOSING ANY
+TRAFFIC DROP — external Google event 2026-08-16"** does not apply here either: there is no drop to
+attribute. Reading it first is what stopped this becoming a filed emergency.
+
+#### What NOT to do with this
+- **Do not** treat it as a penalty and go hunting for a cause. Three technical hypotheses
+  (robots / cloaking / host-split) and one instrument hypothesis were all tested and refuted.
+- **Do not** mass-noindex the 702-page `/colors-that-go-with/` surface on a "scaled content" hunch.
+  Those pages rank **1.0–5.0 on Bing** and serve real users; the blast radius is 48% of the sitemap
+  and there is zero evidence Google's ranking is about them specifically. `information-gain-standard`
+  requires the traffic veto before any such action, and nothing here has passed one.
+- **Do** read Google as a long-clock channel on this site and judge it on trend (133 -> 376), not level.
+
+**Watch item, not a finding:** September's partial month is running below August's daily rate. GSC
+lags 2–3 days and 5 days is a thin sample — re-check in October before reading anything into it.
