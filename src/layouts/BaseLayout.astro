@@ -32,6 +32,24 @@ export interface Props {
    *  title already carries the brand (the homepage), where the suffix would
    *  repeat "Dictionary of Color Combinations" inside one <title>. */
   bareTitle?: boolean;
+  /** Opt this page's <main> into Mediavine in-content ad insertion.
+   *
+   *  Why a prop and not a global selector: BaseLayout wraps EVERY page in
+   *  `main.site-main`, including /privacy/, /terms/, /contact/ and 404 — and
+   *  ads on policy pages violate the ad-network placement rules. So the class
+   *  is opt-in: content pages pass adContent, policy pages simply don't.
+   *
+   *  Why a class and not a per-template selector list: the dashboard's
+   *  `content_selector` was `article.coty`, a class emitted by exactly ONE
+   *  source file (trends/color-trends-2026.astro). Measured 2026-09-05 on the
+   *  served HTML: a live /palettes/ page contains 0 occurrences of `coty`, so
+   *  in-content units rendered on 1 of ~1,470 sitemap URLs (0.07%). Every
+   *  other section had a DIFFERENT wrapper (article.palette-body__prose,
+   *  main.mx-auto…, section.color-profile) or none at all, so a hand-written
+   *  selector list would have covered ~26% and gone stale on the next
+   *  template. One stable class, stamped here, covers every section and every
+   *  future template with no dashboard round-trip. */
+  adContent?: boolean;
 }
 
 const {
@@ -48,6 +66,7 @@ const {
   modifiedTime,
   author = "The Dictionary of Color Combinations editorial",
   bareTitle = false,
+  adContent = false,
 } = Astro.props;
 
 // Default freshness anchors (matches detail-page JSON-LD).
@@ -363,7 +382,7 @@ const jsonLdArray = jsonLd
       <input id="cc-q" type="search" role="combobox" aria-expanded="false" aria-controls="cc-results" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search palettes, colors, collections…" aria-label="Search the dictionary of color combinations" />
       <div id="cc-results" role="listbox" aria-label="Search results" hidden></div>
     </div>
-    <main id="main" class="site-main">
+    <main id="main" class={adContent ? "site-main mv-content" : "site-main"}>
       <slot />
     </main>
     <FeedbackWidget />
