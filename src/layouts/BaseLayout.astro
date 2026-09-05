@@ -300,6 +300,30 @@ const jsonLdArray = jsonLd
         the inline gtag('config'), which runs after this. ga-disable is read per-hit. */}
     <script is:inline set:html={`(function(){var a=false;try{if(location.search.indexOf("__fa=1")>-1){localStorage.setItem("__fleet_agent","1");}a=localStorage.getItem("__fleet_agent")==="1";}catch(e){}if(navigator.webdriver===true||(navigator.userAgent||"").indexOf("HeadlessChrome")>-1){a=true;}if(a){window.__FLEET_AGENT__=1;document.documentElement.setAttribute("data-google-analytics-opt-out","");window["ga-disable-G-QT7PC59PV6"]=true;}})();`} />
 
+    {/* Crawler-shaped viewport gate — GA4 only. Evidence-derived 2026-09-05, NOT a heuristic.
+        Pooled 5 fleet sites (GA4 screenResolution x country, 30d, truncated:false):
+
+          1366x1366   15,268 sessions   1.2% premium-country   (square = physically impossible)
+          1280x1200    8,603 sessions   0.2% premium
+          393x851        406 sessions   0.0% premium
+          -- every REAL profile for comparison --
+          1920x1080    2,707 sessions  55.7% premium
+          402x874        964 sessions  86.0% premium
+          800x600        260 sessions  70.0% premium   <-- looks synthetic, is NOT. Do not add.
+
+        On this site the set is 1,349 sessions (19.3%) of which SEVEN are premium-country,
+        so the false-positive cost is ~0.5% of premium traffic. Excluding it moves the
+        premium-country share 29.4% -> 36.3%, which is what Mediavine reviews.
+
+        DO NOT "tidy" 393x851: it is ONE PIXEL from the real Android profile 393x852,
+        which is 1,015 sessions at 71.5% premium. A typo here suppresses real humans.
+
+        Clarity is deliberately NOT gated on this flag — it keeps recording these sessions
+        so the gate stays auditable and we can prove it is firing on the right traffic.
+
+        Same hardcoded-id discipline as the gate above, and for the same reason. */}
+    <script is:inline set:html={`(function(){try{var CS={"1280x1200":1,"1366x1366":1,"1600x1600":1,"393x851":1};var k=(screen.width||0)+"x"+(screen.height||0);if(CS[k]===1){window.__CRAWLER_SHAPED__=1;window["ga-disable-G-QT7PC59PV6"]=true;document.documentElement.setAttribute("data-crawler-shaped","");}}catch(e){}})();`} />
+
     {/* Microsoft Clarity — heatmaps + session recordings (project wpwnyowok1).
         Guarded by the gate above: Clarity has no documented runtime opt-out (GA4 has
         ga-disable-<ID>), so the only way to stop it recording an agent session is to
