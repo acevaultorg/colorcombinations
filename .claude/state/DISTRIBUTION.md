@@ -277,3 +277,42 @@ threshold.
 **No decision changes, so no work is filed.** Even discounting SG+CN entirely, visitors run ~3,000
 against a 1,500 goal — on-track either way. Recorded so nobody later "discovers" the 22% and reads
 it as a contradiction of the 0.0% flag.
+
+### 8. The collections CTR spread is OWNERSHIP, not titles — a retitle here would move nothing
+
+`ai-citation-channel.md` names an unrun question for this site: for `y2k colors` we win 13–22% of
+citations and someone takes 78–87% — *"who wins it, and what does their page have that ours does
+not?"* Asking the engine needs a real browser this lane does not have. But the corpus is its own
+control group, so the internal half is answerable now.
+
+Same template, six members, measured 2026-09-05 (Bing 28d):
+
+| collection | impr | CTR | pos | title shape |
+|---|--:|--:|--:|---|
+| japanese | 1,446 | **6.09%** | 4.2 | standard |
+| art-deco | 93 | 4.30% | 6.2 | standard |
+| art-nouveau | 122 | 4.10% | 4.4 | standard |
+| coquette | 40 | 2.50% | 5.0 | standard |
+| **y2k** | **651** | **1.54%** | 4.6 | **3-segment, truncated in SERP** |
+| vaporwave | 26 | 0.00% | 6.3 | standard |
+
+**The obvious hypothesis is refuted by the corpus itself.** `/collections/y2k/` is the only member
+with a non-standard title — `Y2K Color Palettes — Bubblegum Pink, Cyber Lilac & Sky Blue — The
+Dictionary…`, long enough that the brand segment truncates — and it has the worst CTR at meaningful
+volume. Tempting. But **5 of the 6 carry the identical standard title and still span 0.00% → 6.09%**,
+so title format cannot be what separates them.
+
+Only two members have interpretable n: **japanese (1,446 impr, 6.09%) and y2k (651 impr, 1.54%)** —
+4× apart at effectively the same position (4.2 vs 4.6). art-nouveau/art-deco/coquette/vaporwave are
+26–122 impressions and are noise; do not read their ordering.
+
+What separates the two that count is **who owns the answer**. "Japanese color combinations" IS this
+site's entity — Sanzo Wada's dictionary is Japanese, and the Wada query family converts at 6.5%
+across the site. "Y2K colors" is a contested design trend nobody has assigned to us. That is
+`affiliate-team-standard` § THE OWNERSHIP LAW, and it says plainly: where an institution or a
+crowded field owns the canonical answer, **the page cannot win the click at any title** — judge it
+on conversion instead.
+
+**So: no retitle.** The y2k title anomaly is real and cosmetic; fixing it is not measured to move
+anything, and this fleet's missing-page/retitle hypotheses are 0-for-8. The remaining half of the
+question — who actually wins `y2k colors` — needs a browser and stays open.
