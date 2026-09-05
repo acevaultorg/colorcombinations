@@ -312,7 +312,7 @@ Tier-S retrofit shipped this session (Adobe + Canva + Tailwind UI + Khroma + Ski
 - [ ] `P1` BUILD `/material-design/` MD palette + Figma/Adobe affiliate [archetype:comparison_vs_competitor_page × +60]
 - [ ] `P2` BUILD `/brands/` favorite-colors-of-brands database — long-tail SEO [archetype:programmatic_page_with_unique_data × +55]
 - [ ] `P2` BUILD `/accessibility/color-blind-tools/` comparison [archetype:comparison_vs_competitor_page × +60]
-- [ ] `P2` BUILD `/glossary/` design-terminology DefinedTerm hub (different from /learn/japanese-color-glossary; this is design vocabulary) [archetype:llm_citation_quote_ready × +75]
+- [x] `P2` SHIPPED 2026-09-06 `/glossary/` design-terminology DefinedTerm hub (22 terms, 4 sections, 4 computed archive-example terms) — live-verified, TaskPeace mtp0nw11u2p75r [archetype:llm_citation_quote_ready × +75]
 - [ ] `P2` BUILD `/color-by-emotion/` emotional color mapping — risky thin-content territory; needs editorial depth [archetype:editorial_curation_depth × +50]
 
 ## Human Actions (TaskAssistant) — Tier-S affiliate IDs
