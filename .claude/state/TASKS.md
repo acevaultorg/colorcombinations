@@ -352,3 +352,66 @@ curl -sS "https://colorcombinations.org/shop/" | grep -oE 'href="[^"]*PLACEHOLDE
 - Wrangler `whoami` → 400 (auth expired): run `wrangler login` (browser pop, ~30 sec) before deploying.
 
 [id:tier-s-affiliate-ids] [score:14.0] 👤 — ESTIMATED +$300-700/MO once live
+
+---
+
+## 2026-09-05 — EVALUATION of the open backlog + the affiliate-ID card against measured reality
+
+The Tier-A backlog and the 🔴 affiliate-ID card were written 2026-06-21. Both predate every
+measurement in `.claude/state/DISTRIBUTION.md` §§1–8 (2026-09-05) and one binding fleet rule.
+Nothing below is deleted — this re-ranks and corrects.
+
+### A. The affiliate-ID card is STALE in its premise and its reach figure — correct before running it
+
+**Measured live 2026-09-05 on `/shop/` (116 hrefs, positive control passed):**
+
+| card says | measured |
+|---|---|
+| "every URL has `PLACEHOLDER_*` … clicks work, all links go to the platform homepage" | **0 PLACEHOLDER hrefs live.** All 8 partner links (adobe · canva · tailwind · skillshare · domestika · coursera · printful · printify) are **ABSENT from the page entirely.** 10 `PLACEHOLDER_*` constants remain in `src/config/monetization.ts`, but the site correctly suppresses ID-less links rather than shipping un-monetized ones. |
+| implied: revenue is *leaking* | revenue is **not yet built**. No $0 clicks are being wasted; the surfaces do not exist. Good design — do not "fix" the suppression. |
+
+**🔴 The reach figure must change before any application is filed.**
+`affiliate-application-criteria-first.md` (2026-09-02, *after* this card) makes a REACH row
+mandatory and states the source explicitly: **Search Console clicks or the Amazon per-tag report —
+never a GA4 session total**, because fleet GA4 totals are 68–97% crawler on data sites and "a
+reviewer can disprove them in about a minute; citing one is worse than citing nothing."
+
+This card cites **"2,750 visits/mo × 5% CTR"** — a GA4-shaped number, and exactly the kind that gets
+an account auto-declined. Semrush declined a fleet account on 2026-09-02 with the stated reason
+*"Low reach (traffic, followers)."*
+
+**The sanctioned numbers for this property, measured 2026-09-05:**
+
+| source | value | usable? |
+|---|--:|---|
+| Amazon per-tag (30d) | **594 affiliate clicks · 64 orders · $52.32 commission** | ✅ **use this** — a real commerce record |
+| Bing Webmaster (28d) | 519 clicks / 15,853 impressions | ✅ supporting |
+| Google Search Console (30d) | **4 clicks** | ❌ never cite — see DISTRIBUTION §6 |
+
+colorcombinations IS on the criteria-first ✅ "properties that have reach" list. Lead with the
+Amazon record, support with Bing, and never mention the GSC number.
+
+**Still operator-gated and unchanged:** signups are new accounts + operator identity = HARD GATE.
+Nothing here is brain-doable. Write the criteria table into the ledger *before* applying, per the
+rule's definition of done.
+
+### B. Backlog re-rank — the constraint is DEMAND, not supply
+
+The decisive measurement: **`/colors-that-go-with/` is 702 pages (48% of the sitemap) and takes 17
+Bing impressions.** Supply is demonstrably not this site's constraint. Meanwhile the ONE backlog
+item that shipped and became the site's #1 page — `/trends/color-trends-2026/`, 6,777 impressions
+and ~96% of the site's AI citations — was the **highest**-Oracle-weight item on the list
+(`annual_report_state_of_x × +85`). The backlog's own weighting was right; follow it.
+
+| item | archetype | 2026-09-05 verdict |
+|---|---|---|
+| `/glossary/` DefinedTerm hub | `llm_citation_quote_ready × +75` | **BUILD FIRST.** Highest remaining weight, and citation-shaped on the site that is **70% of all fleet AI-referred human sessions**. |
+| `/tailwind/` · `/wcag/` tools | `shareable_tool_calculator × +65` | **Second.** Linkable assets, not thin supply — a different archetype from the 702-page surface. |
+| `/material-design/` · `/accessibility/color-blind-tools/` | `comparison_vs_competitor_page × +60` | **Weak evidence:** the existing `/compare/*` pages take 32 Bing impressions across 2 pages. |
+| `/industry/[slug]/` · `/brands/` · `/courses/` · `/pod/` | `programmatic_page_with_unique_data × +55` | **DEPRIORITIZE.** This is the exact archetype whose 702-page instance earns 17 impressions. Building 8–12 more is vanity supply per `realized-demand-discipline`. |
+| `/color-by-emotion/` | `editorial_curation_depth × +50` | **Leave.** The task itself flags thin-content risk; nothing since has reduced it. |
+
+**Before building any of them:** check demand for the specific intersection first
+(`affiliate-team-standard` § the intersection law — readinglist shipped 98 decade×grade pages for 0
+impressions on exactly this mistake), and check no other lane is on it (one shipped to
+`/shop/` + `monetization.ts` during this very session).
