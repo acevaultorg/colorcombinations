@@ -387,3 +387,31 @@ spreads proportionally across EVERY channel (Organic Search 439 · Direct 346 ·
 Referral 59) all at ~0.88–0.95 pv/session uniformly. That is the standard GA4 consent-declined /
 ITP-restricted signature (no engagement pageview fires before the session ends), not a defect
 specific to any channel or a hidden bot pocket. No action.
+
+### 13. Tenant-warning audit — every segmentation figure in §§7,12 is genuinely site-scoped (99.87%)
+
+Every `/ga4-probe?prop=294106772` call this session returned a `tenant_warning`: *"'294106772' is
+NOT among this property's 4 hostnames — the rows below are the WHOLE property, not this host."*
+Never read until now — worth checking before trusting any of §§7 and 12's numbers as
+colorcombinations-specific.
+
+The warning fires because the request was made by numeric property ID (`resolved_by: exact_id`),
+not because of real cross-host contamination. Measured via `dims=hostName`:
+
+```
+colorcombinations.org        6,957 sessions   99.87%
+colorcombinations.pages.dev       7 sessions   (CF Pages preview)
+127.0.0.1 / localhost              2 sessions   (local dev)
+```
+
+**§§7 and 12's segmentation figures ARE correctly site-scoped** — the non-production hosts are
+9 sessions combined, immaterial to every number reported. No retraction needed. Recorded because
+the warning is real and worth checking on every future pull from this property, and because a
+future session using `dims=hostName` filtering rather than the property ID directly would avoid
+tripping it at all.
+
+Also surfaced in the same probe: **`ga4_error` is a top-level key not covered by my earlier parsers**
+(`GetKeywordStats`-style checks only looked at `status`/`body`). `dims=cohort` correctly 400s with
+`"Cohort dimensions can only be used in requests with a CohortSpec"` — expected GA4 API behavior,
+not a bug. D1/D7/D30 cohort retention needs a CohortSpec-shaped request this probe does not build;
+stays on the `not_yet_wired` list, now with the reason named rather than left blank.
