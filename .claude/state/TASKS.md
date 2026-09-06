@@ -4084,3 +4084,71 @@ Refuel leg started as "does `/collections/*` carry the money path" (it does — 
 **But do NOT prune.** `/books/<slug>` is the site's **top AI-converting template**: 88 AI sessions vs 5 organic (17.6x), **42.2% of all AI-channel Amazon clicks**, 3.52 pv/session (3rd-best depth). Doctrine is explicit — Mediocre-fixable → enrich; only Thin-unfixable → noindex; and the traffic veto would BLOCK a prune anyway. Filed as ranked card **`mtps4arzikip81`** (enrich all 12 to >=400 cited words, zero fabrication, no price, FTC + `rel="sponsored"` intact, ONE build).
 
 **The ship itself still stands** — but on the AI-conversion measurement it already carried, not on the word count. The word count was decoration I added to make the case look stronger, and it was false.
+
+### E68 — the `/books/` enrichment card REFUTED on two independent axes (2026-09-06)
+
+I filed `mtps4arzikip81` ("bring all 12 `/books/` pages to ≥400 words of cited
+information-gain") off the back of the E60 word-count measurement. Then I read the
+source file I was proposing to change. Its header:
+
+> *"Every fact rendered here comes from the FURTHER_READING record… **Nothing is
+> invented — no page counts, no ratings, no prices**… no invented review quotes."*
+
+The thinness is a **deliberate zero-fabrication decision**, not an oversight. The author
+had already considered adding exactly what my card prescribed and refused, because they
+had no source. I prescribed it without reading the file — `measured-vs-expected`
+§ *a defect in code you have not read is a guess about its author*.
+
+**Axis 1 — the prescription is unsourceable.** Open Library is the obvious source and the
+fleet already uses it for covers. Measured, all 13 ISBNs in `FURTHER_READING`:
+
+| field | coverage |
+|---|---|
+| publisher · year · page count | **13 / 13** |
+| **description** | **0 / 13** |
+| **excerpts** | **0 / 13** |
+| **links** | **0 / 13** |
+
+So the source yields ~40–60 words per book: publisher, year, pages, a few subject tags.
+That lifts a 94-word page to ~140. **The 400-word bar is not reachable from any source we
+have.** Everything above that line — "what is actually inside", "who it is for" — would be
+written from prior knowledge about books nobody here has read. That is fabrication, and it
+is a hard gate.
+
+**Axis 2 — the risk it was meant to mitigate does not exist at this scale.** Resolved the
+sitemap from robots.txt (`/sitemap.xml` returns 0 URLs — it is `/sitemap-index.xml` →
+`/sitemap-0.xml`; control: 1,528 URLs, 378 `/palettes/`, 12 `/books/`):
+
+```
+/books/ share of sitemap        0.79%
+Gate 2 audit trigger (>=5%)     NO — 6.2x below threshold
+Gate 1, all 12 valued at zero   ratio floor 0.9921 vs 0.50 required -> PASS
+```
+
+`adsense-thin-content-prevention` Gate 2 only audits URL patterns at ≥5% of the sitemap,
+and Gate 1 needs the substantive ratio to fall under 0.50. Twelve pages at 0.79% clear
+both by a wide margin. **There is no AdSense thin-content exposure on this template.**
+
+**What the pages actually are.** 88 AI-Assistant sessions vs 5 organic in 30d; 42.2% of the
+site's AI-channel Amazon clicks; 3.52 pv/session. `/books/a-dictionary-of-color-combinations/`
+alone takes 86 of 1,060 AI sessions and converts at **165.6 Amazon clicks per 1k pageviews**
+— the best surface on the site. They are short because they are a *shelf*: a title, an
+honest editorial reason, one CTA. That is the correct shape for the job, per
+`measured-vs-expected` § *a metric can measure page ROLE rather than page quality*.
+
+**Card closed as measured-and-refuted.** Prevented: a ~41-minute build shipping 12 pages of
+invented bibliographic prose onto a hard-gated, top-converting template.
+
+**Residual finding, recorded not acted on.** The Wada page's body says *"All 348 combinations
+from this 1933 work are browsable here for free, with hex values"* and links to `/palettes/`
+**0** times (`/colors/` 0; `/books/` 6; `/go/` 1). A stated promise with no path to it is a
+dead end under `ux-conversion-friction`. It is deliberately **not** fixed here: this is the
+site's highest-converting page, and adding competing exits to a 165.6/1k converter is the
+documented revenue-loss trap (`measured-vs-expected` § *do NOT weaken the buy-block*,
+cabinpets). If it is ever taken up it should be one link in the archive sentence, shipped
+with before/after `/go/` click-rate on that page as the gate — never a restructure.
+
+**The method note worth keeping.** Both refutations came from cheap controls I nearly
+skipped: reading the file header before prescribing a change to it, and resolving the
+sitemap from robots.txt instead of assuming `/sitemap.xml` (which returns zero URLs here and
+would have read as "the site has no pages").
