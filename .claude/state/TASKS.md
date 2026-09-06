@@ -2583,3 +2583,71 @@ Filed as a scheduled card for after the gate reads out. **Do not ship before 202
 exiting 0 — a silent near-total failure that reads like success. Put the body in a script file and
 use `xargs -P 14 -n 1 ./fetch.sh`, then assert `mapped == input lines` before trusting anything
 downstream.
+
+### E43 — the site's own search could not find its highest-impression page (2026-09-06)
+
+**The gap.** `search-index.json` carried **711 rows of exactly four kinds** — Palette 378, Color
+210, Collection 69, Pairing guide 54. Every `/learn/`, `/tools/`, `/paintings/`, `/trends/` and
+`/glossary/` page was unreachable from the site's own search, including
+**`/trends/color-trends-2026/` — the single highest-impression page this site has in Bing**
+(6,777 impr, pos 4.9). The 703 `/colors-that-go-with/` leaves are excluded *by a documented
+decision*; these ~100 pages were not — no exclusion reasoning exists for them anywhere in the
+source.
+
+**Measured, using the site's own matcher.** GA4 30d: **342 `Search` / 186 `SearchNoResults`** —
+54% of searches return nothing. Lifted `srch` / `loose` / `hexOf` verbatim out of
+`BaseLayout.astro` and ran them against the live index and all 164 distinct failing terms:
+
+```
+"year"             x2  -> 0 results     the 2026 trends page exists AND ranks
+"contrast checker"     -> 0 results     the tool exists
+"monet"                -> 0 results     12 Monet-adjacent painting pages exist
+"Triadic"              -> 0 results     defined in /glossary/
+```
+
+**🔴 The crowding constraint is the design, and it is measured — not caution.** Ranking scores a
+title-prefix hit `100` and tie-breaks on **shortest title**, so a 7-character `"Contact"` beats
+`"Coral Red"` for the query `"co"`. Simulated against the **226 real successful search terms** of
+the last 30 days:
+
+| candidate set | gained | **regressed** |
+|---|---:|---:|
+| all 115 unindexed pages | 13 events | **11 events** — `co`/`con`→`/contact/`, `pr`→`/privacy/`, `Ter`→`/terms/`, `bu n`→`/shop/` |
+| content-only (index/legal dropped) | 12 events | 3 events |
+| **final shipped set (58 rows)** | **7 events** | **2 events** |
+
+Both remaining displacements are garbled mid-typing states (`pr i nt`, `un`), not real queries.
+Section indexes and boilerplate are therefore excluded deliberately, and the reason is recorded
+inline in the source so nobody "completes" the set later.
+
+**Built data-driven** from `PILLAR_LINKS`, `PAIRS` + `FORMATS` and `allPaintings()` so it does not
+rot as pages are added; only the ~12 standalone editorial/tool pages are listed explicitly.
+
+**Verified live after `4fd9944`** (pipeline `success`, served `/search-index.json`):
+
+```
+711 -> 769 rows (+58)   Guide 9 · Tool 22 · Painting 25 · Trend 2
+controls: 'zzzqqq' 0 · 'kurenai' -> /colors/kurenai/ UNCHANGED · 'beige' -> /colors-that-go-with/beige/ UNCHANGED
+recovered: year -> /trends/color-trends-2026/ · contrast checker -> /tools/contrast-checker/
+           monet -> /paintings/water-lilies/ · Triadic -> /glossary/ · gradient -> /tools/gradient-generator/
+net on real 30d traffic: +7 events recovered / -2 displaced
+```
+
+**The simulation predicted reality exactly** — +58 rows predicted / +58 actual, +7/−2 predicted /
++7/−2 actual. Recording that because it is the justification for simulating against real query
+logs before shipping a ranking change, rather than shipping and watching.
+
+**Does not touch the running §E5 test.** This adds JSON rows to a client-fetched index, not
+`<a href>` links, so no internal link equity moves and the 2026-10-06 read on
+`/trends/color-trends-2026/` stays clean. It also leaves that page's `<title>` alone (mid a
+separate Bing experiment, `a0d4510`).
+
+**A false zero caught by a control.** The first pull used `ev=search_no_results` and returned 0
+rows — the event is **`SearchNoResults`** (CamelCase). Enumerating `dims=eventName` is what found
+it, and the endpoint's own `warning: zero_rows — this is NOT proof the site is untagged` is what
+prompted the enumeration. Guessing the event name would have produced "this site has no failing
+searches", the exact opposite of the truth.
+
+**Still zero after this ship, and honestly so:** `Pale Purplish Vinaceous` (4) — genuine dataset
+absence, already documented; `fennel` (3); `Коричневый` (2, Russian "brown" — no i18n on this
+site); bare `#` (3). None is fixable by indexing.
