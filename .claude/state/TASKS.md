@@ -4261,3 +4261,56 @@ docs-skip): `updated <time` = 0 across `/collections/japanese/`, `/winter/`,
 matched by the same grep (so the zero is not a blind pattern); `/`,
 `/palettes/kurenai-kon/`, `/colors/blue/` all 200; money path
 `/go/b/4861522471` still 302s to bare own-origin on a bare probe.
+
+### E71 — the email capture, the site's only engineered return-loop, fired no analytics at all (2026-09-06)
+
+Shipped `06c3169e`. `src/components/EmailCapture.astro` posts to the
+first-party `/api/subscribe` (Cloudflare KV, no external account) and contained
+**zero** `gtag` / `clarity` / `plausible` calls — the success path only set
+status text. Confirmed against the property rather than assumed: **none of the
+26 GA4 event names** on this site was subscribe-related (complete pull,
+`truncated:false`). "Does anyone subscribe?" was unanswerable from any
+dashboard.
+
+Now emits dual-sink on success, matching the site's own convention
+(`FeedbackWidget` and `BaseLayout` both do gtag + clarity):
+
+```
+gtag("event","subscribe",{source, outcome})
+clarity("event","subscribe_"+outcome)
+```
+
+**`outcome` is the point, and specifically `pending_no_binding`.**
+`functions/api/subscribe.js` deliberately fails OPEN — *"KV not yet bound —
+accept gracefully so the form never looks broken"* — returning
+`{ok:true, pending:true}`. So a lost `SUBSCRIBERS` binding would silently
+discard every signup while showing the user "✓ You're in". That state is
+indistinguishable from working from outside; this is the same shape as
+`affiliate-link-gate` § *A FAIL-CLOSED GATE'S HEALTHY STATE AND ITS BRICKED
+STATE LOOK IDENTICAL*, inverted. Emitting it as its own outcome is the only
+thing that makes it detectable. Binding verified present on production **and**
+preview via the CF Pages API the same day, so nothing is currently being lost.
+
+Typed with a local `window` shape rather than `any`, because this is a bundled
+`<script>` and not the `is:inline` one `FeedbackWidget` uses; wrapped in
+try/catch so analytics can never break a signup. Forward-only — recovers no
+history. `astro check`: 0 errors across 134 files.
+
+**What stays unmeasurable.** The endpoint maintains `meta:count` expressly as
+*"a cheap read for a 'N readers subscribed' surface later"*, but KV read is out
+of scope for every token on this machine — `CF_PAGES_TOKEN`,
+`CLOUDFLARE_PAGES_API_TOKEN` and `CLOUDFLARE_API_TOKEN` all return
+`code 10000 Authentication error`, and the control confirms none can even
+*list* namespaces while the same token reads the Pages project fine. So it is a
+scope limit, not a bad query, and the current subscriber count is unknown.
+
+**Retention itself needed no work:** 25.8% of attributed sessions are
+returning (meets the reference-site target), and returning visitors read 48%
+deeper than new ones — 3.40 vs 2.29 pv/session.
+
+**Two further levers checked and clean, recorded so they are not re-run:**
+`/copyright/` is a real 39KB notice-and-takedown page (*What is ours* / *What
+is not ours* / *Trademarks* / *Notice and takedown* / *Contact*, naming
+Seigensha alongside the 1933 original); and images on `/paintings/` are 4/4
+`loading="lazy"`, 4/4 `decoding="async"` with dimensions present — full
+`fleet-images-standard` compliance.
