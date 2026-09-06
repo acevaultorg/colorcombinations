@@ -4152,3 +4152,70 @@ with before/after `/go/` click-rate on that page as the gate — never a restruc
 skipped: reading the file header before prescribing a change to it, and resolving the
 sitemap from robots.txt instead of assuming `/sitemap.xml` (which returns zero URLs here and
 would have read as "the site has no pages").
+
+### E69 — display ads were rendering on a 75-word page; the exposure is exactly 12 pages and the fix already existed (2026-09-06)
+
+Refuel leg. Found while scoping what E68 had *not* covered, and it partially
+corrects E68's own conclusion.
+
+**E68 said "no AdSense thin-content exposure" and that was true of the gates it
+checked** — `adsense-thin-content-prevention` Gate 1 (sitemap-to-substantive
+ratio) and Gate 2 (audits URL patterns ≥5% of sitemap). `/books/` is 0.79%, so
+neither fires. But `revenue-maximizer` carries a **separate, per-page** rule that
+does:
+
+> ❌ Ads on pages under 250 words of unique content (HCU thin-content signal)
+
+Measured on the served HTML: the Mediavine tag and its `mv-content` in-content
+target render on `/books/chromaphilia/` at **75 words**. Mediavine Journey
+approved this site **2026-09-04**, so the new-publisher review risk is live.
+
+**Scoped the whole site before touching anything** — the mistake would have been
+to assume /books/ was representative:
+
+| type | pages | words (sampled) | ads |
+|---|--:|---|---|
+| `/colors-that-go-with/` | 757 | 1,390–3,325 | yes |
+| `/palettes/` | 378 | 1,229–1,240 | yes |
+| `/colors/` | 223 | 1,417–1,427 | yes |
+| `/collections/` | 70 | 1,595–1,798 | yes |
+| `/paintings/` | 27 | 415–1,544 | yes |
+| `/learn/` | 13 | 852–2,547 | yes |
+| **`/books/`** | **12** | **75–215** | **yes ← the only thin type** |
+| `/privacy/` `/terms/` `/contact/` `/about/` `/copyright/` 404 | 6 | 114–1,210 | **no — already correct** |
+
+So the exposure is exactly 12 pages, and **the mechanism to fix it already
+existed**: `BaseLayout`'s `adContent` is an opt-in prop specifically so policy
+pages can decline it. Those six pages already do, correctly. `/books/` simply
+opted in.
+
+**The fix: drop the prop.** `980636d`, both `/books/` templates, with the
+reasoning recorded in the frontmatter so nobody re-adds it.
+
+**Why not enrich instead** — this is the third option E68 and the card it closed
+both missed. Not *enrich* (unsourceable: Open Library has publisher/year/pages
+for 13/13 ISBNs but **description 0/13, excerpts 0/13**, so nothing reaches 250
+words without inventing facts about unread books) and not *prune* (they are the
+site's best AI-converting template). **Stop serving ads on them.**
+
+**Cost measured, not assumed:** `/books/` is **164 of 16,228 pageviews = 1.01%**
+of the site. The Amazon CTA, `rel="sponsored nofollow noopener"` and the adjacent
+FTC line are untouched — 42.2% of AI-channel Amazon clicks run through this
+template and that path must not be disturbed.
+
+**🔴 The mistake I made inside this leg, worth more than the fix.** My first edit
+put the explanatory comment in the *attribute list* — `{/* … */}` between
+`<BaseLayout` and `title={title}` — which is not valid JSX. `astro check`
+reported **6 errors** and **exited 0**. Had I read the exit code instead of the
+message, a syntax error (`books/index.astro:116:14 ts(1002) Unterminated string
+literal`) would have gone into CI. Baseline was 0 errors; the corrected version
+is back to 0. This is exactly `positive-control-before-absence`
+§ *a verdict read through a pipe is the pipe's verdict* — here the verdict was
+read from the exit code of a tool that does not encode its verdict there.
+
+**What this does NOT claim.** Removing `adContent` removes the *in-content*
+insertion target. The Mediavine script still loads site-wide from `<head>`, and
+non-in-content unit types are controlled dashboard-side, outside this repo. The
+six policy pages are handled by exactly this mechanism and are considered
+compliant, so `/books/` now matches the site's own established standard — that is
+the claim, and no more.
