@@ -2281,3 +2281,17 @@ real Astro `getStaticPaths`-extraction regression in the same leg with zero live
 carries no further agent-eligible work — remaining open items are `assignee:human`
 (Wikipedia outreach `mtpazjk33khznb`, Pinterest setup `mq0supbru74rv5`) or `kind:reference`
 (`/for-you` swipe-feed spec, deliberately bottom-ranked).
+
+### E36 · 2026-09-06 — checked the /for-you reference card before touching it; it says stop, so stopped
+
+Board empty again after E35. Only non-human-gated item was the bottom-ranked `kind:reference`
+`/for-you` swipe-feed card (`mqmhf8m6ubdiay`). Read its FULL body via `update_task` (not the
+truncated `_big:1` summary) before considering it — and it already contains 4 independent prior
+sessions' triage, all reaching the same conclusion: do not build (measured against a ~$7.32/mo
+retention ceiling, `InLinks=9` domain-wide authority constraint, and — the sharpest one — that it's
+invisible to this site's one actually-working channel (Copilot/AI citation, ~25K/30d, 45-75% share
+on book queries), since a client-side swipe overlay adds 1 sitemap URL and zero new extractable
+facts. The card's own closing note anticipates exactly this moment: *"if you are reading this card
+and neither [condition] has happened, stop here rather than re-verifying the resume condition a
+fifth time."* Stopped there — did not re-run the collision check, did not build. Would have been
+the 5th session to independently re-derive an answer already settled 4 times.
