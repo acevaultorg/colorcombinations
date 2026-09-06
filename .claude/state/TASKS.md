@@ -4542,15 +4542,41 @@ site-wide. Written into `src/lib/contentDate.ts` (`0f0c5ec`, comment-only, +19/-
 line verified to be a comment) at the exact spot a future session would flag it as a bug — I nearly
 did so myself within hours of shipping the fix.
 
-### 5. The one lever this lane cannot close
+### 5. ~~The one lever this lane cannot close~~ — CORRECTED: it was already closed today
 
-**Mobile-375 is unverified and I am not claiming otherwise.** `mobile-perfection-default` says
-"Not grep — look", and this lane has no Chrome MCP. A CSS-marker grep is a non-rendering client
-being asked a rendering question — the "two headless clients are one client" error — and it would
-produce either false comfort or a false finding. Two instrument failures along the way make the
-point: grepping the *HTML* for CSS properties returned all-zeros (the CSS is external), and the
-multi-file fetch loop returned 0 bytes (word-splitting bug) — both would have read as "no mobile
-guards" to anyone not running controls. Routing note: this needs a lane with a browser.
+**What I originally wrote here was wrong, and I am superseding it in place rather than appending a
+banner.** I wrote that mobile-375 was "unverified" and filed a routing note saying it "needs a lane
+with a browser." Then I ran the dedup search — and card `ms072bswpegdnj`, **this project**, was
+completed **today** by the Operator Queue lane on the Air:
+
+> 7 surfaces measured at a genuine 375x812 viewport (`innerWidth` = 375, control passed) via the
+> in-app Browser pane. Document `scrollWidth` 375 on every page, **0 elements past the viewport**,
+> commercial blocks 1-column, buy buttons 44-50px, plate/mood rows wrapping to one 43px line, search
+> "sage green" returning a visible 343px listbox. The trends YoY table scrolls inside its own
+> `overflow-x:auto` wrapper rather than the page. **Nothing failed.**
+
+So the lever is closed, the routing note would have been a duplicate, and the honest status of
+mobile on this site is VERIFIED, not unknown.
+
+**What survives from what I wrote:** *this* lane genuinely cannot render — a CSS-marker grep is a
+non-rendering client asked a rendering question, and two instrument failures proved it (grepping the
+HTML for CSS returned all-zeros because the CSS is external; the multi-file fetch loop returned 0
+bytes on a word-splitting bug). Both would have read as "no mobile guards" without controls. That
+reasoning was right; the conclusion drawn from it was not.
+
+**And the process error is the part worth keeping.** I ran the dedup search *after* writing this
+section instead of before — the exact ordering mistake I shipped to doctrine earlier today
+(`measured-vs-expected` section on dedup being a precondition, not a write-up step). One
+`search_tasks` call, run four minutes earlier, would have replaced a false claim with a citation.
+It also would have surfaced the useful part for free: **on a desktop-app session use the in-app
+Browser `resize_window preset:mobile`** for the 375 gate — the old "Chrome MCP can't set the
+viewport" limitation does not apply there.
+
+Also found by the same search, and worth recording so nobody re-derives them: colorcombinations CWV
+is measured and fixed (`mtncwponxsc3i5`, `mtn3ppj7iazd49` — both done, LCP cause isolated to inline
+JS + third-party, two fixes shipped), and device-conversion was measured today (`mtpupozs0xw99t` --
+mobile is ~48% of sessions and converts **1.74x** better than desktop, so mobile is this site's
+stronger surface, not its weak one).
 
 ### Session state
 
