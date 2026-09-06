@@ -191,6 +191,44 @@ const pillarHref = pillar
 // register, modern usage. Improves LLM citation-fit on detail pages.
 const story = COLOR_STORIES[color.slug];
 
+/**
+ * FAQ — SINGLE SOURCE for both the FAQPage schema below AND the visible <section>
+ * near the bottom of this page. They must not drift apart.
+ *
+ * Why this array exists (2026-09-06, §E46): the FAQPage schema was previously built
+ * inline here and rendered NOWHERE. Measured across all 1,529 crawled pages, 1,364
+ * of them shipped FAQPage JSON-LD whose Q&A appeared in no visible HTML — this
+ * template's 204 pages among them. Google's general structured-data guidelines
+ * require markup to match visible page content ("every question and answer in the
+ * JSON-LD must appear in visible HTML"), and FAQ rich results were deprecated
+ * 2026-05-07, so the schema's only remaining purpose is AI extraction — and AI
+ * extractors read RENDERED content. Invisible answers helped nobody.
+ *
+ * The answers are genuinely substantive (computed WCAG ratios, hex, provenance,
+ * licensing), which is why the fix is to RENDER them rather than delete the block.
+ *
+ * Pattern copied from colors-that-go-with/[color]/index.astro, the one template on
+ * this site that already did it correctly ("visible text matches schema").
+ */
+const colorFaq: { q: string; a: string }[] = [
+  {
+    q: `What is the hex code for ${color.name}?`,
+    a: `${color.name}${color.nameJa ? ` (${color.nameJa})` : ""} is ${color.hex}. ${color.meaning ?? ""} It appears in ${color.paletteCount} historical color combination${color.paletteCount === 1 ? "" : "s"} from Sanzo Wada's 1933 "A Dictionary of Color Combinations".`.trim(),
+  },
+  {
+    q: `What does ${color.name} look like on white and black backgrounds?`,
+    a: `${color.name} (${color.hex}) has a WCAG contrast ratio of ${onWhite.toFixed(2)}:1 against white (#FFFFFF) and ${onBlack.toFixed(2)}:1 against black (#000000). WCAG AA requires 4.5:1 for normal text and 3:1 for large text.`,
+  },
+  {
+    q: `Where does the color ${color.name} come from?`,
+    a: `${color.name} is documented in Sanzo Wada's "A Dictionary of Color Combinations" (1933, Seigensha Art Publishing 2010 reprint). Wada catalogued ${color.hue} pigments and historical Japanese color terms. The source work is in the public domain.`,
+  },
+  {
+    q: `Can I use ${color.name} in my own design or brand?`,
+    a: `Yes. The color name and hex value (${color.hex}) are factual data — not copyrightable. Our curation and descriptions are CC BY 4.0 licensed.`,
+  },
+];
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -239,40 +277,11 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "@id": `${new URL(`/colors/${color.slug}`, Astro.site).toString()}#faq`,
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `What is the hex code for ${color.name}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `${color.name}${color.nameJa ? ` (${color.nameJa})` : ""} is ${color.hex}. ${color.meaning ?? ""} It appears in ${color.paletteCount} historical color combination${color.paletteCount === 1 ? "" : "s"} from Sanzo Wada's 1933 "A Dictionary of Color Combinations".`.trim(),
-        },
-      },
-      {
-        "@type": "Question",
-        name: `What does ${color.name} look like on white and black backgrounds?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `${color.name} (${color.hex}) has a WCAG contrast ratio of ${onWhite.toFixed(2)}:1 against white (#FFFFFF) and ${onBlack.toFixed(2)}:1 against black (#000000). WCAG AA requires 4.5:1 for normal text and 3:1 for large text.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Where does the color ${color.name} come from?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `${color.name} is documented in Sanzo Wada's "A Dictionary of Color Combinations" (1933, Seigensha Art Publishing 2010 reprint). Wada catalogued ${color.hue} pigments and historical Japanese color terms. The source work is in the public domain.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Can I use ${color.name} in my own design or brand?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Yes. The color name and hex value (${color.hex}) are factual data — not copyrightable. Our curation and descriptions are CC BY 4.0 licensed.`,
-        },
-      },
-    ],
+    mainEntity: colorFaq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
   },
   {
     "@context": "https://schema.org",
@@ -552,6 +561,23 @@ const jsonLd = [
   )}
 
   {/* ============ EMBED WIDGET ============ */}
+  <!-- FAQ — renders `colorFaq`, the SAME array that feeds the FAQPage schema in the
+       frontmatter. Visible text matches the schema by construction; do not build one
+       without the other (see the comment on colorFaq, and §E46). -->
+  <section class="section color-faq-section" aria-labelledby="color-faq-heading">
+    <div class="container-narrow">
+      <h2 id="color-faq-heading" class="color-faq__title">Questions about {color.name}</h2>
+      <dl class="color-faq__list">
+        {colorFaq.map((f) => (
+          <div class="color-faq__item">
+            <dt class="color-faq__q">{f.q}</dt>
+            <dd class="color-faq__a">{f.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
   <section class="section color-embed-section" aria-labelledby="color-embed-heading">
     <div class="container-wide color-embed-inner">
       <div class="color-embed-copy">
@@ -641,6 +667,14 @@ const jsonLd = [
 </script>
 
 <style>
+  /* FAQ block (§E46) — scoped, matches this page's existing section conventions
+     rather than the Tailwind utilities used by colors-that-go-with/. */
+  .color-faq__title { font-size: 1.05rem; font-weight: 600; margin: 0 0 0.9rem; color: var(--color-ink-900, #1a1714); }
+  .color-faq__list { margin: 0; }
+  .color-faq__item + .color-faq__item { margin-top: 0.9rem; }
+  .color-faq__q { font-weight: 600; font-size: 0.95rem; color: var(--color-ink-900, #1a1714); }
+  .color-faq__a { margin: 0.25rem 0 0; font-size: 0.9rem; line-height: 1.55; color: var(--color-ink-500, #8a8378); }
+
   /* Peak-intent buy block. The component brings its own grid; this only gives it
      breathing room in the page flow. `.container-narrow` is a global width
      utility with no list rules, so unlike the palette page there is no `.prose
