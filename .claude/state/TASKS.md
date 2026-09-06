@@ -3135,3 +3135,27 @@ The discriminator was one extra parameter — `ev=SearchNoResults` — on a quer
 had already run without it. An aggregate that mixes events answers a different
 question than the one being asked, and the aggregate's answer was the flattering
 one.
+
+#### §E50 verified live + a deploy-polling trap
+
+```
+served HTML   function fuzzy=1  function ed(=1  "did you mean"=1   (control: function zzznope=0)
+LIVE code vs LIVE index:  6/6 typo cases rescued
+  lavendar -> Grayish Lavender - B      cinamon  -> Cinnamon Buff
+  Eugenua  -> Eugenia Red | B           Contiga  -> Cotinga Purple
+  rosalanc purppl -> Rosolanc Purple    coquetre -> Coquette Color Palettes
+NEGATIVE CONTROL  fuzzy("zzqxwvpl") = 0        (not a constant-true)
+POSITIVE CONTROLS kurenai 3 · beige 1 · boho 1 · emerald green 1 — all answered by
+                  strict search, so the fuzzy tier is never reached for them
+```
+
+Extracted the functions from the **served page**, not the repo, and ran them
+against the **served index** — a re-typed copy would test the copy.
+
+**Polling trap worth remembering:** the verification job polled the pipeline for
+commit `275ea2a` and would have spun for its full 30-minute budget. Pushing a
+second commit (`6c2b0b9`, state only) made GitLab **auto-cancel** the first
+pipeline as redundant — so its status went to `canceled`, which the loop treated
+as neither success nor failure. The site was already deployed by the newer
+pipeline. **A per-SHA pipeline poll is only valid while that SHA is the tip;
+break on `canceled`/`skipped` as well, or poll the branch rather than the SHA.**
