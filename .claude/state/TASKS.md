@@ -2525,3 +2525,61 @@ erroring out; quoting it and adding a must-be-non-zero control returned 13.
 listed in `sitemap-ai.xml` — a sitemap ideally lists final URLs, and this one redirects to
 `/browse/`, which is already in the same file. Removing that entry is a *de-sitemap*, which
 the veto BLOCKed, so it is filed as its own card with the evidence rather than actioned here.
+
+### E42 — full internal-link graph: the site has essentially NO orphans, and `/collections/` is the starved-but-efficient type (2026-09-06)
+
+**What was measured.** Fetched **all 1,529** sitemap URLs (0 empty, 0 failures), extracted every
+`href`, normalised to absolute + trailing-slash, and built the complete inbound-link graph.
+
+**Controls first** (an orphan claim is an absence claim):
+
+```
+home outbound degree ......... 67     (must be > 0)   ✅
+inbound to /browse/ .......... 1527   (known hub)     ✅
+inbound to /colors/blue/ ..... 23                     ✅
+pages with 0 outbound links .. 1      (should be ~0)  ✅  — and it is /palettes/, the redirect from E41
+```
+
+**Result: 1 orphan out of 1,529** — and it is `/palettes/`, the URL fixed one leg earlier in
+§E41. Every other page in the sitemap has ≥1 inbound internal link. The orphan hypothesis is
+**refuted**, which matches §E11's earlier "essentially no orphans here" and is worth recording so
+nobody spends another leg hunting them.
+
+**The real finding is the DISTRIBUTION, not the orphans.**
+
+| page type | pages | median inbound | min | pageviews/30d | pv per page |
+|---|---:|---:|---:|---:|---:|
+| `/palettes/` | 379 | 20 | 0 | 3,279 | 8.7 |
+| `/colors-that-go-with/` | 757 | 14 | 14 | 1,059 | **1.4** |
+| `/colors/` | 223 | 8 | 4 | 2,772 | 12.4 |
+| **`/collections/`** | **70** | **2** | **1** | **1,630** | **23.3** |
+
+`/collections/` is the **5th-largest page type by traffic** (1,630 pv / 1,390 sessions) and by far
+the most traffic-efficient per page — **23.3 pv/page, 16× `/colors-that-go-with/`** — while
+receiving roughly **one-seventh** its internal link equity. 43 of the 70 sit at ≤3 inbound; 25 at
+exactly 1 (their own index). Traffic is real and spread, not one page: `/collections/japanese/`
+239 pv, `/websites/` 74, `/autumn/` 55, `/branding/` 51, `/minimalist/` 47, and 71 collection
+URLs have traffic at all.
+
+That is the clearest internal-linking asymmetry on the site, and internal plumbing is the only
+lever available without operator time (§E3: **9** external inbound links, site-wide).
+
+**🔴 DELIBERATELY NOT SHIPPED — it would confound a running experiment.** §E5 shipped the
+link-concentration test *this same day* (`a04220e`): 51 collections now link out to
+`/trends/color-trends-2026/`, with a recorded baseline (`6,777 impr, pos 4.9`) to be re-read on
+**2026-10-06**. Adding inbound links *to* collections raises collections' own equity, which
+changes how much they pass onward to `/trends/` — so it would inflate that test's effect size and
+make the read unattributable. §E5 states the stakes plainly: *"if 51 pages move nothing, internal
+linking is dead as a lever on this site."* Contaminating the one experiment that answers that
+question costs more than the fix gains.
+
+Verified the gate can actually fire rather than assuming it: task `mtpbh3t3zij2cx`,
+`status: scheduled`, `scheduledFor` = 2026-10-06. Armed.
+
+Filed as a scheduled card for after the gate reads out. **Do not ship before 2026-10-06.**
+
+**Method note for whoever repeats this.** `xargs -P … -I{} sh -c '<long string>'` dies with
+`command line cannot be assembled, too long` on a 1,529-URL list and fetched **2** of them while
+exiting 0 — a silent near-total failure that reads like success. Put the body in a script file and
+use `xargs -P 14 -n 1 ./fetch.sh`, then assert `mapped == input lines` before trusting anything
+downstream.
