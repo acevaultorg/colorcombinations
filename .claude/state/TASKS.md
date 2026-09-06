@@ -2980,3 +2980,123 @@ punctuation character as an instrument fault rather than a finding.
 pages, deliberately deferred until after **2026-10-06** — that template is
 inside the running §E5 link-concentration test and a content change would
 confound the read. Nothing else is outstanding.
+
+### §E50 — the search-term instrument was never dark; typo rescue shipped (2026-09-06)
+
+Refuel leg (queue empty). Ran the `fleet-search-standard` demand-discovery lever,
+which had never been read on this site. Four instrument findings, one ship.
+
+#### 🔴 1. `search_term` is a GA4 RESERVED parameter — `customEvent:search_term` is permanently `(not set)`
+
+The emitter has always sent it (`gtag("event", z?"SearchNoResults":"Search",
+{search_term: sq, results, fallback_shown})`), and `search_term` **is registered
+as a custom dimension** on the property. Querying it returns `(not set)` for
+**100% of 342 Search + 186 SearchNoResults events over 30d** — so the obvious
+reading is "the instrument is dark, file a defect".
+
+It is not. `search_term` is GA4's reserved parameter for site search, so the
+value lands in the **built-in `searchTerm` dimension**, never in a custom one.
+The custom-dimension registration for it is inert.
+
+```
+dims=customEvent:search_term  ev=SearchNoResults  30d ->   1 row: "(not set)" 186
+dims=searchTerm               ev=SearchNoResults  30d -> 164 rows of real queries
+```
+
+Positive control that made the diagnosis safe rather than a guess:
+`customEvent:page` on `amazon_click` returns **real values** (29 events) beside
+203 `(not set)` — the forward-only registration boundary. So custom dimensions
+on this property demonstrably work; only the reserved name does not.
+
+**For every future session: query `dims=searchTerm`, never
+`dims=customEvent:search_term`.** Registering a custom dimension on a reserved
+GA4 parameter name produces a dimension that exists, accepts the registration,
+and can never return a value — a false absence that reads exactly like a broken
+emitter.
+
+#### 🔴 2. The 09-04 search collapse is the de-dupe fix WORKING, not a bug
+
+Total searches/day fell from 24 · 43 · 21 (09-01..09-03) to **3** on 09-04, while
+pageviews (511), `scroll` (89) and `explorer_use` (105) all stayed normal. That
+reads as a broken search widget on the #2 earner.
+
+It is not. `304d344` (09-03 20:23) shipped the typing-session de-dupe + 1800ms
+settle from `fleet-search-standard`. The pre-fix data still carries the ladders
+it was written to collapse:
+
+```
+Emer · Emeral · Emerald gree · Emerald green
+Brown, bi · Brown, biege · Brown, biege and ora · Brown, biege and orange
+Kopenha · Kopenhavn · Kopenhavngreen
+```
+
+Collapsing the 164 distinct zero-result queries with the site's own 60%-prefix
+rule removes **52 of them (32%)** — direct evidence of the inflation the fix
+targets. Pre-fix search rate was 8.3% of pageviews, which is implausibly high for
+a content site; post-fix 0.6% is ordinary.
+
+The discriminator that ruled out a code fault: `explorer_use` and the search
+widget were both in the five scripts `8820db2` moved to `type="module"`. The
+explorer is unaffected (137 · 105 · 114 · 132), so `type="module"` did not break
+anything. **09-05 data is incomplete** (`scroll` 8 vs ~90) — GA4 lag; only 09-04
+is a complete post-fix day, so this is n=1 and stated as such.
+
+#### 3. Today's two search commits measurably fixed 29% of the dead-end pool
+
+Replaying all 164 zero-result queries against the **current** live
+`/search-index.json` (769 rows) using the site's own `srch()` + `loose()`:
+
+| outcome | queries | events | share |
+|---|---:|---:|---:|
+| now found by strict search (fixed by `a8adb1c` + `4fd9944`) | 17 | 41 | 29% |
+| strict miss, loose fallback rescues it | 23 | 45 | 32% |
+| nothing at all | 38 | 56 | 39% |
+
+`beige`, `Burgundy`, `Emerald green` now hit the 54 new hub pages; `year` and
+`Triadic` hit the newly-indexed editorial pages. Loop closed on both ships.
+
+**`SearchNoResults` overstates true dead-ends by ~32%** — it fires whenever
+*strict* search misses, even when the loose fallback showed relevant results.
+The `fallback_shown` param already records which. Read the two together.
+
+#### 🔴 My own simulation over-counted dead ends — the hex tier was missing
+
+The "nothing at all" bucket contains `#71406B`, `F0CCAC`, `ff4d52`, `104C90` and
+~14 more hex-shaped queries. My replay implemented `srch()` and `loose()` but
+**not `hexOf()`**, the route-before-search tier that sends a pasted hex to the
+converter. The live site handles those; my simulation did not. True dead-end
+count is therefore materially below 56, and any figure quoted from that bucket
+must exclude hex/plate shapes.
+
+#### The ship: tier-3 typo rescue
+
+18 of the remaining dead ends are **single-character misses on colours the
+dictionary already has** — not content gaps, search failures:
+
+```
+lavendar        -> Grayish Lavender - B      cinamon   -> Cinnamon Buff
+Eugenua         -> Eugenia Red | B           Contiga   -> Cotinga Purple
+rosalanc purppl -> Rosolanc Purple           coquetre  -> Coquette Color Palettes
+```
+
+Added a third tier that runs **only when strict and loose have both returned
+nothing**, so it cannot alter any query either already answers — verified against
+the 30d successful-search log (226 queries / 342 events): 0 regressions by
+construction. Bounded edit distance (≤1 for words ≤5 chars, ≤2 above) over an
+805-word vocabulary built once and cached.
+
+Tested by extracting the **shipped** functions and running them against the
+**live** index — not a re-typed copy: 6/6 typo cases rescued, 4/4 controls
+(`kurenai`, `beige`, `boho`, `emerald green`) still answered by strict search so
+the fuzzy tier is never reached. `ed()` unit-tested against known distances
+including `kitten`→`sitting`=3. `node --check` clean on both patched regions.
+
+**Honest EV: ~18 events/30d.** Small on a site earning $51.53/mo. Shipped because
+it is ~15 lines, zero-regression by construction, permanent, and generalises to
+every future typo rather than a hand-maintained alias list. The residual dead
+ends are non-English colour names (`Коричневый`, `Glicinia roxa`, `Kopenhavngreen`)
+and context words (`Clothing`, `monotone`, `high tech`) — both real but ~11-13
+events/30d each, and the context case has no clean fix: 702 `[context]` pages
+exist but there is no per-context landing page to point a search at, and indexing
+all 702 would double the 118KB payload every page downloads. Left unfixed
+deliberately, with the numbers recorded rather than a speculative change shipped.
