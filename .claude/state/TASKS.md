@@ -2817,3 +2817,52 @@ remaining purpose is AI extraction, and **AI extractors read rendered content an
 schema-only FAQ is of dubious value even for the reason it was added.
 
 Filed as `mtpngwzp68woij` with three options (render / drop / leave). Not actioned here.
+
+### E47 — SHIPPED: rendered the FAQ on `/colors/[slug]` — 204 pages had answers nobody could see (2026-09-06)
+
+The first template fixed out of §E46's 1,364. **One template, deliberately** — E5's precedent in
+this repo is a test on one template, not a bulk change.
+
+**Why render rather than delete the schema — and a correction to my own first read.** I initially
+assumed these FAQs were template boilerplate, because the *question* on `/collections/boho/` reads
+like it (`What is in the "Boho Color Palettes" collection?`). I had not read the **answers**. They
+are substantive and computed per page:
+
+```
+What does Kurenai look like on white and black backgrounds?
+  → "Kurenai (#9A2A2A) has a WCAG contrast ratio of 7.67:1 against white and 2.74:1
+     against black. WCAG AA requires 4.5:1 for normal text and 3:1 for large text."
+```
+
+That is real, per-page, computed content that 204 pages were hiding. Judging a block by its
+question text and not its answer text is the same shape as judging a page by its slug.
+
+**Policy checked, not assumed** (2026-09-06): Google's general structured-data guidelines still
+require markup to match visible content — *"every question and answer in the JSON-LD must appear in
+visible HTML"* — while FAQ rich results were **deprecated 2026-05-07**. So there is no rich result
+to lose, the schema's only remaining purpose is AI extraction, and AI extractors read *rendered*
+content. Invisible answers helped nobody in either direction.
+
+**Shape.** Extracted the four Q&As into a single `colorFaq` array feeding **both** the FAQPage
+schema and a new visible `<section>`, so the two cannot drift apart. Pattern copied from
+`colors-that-go-with/[color]/index.astro` — the one template that already did this correctly
+("visible text matches schema"). Scoped CSS matching *this* page's conventions, not the Tailwind
+utilities that template uses.
+
+**Chose `/colors/[slug]` on purpose:** mature, genuinely distinct per-page content, and **not part
+of the running link-concentration test**. Explicitly did **not** touch `/collections/` before the
+2026-10-06 read (`mtpbh3t3zij2cx`), nor the 702 `/colors-that-go-with/[context]` leaves, where
+rendering near-identical FAQ blocks would risk thin content.
+
+**Verified live after `82922e1`** (pipeline `success`), controls in both directions:
+
+```
+/colors/kurenai/   schema 4 · rendered 4 · heading present     ✅
+/colors/ai/        schema 4 · rendered 4                       ✅
+/colors/gofun/     schema 4 · rendered 4                       ✅
+CONTROL  /collections/boho/            schema 4 · rendered 0   ✅ unchanged — the checker discriminates
+CONTROL  /colors-that-go-with/beige/   schema 3 · rendered 3   ✅ reference template unaffected
+```
+
+Remaining from §E46: **1,160 pages** across `/palettes/` (378), `/colors-that-go-with/[context]`
+(702), `/collections/` (69) and a handful of standalone pages. Carried on `mtpngwzp68woij`.
