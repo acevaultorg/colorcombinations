@@ -32,10 +32,28 @@ const jsonLd = {
     name: book.title,
   })),
 };
+
+/* AD POLICY — these pages deliberately do NOT pass `adContent` to BaseLayout.
+ *
+ * They are 75-215 words (median 94), and `revenue-maximizer` forbids display
+ * ads on pages under 250 words of unique content (thin-content signal to the
+ * ad network). Mediavine Journey approved this site 2026-09-04, so the
+ * new-publisher review risk is live.
+ *
+ * Do NOT "fix" this by padding the pages. The zero-fabrication rule in this
+ * file's header is correct: measured 2026-09-06, Open Library carries
+ * publisher/year/page-count for 13/13 of the ISBNs in FURTHER_READING but
+ * description 0/13 and excerpts 0/13. No source reaches 250 words, so the
+ * honest fix is to stop serving in-content ads here, not to invent prose.
+ *
+ * Cost measured, not assumed: /books/ is 164 of 16,228 pageviews = 1.01%.
+ * The Amazon CTA is untouched -- this is the site's best AI-converting template
+ * (42.2% of AI-channel Amazon clicks) and that path must not be disturbed.
+ * Same mechanism /privacy/, /terms/, /contact/, /about/ and 404 already use. */
+
 ---
 
 <BaseLayout
-  adContent
   title={title}
   description={description}
   jsonLd={jsonLd}
