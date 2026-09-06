@@ -1251,7 +1251,7 @@ lever and it is the one the arithmetic kills.
 Same window, sessions by channel, first 15d → last 15d (158/158 rows, `truncated:false`):
 
 ```
-Direct          1319 -> 1772   +453  (+34%)   1.64 pv/s
+Direct          1319 -> 1772   +453  (+34%)   1.64 pv/s   <- SUPERSEDED by §E20: this is +678% CRAWLER; Direct HUMAN is -21.8%
 AI Assistant     443 ->  600   +157  (+35%)   2.90 pv/s   <- deepest channel on the site
 Referral         104 ->  122    +18  (+17%)
 Organic Search  1196 -> 1194     -2   (-0%)   2.98 pv/s   <- FLAT
@@ -1261,7 +1261,7 @@ TOTAL           3089 -> 3731   +642  (+21%)
 **Organic Search is flat.** Every lever I priced this session — title length, meta descriptions, the
 Bing SEO rules, breadcrumbs — sits on that channel. They were all correctly measured and all
 correctly priced under \$1/mo, and now I can see they were also aimed at the one channel that is not
-moving. The growth is Direct (+34%) and AI Assistant (+35%).
+moving. ~~The growth is Direct (+34%) and AI Assistant (+35%).~~ **(SUPERSEDED same session by §E20 — Direct's +34% is a crawler block arriving mid-window, +678%; Direct HUMAN traffic is DECLINING -21.8%. AI Assistant +35% stands and is the ONLY growing human channel.)**
 
 #### Sources, and the sharp contrast inside them
 
@@ -1302,7 +1302,7 @@ deep, growing, and landing on the right pages. There is no defect here to fix.**
 
 - Stop pricing search-side hygiene levers. Measured flat, and separately worth <\$1/mo each.
 - Retention is measured, healthy (1.34× depth), and not fundable (\$7.32/mo at a heroic target).
-- The two growing channels are Direct (+34%) and AI/ChatGPT (+35%). Direct reads shallowest
+- ~~The two growing channels are Direct (+34%) and AI/ChatGPT (+35%).~~ **(SUPERSEDED by §E20: AI/ChatGPT +35% is the ONLY growing human channel; Direct human is -21.8%.)** Direct reads shallowest
   (1.64 pv/s) and is 42% of sessions — **it is the largest unexamined block on the site** and the
   honest next question, though note §E12 already established Direct here is 87% new users, so it is
   not returning-visitor traffic wearing a Direct label.
@@ -1464,3 +1464,72 @@ Without the cross-site control this would have been filed as a false absence abo
   sessions, so the AI channel does reach it.
 - ⚠️ It **does** mean: do not build more of this page type, and do not count its 703 URLs as
   progress toward the pageviews goal.
+
+### E20 · 2026-09-06 — I have to correct my own E17: the "+34% Direct growth" is the crawler arriving. Direct HUMAN traffic is DECLINING 21.8%
+
+§E17 (written ~40 min earlier this session) reported Direct as one of two growing channels, +34%.
+§E18 then found a 915-session crawler block inside Direct. The obvious follow-up — **did that block
+arrive during the window, and is it what "growth" was measuring?** — I did not run before publishing.
+Running it now inverts the finding.
+
+#### The signature
+
+Direct's daily series, first 15d vs last 15d:
+
+```
+sessions   1319 -> 1772   +34.3%
+pv/session 1.84 -> 1.49   -19.1%
+```
+
+**Sessions up, depth down** is the crawler-dilution signature. Real growth in a human channel does
+not systematically shallow the sessions; a growing population of 1.00-pv/s hits does exactly that.
+The two heaviest days are visible in the raw series — 2026-08-22 (241 sessions @ 1.17 pv/s) and
+2026-08-26 (209 @ 1.26).
+
+#### Decomposition, with the two inputs measured rather than assumed
+
+Both pv/s constants come from §E18's direct measurement, not from fitting:
+
+```
+crawler pv/s = 1.00   (the block, measured exactly)
+human   pv/s = 1.91   (Direct-minus-block, measured)
+
+total_pv   = c*1.00 + h*1.91
+total_sess = c + h            ->   h = (pv - sess) / 0.91
+```
+
+|  | sessions | human | crawler |
+|---|--:|--:|--:|
+| first 15d | 1,319 | 1,213 | 106 |
+| last 15d | 1,772 | 948 | 824 |
+| **change** | **+34.3%** | **−21.8%** | **+678%** |
+
+#### 🔴 Positive control on the decomposition — this is why I trust it
+
+The model predicts **929** total crawler sessions across the window. §E18 measured **915** directly,
+by a completely unrelated route (landing-page × source, counting the 1.00/1.00 block). **1.6% apart.**
+Two independent methods, same answer — so the split is a measurement, not a curve-fit.
+
+#### Corrected channel picture
+
+```
+Direct human       1213 -> 948    -21.8%   DECLINING
+Organic Search     1196 -> 1194    -0.2%   flat
+AI Assistant        443 ->  600   +35.4%   the ONLY growing human channel
+```
+
+Every human channel on this site is flat or shrinking **except AI**. That is a materially different
+site than the one §E17 described, and it was one arithmetic step away from the data I already had.
+
+#### What I got wrong, precisely
+
+I measured a channel-level aggregate, found growth, and published it — then found a crawler block in
+that same channel one leg later and **did not go back and re-ask whether the growth was the block**.
+The finding and its refutation were 40 minutes apart in the same session, using the same dataset.
+This is `measured-vs-expected` § crawler denominators in its trend form: contamination does not only
+depress a *rate*, it can manufacture a *trend*, and the trend is the more persuasive artifact
+because it looks like momentum.
+
+**Standing check for this site:** any Direct-channel figure must be decomposed before use. The
+channel-level crawler test passes here (§E18) and will keep passing, because dilution is exactly what
+it cannot see.
