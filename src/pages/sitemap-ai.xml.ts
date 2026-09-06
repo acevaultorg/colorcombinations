@@ -4,6 +4,7 @@ import { allColors } from "@/data/colors";
 import { collections } from "@/data/collections";
 import { PAIRS } from "@/data/converterPairs";
 import { allPaintings } from "@/data/paintings";
+import { commonColors, contexts, palettesFor, MIN_PALETTES } from "@data/pairings";
 
 /**
  * /sitemap-ai.xml — secondary sitemap for LLM/AI crawlers.
@@ -27,6 +28,10 @@ import { allPaintings } from "@/data/paintings";
  *   0.9 — /palettes per-record (378 unique-data plates)
  *   0.9 — /colors per-record (210 named colors with WCAG contrast)
  *   0.8 — /collections per-record (69 thematic synthesis)
+ *   0.8 — /colors-that-go-with hub pages (54 records; computed pairing
+ *         aggregation per color, same "deep aggregation" kind as the
+ *         hue-family hubs below — NOT the 702 per-context leaves, matching
+ *         this site's hub-only indexing precedent)
  *   0.7 — /about, /methodology, /data hub
  *   0.7 — /palettes index, /colors index, /collections index, /learn index
  *   0.6 — /random, /tools, /tools/* utilities
@@ -131,6 +136,21 @@ export const GET: APIRoute = () => {
       changefreq: "monthly",
       jsonAlt: `${SITE}/api/collections/${c.slug}.json`,
     });
+  }
+
+  // Tier 0.8 — /colors-that-go-with hub pages (54 records; computed pairing
+  // aggregation, hub-only per this site's established indexing precedent —
+  // see search-index.json.ts and colors-that-go-with/index.astro, both of
+  // which index the hubs and deliberately exclude the 702 per-context leaves
+  // to avoid crowding a curated surface with near-duplicates)
+  for (const c of commonColors) {
+    if (contexts.some((ctx) => palettesFor(c.hex, ctx).length >= MIN_PALETTES)) {
+      urls.push({
+        loc: `${SITE}/colors-that-go-with/${c.slug}/`,
+        priority: "0.8",
+        changefreq: "monthly",
+      });
+    }
   }
 
   // Tier 0.8 — per-hue-family hub pages (9 routes; deep aggregation of
