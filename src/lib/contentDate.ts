@@ -18,6 +18,25 @@
  *
  * A page's content changes when EITHER its template or its data changes, so
  * pass both and take the later of the two.
+ *
+ * KNOWN AND ACCEPTED LIMITATION — do not "fix" this without reading on.
+ * Because we take the MAX, a purely cosmetic edit to a template (a CSS tweak,
+ * a font-loading change) moves that page's date even though its data did not
+ * change. Seen live 2026-09-06: /data/sanzo-wada-color-analysis/ renders
+ * "Last verified 2026-09-06" while src/data/wada-palettes.ts has been
+ * unchanged since 2026-04-10.
+ *
+ * That is deliberate, for two reasons:
+ *   1. For schema.org `dateModified` the max is CORRECT. The spec asks when
+ *      the CreativeWork was modified, and a template edit does modify the
+ *      page. Reporting the older data date there would be the inaccurate one.
+ *   2. Taking the data date instead would UNDERSTATE a build that genuinely
+ *      re-derived and re-asserted every number from source.
+ *
+ * The residual imprecision is only in the user-facing "Last verified" string,
+ * which reuses `modified`. If that ever needs to be exact, the fix is to add a
+ * SECOND value (data-paths only) and render that — not to change the max()
+ * here, which would regress `dateModified` on every page.
  */
 import dates from "@data/content-dates.json";
 
