@@ -3427,3 +3427,52 @@ clusters not-fundable) · titles (done) · Bing indexation (healthy, 127%) ·
 affiliate compliance (clean, 843 links) · money path (clean, safely probed) ·
 images (clean). **Remaining known work is one date-gated item**: the 69
 `/collections/` FAQ renders, after 2026-10-06.
+
+## §E55 — CI silently dropped a code deploy: docs-only skip now diffs against the LIVE commit (2026-09-06)
+
+**Found while verifying §E52.** `src/pages/sitemap-ai.xml.ts` was committed (`5bab2ac`) and
+pushed, `origin/main` has it, the local tree matches origin — and live still served the old
+file. Cache-busted, `cf-cache-status: DYNAMIC`, 785 locs including the `/palettes/` 301 the
+commit removed.
+
+**Root cause — two correct mechanisms combining into a silent hole:**
+
+1. `interruptible: true` (+ auto-cancel-redundant-pipelines). The `5bab2ac` pipeline was
+   auto-cancelled ~4s later by the `b7f456d` push.
+2. The DOCS-ONLY SHORT-CIRCUIT diffed `CI_COMMIT_BEFORE_SHA..CI_COMMIT_SHA`, i.e. against the
+   commit's own PARENT. `b7f456d` and `ea62f2a` were `.claude/`-only, so each correctly
+   skipped — against its own parent. Nothing ever asked "is what is LIVE behind what is on
+   main?", so the cancelled code change was never rebuilt and never would be.
+
+Measured evidence: pipelines on main = `ea62f2a success (31s)`, `b7f456d success (22s)`,
+`5bab2ac canceled`, `275ea2a canceled (173s)`. CF Pages API: latest successful production
+deployment `commit=275ea2a @ 2026-09-06T10:45:21`. **A 22s "success" is the tell** — a full
+1,528-page Astro build plus a CF upload cannot happen in 22 seconds.
+
+**The failure shape:** every signal green. Green pipelines, clean `git status`, `0 behind`,
+code present on origin. Only the served bytes disagreed. Same family as `deploy-truth` —
+an instrument that reports success while the artifact is stale.
+
+**Fix (this commit).** BASELINE = the commit CF Pages is actually serving, read from the CF
+Pages API (the same endpoint the post-deploy assertion already calls), and the docs-only
+diff runs against THAT. Properties:
+
+- **Self-healing.** The baseline only advances when something actually ships, so a dropped
+  deploy is picked up automatically by the next push of any kind.
+- **Fails open, loudly.** API down / no token / commit unknown to a shallow clone → try one
+  `git fetch --depth=1`, then BUILD and say so. It never falls back to
+  `CI_COMMIT_BEFORE_SHA`, which is precisely the blindness being removed.
+- **Still skips what it should.** A `.claude/`-only push on top of a live-current main is
+  still docs-only against the live commit and still skips.
+
+**Verified locally before pushing** (real CF API response, real repo):
+- parser returns `275ea2ac32c1e90988ba4b62886a4d93378dcb2b`
+- controls: empty stdin → empty, garbage stdin → empty (both fail open) ✅
+- `git cat-file -e 275ea2a` → known to git ✅
+- `git diff --name-only 275ea2a HEAD` → `.claude/state/TASKS.md` **+ `src/pages/sitemap-ai.xml.ts`**
+  → **BUILD**. Under the old logic the same push was `.claude/`-only → SKIP. That difference
+  is the whole fix, and it is what recovers the stranded §E52 change.
+
+**Do not "simplify" this back.** Dropping `interruptible: true` would fix the symptom by
+making every push burn a full build; diffing against live fixes the cause and keeps the
+cancellation benefit.

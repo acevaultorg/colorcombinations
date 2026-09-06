@@ -77,7 +77,48 @@ deploy_cf_pages:
     # is far worse than spending the minutes.
     - |
       SKIP=no
-      BEFORE="${CI_COMMIT_BEFORE_SHA:-}"
+      # BASELINE = the commit CF Pages is actually serving, not CI_COMMIT_BEFORE_SHA.
+      #
+      # WHY (measured 2026-09-06, §E55): `interruptible: true` means a push made
+      # seconds after a code push CANCELS the earlier pipeline. If that later push
+      # is .claude/-only, its own diff is docs-only, it short-circuits, and the
+      # canceled code change is NEVER BUILT — and never will be, because every
+      # subsequent push is judged against ITS OWN parent, not against what is live.
+      # That is exactly what happened to 5bab2ac (a sitemap-ai fix): pipeline
+      # canceled 4s later by a state-only commit, then two more state-only commits
+      # each correctly skipped, leaving production on 275ea2a with the fix stranded
+      # in git. Every signal was green — two "success" jobs that ran for 22s and 31s.
+      #
+      # Diffing against the LIVE commit makes the skip self-healing: a dropped
+      # deploy is picked up by the next push automatically, because the baseline
+      # only advances when something actually ships.
+      BASELINE=""
+      if [ -n "${CLOUDFLARE_API_TOKEN:-}" ]; then
+        BASELINE=$(curl -sS -m 25 -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+          "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$CF_PAGES_PROJECT/deployments?per_page=10&env=production" \
+          | node -e '
+            let b="";process.stdin.on("data",d=>b+=d).on("end",()=>{
+              try{const j=JSON.parse(b);
+                const d=(j.result||[]).find(x=>x.latest_stage&&x.latest_stage.status==="success"
+                  &&x.deployment_trigger&&x.deployment_trigger.metadata&&x.deployment_trigger.metadata.commit_hash);
+                process.stdout.write(d?d.deployment_trigger.metadata.commit_hash:"");
+              }catch(e){process.stdout.write("");}});' 2>/dev/null || true)
+      fi
+      if [ -n "$BASELINE" ] && git cat-file -e "$BASELINE^{commit}" 2>/dev/null; then
+        echo "docs-only check: baseline = live deployment $BASELINE"
+      else
+        # BASELINE unknown to this checkout (shallow clone, first deploy, API down).
+        # Do NOT silently fall back to CI_COMMIT_BEFORE_SHA — that is the exact
+        # blindness this replaces. Fetch it, and if it still is not there, BUILD.
+        if [ -n "$BASELINE" ]; then git fetch --quiet origin "$BASELINE" --depth=1 2>/dev/null || true; fi
+        if [ -n "$BASELINE" ] && git cat-file -e "$BASELINE^{commit}" 2>/dev/null; then
+          echo "docs-only check: baseline = live deployment $BASELINE (fetched)"
+        else
+          echo "docs-only check: live baseline unavailable -> BUILDING (fail open)"
+          BASELINE=""
+        fi
+      fi
+      BEFORE="$BASELINE"
       if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] \
          && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
         CHANGED=$(git diff --name-only "$BEFORE" "$CI_COMMIT_SHA" 2>/dev/null || true)
