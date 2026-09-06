@@ -2816,4 +2816,4 @@ Schema Honesty dimension. And it cuts the other way too — with rich results go
 remaining purpose is AI extraction, and **AI extractors read rendered content anyway**, so a
 schema-only FAQ is of dubious value even for the reason it was added.
 
-Filed as `mtpngzrvcbn5ln` with three options (render / drop / leave). Not actioned here.
+Filed as `mtpngwzp68woij` with three options (render / drop / leave). Not actioned here.
