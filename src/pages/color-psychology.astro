@@ -23,7 +23,12 @@ const description =
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/color-psychology/";
 const PUBLISHED = "2026-06-21T00:00:00Z";
-const MODIFIED = new Date().toISOString();
+// Curated verification date — bump it when the hue claims are actually re-checked,
+// never automatically. Single source of truth for both the schema below and the
+// visible byline, which previously disagreed: the byline said 21 June while
+// dateModified said "today" on every deploy, a 77-day gap on 2026-09-06.
+const VERIFIED = "2026-06-21";
+const MODIFIED = `${VERIFIED}T00:00:00Z`;
 
 interface Hue {
   name: string;
@@ -128,7 +133,7 @@ const jsonLd = [
         the psychological laws they aren't.
       </p>
       <p class="cpsy-hero__meta">
-        Last verified <time datetime="2026-06-21">21 June 2026</time> · grounded in design practice + the historical <a href="/methodology/">Wada archive</a>
+        Last verified <time datetime={VERIFIED}>21 June 2026</time> · grounded in design practice + the historical <a href="/methodology/">Wada archive</a>
       </p>
     </header>
 

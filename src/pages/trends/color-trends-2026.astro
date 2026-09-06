@@ -22,10 +22,16 @@ import PaintThisPalette from "@components/PaintThisPalette.astro";
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/color-trends-2026/";
 const PUBLISHED = "2026-06-20T00:00:00Z";
-const MODIFIED = new Date().toISOString();
 // Re-verified 2026-09-02 against NAHB, Young House Love, Dulux + the 14 authorities' own pages
 // (task mtjaxsmk36hi9v). Bump this date whenever the picks are re-checked, never automatically.
 const VERIFIED = "2026-09-02";
+// dateModified is the CURATED verification date, not the build clock. It used to be
+// `new Date().toISOString()`, which told machines this page changed on every deploy while
+// the byline told humans "Last verified 2 September" — the same page asserting two
+// different things, and the auto one was false: a rebuild is not a content change.
+// The rule three lines up ("never automatically") is the right one; it just wasn't
+// applied to the machine-readable half. Bumping VERIFIED now moves both together.
+const MODIFIED = `${VERIFIED}T00:00:00Z`;
 const AUTHOR = {
   "@context": "https://schema.org",
   "@type": "Person",
