@@ -1974,3 +1974,57 @@ and verified the push landed via `origin/main` SHA match before moving on.
 §E19's finding stands — this page type is indexed and essentially unsearched (0.1% of the site's
 search impressions). The fix removes a real schema/UX defect (a dead breadcrumb reference on nearly
 half the site); it is not evidence the page type deserves more investment.
+
+### E28 · 2026-09-06 — shipped the 54-hub build the Ownership Law check justified (card mtph3aaiz2ylei), live and verified
+
+Card ran the search-index gap measurement + the Ownership Law check on both head queries ("colors
+that go with beige" / "...green") — NOT OWNED on both, `palettehunt.com` the only archetype peer
+(existence proof, not saturation) — and handed off at that decision point, deliberately not
+half-building. Picked it up, built option 2 exactly as scoped, shipped `a8adb1c`.
+
+**What shipped:** `src/pages/colors-that-go-with/[color]/index.astro`, 54 static hub pages (one per
+`commonColors` entry that clears the same `MIN_PALETTES>=4` quality guard the 702 leaves already
+use). Zero fabrication — every figure is either computed from the hex (RGB/CMYK/HSL/contrast,
+identical formulas to `[context].astro`) or drawn from the existing archive-match engine
+(`@data/pairings`' `palettesFor`/`partnerColors`, already used by the leaves). Each hub: colour
+reference block, 5 HSL-derived theoretical partners, a per-setting roll-up linking that colour's own
+leaves (each with its live archive-match count, not a bare link list), up to 6 deduped archive
+palette matches, FAQ matching its own FAQPage schema. Monetization placement mirrors the leaf
+template exactly (PaintThisPalette + BundleCta + FurtherReading).
+
+**Wired the internal-link graph both directions**, closing the exact defect §E27 fixed by removing:
+- `colors-that-go-with/index.astro`'s 54 `<h2>` headings now link to their hub (were plain text).
+- `[color]/[context].astro`'s breadcrumb + JSON-LD `item` — REMOVED this morning in `cbf38e4` because
+  the parent genuinely 404'd for all 702 leaves — RESTORED here, now correctly, because the hub this
+  commit builds is what makes the link valid. Same code, opposite correctness, because the target
+  changed underneath it.
+- `search-index.json.ts`: indexed the 54 hubs, one row per colour, deliberately NOT the 702 leaves —
+  the card's own stated reason (13 near-identical "X — bedroom / X — bathroom" rows would crowd out
+  the Wada archive colours for a bare colour-name search) is exactly the crowding risk it flagged for
+  option 1. Also fixed a comment the card identified as falsified: it claimed "no Wada colour is
+  named or means beige... dataset absence" — true of the Wada PALETTE dataset, false of the site once
+  the pairing engine's 54 common colours (incl. Beige, Burgundy, Emerald Green) existed. Corrected in
+  place; "matcha and white" remains a genuine absence and is untouched.
+
+**Verify, live:**
+```
+sitemap        1,474 -> 1,528   (+54, exact — no other change)
+54 spot-checked hub URLs         all 200
+search-index.json cgw entries    54 total, exactly 1 per colour (beige: 1 row, not 13)
+JSON-LD types on /beige/         CollectionPage + BreadcrumbList + FAQPage all present
+undefined/NaN/[object] leak      none
+breadcrumb restored on a leaf    /colors-that-go-with/beige/bedroom/ links back to the hub, live
+root index heading links hub     confirmed live
+money path on the new page       /go/b/... bare probe -> 302, bare own-origin, zero clicks fabricated
+astro check                      0 errors / 0 warnings, twice (before + after the follow-on files)
+```
+
+Not run: a full local `npm run build` (image rasterization ~41 min) or a CI-log read — CI is the
+sole deploy path here (`_deploy_note`) and already gates page-count / affiliate-leak / a post-deploy
+production assertion; verified against the SERVED site instead, which is the standard this file's
+own instrument-trap sections argue for over trusting a green pipeline.
+
+**Explicitly not claimed:** the 702 existing leaves this hub links to draw ~17 Bing impressions/30d
+combined — weak evidence the section can rank at all. The ownership check says the head query is
+winnable; it does not prove this site wins it. This is a measured ship, not a booked one — re-check
+Bing impressions on `/colors-that-go-with/beige/` et al. in a future pass rather than assuming.
