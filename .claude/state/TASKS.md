@@ -413,6 +413,15 @@ and ~96% of the site's AI citations — was the **highest**-Oracle-weight item o
 
 **2026-09-06 read: every ranked item in this table is now either shipped or explicitly deprioritized/left.** The backlog has no remaining "build" item its own evidence supports. The next session/lane should NOT default to more programmatic-page supply (measured lever, not this one) — check the fleet metrics layer / Bing Webmaster data fresh, or work systemic (CI/deploy/monetization-activation) gaps instead of adding pages.
 
+**…and then that read was immediately proven too narrow, which is the more useful lesson.** Within the same session, `/trends/color-trends-2027/` shipped (c9a4d98) — a genuinely high-value page that appears NOWHERE in the table above. It was invisible to the backlog for a specific, repeatable reason: **this table ranks page TYPES, and the highest-weight type here is seasonal.** `annual_report_state_of_x × +85` is the archetype that produced the site's #1 page, and its opportunity is not "a page we haven't built" but "a page whose season just opened." On 2026-09-06 the 2027 Color of the Year season was a month old (Valspar 5 Aug, Dutch Boy 25 Aug, Behr late Aug, Pantone due December) and the site had zero references to 2027 anywhere.
+
+So "the ranked backlog is exhausted" is NOT the same as "there is no high-value work." Before concluding a site is saturated, check the two classes a static table cannot hold:
+
+1. **Timing** — is a proven archetype's season open right now? For this site that is the COTY cycle (late July → early December). A recurring task now tracks it (`mtp5sziorcb2c6`, monthly from 2026-10-01) so this specific one cannot be missed again.
+2. **Documented levers not yet run here** — the fleet's own gap-sweep categories: a live bug · an unshipped asset · the biggest gap-to-goal in the instruments · a fleet-proven pattern missing on this site. A defect sweep searches a different space than a lever sweep; exhausting one says nothing about the other.
+
+Both of this session's largest wins came from outside the table: the 2027 page (timing) and wiring IndexNow into CI (a documented lever that had never been run from the deploy path — 936756e).
+
 **Before building any of them:** check demand for the specific intersection first
 (`affiliate-team-standard` § the intersection law — readinglist shipped 98 decade×grade pages for 0
 impressions on exactly this mistake), and check no other lane is on it (one shipped to
