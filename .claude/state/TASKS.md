@@ -2257,3 +2257,27 @@ unaffected either way by this fix); `search-index.json.ts` and `colors/index.ast
 6 (both resolve to the hue page, a valid destination, just not an individual-colour one);
 `og/colors/[slug].png.ts` still generates a per-colour OG image for all 6 (harmless — no route
 collision exists for image assets).
+
+### E35 · 2026-09-06 — closing sweep: no other instance of the [dir]-vs-[file] route collision; full sitemap regression-clean
+
+Checked whether the E34 bug class (a directory-style dynamic route colliding with a same-shape
+dynamic file route) has any other live instance in this codebase before considering it closed.
+Enumerated every `[param]` directory route (`find src/pages -type d -iname "[*]"`): exactly two
+exist — `colors/[hue]` (the one just fixed) and `colors-that-go-with/[color]` (this session's own
+E28 build, which has no sibling file-route at the same URL shape — no collision, already verified
+clean across 4 successful deploys tonight). No other instance found; this bug class is fully closed
+for the current codebase.
+
+Final full-site regression check post-E34: main sitemap unchanged at **1,528** (auto-derived by
+`@astrojs/sitemap` from actual built output, so it was never affected by the collision or its fix
+either way — confirmed rather than assumed). 12-URL random sample across palettes/collections/tools/
+colors-that-go-with all 200.
+
+Session total tonight (E27-E35, 9 legs, project `colorcombinations.org`): 3 link-defect classes
+fixed · 54-page pairing-hub surface built + indexed (sitemap, sitemap-ai, search) · per-hub OG images
++ generalised ShareBar · sitemap-ai.xml gap closed · 10-page cross-link shipped (4 reachable) ·
+a pre-existing 6-page route-collision found, diagnosed, and fixed, including catching + fixing a
+real Astro `getStaticPaths`-extraction regression in the same leg with zero live-site impact. Board
+carries no further agent-eligible work — remaining open items are `assignee:human`
+(Wikipedia outreach `mtpazjk33khznb`, Pinterest setup `mq0supbru74rv5`) or `kind:reference`
+(`/for-you` swipe-feed spec, deliberately bottom-ranked).
