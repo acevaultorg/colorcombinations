@@ -689,6 +689,95 @@ that rule reports (`50 Title too long`, High, 23 sites) may or may not include t
 until someone runs it.
 
 
+### E5. SHIPPED 2026-09-06 — the link-concentration TEST (51 collections -> /trends/), with its baseline
+
+The one lever from tonight's 15-hypothesis sweep that survived refutation, now shipped as a
+**test on one template**, not a bulk change. Commit `a04220e`.
+
+**What changed:** `TRENDS_FALLBACK` in `src/data/pillarMap.ts`, consumed only by
+`/collections/[slug].astro`. The 18 collections with a `/learn` pillar keep it; the 51 without one
+now render the colour-trends editorial in the existing, already-styled
+"From the editorial · Long read" slot. No new nav block.
+
+🔴 **Deliberately NOT wired into `pillarForCollection()`** — `/palettes/[slug]` imports that same
+helper (378 pages). Changing it there turns a 51-page test into a 429-page bulk change, which is
+the exact shape refuted 14 times in one session. Verified before push: `git diff --name-only |
+grep -c palettes` = **0**.
+
+**The diagnosis it tests** (impressions + position ONLY — the CTR columns failed the guard, § E2):
+
+| 2026 cluster | rows | impressions | impression-weighted position |
+|---|---:|---:|---:|
+| HEAD keywords (>=100 impr) | 5 | **2,080 (85%)** | **5.89** |
+| CONVERSATIONAL (what/which/how) | 20 | 118 (5%) | **2.36** |
+
+We rank **2.36 where there is no volume and 5.89 where 85% of it is**. So content quality is not
+the constraint — the page wins outright where competition is thin. Authority is: 2 internal
+inbound links, and 9 external inbound links site-wide (§ E3).
+
+**BASELINE, 2026-09-06, to be re-read after 3-4 weeks:**
+
+```
+page  /trends/color-trends-2026/     6,777 impr   pos 4.9
+head  "color of the year 2026"       1,266 impr   pos 5.5
+2026 cluster (127 rows)              2,443 impr   weighted pos 5.54
+```
+
+**Success = position moving toward 3, read from `GetRankAndTrafficStats`. NOT CTR.** A 1-week read
+is noise. If 51 pages move nothing, internal linking is dead as a lever on this site and the
+constraint is external authority — which is operator-gated (card `mtpazjk33khznb`).
+
+### E6. REFUTED 2026-09-06 — "the 2026 trends page is stale, pivot to 2027" (my own, 5 minutes old)
+
+Refutation #14, and I generated the hypothesis myself. It was plausible: it is September 2026, the
+site's #1 page by impressions is titled "Color of the Year **2026**", a `color-trends-2027.astro`
+already exists and serves 200, and `/trends/` itself is a 404. Every one of those is true.
+
+Measured before acting:
+
+| | rows | impressions | share of query impressions |
+|---|---:|---:|---:|
+| queries containing **2026** | 127 | **2,443** | 28.0% |
+| queries containing **2027** | 2 | **2** | 0.02% |
+
+**2026 demand is very much alive in September 2026 and 2027 demand has not started.** The 2027
+page sitting at zero impressions is *correct pre-positioning* ahead of the December Pantone
+announcement — not a defect, and not something to "fix". Do not re-derive this.
+
+Worth keeping as a shape: a page whose TITLE contains a past year looks stale, and the title is
+not the demand. Check the query cluster before treating a dated page as expired.
+
+(`/trends/` returning 404 with no section index is real but was not pursued — it has no measured
+demand behind it, and inventing a hub on a hypothesis is what this session refuted 14 times.)
+
+
+### E7. BUILD COST — three different numbers, and the project card quotes the wrong one for CI
+
+Measured 2026-09-06 on the real code ship (`a04220e`, pipeline 2823725859):
+
+| where | cost | what it is |
+|---|---|---|
+| **local `npm run build`** | **~41 min** | cold, rasterizes ~1,500 OG + /pin/ images at ~1/sec |
+| **CI (GitLab, this commit)** | **139 s** | the actual deploy path |
+| CI comment's own estimate | "~8-10 min" | conservative; the measured run was 4x faster |
+
+The project card's "🔴 BUILD COSTS ~41 MINUTES" is true of the **local** build and is the reason
+its "BATCH every change into ONE build" advice exists. It is NOT the cost of shipping — CI does it
+in ~2.3 minutes. So the batching discipline still matters locally, but a docs-only or single-file
+fix does not need to be hoarded for fear of a 41-minute penalty.
+
+⚠️ Do not read 139s as "CI skipped the build" — it did not short-circuit (the diff touched `src/`,
+and the short-circuit only fires when every path is under `.claude/`). Confirmed the honest way,
+by checking the **served artifact** rather than the exit code: the new link is live on
+coquette/y2k/gothic, absent on japandi (which kept its own pillar), and absent on /palettes/.
+
+Also corrected: the project card gives the repo as `acevault-lab/55-colorcombinations`. The real
+remote is **`acevault-lab/colorcombinations`** (no `55-` prefix — that is the local *directory*
+score-prefix convention leaking into the recorded repo path). The wrong path returns
+`404 Project Not Found` from the GitLab API, which reads exactly like a token-scope problem and
+is not. Resolve it with `git remote get-url origin`, never from the card.
+
+
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
 
 § E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
