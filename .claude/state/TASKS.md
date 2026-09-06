@@ -462,6 +462,61 @@ re-noting because they produced wrong numbers here before being caught:
   OG URL resolved from the sitemap returns 200. Never construct a URL to test whether a thing
   exists.
 
+### D. ANSWERED 2026-09-06 — the "Sanzo Wada entity gap": demand is real, and it is BOOK-intent
+
+The project note carries this as open and explicitly gated: *"Whether 'Sanzo Wada' is a demand pool
+worth its own hub is UNMEASURED … Do not build it on the hypothesis."* Measured, from the Bing
+per-query feed (`/bing-detail`, 924 query rows, 8,717 impressions, under the 5,000 limit so not
+truncated):
+
+| bucket | rows | impressions | share of feed |
+|---|---:|---:|---:|
+| queries containing "sanzo" | 79 | 338 | 3.9% |
+| queries containing "wada" | 81 | 344 | 3.9% |
+| **person / biography-shaped** ("who was", "biography", "born", "artist") | **1** | **4** | **0.0%** |
+
+**Verdict: a `/sanzo-wada/` person hub is NOT supported. Do not build it.** The name-demand is
+real, but every query carrying it is after the BOOK — "sanzo wada color combinations" (51 impr),
+"a dictionary of color combinations sanzo wada" (24), "sanzo wada dictionary of color
+combinations" (11), "sanzo wada book" (6), "sanzo wada color combinations pdf" (5). Biography
+intent is essentially absent. That matches the strength the project note already records — 45-75%
+citation share on BOOK queries — and the homepage already serves this cluster at position 4.1 with
+6,585 impressions and 471 clicks, the best page on the site.
+
+`/about/` already carries the "Who was Sanzo Wada?" H2, the 1883-1967 biography and Person schema,
+and takes 25 impressions at position 10.5. A separate hub would duplicate that against ~4
+impressions of genuine person-intent demand — vanity supply in the precise sense
+`realized-demand-discipline` means. This is the 9th consecutive refutation of a
+missing-page hypothesis on this fleet; the running record is documented as 0-for-8 before this.
+
+Caveat stated honestly: absence in a selected feed is weaker evidence than presence. It carries
+here because zero-click rows are abundantly represented (565 of 924 rows, 61.1%), so low-click
+informational queries — which is what biography intent looks like — are clearly not being filtered
+out. The feed covers 55% of the site's Bing impressions, so treat 338 as a floor, not a total.
+
+### E. FEED CALIBRATION 2026-09-06 — this site's Bing per-query feed is 2.54x CTR-enriched
+
+The fleet flag says not to act on per-query or per-page Bing CTR until the feed is calibrated for
+the site being read. Calibrated here against the unselected site rollup in `data.json`:
+
+```
+/bing-detail feed:   8,717 impr    725 clicks   8.32% CTR
+site rollup:        15,853 impr    519 clicks   3.27% CTR
+                    ----------------------------------------
+impression coverage 55.0%   click coverage 139.7%   CTR enrichment 2.54x
+```
+
+**Click coverage above 100% is the tell** — a feed cannot contain more clicks than the site
+recorded unless it is selecting for clicked rows over a differently-bounded window. So:
+
+- ❌ **Never quote a per-query or per-page CTR from this feed.** It runs ~2.5x high. Dividing its
+  clicks by its impressions has already shipped 21 meta rewrites on a false premise elsewhere in
+  the fleet.
+- ⚠️ Impressions are a FLOOR at ~55% coverage, not a total.
+- ✅ Presence and query-shape are sound, which is what section D rests on.
+
+Use `GetRankAndTrafficStats` (the unselected daily rollup) for any rate or denominator.
+
 **Before building any of them:** check demand for the specific intersection first
 (`affiliate-team-standard` § the intersection law — readinglist shipped 98 decade×grade pages for 0
 impressions on exactly this mistake), and check no other lane is on it (one shipped to
