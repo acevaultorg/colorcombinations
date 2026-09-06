@@ -2100,3 +2100,44 @@ astro check             0 errors / 0 warnings (one HexColor type error caught an
 
 Card `mtpi1k9k835vk8` updated with both the correction and the shipped result rather than left as a
 pure decision record.
+
+### E31 · 2026-09-06 — gap sweep after E30: found + fixed sitemap-ai.xml missing the 54 hubs entirely
+
+Queue was empty after E30's `complete_task`. Per the standing "empty queue is not the end — refuel"
+rule, ran a live health sweep on everything shipped tonight instead of stopping.
+
+**Caught my own instrument mistake mid-sweep, in the ordinary sense this file keeps recording:**
+`curl sitemap.xml | grep -c '<loc>'` returned 0 and briefly read as "sitemap emptied." Two compounding
+causes, both already documented elsewhere in this codebase's own doctrine and both re-confirmed live
+rather than assumed: (1) `robots.txt` declares `/sitemap-index.xml` → `/sitemap-0.xml`, not
+`/sitemap.xml` (a 301 stub); (2) `sitemap-0.xml` is 132KB on ONE line, so `grep -c` counts matching
+LINES (1) not occurrences. `grep -o '<loc>' | wc -l` gives the real number: **1,528, unchanged** —
+confirms E30's sitemap claim was correct, now independently re-derived rather than just re-asserted.
+Also re-verified the earlier count split cleanly: 1 index page + 54 hubs + 702 leaves = 757 under
+`/colors-that-go-with/`, 0 `/og/` routes leaked into the sitemap (correctly excluded, matching every
+other page type).
+
+Spot-checked 5 live URLs (4× 200, 1× 404 — the 404 was my own guessed context slug
+`emerald-green/beach-house/`, not a real one; confirmed against the sitemap's actual context list
+before concluding it was my probe, not a defect — never construct a URL to test existence).
+`search-index.json` re-verified live: 711 entries total, exactly 54 under `colors-that-go-with`,
+matching E28's design. Money-path bare probe (`/go/b/4861522471`, no `-L`, no minted token, no forged
+headers) → clean 302 to bare own-origin, the healthy rejection signature.
+
+**The real gap:** `sitemap-ai.xml` — this site's own curated LLM-citation-priority sitemap
+(`rules/bot-harvest.md` Lever 5) — carried 737 URLs and **0** under `colors-that-go-with`, because the
+file predates E28's hub build and nobody had wired the new page type in since. Its own doc comment
+already describes exactly this page type's shape ("deep aggregation... within a hue family" at
+priority 0.8 for the 9 hue hubs) — the 54 new hubs are the same kind and were simply missing.
+
+Fixed `src/pages/sitemap-ai.xml.ts` (commit `6455d55`): added the 54 hub URLs at priority 0.8,
+hub-only (not the 702 leaves) — same reasoning applied twice already tonight (§E28 search-index
+scoping, §E28 the hub build itself): a curated citation-priority list is weakened by near-duplicate
+leaves. No `jsonAlt` — no JSON API twin exists for this page type (checked: no
+`src/pages/api/**colors-that-go-with**`), matching several other entries in the same file that also
+lack one.
+
+**Verify, live:** `astro check` 0 errors/0 warnings before push. Pipeline `2823934672` (`6455d55`)
+success in ~154s. `sitemap-ai.xml` now serves **791** URLs (737+54, exact match), all 54 present with
+`<priority>0.8</priority><changefreq>monthly</changefreq>`, XML well-formed
+(`xml.etree.ElementTree.parse` clean), pipeline's own post-deploy assertion also passed.
