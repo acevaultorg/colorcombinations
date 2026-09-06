@@ -2550,13 +2550,23 @@ nobody spends another leg hunting them.
 | page type | pages | median inbound | min | pageviews/30d | pv per page |
 |---|---:|---:|---:|---:|---:|
 | `/palettes/` | 379 | 20 | 0 | 3,279 | 8.7 |
-| `/colors-that-go-with/` | 757 | 14 | 14 | 1,059 | **1.4** |
+| `/colors-that-go-with/` | 757 | 14 | 14 | 1,059 | 1.4 ⚠️ newly built — see correction below |
 | `/colors/` | 223 | 8 | 4 | 2,772 | 12.4 |
 | **`/collections/`** | **70** | **2** | **1** | **1,630** | **23.3** |
 
-`/collections/` is the **5th-largest page type by traffic** (1,630 pv / 1,390 sessions) and by far
-the most traffic-efficient per page — **23.3 pv/page, 16× `/colors-that-go-with/`** — while
-receiving roughly **one-seventh** its internal link equity. 43 of the 70 sit at ≤3 inbound; 25 at
+`/collections/` is the **5th-largest page type by traffic** (1,630 pv / 1,390 sessions) at
+**23.3 pv/page**, while receiving roughly **one-seventh** the internal link equity of the types
+around it.
+
+⚠️ **CORRECTED same session:** this originally read "16× `/colors-that-go-with/`", which is an
+unfair comparison and I should not have made it. `/colors-that-go-with/` is a **newly built** page
+type — §E32 recorded that it "carries no meaningful Bing impressions yet (too new — IndexNow
+submitted tonight)". Its 1.4 pv/page measures how long it has been indexed, not how well it
+performs; comparing a mature type against a brand-new one is the window error from
+`measured-vs-expected` in a different costume. The honest contrast is against the **mature** types:
+`/palettes/` 8.7 pv/page at median 20 inbound and `/colors/` 12.4 pv/page at median 8 inbound —
+against which `/collections/` still stands out at 23.3 pv/page on median 2. The finding survives;
+the multiplier does not. 43 of the 70 sit at ≤3 inbound; 25 at
 exactly 1 (their own index). Traffic is real and spread, not one page: `/collections/japanese/`
 239 pv, `/websites/` 74, `/autumn/` 55, `/branding/` 51, `/minimalist/` 47, and 71 collection
 URLs have traffic at all.
