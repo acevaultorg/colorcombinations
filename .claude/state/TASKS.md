@@ -836,6 +836,42 @@ channel pull and the source pull are different queries over different row sets, 
 truncated. Compare like with like.
 
 
+### E9. STRUCTURAL SEO CENSUS 2026-09-06 — 4 of the 5 remaining Bing rules are clean, first-party
+
+A device4 lane answered Bing rule `50 Title too long` first-party (41 pages > 95 chars, ~35
+impressions between them, worth <$1/mo). This closes four more **without** the dashboard, by
+sampling **one page per template (35 templates)** rather than re-fetching all 1,474 URLs — the
+sitemap emits no page shape outside those 35.
+
+**Detector controlled first**, because 35/35 identical results is exactly when an instrument
+should be distrusted: on `/about/`, `<h1>`=1 while `<marquee`=0 and `name="nonsense"`=0. It can
+return zero.
+
+| Bing rule | verdict | evidence |
+|---|---|---|
+| 5 missing `<h1>` | ✅ clean | exactly 1 per template, 35/35 |
+| 7 missing meta description | ✅ clean | exactly 1 per template, 35/35 |
+| 121 Missing Title Tag | ✅ clean | exactly 1 per template, 35/35 |
+| 101 robots blocks bingbot | ✅ clean | only `Disallow: /og/` + `/go/`; live `bingbot/2.0` fetch = **200** |
+| 118/114 meta description length | 🔴 **27 of 35 > 160 chars** | worst `/collections/art-deco/` **747**, `/glossary/` 365, `/material-design/` 313 |
+
+`Disallow: /og/` and `/go/` are correct and must stay — OG image routes and the affiliate
+redirect endpoint, neither of which is content.
+
+**The one finding is recorded, not funded.** A long description costs a truncated snippet, not
+rank (descriptions are not a ranking factor). Its CTR effect is *unmeasurable on this site* — the
+feed failed the click-selection guard (§ E2), so there is no trustworthy before/after to test it
+against. At $0.0117/session, with the worst offender sitting on 93 impressions, even a large CTR
+swing is worth cents. Trim the 747-char outlier only as a ride-along if someone is already editing
+that template.
+
+**Consistent with the two prior prices on this site**: the title lever <$1/mo, and this one lower.
+Three independent SEO-hygiene levers have now been measured and all three priced out. That is a
+finding in itself — hygiene is not this site's constraint. Its constraint is authority (§ E3: nine
+external inbound links) and its opportunity is the Bing-index channel being ~3.9x its console view
+(§ E8).
+
+
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
 
 § E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
