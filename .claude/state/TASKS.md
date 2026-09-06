@@ -630,6 +630,65 @@ title** — the 95-char title is correctly front-loaded and intent-matched.
 - **2026-10-06** `mtp835nfohbpez` — AI citation share. Needs a Chrome-MCP lane; the public API has
   no AI-performance surface (probed, 404 against a passing `GetCrawlStats` control).
 
+### E3. AUTHORITY MEASURED 2026-09-06 — the site has NINE external inbound links
+
+Found while running a positive control for something else, which is the second time tonight the
+control was worth more than the thing it was controlling for.
+
+`bing-probe?method=GetCrawlStats`, latest row (2026-09-04), against sibling sites in the same call:
+
+| site | InLinks | InIndex | Code2xx |
+|---|---:|---:|---:|
+| readinglist.school | **983** | 12,032 | 8,383 |
+| **colorcombinations.org** | **9** | 1,940 | 2,161 |
+| fitmylens.com | 1 | 2,369 | 3,181 |
+| cabinpets.com | 4 | 182 | 231 |
+
+**The field is real.** It takes 8 distinct values across our own 91-day series (0 -> 9, climbing)
+and reads 983 on a sibling in the same call — so it is neither frozen nor unpopulated. That
+control mattered: a value identical on every visible day is normally the signature of a dead
+field, and this one looked like that until the series and the sibling were checked.
+
+**Index health is FINE — do not go looking for a problem here.** `InIndex` 1,940 against a
+~1,470-page sitemap, `Code5xx` 0, `DnsFailures` 0, `ConnectionTimeout` 0, `Code4xx` 15 of 2,161.
+The `AllOtherCodes` 94 is ~4% and is almost certainly 304s. Nothing to fix.
+
+⚠️ **These rows are SNAPSHOTS, not daily deltas** — `Code2xx` climbs 1,872 -> 2,161 across the
+window. Summing the 91 rows produces a meaningless 120,799. Read the LAST row only.
+
+**What it means, both directions.** The open lever card says *"the answer is authority from
+outside, not internal plumbing."* That quantity is now measured and it is ~zero. It STRENGTHENS
+the internal-link test (with no external authority, internal plumbing is the only lever available
+without operator time) and it CAPS the expectation (9 inbound links moving 4.9 -> top-3 on
+internal links alone is optimistic). If the collections test comes back flat, this is why.
+
+**Caveat:** Bing's `InLinks` is Bing's own count and under-reports real backlinks. Treat 9 as
+directionally near-zero, not a census. The comparison is what carries the meaning — same
+instrument, same call, same day.
+
+Operator card filed: `mtpazjk33khznb` (Wikipedia already links two rival colour-dictionary sites
+and zero to us; propose parity on the Talk page with COI disclosed — one link, honestly sized).
+
+### E4. UNRUN LEVER — Bing SEO recommendations need a Chrome-MCP lane
+
+`bing-recommendations-autopilot` is a documented fleet lever that has **never been run on this
+site**. Its endpoint is dashboard-session-only. Verified today rather than inherited from the
+rule, with a passing control:
+
+```
+GetCrawlStats          -> 200  (real data)      <- CONTROL
+GetSeoReports          -> 404
+GetRecommendations     -> 404
+GetSeoRecommendations  -> 404
+GetSiteSeoReports      -> 404
+```
+
+So the rule's "no REST equivalent" claim holds here too. This lane has no Chrome MCP, so the lever
+is unrunnable from it — filed for a Chrome-MCP lane, not silently skipped. The fleet-wide finding
+that rule reports (`50 Title too long`, High, 23 sites) may or may not include this site; unknown
+until someone runs it.
+
+
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
 
 § E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
