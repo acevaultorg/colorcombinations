@@ -422,6 +422,46 @@ So "the ranked backlog is exhausted" is NOT the same as "there is no high-value 
 
 Both of this session's largest wins came from outside the table: the 2027 page (timing) and wiring IndexNow into CI (a documented lever that had never been run from the deploy path — 936756e).
 
+### C. Measured 2026-09-06 — "BUILD COSTS ~41 MINUTES" does not describe CI
+
+The TaskPeace project note for this site says builds cost ~41 minutes because of OG/pin
+rasterization, and concludes **"BATCH every change into ONE build."** That advice is sound for a
+LOCAL build and misleading for the deploy path we actually use. Measured across 8 consecutive
+pipelines today (GitLab API, `deploy_cf_pages` job duration):
+
+| pipeline   | commit   | duration |
+|------------|----------|---------:|
+| 2823542381 | c9a4d98  |  148.9 s |
+| 2823529621 | 75dcb84  |  144.5 s |
+| 2823517041 | ece0559  |  147.3 s |
+| 2823469638 | 83bb98f  |  137.0 s |
+| 2823455043 | afa6877  |  243.7 s |
+| 2823443771 | a8464aa  |  236.6 s |
+| 2823546269 | 1ec5ca5  |   21.4 s | ← docs-only short-circuit, correctly skipping |
+| 2823464286 | a7081f1  |   30.5 s | ← same |
+
+**Real CI builds are 2.3–4.1 minutes, not 41.** The images are not being skipped either — OG
+images were resolved from the sitemap (never constructed) and every one returns 200 with real
+bytes: akane-tokiwa 37,499 b · ao-shiro 25,753 b · asagi-shu 34,275 b · colors 46,841 b.
+
+What this does NOT establish: I did not run a local build, so the 41-minute figure may be
+perfectly accurate for the operator's machine — CI hardware being ~10–16× faster at resvg
+rasterization is the obvious explanation, and the note's own "~1 image/second" is roughly what a
+laptop would do. Stated as measured, not as a refutation of a number I did not re-measure.
+
+**Practical consequence:** package.json's own `_deploy_note` already says "DEPLOY VIA CI, NOT FROM
+A LAPTOP", and on that path iteration is cheap. Do not batch risky changes together to avoid a
+41-minute cost that CI does not charge — batching hurts, because it makes a failure harder to
+attribute. Four separate ships went out today in ~10 minutes of total CI time.
+
+Two instrument traps hit while measuring this, both already in fleet doctrine and both worth
+re-noting because they produced wrong numbers here before being caught:
+- `grep -c "<loc>" sitemap-0.xml` returns **1**. The sitemap is single-line, and `grep -c` counts
+  matching LINES, not matches. The real count is 1,473 via `grep -o "<loc>" | wc -l`.
+- `/og/matsuba.png` 404s, which looked like a missing-image defect. The slug was invented. Every
+  OG URL resolved from the sitemap returns 200. Never construct a URL to test whether a thing
+  exists.
+
 **Before building any of them:** check demand for the specific intersection first
 (`affiliate-team-standard` § the intersection law — readinglist shipped 98 decade×grade pages for 0
 impressions on exactly this mistake), and check no other lane is on it (one shipped to
