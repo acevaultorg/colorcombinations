@@ -3655,3 +3655,49 @@ should be read as raw-session rates.
 No code change. Recorded so the next lane that reads the cockpit's "pageviews at-risk" flag
 and walks into the same 1.06 does not re-derive it — it is the single most available false
 finding on this site, sitting on 14.4% of sessions.
+
+## §E58 — the crawler-viewport gate is LIVE and correctly aimed; a threshold it silently biased is corrected (2026-09-06)
+
+Follow-on from §E57. Having established that 13.7% of sessions are crawler-shaped, the
+obvious question is whether `0ff5afe` — "exclude crawler-shaped viewports from GA4", shipped
+2026-09-05 14:06 — actually does anything. **Nobody had checked.**
+
+### Verified today
+
+**It is deployed.** `__CRAWLER_SHAPED__` present and `ga-disable` ×2 on `/`,
+`/colors-that-go-with/rust/an-outfit/` and `/palettes/kurenai-kon/`; control token
+`__NOT_A_REAL_FLAG__` = 0. Checking this at all was a direct consequence of §E55 — after
+finding that CI silently dropped a deploy this morning, "the commit is on main" is no longer
+evidence that the code is live.
+
+**It is aimed at the right population.** The four gated resolutions (`1280x1200`,
+`1366x1366`, `1600x1600`, `393x851`) are **21.4% of 30d sessions — 1,467 of 6,860** — and
+track the `/colors-that-go-with/` Direct crawler block at **Pearson r = 0.930** across 30
+days, with the same top-4 burst days (08-22, 08-23, 08-26, 08-27). The gate covers more than
+that one block (1,467 vs 916), which is expected: the same bot hits other page types too.
+
+**It is not yet verified to WORK.** It shipped mid-afternoon on 09-05 and GA4 has no full
+post-gate day. 09-05 shows 13 gated sessions against a 30–50/day baseline — consistent with
+~10 hours of gating, and consistent with nothing. Gate card `mtpq6rtlgqy34t` scheduled
+**2026-09-08 09:00 UTC** (`status: scheduled`, `scheduledFor: 1788858000000` — read back and
+confirmed, so it can actually fire) with a four-signal prediction stated in advance.
+
+### 🔴 The part that mattered: it silently biased a threshold filed two hours earlier
+
+From 09-06 the gated sessions leave the GA4 denominator. Any `per 1k sessions` rate therefore
+**rises 18–27% mechanically**, with no behavioural change.
+
+Card `mtppvsfvvdszfx` (the search-volume drop, filed this morning) set its bar at *"≥4
+consecutive days ≤20 searches/1k = confirmed regression"*. That bar sits **inside the
+inflation band** — a still-broken search box could print 19/1k and be closed as variance.
+
+Corrected on that card via `## Revision 2026-09-06`: compute on crawler-corrected human
+sessions, revised bar **≤25/1k over 4 consecutive days**, with the denominator-free
+alternative (absolute daily search events: 21 → 3 → 2 against an August median of ~16) named
+as the safer test.
+
+**Generalisation worth keeping:** a fix that changes a *denominator* invalidates every
+threshold expressed as a rate over that denominator — including ones filed hours earlier by
+the same session, in good faith, from correct data. When shipping or verifying an analytics
+exclusion, grep the board for live cards holding `per 1k` / `per session` thresholds and
+re-base them, or the next lane will read a mechanical shift as a real result.
