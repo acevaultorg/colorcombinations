@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import BundleCta from "@components/BundleCta.astro";
+import DesignTools from "@components/DesignTools.astro";
 import EmailCapture from "@components/EmailCapture.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
@@ -181,6 +182,13 @@ const jsonLd = [
       note="Free. No credit card. The archive itself stays free either way."
     />
   </section>
+
+  {/* ============ 5. DESIGN TOOLS (software rail — pairs a palette with a
+      place to actually use it; higher commission ceiling than books, added
+      2026-09-06) ============ */}
+  <div class="container-wide">
+    <DesignTools />
+  </div>
 
   {/* ============ CLOSING NOTE ============ */}
   <section class="shop-note section">
