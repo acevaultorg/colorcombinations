@@ -183,10 +183,13 @@ export const GET: APIRoute = () => {
     jsonAlt: `${SITE}/api/index.json`,
   });
   urls.push({ loc: `${SITE}/learn/`, priority: "0.7", changefreq: "monthly", jsonAlt: `${SITE}/api/learn.json` });
-  urls.push({ loc: `${SITE}/palettes/`, priority: "0.7", changefreq: "monthly", jsonAlt: `${SITE}/api/palettes.json` });
   urls.push({ loc: `${SITE}/colors/`, priority: "0.7", changefreq: "monthly", jsonAlt: `${SITE}/api/colors.json` });
   urls.push({ loc: `${SITE}/collections/`, priority: "0.7", changefreq: "monthly", jsonAlt: `${SITE}/api/collections.json` });
-  urls.push({ loc: `${SITE}/browse/`, priority: "0.7", changefreq: "weekly" });
+  // /palettes/ is a 301 to /browse/ (§E41) and was dropped from the main sitemap
+  // then, but this file is hand-maintained and kept advertising it until §E52 —
+  // the only divergence between the two sitemaps (784 of 785 locs shared).
+  // Never list a redirect here; /api/palettes.json rides on /browse/ instead.
+  urls.push({ loc: `${SITE}/browse/`, priority: "0.7", changefreq: "weekly", jsonAlt: `${SITE}/api/palettes.json` });
 
   // Tier 0.7 — color tools (high-volume, high-citation utilities)
   urls.push({ loc: `${SITE}/tools/`, priority: "0.7", changefreq: "monthly" });
