@@ -62,16 +62,46 @@ const description = `${book.title} by ${book.author}. ${book.note} Why it's on t
 // Book schema — only fields we can stand behind. No aggregateRating, no
 // price, no invented publisher metadata: an unverifiable field in structured
 // data is the same lie as an unverifiable sentence in the copy.
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Book",
-  name: book.title,
-  author: { "@type": "Person", name: book.author },
-  ...(book.isbn ? { isbn: book.isbn } : {}),
-  ...(coverUrl ? { image: new URL(coverUrl, Astro.site).toString() } : {}),
-  url: new URL(`/books/${book.slug}/`, Astro.site).toString(),
-  description: book.why,
-};
+const pageUrl = new URL(`/books/${book.slug}/`, Astro.site).toString();
+
+// The Book entity above is deliberately minimal. The BreadcrumbList below is a
+// SEPARATE entity describing the PAGE, not the book — the page renders a visible
+// "The shelf → <title>" breadcrumb (.book__crumbs) and emitted no BreadcrumbList
+// for it, while both sibling pages that AI cites most (/compare/wada-vol-1-vs-vol-2/
+// and /learn/color-data-analysis/) do. Structured data should describe what is
+// actually on the page; this closes that inconsistency, nothing more.
+//
+// Measured 2026-09-06: /books/a-dictionary-of-color-combinations/ is the site's
+// single most AI-cited page — 86 of 1,060 AI-Assistant sessions in 30d, 94.5% of
+// all /books/ AI traffic — on the surface converting at 165.6 amazon clicks per
+// 1k pageviews. It is worth being structurally correct.
+//
+// NOT added here: datePublished/dateModified. The Book describes a 1933 work, so
+// page-level dates cannot honestly hang off it, and stamping BUILD_DATE on 12 book
+// pages that did not change is freshness inflation. Whether a page-level entity
+// with real dates lifts citation share is a HYPOTHESIS, not a finding — parked on
+// the 2026-10-06 citation gate (mtp835nfohbpez) where it can be measured.
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    name: book.title,
+    author: { "@type": "Person", name: book.author },
+    ...(book.isbn ? { isbn: book.isbn } : {}),
+    ...(coverUrl ? { image: new URL(coverUrl, Astro.site).toString() } : {}),
+    url: pageUrl,
+    description: book.why,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "The shelf", item: new URL("/books/", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: book.title, item: pageUrl },
+    ],
+  },
+];
 ---
 
 <BaseLayout
