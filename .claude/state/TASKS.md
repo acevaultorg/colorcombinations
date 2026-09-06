@@ -872,6 +872,48 @@ external inbound links) and its opportunity is the Bing-index channel being ~3.9
 (§ E8).
 
 
+### E10. REFUTED 2026-09-06 — "Direct is the shallowest channel, raise its depth" (mine, #15)
+
+The setup was clean and the arithmetic correct: Direct is **45.6% of sessions but 31% of
+pageviews**, at **1.62 pv/session** against Organic's 2.99 and AI's 2.92. It is the largest
+channel and the shallowest, and Pageviews is the site's #1 gap (41% of goal). Closing that spread
+looked like ~+4,270 pageviews.
+
+Refuted by looking at WHERE Direct lands before prescribing anything:
+
+```
+Direct head landing pages          sess   pv/s
+  /                                 590   2.49
+  /browse                           339   2.15
+  /collections                       31   4.48
+  /colors                            27   4.63
+  (not set)                          75   0.00   <- unattributed, drags every channel
+```
+
+**Direct's head is healthy** — `/collections` and `/colors` are its *deepest* entries on the
+site. The 1.62 average comes from its **tail**: Direct spreads across **278 landing pages**
+against Organic's 61 and AI's 45. Those are people arriving straight at one specific palette or
+colour page (`/palettes/entan-sumi` 21 sess @ 1.10) — bookmarks and returning visitors.
+
+**A bookmark-return visit to one palette page is a SUCCESS, not a depth failure.** Same shape as
+the answer-page-vs-hub lesson: depth is a goal on browse surfaces and a cost on lookup surfaces.
+Prescribing "more pages per Direct session" would have meant adding distraction to the one
+behaviour that indicates the site is genuinely useful enough to bookmark.
+
+Also note `(not set)` appears in every channel at 0.00 pv/s (Direct 75, Organic 133, AI 47) —
+sessions GA4 could not attribute a landing page to. They depress every channel's mean, so
+cross-channel pv/s comparisons carry that noise and should not be read to two decimals.
+
+⚠️ The pull was `truncated: true` (400 of 1,300 rows), so the tail is only partially visible.
+That does not change the refutation — the head is enough to show Direct's shallow average is
+composition, not a defect — but it does mean no *positive* claim should be made about the tail.
+
+**What did survive:** `/books/a-dictionary-of-color-combinations` is the AI channel's #3 landing
+page at **3.51 pv/session**, its deepest-engaging real entry point, which is consistent with the
+site's 45-75% citation share on book queries. The AI-channel gate (2026-10-06) is the right place
+to act on that, not a depth campaign.
+
+
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
 
 § E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
