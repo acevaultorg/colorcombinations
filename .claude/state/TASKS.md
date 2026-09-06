@@ -2050,3 +2050,53 @@ Everything else in the top 30 zero-result terms is either already-documented-as-
 (`Коричневый`), or a typing fragment of an already-fixed term (`black wi` → `black white`, fixed
 per the generator's own before/after table). No further action identified. Closing this leg here —
 agent-eligible queue is empty; remaining cards are `assignee:human` or `kind:reference`.
+
+### E30 · 2026-09-06 — shipped the OG-image + ShareBar fix for the 54 hubs (card mtpi1k9k835vk8), after correcting my own filed risk estimate
+
+Immediately after §E28's hub build, checked OG/share coverage and found `/colors-that-go-with/`
+(756 URLs, 49.5% of the sitemap) was the only major page type using the shared `og-default.png`
+with no ShareBar — every other type (`palettes`, `colors`, `collections`, `learn`) has both. Filed
+card `mtpi1k9k835vk8` first, citing this project's own "~41 minutes" build doctrine as a reason to
+check CI-minutes headroom before adding image generation, on a namespace that hit `ci_quota_exceeded`
+for real on 2026-09-04.
+
+**Then checked the actual GitLab job trace instead of trusting the doctrine note**, per this file's
+own repeated lesson about the gap between local and CI build cost. Measured: `og/collections/*.png.ts`
+rasterises at **~20ms/image** on CI, the whole 2,187-page `astro build` step took **~94 seconds**, and
+the full pipeline (checkout→build→deploy→assert→indexnow) ran **149 seconds**. The namespace also now
+carries `extra_shared_runners_minutes_limit: 1000` on top of the 400 free — the quota-exhaustion
+incident the risk was based on has been resolved. Corrected the card in place rather than leaving the
+inflated estimate standing, then built design 2 (54 hub-only images, per the card's own
+crowding-avoidance reasoning from §E28) in the same leg.
+
+**Shipped, `59b9750`:**
+- `og/colors-that-go-with/[slug].png.ts` — 1200×630 SVG→PNG, one per `commonColors` entry passing
+  the hub pages' own `MIN_PALETTES` guard. Mirrors `og/colors/[slug].png.ts`'s layout exactly;
+  right column shows the 3 computed HSL partner swatches (this type's real content) instead of a
+  palette count.
+- `ShareBar.astro` generalised from palette-only (`{palette, url}`) to generic
+  (`{title, url, tweetText, pinterestMedia}`). The one existing caller (`palettes/[slug].astro`)
+  moved its provenance branching (Wada plate vs. editorial) to the call site — behaviourally
+  identical, verified by control below.
+- Hub page (`[color]/index.astro`) now passes `image={...}` to `BaseLayout` and renders `<ShareBar>`
+  with a real `pinterestMedia` — never the shared default, matching the card's explicit requirement
+  that a generic Pinterest image is worse than no button.
+
+**Verify, live, via a fresh sitemap+API poll (not a guessed sleep — measured CI duration, then
+polled the pipeline status directly):**
+```
+deploy                 pipeline 2823918613, 59b9750, success in ~110s
+/og/colors-that-go-with/beige.png     200, image/png, 1200x630, 37,192 bytes
+4 sampled hub images    37192 / 38124 / 45403 / 46129 bytes — genuinely distinct, not one template
+hub og:image            now /og/colors-that-go-with/beige.png (was og-default.png)
+hub ShareBar            renders (data-share-bar, share__btn present)
+CONTROL: palette page   ShareBar still renders; Pinterest media URL unchanged
+                        (/og/wada-292-.../png, same as before the refactor)
+sitemap                 unchanged at 1,528 (OG routes correctly excluded, matching every
+                        other page type's OG routes)
+astro check             0 errors / 0 warnings (one HexColor type error caught and fixed
+                        on the first pass)
+```
+
+Card `mtpi1k9k835vk8` updated with both the correction and the shipped result rather than left as a
+pure decision record.
