@@ -4017,3 +4017,32 @@ cabinpets.com          unchanged        unchanged         unchanged
 **Both halves changed.** The 2-day control now holds across **all five properties** (n=5, not n=1) — much stronger. But the magnitude was badly understated: colorcombinations 09-05 cumulative **125 -> 148 -> 209 sessions = +67%**, pv +95%, searches **2 -> 6**, still climbing ~36h after the day closed. Corrected **in place** per `correction-style` (no banner-stacking), `origin/main` **e9bbeb1d**, 87,246 -> 88,688 bytes. The rule is now **"wait"**, not "adjust by N%" — any factor a reader carries away will be too small. Verified the stale figure survives only inside its explicit supersession sentence.
 
 **Knock-on: the search card `mtppvsfvvdszfx` is DOWNGRADED.** Its 09-05 rate has been climbing all morning — 16.0 -> 20.3 -> **28.7/1k**, now **above its own `<=25/1k` regression bar**. Its claim was "two consecutive bottom-7% days, p≈0.005"; that is now **one** day (09-04, settled, 12.7/1k), p≈0.07 on a post-hoc test. Finding drops from suggestive to unremarkable, and a browser lane should **not** be spent on it before 09-08. Had I not re-read for an unrelated reason, scarce Chrome MCP time would eventually have gone to an anomaly that had already halved.
+
+## §E66 — Bing CTR is UNOBTAINABLE on this site; and the fleet's calibration table invited the wrong reading (2026-09-06 12:14Z)
+
+Refuel leg. The project DATA blurb names a gate — *"do NOT act on per-query or per-page Bing CTR until `node scripts/bing-ctr.mjs <site>` prints clean"* — and **nobody had run it here**; colorcombinations was absent from the fleet calibration table. Bing is this site's live channel (1,032 clicks vs 4 Google on my pull), so this gated every Bing lever.
+
+Script is at `tooling/55-fleet-dashboard/scripts/bing-ctr.mjs`, invisible to `git ls-tree` (gitignored `tooling/`) — found with `find -L`, since a plain `find` on this symlinked vault returns empty for everything.
+
+**Result — FAIL on both feeds, exit 2:**
+
+```
+queries  clicked=359  clicks>=impr=169  medianImpr=2  -> CLICK-SELECTED
+pages    clicked= 31  clicks>=impr=  5  medianImpr=8  -> CLICK-SELECTED
+```
+
+169 of 359 clicked query rows report more clicks than impressions. **Positive control** (the script prescribes it): cabinpets pages read **clean**, exit 0 — so the guard is not a constant-fail.
+
+**Aggregate calibration, also missing:**
+
+| site | truth | feed | impr cov | clk cov | enrichment |
+|---|--:|--:|--:|--:|--:|
+| **colorcombinations** | 3.55% | 4.36% | 65.2% | 80.2% | **1.23x** |
+| readinglist | 4.71% | 4.46% | 35.9% | 33.9% | 0.95x |
+| cabinpets | 2.11% | 2.36% | 61.2% | 68.3% | 1.12x |
+
+⇒ On this site **only impressions, position, and the `/data.json` site total mean anything.** Refuse any future meta/title rewrite proposed off per-page Bing CTR — `bing-ctr.mjs`'s header records four published-then-retracted findings from this trap, including 21 meta rewrites shipped on a false premise.
+
+**Still valid and worth having** (n=17 rows >=16 impr, 18,600 total): `/trends/color-trends-2026/` 6,777 @ 4.9 · `/` 6,585 @ 4.1 · `/colors/` 2,183 @ 5.0 · `/collections/japanese/` **1,446 @ 4.2** · `/collections/y2k/` 651 @ 4.6. The whole top of the site sits at **position 4.1–5.0** — not a ranking-depth problem — and `/collections/*` carries real demand across eight variants, which is under-discussed on this board.
+
+**Doctrine defect found and corrected.** `positive-control-before-absence.md` labelled readinglist's enrichment **1.00x "clean"**. I reproduce that number (0.95x) — **and readinglist's page feed FAILS the row guard.** They answer different questions: enrichment tests the AGGREGATE, the guard tests an INDIVIDUAL ROW. readinglist's coverage is low (35.9%) but *proportional* (33.9% of clicks), so the total is clean while 50 of 214 clicked rows have `clicks >= impr` at median 6 impressions — rows junk, total fine. Reading a 1.00x as licence for per-page CTR is exactly what that table invited. Corrected in place (`correction-style`): "clean" removed, colorcombinations 1.23x added, new § *AGGREGATE-CLEAN IS NOT ROW-CLEAN* with a claim-to-test mapping. `origin/main` **edfeb46f**, 154,411 -> 158,050 bytes; misleading phrase verified gone (0 hits), file intact.
