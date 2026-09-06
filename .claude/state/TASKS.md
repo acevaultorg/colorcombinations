@@ -1789,3 +1789,53 @@ adblock correlates with the professional audience that buys the `tool` rail, 14.
 - `sed 's|</\?loc>||g'` on the sitemap: BSD sed needs `-E` for `\?`, so the `<loc>` tags survived,
   curl rejected the URL, and every count came back 0 — including the control. Caught only because
   the control was there.
+### E25 — Ownership check on the COTY cluster: NOT owned, page already best-in-class, CTR is definitional zero-click. NO title work. (2026-09-06)
+
+Ran the `ai-citation-channel` ownership procedure (one WebSearch per query) on this site for the
+first time. Site's search channel is effectively Bing-only: 519 Bing clicks vs 4 GSC clicks.
+
+Two clusters (/bing-detail, limit=5000, 931 query rows / 139 page rows):
+
+| cluster | impr | clicks | CTR |
+|---|--:|--:|--:|
+| "dictionary of color combinations" (7 variants) | ~3,502 | 239 | 6.8% |
+| "color of the year 2026" (5 variants) | ~2,080 | 9 | 0.43% |
+
+WARNING: that 0.43% is a query-feed artifact — do not quote it. The queries array is
+click-selected. At PAGE level:
+
+    /trends/color-trends-2026/   6,777 impr   183 clicks   2.70%   pos 4.9   <- #1 page by impressions
+    / (home)                     6,585 impr   471 clicks   7.15%   pos 4.1   <- same-site control
+
+OWNERSHIP VERDICT: NOT OWNED. Searched "color of the year 2026"; 7 results. Benjamin Moore,
+Sherwin-Williams and Pantone each publish a page covering ONLY their own colour, on an inherently
+cross-brand question with 14 official answers. No standards body, no on-topic Wikipedia. The only
+aggregators are incidental one-off articles from non-specialists (Young House Love, wunderlabel x2,
+ArchDaily) — not exact-match dedicated domains, so not PEER-SATURATED either.
+
+I would have guessed "Pantone owns it." Measured, that is wrong — a brand page covering only its
+own colour cannot be the canonical answer to a cross-brand query. 3rd armchair owner-guess to miss
+on this fleet; run the search.
+
+BUT THE CONCLUSION IS STILL: do nothing to the title. Not-owned + top-5 + CTR 2.6x below the site's
+own control is normally the one case where title work IS indicated. It fails at the next step
+because the page is already best-in-class:
+
+  title: Color of the Year 2026: Pantone Cloud Dancer + 13 More — The Dictionary of Color Combinations
+  meta : All 14 official 2026 Colors of the Year in one place — Pantone Cloud Dancer, Benjamin Moore
+         Silhouette, Behr Hidden Gem, Sherwin-Williams Universal Khaki and more.
+  H1   : The 2026 Colors of the Year
+  brands on page: Pantone 43 · Benjamin Moore 20 · Behr 18 · Sherwin 17 · Coloro 11 · WGSN 11 · Dulux 5
+
+Front-loaded, intent-matched, names the headline answer AND the aggregation, and covers more brands
+than any competitor that ranks. Nothing a rewrite would add.
+
+=> The 2.70% is the DEFINITIONAL ZERO-CLICK signature: the headline fact ("Pantone Cloud Dancer") is
+one sentence, so the SERP answers it, and only the minority wanting all 14 + hex + palettes click.
+Not a defect; no copy change moves it. Judge this page on conversion + AI citation, not SERP CTR.
+
+Upside is on the AI axis: same cluster carries ~342 citations at 8-24% share, ~1,737 unwon, on the
+site's only growing human channel (AI +35.4%). Feeds existing gate mtp835nfohbpez (2026-10-06).
+
+Net: a measured negative that prevents work on the site's #1 page. 8-for-8 on this fleet for "the
+obvious content/title fix, refuted on measurement."
