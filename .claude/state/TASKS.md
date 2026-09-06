@@ -998,6 +998,39 @@ tested it took one API call and existed the whole time — it was sitting in the
 instrument that would test the explanation is one call away.**
 
 
+### E13. DEVICE SPLIT 2026-09-06 — mobile converts 1.74x BETTER than desktop here
+
+Last of the DATA block's unwired segmentation. Both pulls complete (`truncated: false`, 3/3):
+
+| device | sessions | pageviews | pv/session | converting sessions | conv rate |
+|---|---:|---:|---:|---:|---:|
+| **mobile** | 3,218 | 7,843 | **2.44** | 104 | **3.23%** |
+| desktop | 3,497 | 7,775 | 2.22 | 65 | 1.86% |
+| tablet | 65 | 306 | 4.71 | 3 | 4.62% |
+
+**Mobile is the better half on both axes** — deeper (2.44 vs 2.22 pv/session) and converting
+**1.74x** better. That inverts the usual fleet assumption that mobile is the weaker surface, and
+it is worth stating plainly because it changes where UI care is best spent here.
+
+**Consequence — it re-prices an existing operator card.** `ms072bswpegdnj` asks the operator to
+verify changes on a real phone (a 2026-07-23 honest gap: Chrome MCP could not set the viewport on
+that lane). That reads like routine hygiene. It is not: **mobile is ~48% of sessions and the
+better-converting half of the site.** A mobile regression here costs more than a desktop one.
+
+⚠️ **Two caveats, both real:**
+- GA4 records **232** `amazon_click` events against the beacon's **366** (63%). GA4 is
+  consent-gated on this site, so it sees a subset. The device *rates* above are only comparable if
+  consent rates are similar across devices — **which is unverified**. Treat 1.74x as directional,
+  not exact. The direction is large enough to survive a moderate consent skew; the precise ratio
+  is not.
+- These are event-level conversions, not orders. Per the fleet's standing correction, clicks are
+  not revenue; rank on `$/click x clicks` when money is the question.
+
+**What this does NOT license:** no mobile-specific redesign, and no desktop "fix". Desktop at
+1.86% on 3,497 sessions is not broken — it is a different surface with different intent. The
+finding is about where verification effort matters, not about a defect.
+
+
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
 
 § E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
