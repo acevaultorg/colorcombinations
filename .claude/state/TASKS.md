@@ -914,6 +914,46 @@ site's 45-75% citation share on book queries. The AI-channel gate (2026-10-06) i
 to act on that, not a depth campaign.
 
 
+### E11. GUARD VERIFIED + 89.9% PAGE COVERAGE (self-improvement leg, 2026-09-06)
+
+`information-gain-standard` records that `check-safe-to-delete.mjs` once **failed OPEN** on paths
+containing spaces (`import.meta.url` percent-encodes, `argv[1]` does not, so `isMain` never
+matched and node exited 0 with no output — "safe to delete" for every URL). **This machine's vault
+path contains two spaces**, so that bug would be live here. Verified rather than assumed:
+
+- ✅ The fix is present: `const isMain = import.meta.url === pathToFileURL(process.argv[1]).href;`
+- ✅ It BLOCKS with evidence: `/trends/color-trends-2026/` → exit 1, 367 bytes, `entrances:245,
+  pageviews:289, entry_rank:3/1325`. Matches the doctrine's own test — a genuine verdict PRINTS
+  EVIDENCE; silence plus rc=0 means it never ran.
+- ✅ It DISCRIMINATES rather than always-blocking: entry_rank came back 3 · 98 · 130 · 525 across
+  the sampled pages, i.e. it is reading real per-page data, not returning a constant.
+
+**Why I could not obtain an `OK` verdict, and why that is a finding rather than a gap:** 8 of 8
+pages I sampled blocked — including five `/paintings/` pages picked precisely because a sibling
+lane measured that whole type at ~1 Bing impression. They blocked because they have **GA4
+traffic** (`water-lilies`: 6 entrances, 11 views, entry rank #98). The tool's own source confirms
+`verdict: 'OK'` is reachable (`gsc+ga4-pages-live`). It is simply hard to find an orphan here:
+
+```
+pages_seen_for_site (GA4, 30d)   1,325
+sitemap URLs                     1,474
+                                 -----
+coverage                          89.9%   <- ~149 pages without traffic, out of 1,474
+```
+
+**Two consequences:**
+1. **"Prune the thin pages" is a non-starter on this site.** ~90% of pages received real traffic
+   in 30 days. There is no dead weight to remove, and the traffic veto would correctly block
+   nearly every candidate. Do not open that line of work here.
+2. This partially answers the DATA block's unwired **"indexation coverage (indexed vs sitemap)"**
+   — 89.9% of sitemap URLs have GA4 traffic, and Bing reports `InIndex` 1,940 against the same
+   1,474-URL sitemap (§ E3). Both point the same way: discovery is not this site's problem.
+
+⚠️ Careful reading: `pages_seen_for_site` counts pages GA4 has *rows* for, which is not identical
+to "indexed". It is a floor on coverage, not a search-index census. The Bing `InIndex` figure is
+the closer instrument for indexation, and it agrees.
+
+
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
 
 § E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
