@@ -1923,3 +1923,54 @@ Sitemap+priority: 1474 URLs · changed: N · via content-hash
   N ~= 0-few  -> cache round-trip works, changed-only restored
   N ~= 1,389  -> cache is NOT persisting; the baseline is still frozen
 ```
+
+### E27 · 2026-09-06 — 702 pages (47.7% of the sitemap) breadcrumb-linked to a 404, plus two dead editorial links; all three fixed live
+
+Gap-sweep leg, board's agent zone empty (only `assignee:human` + `kind:reference` cards left).
+Swept all 1,474 sitemap URLs (probe controlled both directions: a known-404 URL 404s, home 200s)
+— clean, 1,474/1,474 200. Then swept every internal `href` on a 57-page stratified sample (one per
+sitemap type, 4 random from larger types) against the sitemap and every static href in `src/`
+against live status. Found three real defects.
+
+**The big one: `/colors-that-go-with/<color>/<context>/` (702 pages, 47.7% of the sitemap) emits a
+visible breadcrumb `<a>` AND a `BreadcrumbList` JSON-LD `item:` both pointing at
+`/colors-that-go-with/<color>/`, which does not exist** — only `[color]/[context].astro` is built;
+there is no `index.astro` under `[color]/`. 11/11 sampled child pages confirmed: href present,
+JSON-LD item present, parent 404.
+
+This is the SAME shape §E15 swept for and correctly refuted at the top-level `/palettes/` parent
+("an unreachable URL is not a defect on its own... check the references before sizing the problem
+by the number of children" — count was 0 there). §E15 swept top-level parents only; this is a
+second-level parent it never reached. The count here is not 0 — it's 11/11.
+
+**Fix**, matching an existing in-repo pattern rather than inventing one: `compare/hsl-vs-lch.astro`'s
+BreadcrumbList already has a position-2 ListItem with `name` only, no `item` — valid schema.org, and
+already shipped. Applied the same shape: de-linked the visible crumb (`<a>` → `<span>`), dropped the
+JSON-LD `item` key. Did NOT build `[color]/index.astro` — that page type (parent hubs over 703
+already-demandless children) has no basis to expect demand, and §E19 explicitly says don't build
+more of this page type.
+
+**Two smaller, unrelated defects found in the same sweep, both live editorial-page dead links:**
+- `/palettes/` (8 links, 7 editorial pages) — 404. `/browse/` is the real palettes index (title
+  "Browse all palettes," carries all 378 palette hrefs) — repointed. Does not contradict §E15: that
+  swept palette-PAGE breadcrumbs (0 references, correctly refuted); these are editorial-page
+  references §E15 never sampled.
+- `/colors/rikyu/` (2 links, learn/wabi-sabi-color-theory) — 404. Control: sibling links
+  `/colors/seiji/` and `/colors/kogecha/` both 200, so the route works and the colour is genuinely
+  absent from the corpus. Repointed to `/palettes/kariyasu-rikyu/` — literally titled "Grass Yellow
+  & Rikyū Grey," the exact colour the prose names.
+
+**Verify:** `astro check` 0 errors / 0 warnings before commit. Post-deploy full sitemap re-sweep
+1,474/1,474 → 200, unchanged. Money path re-checked safely in the same pass — bare + forged-token
+`/go/` probes both 302→bare own-origin root, zero clicks fabricated (no `-L`, no minted token, no
+forged Sec-Fetch headers).
+
+**Collision, handled:** a sibling session was concurrently committing `.claude/state/TASKS.md`
+(§E26, the IndexNow manifest fix) in this same checkout. Committed my 9 `src/` files by explicit
+pathspec — `git show --name-only` on the resulting commit confirmed zero `.claude/` paths — pushed,
+and verified the push landed via `origin/main` SHA match before moving on.
+
+**What this does NOT license:** the 702-page count is now correctly LINKED, not made more valuable.
+§E19's finding stands — this page type is indexed and essentially unsearched (0.1% of the site's
+search impressions). The fix removes a real schema/UX defect (a dead breadcrumb reference on nearly
+half the site); it is not evidence the page type deserves more investment.
