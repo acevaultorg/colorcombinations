@@ -3813,14 +3813,29 @@ reason). These two were simply never added.
 All 16 verified live first — **200, no `noindex`, self-canonical**, and present in
 `sitemap-0.xml`:
 
-| page | words | `/go/` CTAs |
-|---|--:|--:|
-| `/compare/pantone-vs-ral/` | 2,653 | 18 |
-| `/compare/hsl-vs-lch/` | 2,566 | 18 |
-| `/compare/wada-vol-1-vs-vol-2/` | 2,434 | 10 |
-| `/compare/adobe-vs-coolors/` | 2,407 | 18 |
-| `/books/a-dictionary-of-color-combinations/` | 1,434 | 1 |
-| `/books/` hub | 1,407 | — |
+| page | ~~words~~ **RETRACTED** | real `<main>` words | `/go/` CTAs |
+|---|--:|--:|--:|
+| `/compare/pantone-vs-ral/` | ~~2,653~~ | **1,419** | 18 |
+| `/compare/hsl-vs-lch/` | ~~2,566~~ | **1,330** | 18 |
+| `/compare/wada-vol-1-vs-vol-2/` | ~~2,434~~ | **1,242** | 10 |
+| `/compare/adobe-vs-coolors/` | ~~2,407~~ | **1,174** | 18 |
+| `/books/a-dictionary-of-color-combinations/` | ~~1,434~~ | **215** | 1 |
+| `/books/` hub | ~~1,407~~ | **199** | — |
+
+🔴 **CORRECTED 2026-09-06 12:20Z (§E67) — every number in the original column was wrong,
+and the `/books/` rows were wrong by ~14x.** The measurement stripped HTML tags but **not
+`<script>` and `<style>` contents**, so inline JavaScript and CSS were counted as page words.
+Reproduced exactly: the buggy method returns 1,483 for the row published as 1,434.
+
+Measured properly, the other ten `/books/` pages run **75–99 words** in `<main>` (median 94).
+The claim *"1,400+ words each"* in the commit message for `f731af2` and in done-card
+`mtpr5vaqprilrw` is **false and is retracted there too**.
+
+**The two halves of this ship fare very differently.** `/compare/*` at 1,174–1,419 real words is
+genuinely substantial and its case is unaffected. `/books/*` at 75–215 words are **book cards**
+— title, author, two sentences, affiliate CTA, three cross-links — which is `Mediocre-fixable`
+under `information-gain-standard`, not `Strong`. See §E67 for the disposition and why they were
+nonetheless kept in the AI sitemap.
 
 Control: `/compare/zzz-vs-zzz/` returns **404**, so those 200s are real pages and not a
 catch-all route.
@@ -4046,3 +4061,26 @@ pages    clicked= 31  clicks>=impr=  5  medianImpr=8  -> CLICK-SELECTED
 **Still valid and worth having** (n=17 rows >=16 impr, 18,600 total): `/trends/color-trends-2026/` 6,777 @ 4.9 · `/` 6,585 @ 4.1 · `/colors/` 2,183 @ 5.0 · `/collections/japanese/` **1,446 @ 4.2** · `/collections/y2k/` 651 @ 4.6. The whole top of the site sits at **position 4.1–5.0** — not a ranking-depth problem — and `/collections/*` carries real demand across eight variants, which is under-discussed on this board.
 
 **Doctrine defect found and corrected.** `positive-control-before-absence.md` labelled readinglist's enrichment **1.00x "clean"**. I reproduce that number (0.95x) — **and readinglist's page feed FAILS the row guard.** They answer different questions: enrichment tests the AGGREGATE, the guard tests an INDIVIDUAL ROW. readinglist's coverage is low (35.9%) but *proportional* (33.9% of clicks), so the total is clean while 50 of 214 clicked rows have `clicks >= impr` at median 6 impressions — rows junk, total fine. Reading a 1.00x as licence for per-page CTR is exactly what that table invited. Corrected in place (`correction-style`): "clean" removed, colorcombinations 1.23x added, new § *AGGREGATE-CLEAN IS NOT ROW-CLEAN* with a claim-to-test mapping. `origin/main` **edfeb46f**, 154,411 -> 158,050 bytes; misleading phrase verified gone (0 hits), file intact.
+
+## §E67 — 🔴 I published a word count that counted JavaScript as content; retracted, and it found a real thin-content risk (2026-09-06 12:20Z)
+
+Refuel leg started as "does `/collections/*` carry the money path" (it does — every surface has `/go/` links 1:1 with `rel="sponsored"` and an FTC line). One row of that table contradicted **my own §E60 claim from two hours earlier**.
+
+**The bug.** My §E60 word count stripped HTML tags but **not `<script>`/`<style>` contents**, so inline Mediavine/GA4/search JS was counted as page words. Reproduced exactly:
+
+```
+/books/a-dictionary-of-color-combinations/
+  main, tags AND scripts stripped :   215   <- real
+  whole page, scripts stripped    :   587
+  whole page, tags stripped only  : 1,483   <- what I published as 1,434
+```
+
+**Corrected all 16.** `/compare/*` 2,407-2,653 -> **1,174-1,419** (overstated ~2x, still substantial, case unaffected). `/books/*` 1,297-1,483 -> **75-215, median 94** (overstated **~14x**). §E60 table struck in place; done-card `mtpr5vaqprilrw` and commit `f731af2` both carry the false "1,400+ words each" and the card is retracted.
+
+**Why it slipped: no control.** A `/compare/` page read 2,653 by the same method — plausible for a long article — so the column looked internally consistent. `information-gain-standard` explicitly says measure **unique-above-template** words; I measured neither. One page measured two ways would have caught it in seconds.
+
+**The real finding underneath.** All 12 `/books/` pages are book cards — title, author, two sentences, CTA, three cross-links. Under `information-gain-standard` that is **Mediocre-fixable**, not Strong, on a site running **Mediavine Journey ads**, and I put them in `sitemap-ai.xml` this morning.
+
+**But do NOT prune.** `/books/<slug>` is the site's **top AI-converting template**: 88 AI sessions vs 5 organic (17.6x), **42.2% of all AI-channel Amazon clicks**, 3.52 pv/session (3rd-best depth). Doctrine is explicit — Mediocre-fixable → enrich; only Thin-unfixable → noindex; and the traffic veto would BLOCK a prune anyway. Filed as ranked card **`mtps4arzikip81`** (enrich all 12 to >=400 cited words, zero fabrication, no price, FTC + `rel="sponsored"` intact, ONE build).
+
+**The ship itself still stands** — but on the AI-conversion measurement it already carried, not on the word count. The word count was decoration I added to make the case look stronger, and it was false.
