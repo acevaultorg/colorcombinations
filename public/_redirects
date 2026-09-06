@@ -38,3 +38,21 @@
 # because no sitemap.xml asset exists, while /robots.txt (a real file) returns 200.
 # If ads.txt ever reappears in public/, this redirect stops firing.
 /ads.txt https://adstxt.journeymv.com/sites/0e3765cf-7571-4481-9b28-bc96fd84b4e4/ads.txt 301
+
+# /palettes/ is advertised in sitemap-ai.xml (line ~186, priority 0.7) as the
+# palettes index -- but that page was NEVER BUILT and returns 404, while the
+# real index has always lived at /browse/ ("Browse all palettes", links all
+# 378, already in BOTH sitemaps). Measured 2026-09-06: 5 pageviews/30d and 0
+# entrances on the 404, and no internal link anywhere in src/ points at the
+# bare root (control: 13 template links to /palettes/<slug>/ do exist), so
+# those are stray/typed/external hits landing on nothing.
+#
+# EXACT MATCH ONLY -- never /palettes/* -- the 378 child pages are healthy and
+# must not be caught (verified /palettes/kurenai-kon/ + /palettes/akane-tokiwa/
+# still 200 after this ships).
+#
+# Building a real /palettes/ index was considered and REJECTED: it would be a
+# second hub for the same 378 pages, i.e. exactly the duplicate-landing-page
+# defect fixed one leg earlier in E40.
+/palettes/ /browse/ 301
+/palettes /browse/ 301
