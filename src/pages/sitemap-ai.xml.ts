@@ -5,6 +5,7 @@ import { collections } from "@/data/collections";
 import { PAIRS } from "@/data/converterPairs";
 import { allPaintings } from "@/data/paintings";
 import { commonColors, contexts, palettesFor, MIN_PALETTES } from "@data/pairings";
+import { FURTHER_READING } from "@/config/monetization";
 
 /**
  * /sitemap-ai.xml — secondary sitemap for LLM/AI crawlers.
@@ -35,7 +36,10 @@ import { commonColors, contexts, palettesFor, MIN_PALETTES } from "@data/pairing
  *   0.7 — /about, /methodology, /data hub
  *   0.7 — /palettes index, /colors index, /collections index, /learn index
  *   0.6 — /random, /tools, /tools/* utilities
- *   0.5 — /shop (commercial; lower citation value)
+ *   0.6 — /compare/* head-to-head explainers (buying-decision questions an
+ *         assistant is asked verbatim — "which Wada volume should I buy")
+ *   0.5 — /shop, /gift-guide, /books hub + per-book (commercial; lower
+ *         citation value, but the file has always carried a commercial tier)
  */
 
 interface AiUrl {
@@ -203,12 +207,37 @@ export const GET: APIRoute = () => {
   urls.push({ loc: `${SITE}/tools/palette-from-image/`, priority: "0.6", changefreq: "monthly" });
   urls.push({ loc: `${SITE}/tools/palette-from-color/`, priority: "0.6", changefreq: "monthly" });
 
+  // Tier 0.6 — head-to-head comparisons. Added §E60 after measuring that this
+  // file listed /shop and /gift-guide but silently omitted /compare and /books,
+  // and that the closing exclusion list below names neither — so the omission
+  // was never a decision. These are the buying-decision questions an assistant
+  // is asked verbatim ("Wada vol 1 or vol 2?"), and /compare/wada-vol-1-vs-vol-2
+  // is 2,434 words of exactly that. Hardcoded like the /tools block above
+  // because each is its own .astro page with no data source to iterate.
+  for (const slug of [
+    "wada-vol-1-vs-vol-2",
+    "pantone-vs-ral",
+    "hsl-vs-lch",
+    "adobe-vs-coolors",
+  ]) {
+    urls.push({ loc: `${SITE}/compare/${slug}/`, priority: "0.6", changefreq: "monthly" });
+  }
+
   // Tier 0.6 — discovery
   urls.push({ loc: `${SITE}/random/`, priority: "0.6", changefreq: "weekly", jsonAlt: `${SITE}/api/random.json` });
 
   // Tier 0.5 — commercial
   urls.push({ loc: `${SITE}/shop/`, priority: "0.5", changefreq: "monthly" });
   urls.push({ loc: `${SITE}/gift-guide/`, priority: "0.5", changefreq: "monthly" });
+  // /books hub + one page per curated book. Iterated from FURTHER_READING (the
+  // same list /books/[slug].astro builds its routes from) so this can never
+  // drift out of sync with the pages that actually exist — unlike a hardcoded
+  // slug list. All 12 are in sitemap-0.xml, 200, self-canonical, no noindex,
+  // 1,400+ words each; they were simply never added here.
+  urls.push({ loc: `${SITE}/books/`, priority: "0.5", changefreq: "monthly" });
+  for (const book of FURTHER_READING) {
+    urls.push({ loc: `${SITE}/books/${book.slug}/`, priority: "0.5", changefreq: "monthly" });
+  }
 
   // No /privacy, /terms, /contact, /404, /og/*, /embed/*, /api/*.
   // Privacy + terms are not citation targets; OG/embed/api are

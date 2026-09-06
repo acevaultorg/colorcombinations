@@ -3776,3 +3776,141 @@ produce 12 clicks/30d today, and even tripling them is ~$3.4 at this site's $0.1
 No code change. Three candidate builds examined and all three declined on measurement:
 depth on `/colors-that-go-with/` (§E57, crawler), CTA count on `/palettes/` (per-CTA says
 no), book-CTA selection (documented rotation, ~$3/mo).
+
+## §E60 — 16 URLs added to sitemap-ai, and a standing fleet negative I should have read FIRST (2026-09-06)
+
+Continuing from §E59, which ended by naming the real question: *why does a page converting at
+176.5 clicks/1k pageviews get only 153 pageviews?* That is a discovery question, so this leg
+looked at discovery surfaces.
+
+### The finding
+
+`sitemap-ai.xml` — the curated, crawler-facing sitemap advertised in robots.txt alongside the
+main one — carried **784 locs and not one `/books/` or `/compare/` URL**, while `sitemap-0.xml`
+carries all 16.
+
+The omission is **not** a decision, and the file itself is what proves it:
+
+- it has an explicit **`// Tier 0.5 — commercial`** section already listing `/shop/` and
+  `/gift-guide/` — commerce pages are not excluded on principle;
+- it closes with an explicit exclusion list — *"No /privacy, /terms, /contact, /404, /og/*,
+  /embed/*, /api/*"* — which **names neither books nor compare**.
+
+Every other exclusion in that file is deliberate and documented (the 702
+`/colors-that-go-with/` leaves with a stated reason; six colliding colour slugs with a stated
+reason). These two were simply never added.
+
+### The change
+
+`src/pages/sitemap-ai.xml.ts`, +16 locs (784 → 800):
+
+- **`/compare/*` at 0.6** — 4 pages, hardcoded like the `/tools` block above it, because each
+  is its own `.astro` file with no data source to iterate.
+- **`/books/` hub + 11 book pages at 0.5**, iterated from **`FURTHER_READING`** — the same
+  export `/books/[slug].astro` builds its routes from, so it cannot drift out of sync with the
+  pages that exist. A hardcoded slug list would go stale on the next book added.
+
+All 16 verified live first — **200, no `noindex`, self-canonical**, and present in
+`sitemap-0.xml`:
+
+| page | words | `/go/` CTAs |
+|---|--:|--:|
+| `/compare/pantone-vs-ral/` | 2,653 | 18 |
+| `/compare/hsl-vs-lch/` | 2,566 | 18 |
+| `/compare/wada-vol-1-vs-vol-2/` | 2,434 | 10 |
+| `/compare/adobe-vs-coolors/` | 2,407 | 18 |
+| `/books/a-dictionary-of-color-combinations/` | 1,434 | 1 |
+| `/books/` hub | 1,407 | — |
+
+Control: `/compare/zzz-vs-zzz/` returns **404**, so those 200s are real pages and not a
+catch-all route.
+
+### 🔴 The standing negative I found AFTER writing the code, not before
+
+Board card **`mtmhpxlyx4pgom`** (Fleet Dashboard, `kind: reference`, 2026-09-04):
+
+> *"❌ Curating sitemap-ai.xml does NOT predict AI-citation share (n=9) — the highest-AI-share
+> site ships an identical copy. Don't spend time on it."*
+
+Read in full, the change here **survives — but narrowly, and the card is right to exist**:
+
+- Its claim is explicitly **cross-site**: don't spend *hours*, and don't read an identical
+  sitemap-ai as a defect. It states outright that it does **not** claim curation is useless,
+  and that "a within-site before/after could still show an effect."
+- This leg is neither thing it warns against: ~16 lines fixing an internal inconsistency in an
+  **already-curated** file, not a re-prioritisation exercise and not a defect-claim about
+  sameness.
+- Its own table lists **colorcombinations at 737 locs / 14.1% AI share** — second-highest in
+  the fleet. The file is 784 today because other lanes keep adding to it (the 54
+  `/colors-that-go-with/` hubs, card `mtpj5uvxup0w4b`). This continues that.
+
+**So: correct change, unknown effect, and the fleet's own n=9 says do not expect one.** No
+revenue number is projected here. Appended a `## Revision` to that card with this site's
+channel measurement and an explicit invitation to correct me if its n=9 already covers
+omission-of-page-types rather than re-ranking.
+
+### The channel context, measured independently this leg
+
+| channel | sessions | % sess | amazon_click | clk/1k sess |
+|---|--:|--:|--:|--:|
+| Direct | 3,138 | 45.6% | 30 | 9.6 |
+| Organic Search | 2,395 | 34.8% | 124 | 51.8 |
+| **AI Assistant** | **1,050** | **15.3%** | **64** | **61.0** |
+| Referral | 227 | 3.3% | 18 | 79.3 |
+
+AI Assistant is 15.3% of sessions and **27.1% of Amazon clicks** — the best-converting channel
+by rate, reproducing card `mtp8tahi994xyx` from a separate pull. **This prices the channel, not
+the sitemap.** A valuable channel does not imply the sitemap moves it; that inference is exactly
+what `mtmhpxlyx4pgom` refutes.
+
+robots.txt is healthy: all nine named AI crawlers allowed, `/go/` disallowed (correct — the
+money path should not be crawled), both sitemaps advertised.
+
+### The lesson, which is worth more than the change
+
+**I ran the board dedup after implementing instead of before.** One
+`search_tasks("sitemap-ai")` would have reframed the leg at the start, and it cost the same
+call either way. `measured-vs-expected` § the dedup surface says dedup is a *precondition*, not
+a write-up step — and this is the second time today that reading first (the book-rotation
+comment, §E59) or failing to (here) decided whether a leg was well-aimed.
+
+### Instrument note
+
+`npx tsc` standalone flagged `Cannot find module '@/config/monetization'`. Artifact, not a
+defect: the same run flags **all six pre-existing** `@/*` imports identically, because a bare
+`tsc` invocation does not load `tsconfig.json`, which defines `"@/*": ["src/*"]`. The specifier
+added here is byte-identical to one already shipping in `src/pages/gift-guide.astro:29`.
+
+### Bonus, same leg: Bing indexation measured — healthy, and the cockpit's "not yet wired" item can be closed
+
+The project cockpit lists *"Discover: indexation coverage (indexed vs sitemap)"* as not wired.
+It is one `bing-probe` call — `method=GetCrawlStats`, which the default response does not
+include, so nothing had looked at it for this site.
+
+```
+InIndex   2026-08-28  1924
+          2026-08-31  1929
+          2026-09-02  1934
+          2026-09-04  1940      <- latest
+sitemap-0.xml locs      1528
+coverage                127.0%  and rising ~2-3/day
+```
+
+**Healthy.** Bing indexes 412 URLs beyond those advertised, and the trend is monotonically up
+across 8 days. There is no indexation gap on this site — which also means the `/books/`
+traffic ceiling (`mtpqs9tev8gqt6`) is not an indexation problem either.
+
+Latest-day crawl row, for the record: `CrawledPages 780 · Code2xx 2161 · Code4xx 15 ·
+BlockedByRobotsTxt 66 · CrawlErrors 15 · InLinks 9`.
+
+The 66 daily robots-blocked fetches are Bingbot following the in-page `/go/b/<isbn>` affiliate
+links, which robots.txt correctly disallows. **Not a fixable leak**: the links must be in the
+HTML for humans to click, they already carry `rel="sponsored nofollow noopener"` per the
+affiliate compliance standard, and Bing tries anyway. 8.5% of daily crawl attempts, and the
+alternative (removing the disallow) would be worse.
+
+**Two instrument traps met in this one call**, both already documented and both still live:
+- `GetCrawlStats` rows are **not date-sorted** — `rows[0]` is 2026-06-05, the latest row is 91
+  entries away. Sort on the epoch inside `/Date(...)/` before reading "latest".
+- The body parses to **`{"d": [...]}`**, not a list. `len()` on it returns **1**, which reads
+  as "the API returned one row". Dumping `list(j.keys())` first is what caught it.
