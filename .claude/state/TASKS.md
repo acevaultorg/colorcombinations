@@ -403,13 +403,15 @@ item that shipped and became the site's #1 page — `/trends/color-trends-2026/`
 and ~96% of the site's AI citations — was the **highest**-Oracle-weight item on the list
 (`annual_report_state_of_x × +85`). The backlog's own weighting was right; follow it.
 
-| item | archetype | 2026-09-05 verdict |
-|---|---|---|
-| `/glossary/` DefinedTerm hub | `llm_citation_quote_ready × +75` | **BUILD FIRST.** Highest remaining weight, and citation-shaped on the site that is **70% of all fleet AI-referred human sessions**. |
-| `/tailwind/` · `/wcag/` tools | `shareable_tool_calculator × +65` | **Second.** Linkable assets, not thin supply — a different archetype from the 702-page surface. |
-| `/material-design/` · `/accessibility/color-blind-tools/` | `comparison_vs_competitor_page × +60` | **Weak evidence:** the existing `/compare/*` pages take 32 Bing impressions across 2 pages. |
-| `/industry/[slug]/` · `/brands/` · `/courses/` · `/pod/` | `programmatic_page_with_unique_data × +55` | **DEPRIORITIZE.** This is the exact archetype whose 702-page instance earns 17 impressions. Building 8–12 more is vanity supply per `realized-demand-discipline`. |
-| `/color-by-emotion/` | `editorial_curation_depth × +50` | **Leave.** The task itself flags thin-content risk; nothing since has reduced it. |
+| item | archetype | 2026-09-05 verdict | 2026-09-06 status |
+|---|---|---|---|
+| `/glossary/` DefinedTerm hub | `llm_citation_quote_ready × +75` | **BUILD FIRST.** Highest remaining weight, and citation-shaped on the site that is **70% of all fleet AI-referred human sessions**. | **SHIPPED.** `21d9ce4` + fix `cca2d11`. Live-verified 2026-09-06: `/glossary/` returns 200, DefinedTerm schema present, title matches ("22 Terms Every Palette Page Uses"). |
+| `/tailwind/` · `/wcag/` tools | `shareable_tool_calculator × +65` | **Second.** Linkable assets, not thin supply — a different archetype from the 702-page surface. | **COVERED, not built standalone** — see lines 308-309 below: `<ExportPalette>` already ships a Tailwind-config export on all 378 palette pages (broader reach than one landing page), and `/tools/contrast-checker/` (721 lines) is already the WCAG-depth tool this line asked for. |
+| `/material-design/` · `/accessibility/color-blind-tools/` | `comparison_vs_competitor_page × +60` | **Weak evidence:** the existing `/compare/*` pages take 32 Bing impressions across 2 pages. | **SHIPPED anyway** this session (`d9bc069`/`b2b7212`, `2592dc6`) — real, non-fabricated pages with computed examples, de-orphaned via inbound links from `/tools/` and `/tools/color-blindness-simulator/`. Evidence caveat above still holds; treat as a low-confidence bet, not a proven win. |
+| `/industry/[slug]/` · `/brands/` · `/courses/` · `/pod/` | `programmatic_page_with_unique_data × +55` | **DEPRIORITIZE.** This is the exact archetype whose 702-page instance earns 17 impressions. Building 8–12 more is vanity supply per `realized-demand-discipline`. | Still deprioritized. No new evidence since 09-05 changes this. |
+| `/color-by-emotion/` | `editorial_curation_depth × +50` | **Leave.** The task itself flags thin-content risk; nothing since has reduced it. | Still left. |
+
+**2026-09-06 read: every ranked item in this table is now either shipped or explicitly deprioritized/left.** The backlog has no remaining "build" item its own evidence supports. The next session/lane should NOT default to more programmatic-page supply (measured lever, not this one) — check the fleet metrics layer / Bing Webmaster data fresh, or work systemic (CI/deploy/monetization-activation) gaps instead of adding pages.
 
 **Before building any of them:** check demand for the specific intersection first
 (`affiliate-team-standard` § the intersection law — readinglist shipped 98 decade×grade pages for 0

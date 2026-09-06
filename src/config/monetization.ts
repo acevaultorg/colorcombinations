@@ -796,6 +796,16 @@ export interface LearnResource {
   commission?: string;
   /** Topic tags for filtering / SEO. */
   tags: ReadonlyArray<string>;
+  /**
+   * Real, working vendor URL to use INSTEAD of `url` while `url` is still a
+   * PLACEHOLDER (unactivated affiliate ID). Same reasoning as
+   * DesignTool.fallbackUrl (monetization.ts, verified 2026-09-06): a
+   * placeholder click-tracking URL 400s/403s, it does not "still work."
+   * Not yet consumed live (LearnResources.astro isn't rendered by any
+   * page today), populated pre-emptively so building `/courses/` later
+   * doesn't reintroduce the same broken-link class.
+   */
+  fallbackUrl?: string;
 }
 
 export const LEARN_RESOURCES: LearnResource[] = [
@@ -807,6 +817,7 @@ export const LEARN_RESOURCES: LearnResource[] = [
     affiliate: true,
     commission: "$7 per signup (Impact.com)",
     tags: ["brand identity", "design fundamentals", "course"],
+    fallbackUrl: "https://www.skillshare.com",
   },
   {
     name: "Domestika — Color Theory Courses",
@@ -816,6 +827,7 @@ export const LEARN_RESOURCES: LearnResource[] = [
     affiliate: true,
     commission: "20-30% per course",
     tags: ["color theory", "course", "fine art"],
+    fallbackUrl: "https://www.domestika.org",
   },
   {
     name: "Coursera — Google UX Design Certificate",
@@ -825,6 +837,7 @@ export const LEARN_RESOURCES: LearnResource[] = [
     affiliate: true,
     commission: "$15-45 per certificate enrolment (Impact.com)",
     tags: ["UX design", "certificate", "career"],
+    fallbackUrl: "https://www.coursera.org",
   },
 ];
 
@@ -852,6 +865,8 @@ export interface PodProvider {
   url: string;
   affiliate: boolean;
   commission?: string;
+  /** Real fallback while `url` is a PLACEHOLDER — see LearnResource.fallbackUrl. */
+  fallbackUrl?: string;
 }
 
 export const POD_PROVIDERS: PodProvider[] = [
@@ -862,6 +877,7 @@ export const POD_PROVIDERS: PodProvider[] = [
     url: "https://www.printful.com/a/PLACEHOLDER_PRINTFUL_REFERRAL",
     affiliate: true,
     commission: "10% of customer orders for 9 months",
+    fallbackUrl: "https://www.printful.com",
   },
   {
     name: "Printify",
@@ -870,6 +886,7 @@ export const POD_PROVIDERS: PodProvider[] = [
     url: "https://printify.com/?ref=PLACEHOLDER_PRINTIFY_REFERRAL",
     affiliate: true,
     commission: "5% of customer orders, lifetime",
+    fallbackUrl: "https://printify.com",
   },
 ];
 

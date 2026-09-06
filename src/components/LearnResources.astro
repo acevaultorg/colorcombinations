@@ -6,8 +6,10 @@
  * Design Certificate per the affiliate stack. Per I-38 (no-Amazon-default),
  * routed via Impact.com (Skillshare, Coursera) and direct referrals.
  *
- * Used on /shop. Falls back gracefully when affiliate links are placeholders
- * (renders the editorial recommendation; commission inactive but link works).
+ * Used on /shop. Falls back to each resource's real vendor URL while its
+ * affiliate ID is still a PLACEHOLDER — a placeholder click-tracking URL
+ * 400s/403s, it does not "still work" (verified 2026-09-06 on DesignTools'
+ * identical Adobe placeholder). See LearnResource.fallbackUrl.
  */
 
 import { LEARN_RESOURCES } from "@/config/monetization";
@@ -31,34 +33,40 @@ const {
   </header>
 
   <ul class="learn-resources__list" role="list">
-    {LEARN_RESOURCES.map((resource) => (
-      <li class="learn-resources__item">
-        <h3 class="learn-resources__name">
-          <a
-            href={resource.url}
-            target="_blank"
-            rel={resource.affiliate ? "noopener sponsored" : "noopener"}
-            data-event={resource.affiliate ? "learn_affiliate_click" : "learn_click"}
-            data-resource={resource.name}
-          >
-            {resource.name}
-            <span class="learn-resources__arrow" aria-hidden="true">↗</span>
-          </a>
-        </h3>
-        <p class="learn-resources__tagline">{resource.tagline}</p>
-        <p class="learn-resources__why">{resource.why}</p>
-        <ul class="learn-resources__tags" role="list">
-          {resource.tags.map((tag) => (
-            <li>{tag}</li>
-          ))}
-        </ul>
-        {resource.affiliate && (
-          <p class="learn-resources__affiliate-note">
-            <span aria-hidden="true">→</span> affiliate link — commission at no cost to you
-          </p>
-        )}
-      </li>
-    ))}
+    {LEARN_RESOURCES.map((resource) => {
+      const isPlaceholder = resource.url.includes("PLACEHOLDER");
+      const usingFallback = resource.affiliate && isPlaceholder && Boolean(resource.fallbackUrl);
+      const href = usingFallback ? (resource.fallbackUrl as string) : resource.url;
+      const showAffiliateNote = resource.affiliate && !usingFallback;
+      return (
+        <li class="learn-resources__item">
+          <h3 class="learn-resources__name">
+            <a
+              href={href}
+              target="_blank"
+              rel={showAffiliateNote ? "noopener sponsored" : "noopener"}
+              data-event={showAffiliateNote ? "learn_affiliate_click" : "learn_click"}
+              data-resource={resource.name}
+            >
+              {resource.name}
+              <span class="learn-resources__arrow" aria-hidden="true">↗</span>
+            </a>
+          </h3>
+          <p class="learn-resources__tagline">{resource.tagline}</p>
+          <p class="learn-resources__why">{resource.why}</p>
+          <ul class="learn-resources__tags" role="list">
+            {resource.tags.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+          {showAffiliateNote && (
+            <p class="learn-resources__affiliate-note">
+              <span aria-hidden="true">→</span> affiliate link — commission at no cost to you
+            </p>
+          )}
+        </li>
+      );
+    })}
   </ul>
 </section>
 

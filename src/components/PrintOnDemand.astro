@@ -7,8 +7,10 @@
  * /shop "the toolbox" framing — designers using a colour archive can
  * produce brand-matched apparel/posters/stationery without inventory.
  *
- * Used on /shop. Falls back gracefully when affiliate links are
- * placeholders (still renders editorial recommendation).
+ * Used on /shop. Falls back to each provider's real URL while its
+ * affiliate ID is still a PLACEHOLDER — a placeholder click-tracking URL
+ * 400s/403s, it does not "still work" (verified 2026-09-06 on DesignTools'
+ * identical Adobe placeholder). See PodProvider.fallbackUrl.
  */
 
 import { POD_PROVIDERS } from "@/config/monetization";
@@ -32,29 +34,35 @@ const {
   </header>
 
   <ul class="pod-providers__list" role="list">
-    {POD_PROVIDERS.map((provider) => (
-      <li class="pod-providers__item">
-        <h3 class="pod-providers__name">
-          <a
-            href={provider.url}
-            target="_blank"
-            rel={provider.affiliate ? "noopener sponsored" : "noopener"}
-            data-event={provider.affiliate ? "pod_affiliate_click" : "pod_click"}
-            data-provider={provider.name}
-          >
-            {provider.name}
-            <span class="pod-providers__arrow" aria-hidden="true">↗</span>
-          </a>
-        </h3>
-        <p class="pod-providers__tagline">{provider.tagline}</p>
-        <p class="pod-providers__why">{provider.why}</p>
-        {provider.affiliate && (
-          <p class="pod-providers__affiliate-note">
-            <span aria-hidden="true">→</span> affiliate link — commission at no cost to you
-          </p>
-        )}
-      </li>
-    ))}
+    {POD_PROVIDERS.map((provider) => {
+      const isPlaceholder = provider.url.includes("PLACEHOLDER");
+      const usingFallback = provider.affiliate && isPlaceholder && Boolean(provider.fallbackUrl);
+      const href = usingFallback ? (provider.fallbackUrl as string) : provider.url;
+      const showAffiliateNote = provider.affiliate && !usingFallback;
+      return (
+        <li class="pod-providers__item">
+          <h3 class="pod-providers__name">
+            <a
+              href={href}
+              target="_blank"
+              rel={showAffiliateNote ? "noopener sponsored" : "noopener"}
+              data-event={showAffiliateNote ? "pod_affiliate_click" : "pod_click"}
+              data-provider={provider.name}
+            >
+              {provider.name}
+              <span class="pod-providers__arrow" aria-hidden="true">↗</span>
+            </a>
+          </h3>
+          <p class="pod-providers__tagline">{provider.tagline}</p>
+          <p class="pod-providers__why">{provider.why}</p>
+          {showAffiliateNote && (
+            <p class="pod-providers__affiliate-note">
+              <span aria-hidden="true">→</span> affiliate link — commission at no cost to you
+            </p>
+          )}
+        </li>
+      );
+    })}
   </ul>
 </section>
 
