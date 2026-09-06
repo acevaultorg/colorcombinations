@@ -83,7 +83,10 @@ const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
  * BUILD_DATE still feeds `dateModified` in the schema below — that is the
  * wider 18-template question, sized and left deliberately open in TaskPeace
  * card mtpuh2vxd18d63, not something to change piecemeal in this file. */
-const BUILD_DATE = new Date().toISOString();
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and
+ * the data it renders, NOT the build clock. See src/lib/contentDate.ts. */
+const BUILD_DATE = contentDate("src/pages/collections/[slug].astro", "src/data/collections.ts");
 
 // Named human author (E-E-A-T / GEO "Credible" + "Recognizable"). Same @id as the
 // trends page so the entity is one Person site-wide. Task mtjaxsmk36hi9v, 2026-09-02.

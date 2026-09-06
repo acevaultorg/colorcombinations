@@ -152,7 +152,10 @@ const keywords = [
 
 // Freshness signals for LLM citation + Google Freshness (Aleyda #9).
 const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
-const BUILD_DATE = new Date().toISOString();
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and
+ * the data it renders, NOT the build clock. See src/lib/contentDate.ts. */
+const BUILD_DATE = contentDate("src/pages/colors/[slug].astro", "src/data/colorStories.ts", "src/data/colors.ts", "src/data/pairings.ts");
 
 // Pillar-article cross-link map. When a named color anchors a pillar
 // article, surface that pillar inline so /colors traffic compounds into

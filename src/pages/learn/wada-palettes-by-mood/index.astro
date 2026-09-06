@@ -74,7 +74,10 @@ const keywords = [
 ];
 
 const SITE_FIRST_PUBLISHED = "2026-07-23T00:00:00Z";
-const BUILD_DATE = new Date().toISOString();
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and
+ * the data it renders, NOT the build clock. See src/lib/contentDate.ts. */
+const BUILD_DATE = contentDate("src/pages/learn/wada-palettes-by-mood/index.astro", "src/data/palettes.ts");
 const siteUrl = "https://colorcombinations.org/";
 const articleUrl = `${siteUrl}learn/wada-palettes-by-mood/`;
 

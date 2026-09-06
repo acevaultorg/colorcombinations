@@ -218,7 +218,10 @@ const FIRST_PUBLISHED_LABEL = new Date(SITE_FIRST_PUBLISHED).toLocaleDateString(
   year: "numeric",
   timeZone: "UTC",
 });
-const BUILD_DATE = new Date().toISOString();
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the later of this template and the palette data,
+ * NOT the build clock. See src/lib/contentDate.ts. */
+const BUILD_DATE = contentDate("src/pages/palettes/[slug].astro", "src/data/collections.ts", "src/data/pairings.ts", "src/data/palettes.ts");
 
 /**
  * FAQ — SINGLE SOURCE for both the FAQPage schema below AND the visible <section>

@@ -29,7 +29,10 @@ const keywords = [
 ];
 
 const SITE_FIRST_PUBLISHED = "2026-04-25T00:00:00Z";
-const BUILD_DATE = new Date().toISOString();
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and
+ * the data it renders, NOT the build clock. See src/lib/contentDate.ts. */
+const BUILD_DATE = contentDate("src/pages/learn/scandinavian-color-theory/index.astro");
 const siteUrl = "https://colorcombinations.org/";
 const articleUrl = `${siteUrl}learn/scandinavian-color-theory/`;
 

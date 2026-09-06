@@ -10,6 +10,7 @@
     "build": "bash scripts/build-locked.sh",
     "bundle": "node scripts/build-bundle.mjs",
     "generate:wada": "node scripts/generate-wada-palettes.mjs",
+    "dates": "node scripts/gen-content-dates.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "indexnow": "node scripts/indexnow-ping.mjs",

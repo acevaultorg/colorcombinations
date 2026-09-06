@@ -81,7 +81,10 @@ const keywords = [
 ];
 
 const SITE_FIRST_PUBLISHED = "2026-06-01T00:00:00Z";
-const BUILD_DATE = new Date().toISOString();
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and
+ * the data it renders, NOT the build clock. See src/lib/contentDate.ts. */
+const BUILD_DATE = contentDate("src/pages/learn/color-data-analysis/index.astro", "src/data/colors.ts", "src/data/palettes.ts");
 const siteUrl = "https://colorcombinations.org/";
 const articleUrl = `${siteUrl}learn/color-data-analysis/`;
 
