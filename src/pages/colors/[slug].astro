@@ -8,6 +8,7 @@ import BundleCta from "@components/BundleCta.astro";
 import ShareActions from "@components/ShareActions.astro";
 import { FURTHER_READING, ART_SUPPLIES } from "@/config/monetization";
 import { allColors, colorBySlug, palettesForColor } from "@data/colors";
+import { commonColors, contexts, palettesFor, MIN_PALETTES } from "@data/pairings";
 import { COLOR_STORIES } from "@data/colorStories";
 import { bestTextColorOn, contrastRatio } from "@/lib/color";
 import { fmt } from "@/lib/colorConvert";
@@ -25,6 +26,15 @@ if (!color) {
 }
 
 const palettes = palettesForColor(color);
+
+// Cross-link into the "colors that go with" hub when this color's slug also
+// exists as a commonColor with a live hub (10 of 210 /colors/ pages qualify —
+// the two datasets are largely disjoint: Wada-archive Japanese names vs.
+// modern paint names — this only fires on the real overlap, e.g. black/blue/
+// green/khaki, never invents a link for a color with no matching hub).
+const pairingHub = commonColors.find((c) => c.slug === color.slug);
+const pairingHubLive =
+  pairingHub && contexts.some((ctx) => palettesFor(pairingHub.hex, ctx).length >= MIN_PALETTES);
 const textColor = bestTextColorOn(color.hex);
 
 // Contrast examples: what this color looks like against white and black
@@ -500,6 +510,24 @@ const jsonLd = [
           </h2>
           <p class="pillar-callout__blurb">{pillar.blurb}</p>
           <span class="pillar-callout__cta">Open the article →</span>
+        </a>
+      </div>
+    </section>
+  )}
+
+  {pairingHubLive && (
+    <section class="section pillar-callout-section" aria-labelledby="pairing-hub-callout-heading">
+      <div class="container-wide">
+        <a href={`/colors-that-go-with/${color.slug}/`} class="pillar-callout">
+          <span class="pillar-callout__eyebrow">Pairing guide</span>
+          <h2 id="pairing-hub-callout-heading" class="pillar-callout__title">
+            Colors that go with {color.name}
+          </h2>
+          <p class="pillar-callout__blurb">
+            Computed pairings across walls, clothes, weddings and more — every
+            combination checked against the Sanzo Wada archive.
+          </p>
+          <span class="pillar-callout__cta">See the pairings →</span>
         </a>
       </div>
     </section>
