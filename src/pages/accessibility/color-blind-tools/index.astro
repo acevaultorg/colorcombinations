@@ -1,0 +1,423 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+
+const title = "Color-Blind Simulator Tools, Compared — Which One to Use When";
+const description =
+  "Six real ways to check a palette, a webpage, an app, or printed material for color-vision deficiency — a free browser tool, a macOS overlay, a cross-platform snapshot app, a browser extension, a camera-based mobile app, and Adobe's built-in proof view. What each is actually for.";
+
+const pageUrl = new URL("/accessibility/color-blind-tools", Astro.site).toString();
+
+const faq = [
+  {
+    q: "What's the most common type of color blindness?",
+    a: "Red-green deficiencies are by far the most common: deuteranopia (reduced green sensitivity) and protanopia (reduced red sensitivity) together account for the large majority of color vision deficiency, almost all of it in men. Tritanopia (blue-yellow) is much rarer, and achromatopsia (no color perception at all) is rare.",
+  },
+  {
+    q: "How do color-blindness simulators actually work?",
+    a: "They mathematically transform a color or image into an approximation of what someone with a given deficiency would see — remapping it through a model of reduced cone response and back into sRGB. Most credible tools reference a published transformation, most commonly the Machado, Oliveira & Fernandes (2009) model or the earlier Brettel-Viénot-Mollon (1997) model.",
+  },
+  {
+    q: "Do I need a different tool for a webpage vs. a printed design vs. an app screenshot?",
+    a: "Roughly, yes. A browser-based tool or extension is the right fit for a live webpage. A desktop app that captures the whole screen works for anything else on your computer — documents, other apps, screenshots. A camera-based mobile app is the only realistic option for physical materials: packaging, signage, printed brochures.",
+  },
+  {
+    q: "Is a simulator enough, or should I test with real color-blind users?",
+    a: "A simulator is a fast, useful first pass — it catches the obvious failures (a red/green status pair, for instance) in seconds. It's still an approximation. For anything safety-critical, or when the stakes justify it, testing with real color-blind users or an accessibility consultant remains the more reliable check.",
+  },
+  {
+    q: "What should I change if a palette fails a color-blindness check?",
+    a: "Per WCAG 1.4.1, color can never be the only carrier of information. Add a text label, an icon, a pattern, or a position cue alongside the color, and widen the lightness gap between adjacent swatches — lightness contrast survives every type of color-vision deficiency even when hue doesn't.",
+  },
+  {
+    q: "Are any of these tools paid?",
+    a: "Every standalone simulator listed here — including this archive's own — is free. Adobe's built-in color-blindness proof view is a feature inside Photoshop and Illustrator, so it requires an existing Creative Cloud subscription; it isn't a separately-priced tool.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: title,
+    description,
+    url: pageUrl,
+    datePublished: "2026-09-06",
+    dateModified: "2026-09-06",
+    author: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "The Dictionary of Color Combinations",
+      url: new URL("/", Astro.site).toString(),
+    },
+    about: [
+      { "@type": "Thing", name: "Color vision deficiency" },
+      { "@type": "Thing", name: "Color blindness simulator" },
+      { "@type": "Thing", name: "Accessibility" },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Color-Blind Simulator Tools, Compared", item: pageUrl },
+    ],
+  },
+];
+
+const tools = [
+  {
+    name: "This archive's Color Blindness Simulator",
+    platform: "Browser — any device",
+    price: "Free",
+    method: "Paste a palette, get an instant Machado (2009) simulation of all four common CVD types",
+    best: "Checking a specific palette before you ship it",
+    href: "/tools/color-blindness-simulator/",
+    isOwn: true,
+  },
+  {
+    name: "Sim Daltonism",
+    platform: "macOS",
+    price: "Free",
+    method: "A floating overlay window that live-simulates whatever is behind it on screen",
+    best: "Continuous real-time checking while you design",
+    href: null,
+    isOwn: false,
+  },
+  {
+    name: "Color Oracle",
+    platform: "Windows, macOS, Linux",
+    price: "Free",
+    method: "Takes a full-screen snapshot and applies the simulation to it",
+    best: "A quick one-off check on any app, document, or the whole desktop",
+    href: null,
+    isOwn: false,
+  },
+  {
+    name: "NoCoffee",
+    platform: "Chrome / Firefox extension",
+    price: "Free",
+    method: "Simulates directly on the live page you're viewing in the browser",
+    best: "Auditing a website's actual rendered color accessibility, not just a mockup",
+    href: null,
+    isOwn: false,
+  },
+  {
+    name: "Chromatic Vision Simulator",
+    platform: "iOS / Android",
+    price: "Free",
+    method: "Camera or photo-based simulation, so it works on anything you can point a phone at",
+    best: "Checking physical materials — packaging, signage, printed brochures",
+    href: null,
+    isOwn: false,
+  },
+  {
+    name: "Adobe Proof Colors (Photoshop / Illustrator)",
+    platform: "Built into Creative Cloud apps",
+    price: "Included with a Creative Cloud subscription",
+    method: "A menu-based proof view (View → Proof Setup) applied while you're actively editing",
+    best: "Designers already working inside Adobe apps who want to check as they go",
+    href: null,
+    isOwn: false,
+  },
+];
+---
+
+<BaseLayout title={title} description={description} image="/og-default.png" jsonLd={jsonLd} adContent>
+  <section class="cmp-hero">
+    <div class="container-wide cmp-hero__inner">
+      <p class="eyebrow">Accessibility</p>
+      <h1 class="display-hero text-balance">
+        Color-blind simulator tools, compared
+      </h1>
+      <p class="cmp-hero__lede">
+        Around <strong>1 in 12 men and 1 in 200 women</strong> see color
+        differently, so checking a palette against color-vision deficiency
+        is not a niche concern. Six real tools do this — a browser tool, a
+        macOS overlay, a cross-platform snapshot app, a browser extension, a
+        camera-based mobile app, and a built-in Adobe proof view — and each
+        one is actually right for a different situation.
+      </p>
+    </div>
+  </section>
+
+  <section class="cmp-table-wrap section">
+    <div class="container-wide">
+      <h2 class="cmp-h2">The tools, compared</h2>
+      <div class="cmp-table-scroll">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th scope="col">Tool</th>
+              <th scope="col">Platform</th>
+              <th scope="col">Price</th>
+              <th scope="col">Method</th>
+              <th scope="col">Best for</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tools.map((t) => (
+              <tr>
+                <th scope="row">
+                  {t.href ? <a href={t.href}>{t.name}</a> : t.name}
+                </th>
+                <td>{t.platform}</td>
+                <td>{t.price}</td>
+                <td>{t.method}</td>
+                <td>{t.best}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="cmp-prose section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">Pick by what you're actually checking</h2>
+      <p>
+        The right tool depends less on which is "best" and more on
+        <strong>what you're looking at.</strong> A live webpage is best
+        checked in the browser, either with this archive's own simulator for
+        a specific palette, or with a browser extension like NoCoffee for
+        the actual rendered page. Anything else on your screen — a document,
+        a mockup, another app entirely — is better served by a
+        whole-screen tool like Color Oracle (cross-platform) or Sim
+        Daltonism (macOS, and it stays live while you keep working). Physical
+        materials — packaging, signage, a printed brochure — are the one
+        case none of those can help with; a camera-based mobile app like
+        Chromatic Vision Simulator is the realistic option there. And if
+        you're already inside Photoshop or Illustrator, Adobe's built-in
+        Proof Colors view means you don't need to leave the app at all.
+      </p>
+
+      <h2 class="cmp-h2">How these simulators actually work</h2>
+      <p>
+        Every credible simulator does the same underlying thing: it takes a
+        color (or a whole image) and mathematically remaps it through a
+        model of reduced cone response, producing an approximation of what a
+        person with a given color vision deficiency would see. This
+        archive's own simulator, and most of the others listed here, are
+        built on published transformation research — most commonly the
+        Machado, Oliveira &amp; Fernandes (2009) model or the earlier
+        Brettel-Viénot-Mollon (1997) model — rather than an ad-hoc filter.
+      </p>
+
+      <h2 class="cmp-h2">A simulator is a first pass, not the final check</h2>
+      <p>
+        Deuteranopia and protanopia together account for the overwhelming
+        majority of color vision deficiency, which is why the classic
+        failure case is a red/green status system — "error" and "success"
+        becoming indistinguishable. A simulator catches that in seconds. It
+        doesn't replace testing with real color-blind users where the stakes
+        justify it, and per <strong>WCAG 1.4.1</strong>, the actual fix is
+        never color alone: pair every color-coded meaning with a text label,
+        an icon, a pattern, or a position cue, and widen the lightness gap
+        between adjacent swatches — lightness contrast survives every CVD
+        type even when hue doesn't.
+      </p>
+    </div>
+  </section>
+
+  <section class="cmp-faq section">
+    <div class="container-prose">
+      <h2 class="cmp-h2">Questions, answered</h2>
+      <dl class="cmp-faq__list">
+        {faq.map((item) => (
+          <div class="cmp-faq__item">
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <div class="cmp-books">
+    <div class="container-wide">
+      <FurtherReading
+        pageClass="accessibility"
+        title="Go deeper on accessible color"
+        intro="Simulators tell you when a palette fails. These books cover why — and how to design so it doesn't happen in the first place."
+        limit={6}
+      />
+    </div>
+  </div>
+
+  <section class="cmp-related section">
+    <div class="container-prose">
+      <p class="eyebrow">Keep exploring</p>
+      <p class="cmp-related__lede">
+        Test your own palette right now with the
+        <a href="/tools/color-blindness-simulator/">Color Blindness Simulator</a>,
+        or check plain contrast with the
+        <a href="/tools/contrast-checker">contrast checker</a>. More
+        comparisons: <a href="/compare/adobe-vs-coolors">Adobe Color vs
+        Coolors</a> and <a href="/material-design">Material Design's M2 vs
+        M3 color system</a>. Or browse <a href="/browse">the palette
+        archive</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cmp-hero {
+    padding-top: clamp(3rem, 8vw, 7rem);
+    padding-bottom: clamp(1.5rem, 5vw, 3.5rem);
+  }
+
+  .cmp-hero__inner {
+    max-width: 62rem;
+  }
+
+  .cmp-hero .eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .cmp-hero__lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.4vw + 0.75rem, 1.375rem);
+    line-height: 1.6;
+    color: var(--color-ink-700);
+    max-width: 62ch;
+    margin-top: 1.5rem;
+  }
+
+  .cmp-h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.2vw + 1rem, 2.125rem);
+    line-height: 1.2;
+    margin: 0 0 1.25rem;
+  }
+
+  .cmp-table-wrap {
+    background-color: var(--color-paper-50);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .cmp-table-scroll {
+    overflow-x: auto;
+  }
+
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    min-width: 56rem;
+  }
+
+  .cmp-table th,
+  .cmp-table td {
+    text-align: left;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .cmp-table thead th {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    border-bottom: 2px solid var(--color-ink-900);
+  }
+
+  .cmp-table tbody th {
+    font-weight: 600;
+    color: var(--color-ink-900);
+    white-space: nowrap;
+  }
+
+  .cmp-table tbody th a {
+    color: inherit;
+    text-underline-offset: 3px;
+  }
+
+  .cmp-table tbody td {
+    color: var(--color-ink-700);
+  }
+
+  .cmp-prose .cmp-h2 {
+    margin-top: 2.5rem;
+  }
+
+  .cmp-prose .cmp-h2:first-child {
+    margin-top: 0;
+  }
+
+  .cmp-prose p {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    margin-bottom: 1.25rem;
+    max-width: 68ch;
+  }
+
+  .cmp-faq {
+    background-color: var(--color-paper-50);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .cmp-faq__list {
+    margin: 0;
+  }
+
+  .cmp-faq__item {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-border);
+    max-width: 70ch;
+  }
+
+  .cmp-faq__item dt {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-900);
+    margin-bottom: 0.5rem;
+  }
+
+  .cmp-faq__item dd {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-700);
+  }
+
+  .cmp-books {
+    background-color: var(--color-paper-100);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .cmp-related .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .cmp-related__lede {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-700);
+    max-width: 64ch;
+  }
+
+  .cmp-related__lede a {
+    color: var(--color-accent-500);
+    text-underline-offset: 3px;
+  }
+</style>
