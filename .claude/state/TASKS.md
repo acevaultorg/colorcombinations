@@ -2707,3 +2707,61 @@ unattributed majority. That is the same class the feed already flags for `ga4_ke
 ("NOT a 30d figure — it covers 2 of 30 days"). Do not re-derive "attribution is broken" from it,
 and do not rank surfaces on it before that date — the honest read of 2026-09-04..05 is
 **book 20 / tool 9**, on n=29.
+
+### E45 — closing sweep: a dead duplicate GA4 property, and the enumerated levers that remain (2026-09-06)
+
+**🔴 There are TWO GA4 properties named "ColorCombinations.org", and one is dead.**
+
+```
+292973229   measurement_id: None   0 sessions · 0 pageviews / 30d   0 registered dimensions
+294106772   measurement_id: G-QT7PC59PV6   6,821 sessions · 15,963 pv / 30d   10 dimensions
+live site ships: G-QT7PC59PV6   (grepped from the served homepage)
+```
+
+`/ga4-dimensions?prop=colorcombinations.org` refuses with `ambiguous: colorcombinations.org
+matches 2`. That refusal is the safe behaviour — **the hazard is any tool that resolves by domain
+and silently takes the first match**, which would report zeros for the fleet's #2 earner and read
+exactly like "this site is untagged". `/ga4-probe` handles it correctly
+(`resolved_by: exact_host+tenant_filtered`) and every measurement in §E42–E44 was verified to have
+landed on 294106772 before being used.
+
+**Prefer `prop=294106772` over `prop=colorcombinations.org` on this site.** Deleting the empty
+property is a Google-account action, so it is not brain-doable; recording it is what prevents the
+false finding.
+
+**Two more instrument traps hit and recorded this session**, both of which returned a confident
+wrong answer rather than an error:
+
+1. `xargs -P … -I{} sh -c '<long string>'` on 1,529 URLs dies with `command line cannot be
+   assembled, too long`, fetches **2**, and **exits 0**. Put the body in a script file
+   (`xargs -P 14 -n 1 ./fetch.sh`) and assert `mapped == input lines`.
+2. Five guessed GA4 dimension names (`cta_position`, `position`, `from`, `data_from`, `source`)
+   all returned `rows=None`. The site emits `{page, asin, dest, shelf}`. Enumerate
+   `dims=eventName` / read the emitter; never guess the param name (§E44).
+
+#### Levers enumerated, not just defects counted
+
+Per `positive-control-before-absence` § *N negative defect-checks do not license a "saturated"
+claim*: the checks below are **defect** checks, and passing them proves nothing about levers. So
+the levers are enumerated separately, by name, with why each is not runnable from this lane.
+
+| lever | state |
+|---|---|
+| IndexNow on deploy | ✅ **verified firing**, not assumed — CI job trace `16330909070`: changed-only (2 URLs), Bing + Yandex + api.indexnow.org all HTTP 200, manifest updated |
+| AI-crawler access | ✅ 9 crawlers explicitly allowlisted, **0** CF-Managed injection, GPTBot/ClaudeBot/PerplexityBot/bingbot all 200; `/go/` + `/og/` correctly disallowed |
+| On-site search | ✅ fixed this session (§E43) |
+| Sitemap integrity | ✅ fixed this session (§E41) |
+| Internal link graph | ✅ measured (§E42); the actionable half is **time-gated** to 2026-10-07 |
+| Schema / OG / ShareBar | ✅ shipped §E30 |
+| Bing SEO recommendations | ⛔ **never run on this site** — dashboard-session only, needs a Chrome-MCP lane (§E4) |
+| AI citation share | ⛔ needs a Chrome-MCP lane (`mtp835nfohbpez`, scheduled 2026-10-06) |
+| Wikipedia link parity | 👤 operator (`mtpazjk33khznb`) — the site has **9** external inbound links |
+| Press pitch (Wada study) | 👤 operator (`mrt6tb0g2cgm8e`) |
+| Pinterest distribution | 👤 operator (`mq0supbru74rv5`) |
+| Link-concentration read | ⏳ 2026-10-06 (`mtpbh3t3zij2cx`) |
+| `/collections/` de-thin | ⏳ 2026-10-07 (`mtpmjbvtaw120w`), gated behind the read above |
+
+**Every remaining lever is operator-gated, tool-gated, or time-gated.** That is the honest state —
+not "nothing left to do", and not a claim earned by counting clean defect checks. The single
+highest-value item on the list is unchanged and unchangeable from here: **9 external inbound
+links** is the binding constraint, and closing it needs the operator.
