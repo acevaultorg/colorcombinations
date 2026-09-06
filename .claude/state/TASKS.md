@@ -4468,3 +4468,93 @@ design, and held.
 edits are invisible to IndexNow. Correct for the primary risk, and cheap here — per the ownership
 law, title rewrites are mostly not this site's lever. A future deliberate title pass should submit
 those URLs explicitly.
+
+## E74 — the operator-gated half, de-risked; and six levers that came back clean
+
+Continuation of E73's refuel. The board had no agent-claimable work, so this leg went at the thing
+that actually binds the site — **acquisition, 9 inbound links vs a sibling's 983** — which is
+entirely operator-gated. Two things were possible without touching the gates.
+
+### 1. The gates are real. I re-tested them rather than assuming.
+
+`operator-walkthrough` records that a gate is a *claim* and claims decay — three fleet cards were
+found brain-doable that way. So each of the three acquisition cards was re-checked against the
+hard-gate list:
+
+| card | stated gate | verdict |
+|---|---|---|
+| `mtpazjk33khznb` Wikipedia | publishing as the operator | **real** — I-34 `auto_edit_wikipedia × -1000` is immutable, and a self-added link is a COI edit regardless |
+| `mrt6tb0g2cgm8e` press pitch | emailing as the operator | **real** — named hard gate, verbatim |
+| `mq0supbru74rv5` Pinterest | new account + publishing as the operator | **real** — both named hard gates |
+
+No decayed claims. The acquisition constraint is genuinely operator-bound, which is worth knowing
+with evidence rather than by assumption.
+
+### 2. 🔴 One of those cards had been silently broken for ~5 months
+
+`mrt6tb0g2cgm8e` step 1: *"Open `WADA-COLOR-DATA-STUDY.md` § Press pitch draft."*
+
+```
+find . -name 'WADA-COLOR-DATA-STUDY.md'        -> (nothing)
+CONTROL find . -maxdepth 2 -name package.json  -> ./package.json      (instrument works)
+git log --oneline -1 -- '*WADA-COLOR-DATA-STUDY.md'      -> (empty)
+CONTROL git log --oneline -1 -- src/data/wada-palettes.ts -> 622768f   (instrument works)
+```
+
+**Never tracked in git** — an untracked local file, unrecoverable. The card read as fully actionable
+and would have failed on its first step in front of the operator.
+
+Fixed by writing the pitch inline from the live page, which is a better source than a 5-month-old
+draft anyway. Re-verified the asset first: study **200 / 1,938 words / Dataset schema**, CSV
+**200 / 6,310 bytes / 177 rows**, headline numbers 348 combinations · 92% warm · blue 4% · red 46.8%.
+Also did the same last-inch pass on the Wikipedia card (paste-ready COI-disclosed talk-page draft)
+and re-verified Pinterest's two prepared assets, which were last checked 6 weeks ago and are still
+live (feed 200, **378 items** — exactly matching the 378 live `/palettes/` URLs; pin image taken
+*from the feed* rather than guessed, 200).
+
+Generalised to doctrine in `fleet-rules/handoff-clarity.md` (`def78c5`, +60/-0): a card's HOW may
+only point at a durable artifact — a live URL, a git-tracked path, or content pasted into the card.
+A stale *fact* is visible on reading; a stale *pointer* is invisible until execution, in front of
+the operator.
+
+### 3. Six levers checked, six clean — recorded so nobody re-derives them
+
+| lever | result |
+|---|---|
+| deploy guard (the one that cost fitmylens its buy links) | **already present** — `cf-pages-chunked-deploy.py:335` aborts when `functions/` exists and `_worker.js` is missing; `deploy.sh` brackets the upload with `verify-deploy-integrity --pre/--post`. Site has 4 Functions, 3 of them money paths. |
+| `fleet-images-standard` | **compliant** — image-heavy `/paintings/` is 25/25 on `loading` · `width` · `height` · `decoding` · `alt`. Zero CLS by construction. |
+| remaining `new Date()` in src | **all legitimate** — RSS `lastBuildDate`, `/api/*.json` `generated`, gtag init, footer year. The E72 fix has no gaps. |
+| `/data/` study templates | **already carry the E72 fix** (`contentDate` ×3, `new Date()` = 0 each) |
+| `content-dates.json` after the E72 ratchet scare | **guard held** — study templates read `2026-09-06T08:59:57`, a real earlier-morning commit, **not** my 16:05 refactor |
+| `astro check` post-change | **0 errors, 0 warnings**, 13 hints / 135 files (read from the message, not the exit code) |
+
+### 4. A judgment recorded rather than a change shipped
+
+`contentDate()` takes `max(template, data)`, so a cosmetic template edit moves a page's user-visible
+"Last verified" even when the data did not change — live right now on
+`/data/sanzo-wada-color-analysis/` (shows 2026-09-06; `wada-palettes.ts` unchanged since 2026-04-10).
+
+**Deliberately not changed.** For schema.org `dateModified` the max is correct — a template edit does
+modify the page — and using the data date would understate a build that genuinely re-derived every
+number. The residual imprecision is only in the user-facing string, and the right fix *if* it ever
+matters is a second data-only value, not changing `max()`, which would regress `dateModified`
+site-wide. Written into `src/lib/contentDate.ts` (`0f0c5ec`, comment-only, +19/-0 with every added
+line verified to be a comment) at the exact spot a future session would flag it as a bug — I nearly
+did so myself within hours of shipping the fix.
+
+### 5. The one lever this lane cannot close
+
+**Mobile-375 is unverified and I am not claiming otherwise.** `mobile-perfection-default` says
+"Not grep — look", and this lane has no Chrome MCP. A CSS-marker grep is a non-rendering client
+being asked a rendering question — the "two headless clients are one client" error — and it would
+produce either false comfort or a false finding. Two instrument failures along the way make the
+point: grepping the *HTML* for CSS properties returned all-zeros (the CSS is external), and the
+multi-file fetch loop returned 0 bytes (word-splitting bug) — both would have read as "no mobile
+guards" to anyone not running controls. Routing note: this needs a lane with a browser.
+
+### Session state
+
+No agent-actionable work remains on this board. Binding constraint is acquisition; all three of its
+levers are genuinely operator-gated and are now prepared to the last inch with re-verified claims.
+Dated gates untouched: `mtppvsfvvdszfx` (09-08) · `mtp8e5hv6zefhh` (09-09) · `mtptndo721vjig` (10-05)
+· `mtpbh3t3zij2cx` (10-06) · `mtp5sziorcb2c6` (2027 COTY).
