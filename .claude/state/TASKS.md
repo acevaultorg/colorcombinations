@@ -4387,3 +4387,84 @@ Verified both directions — default kept 25/25 and added 7 (0 moved); `--refres
 methodology` moved that one key and left the rest untouched. Default failure
 mode is a **stale** date, which is conservative; the build clock failed the
 other way.
+
+---
+
+## E73 — refuel legs: a regression sweep, a duplicate I caused myself, and two cards closed without burning a lane
+
+Queue empty after E72. Four refuel legs, only one of which produced code — recorded because
+three of the four are *negative* results that stop future lanes repeating them.
+
+### 1. Post-deploy regression sweep — 0 problems
+
+Sampled one live URL per affected page class after `412902b7` + `a792ccd8` (14 URLs: home,
+palette, colour, hue, collection, glossary, about, methodology, two learn, book, painting, data,
+trend, pairing-context). **All HTTP 200; every JSON-LD block parses (3/3 through 7/7).**
+
+Two absences confirmed *intentional*, not misses: `/books/…` omits both dates (its own deliberate
+decision), and `/colors-that-go-with/beige/` is the hub template — the `[color]/[context]` page I
+wired does carry `article:modified_time=2026-09-06T12:26:25`.
+
+⚠️ Instrument trap: python `urllib` returned **403 on all 14**. Uniform failure across
+heterogeneous URLs is the client, not the site — curl with a browser UA returned 200 on all 14.
+
+### 2. 🔴 I re-derived a lever I had closed myself 1.5 hours earlier
+
+Ran `fleet-search-standard`'s zero-result lever, classified all 164 distinct failed queries, and
+reached a confident finding: *the dataset spells it `Sulpher Yellow` while readers type `Sulphur`.*
+
+Already known **twice**: device4 refuted it as a premise and shipped a `SPELLING_ALIASES` fix on
+2026-09-03 (`304d344`), and my own card `mtppy9s1tn0k4f` — closed 1.5h earlier — already recorded
+that 82.3% of that log resolves live. **That card even contained an explicit instruction not to do
+it**: *"Do not re-open by re-reading the zero-result log… Re-derive only from a window starting
+after 2026-09-07."* One `search_tasks` call returned both. I measured first and searched after.
+
+Two false absences fired inside the same investigation, both case-sensitivity:
+`grep 'Sulphur'` on the live index returned 0 while the shipped alias sits there in lowercase; and
+a name check returned 0 because Wada names live in `wada-palettes.ts`, not the `colors.ts` its own
+docstring points at (the control "Hermosa Pink" failed there too, which is what exposed it).
+
+Doctrine: `fleet-rules/measured-vs-expected.md` §§ *THE CARD YOU ARE LEAST LIKELY TO SEARCH FOR IS
+YOUR OWN* (`522c1945`) and *the prohibition already existed, addressed to me* (`1744aa8a`) — a
+card-borne guard cannot fire if nobody opens the card, which is why "search first" is a sequencing
+rule, not a diligence one.
+
+### 3. `mtppvsfvvdszfx` recalibrated — anomaly is inside normal variation, browser lane saved
+
+Read the card before touching it (applying #2 immediately) and found Revision #4's *"do NOT spend
+a browser lane on this yet"* — plus a note that it had already **burned three lanes in one day**.
+Ran a one-call measurement instead:
+
+```
+09-04 = 3 events, 09-05 = 6 events (both settled)
+38 baseline days: median 15.5, min 1, max 43
+days at <=6 (the card's own regression bar): 5 of 38 = 13.2%
+P(2 consecutive) = 0.017, but ~36 pairs exist => expected ~0.62 per window
+```
+
+So two consecutive low days is **exactly what the baseline predicts**; the card's "bottom 7%,
+p≈0.005" was computed on the contaminated per-1k rate. Its advance-stated 4-day bar survives
+(P ≈ 0.0003) — what changes is that 2 or 3 low days must now read as noise. No lane spent.
+
+### 4. `mtp18dxy3lsx9i` — its last open item verified, by accident, on my own deploys
+
+The card closed with *"Not re-verified: an actual post-fix deploy's submitted-URL count."* Today's
+three deploys made that observation possible. From the job traces:
+
+```
+2824287794  Sitemap+priority: 1529 URLs · changed: 2   ✓ 200 accepted
+2824293832  Sitemap+priority: 1529 URLs · changed: 2   ✓ 200 accepted
+cache: uploaded 14:10:23 -> next job downloads primary_modified=14:10:23  (manifest advanced)
+```
+
+**2 of 1,529, twice** — no batch abuse, and the `6abe199` cache persistence confirmed by timestamp
+rather than by reasoning, which is what the card explicitly asked for.
+
+It was an unusually strong test *by accident*: the `dateModified` work changed `<head>` on ~1,400
+pages, which under whole-document hashing is a 1,400-URL blast. `hashOf()` hashes `<main>` only, by
+design, and held.
+
+**Trade-off documented, not filed:** `<main>`-only hashing means `<title>`/`<meta description>`
+edits are invisible to IndexNow. Correct for the primary risk, and cheap here — per the ownership
+law, title rewrites are mostly not this site's lever. A future deliberate title pass should submit
+those URLs explicitly.
