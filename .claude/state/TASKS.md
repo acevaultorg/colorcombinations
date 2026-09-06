@@ -4593,3 +4593,66 @@ No agent-actionable work remains on this board. Binding constraint is acquisitio
 levers are genuinely operator-gated and are now prepared to the last inch with re-verified claims.
 Dated gates untouched: `mtppvsfvvdszfx` (09-08) · `mtp8e5hv6zefhh` (09-09) · `mtptndo721vjig` (10-05)
 · `mtpbh3t3zij2cx` (10-06) · `mtp5sziorcb2c6` (2027 COTY).
+
+## E75 — full board audit, and the session's own false finding
+
+Close of the E73/E74 refuel. Short, because most of it is negative results.
+
+### The false finding, and what it cost
+
+I reported that the press card's referenced draft did not exist and had never been tracked, wrote a
+🔴 onto the operator's card, spent a leg rewriting the pitch, and shipped a doctrine section built on
+it. **All false.** The file is at the VAULT ROOT (`VAULT-Fleet/WADA-COLOR-DATA-STUDY.md`, 5,895 B,
+tracked as `c620aea7`) with the draft at **line 101 — exactly where the card said**.
+
+I searched from `programmatic/colorcombinations/`. Both my controls passed and both were irrelevant:
+they proved `find` and `git log` work *in that tree*, which cannot prove absence from a tree I never
+searched or from the vault monorepo, a different repo. **A passing control validates the instrument,
+not the scope of the query.**
+
+Corrected everywhere rather than quietly: card retracted in place (`mrt6tb0g2cgm8e`), E74 § 2
+superseded (`9d02d11`), doctrine section replaced with the true lesson (`d43c03b`, vault repo). The
+real draft is better than mine — 85 words vs 110, and it carries the 120/120/108 volume split.
+
+Second, smaller instance the same session: E74 § 5 claimed mobile-375 was unverified. It was verified
+today by the Operator Queue lane (`ms072bswpegdnj`, 7 surfaces at a real 375×812, zero overflow).
+Corrected in `ed14647`. Both errors were absence claims; both came from searching the wrong scope and
+running the dedup check *after* writing rather than before.
+
+### Board audit — all four operator cards, none agent-actionable
+
+| card | state |
+|---|---|
+| `mtpazjk33khznb` Wikipedia | gate real (I-34 immutable); paste-ready COI talk-page draft added |
+| `mrt6tb0g2cgm8e` press pitch | gate real; path clarified (vault root, line 101); false revision retracted |
+| `mq0supbru74rv5` Pinterest | gate real; both prepared assets re-verified live (feed 200 / **378 items** = the 378 live `/palettes/` URLs; pin image taken from the feed, 200) |
+| `mtmskvulqecx2r` Mediavine | already resolved — operator installed the script themselves (`8e738e3`, their own git identity), live, ads.txt handoff correct. Residual is a taste call. |
+
+Verified **unfiltered** (`list_tasks all:true`) rather than via `get_next_task`, because a
+status-filtered listing hides exactly what I would miss. Six tasks total: four above, one superseded
+reference, one parked.
+
+### Two loop-breakers shipped
+
+- **`mqmhf8m6ubdiay` ("For You" feed)** has been triaged five times to the same verdict, twice by me.
+  Its stopping rule lived in the body, invisible until you pay to open the card. Moved it into the
+  **title** — `[PARKED — do not re-triage, 5 sessions same verdict] … un-park ONLY if InLinks>9 AND
+  a depth play is shown to move pageviews elsewhere` — so the next lane sees it in any listing.
+- **The two Wada studies are both pitched, on different boards.** The WCAG study
+  (`/data/sanzo-wada-wcag-contrast/` — 200, 1,975 w, Dataset schema, 3 CSVs, in sitemap) looked like
+  an unpitched linkable asset from this board. It is not: card `mrno0wv0rrcld1` is active on **Figures
+  Bureau** (`mrnaf0cenxz692`), the publishing brand whose byline both studies carry. Correct filing,
+  invisible from here — cross-referenced onto the press card so nobody re-derives it. Dedup caught
+  this one *before* I filed, which is the order that works.
+
+### Ships this leg
+
+`0f0c5ec` contentDate limitation note (comment-only, +19/−0, every added line verified a comment) ·
+`2276902` E74 · `ed14647` E74 §5 correction · `9d02d11` E74 §2 retraction · `d43c03b` doctrine
+replacement (vault). All CI green; final pipeline `9d02d11f` success. Live spot-check 7/7 URLs 200,
+`/methodology/` still serving `dateModified 2026-07-30` — the honest-date fix survived every deploy.
+
+### Standing position
+
+Scope saturated. Binding constraint is acquisition (9 inbound links vs a sibling's 983); all three of
+its levers are genuinely operator-gated and now prepared to the last inch with re-verified claims.
