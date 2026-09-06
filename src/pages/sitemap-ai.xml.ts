@@ -119,7 +119,17 @@ export const GET: APIRoute = () => {
       jsonAlt: `${SITE}/api/palettes/${p.slug}.json`,
     });
   }
+  // 6 of 210 named-colour slugs have no reachable HTML page at /colors/[slug]/ --
+  // they collide with colors/[hue]/index.astro's 9 hue routes and Astro's own
+  // build log confirms the individual page can never render there ("Could not
+  // render /colors/blue ... conflicts with higher priority route /colors/[hue]").
+  // Advertising them here would hand an AI crawler a jsonAlt for the specific
+  // colour paired with an HTML loc that actually serves the whole hue family --
+  // a schema/content mismatch on this file's own citation-priority surface.
+  // See colors/[slug].astro's matching exclusion + TaskPrio mtpju7edkbygfv.
+  const HUE_COLLISION_SLUGS = new Set(["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"]);
   for (const c of allColors()) {
+    if (HUE_COLLISION_SLUGS.has(c.slug)) continue;
     urls.push({
       loc: `${SITE}/colors/${c.slug}/`,
       priority: "0.9",

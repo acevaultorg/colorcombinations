@@ -14,8 +14,22 @@ import { bestTextColorOn, contrastRatio } from "@/lib/color";
 import { fmt } from "@/lib/colorConvert";
 import type { HexColor } from "@/types/palette";
 
+// 6 of 210 named-colour slugs (blue, brown, green, orange, red, yellow) collide
+// with the 9-member hue list in colors/[hue]/index.astro, which mounts at the
+// same bare /colors/[hue-or-slug]/ shape and wins Astro's route-priority
+// resolution (directory route beats dynamic file route) -- every prior build
+// already emitted "Could not render /colors/blue ... conflicts with higher
+// priority route /colors/[hue]" for these 6, so they were already dead output.
+// None of the 6 has a hand-written COLOR_STORIES entry (that set is fixed at
+// the 20 canonical Japanese names in colorStories.ts), so nothing unique is
+// lost by not attempting them -- this just stops a futile, warned-about build
+// for pages that could never render anyway. See TaskPrio mtpju7edkbygfv.
+const HUE_COLLISION_SLUGS = new Set(["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"]);
+
 export function getStaticPaths() {
-  return allColors().map((c) => ({ params: { slug: c.slug } }));
+  return allColors()
+    .filter((c) => !HUE_COLLISION_SLUGS.has(c.slug))
+    .map((c) => ({ params: { slug: c.slug } }));
 }
 
 const { slug } = Astro.params;
