@@ -3304,3 +3304,69 @@ comment at the line so the next hand-edit does not reintroduce it.
   § *grep -c counts lines, not matches* — met here on a different file type.
 - **`GetCrawlStats` rows are not date-sorted.** Reading `rows[0]` as "latest"
   gives a row from weeks ago. Sort by the epoch inside `/Date(...)/` first.
+
+### §E53 — affiliate compliance + money path audited: both clean, with controls (2026-09-06)
+
+Two hard gates that had not been checked this session. Both pass. Recorded with
+the evidence and the controls, because a "clean" verdict is worth nothing without
+proof the detector could have said otherwise.
+
+#### Compliance — 36 pages, 843 affiliate links, 100% conformant
+
+`affiliate-team-standard` Pillar 4 is a **hard gate**: this site shares an
+Associates account with the whole fleet, so one breach risks every site.
+
+30 pages drawn at random from the live sitemap + 6 chosen money pages:
+
+```
+pages_with_tag_leak      0     (no raw amazon.*tag=…-20 anywhere in served HTML)
+go-links != sponsored    0     (all 843 carry rel="sponsored nofollow noopener")
+pages_with_price         0     (Amazon forbids displaying price)
+FTC disclosure           present on every page (6-20 mentions)
+```
+
+Every page type covered: `/`, `/shop/`, `/books/…`, `/palettes/…` (10 links),
+`/colors/…` (40), `/colors-that-go-with/…/…/` (38), `/collections/…` (30),
+`/trends/…` (25), `/learn/…` (12), and `/tools/color-converter/…` (0 — a tool
+page with no affiliate surface, correctly).
+
+**Detector control — synthetic bad HTML, run in the same pass:**
+
+```
+<a href="/go/b/123">buy</a>                                     -> go=1 sponsored=0  ✓ flags missing rel
+<a href="…amazon.com/dp/B01?tag=colorcombinations-20">leak</a>  -> LEAK=1            ✓ flags a tag leak
+<p>Only $19.99 today</p>                                        -> price=1, ftc=0    ✓ flags price + missing FTC
+```
+
+Without that control the 36 clean rows would be indistinguishable from a broken
+grep.
+
+#### Money path — healthy, and probed without fabricating a single click
+
+Hrefs resolved from the **live HTML** (never a guessed shape — a wrong shape 404s
+and reads as a revenue outage). **No `-L`, no minted `?t=` token, no forged
+`Sec-Fetch-*` headers**, so nothing reached Amazon:
+
+```
+/                 /go/b/4861522471?c=home             -> 302  https://colorcombinations.org/
+/shop/            /go/b/4861522471?c=shop             -> 302  https://colorcombinations.org/
+/colors/kurenai/  /go/p/B0BJ13LVD4?c=color-destination-> 302  https://colorcombinations.org/
+forged ?t=ZZZZZZ                                      -> 302  https://colorcombinations.org/
+```
+
+All four reject to **bare own-origin** — path stripped, which is the gate
+discarding the request. A canonicalising redirect *preserves* the path, so the
+distinction is unambiguous.
+
+**Positive control that makes those 302s readable:** `/` and `/colors/kurenai/`
+both return **200 with no redirect**, so the site does not blanket-redirect and
+the `/go/` 302s are genuinely the gate rather than canonicalisation. Without it,
+a site that 30x'd everything would score identically.
+
+This site runs the 302-to-home gate design, not the 200-interstitial one — both
+are healthy refusals, and comparing across sites on status code alone would
+misread one of them.
+
+**Outcome: both hard gates verified clean. No change shipped, because there was
+nothing to fix — recorded so the next audit can start from evidence rather than
+re-run it.**
