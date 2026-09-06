@@ -15,6 +15,18 @@ const keywords = [
   "cvd simulator",
 ];
 
+/**
+ * FAQ — SINGLE SOURCE for the FAQPage schema AND the visible section below.
+ * Schema whose Q&A renders nowhere violates Google's structured-data
+ * guidelines, and since FAQ rich results were deprecated (2026-05-07) the
+ * schema's only remaining value is AI extraction — which reads rendered
+ * content. §E46/§E47/§E48/§E49.
+ */
+const cvdFaq: { q: string; a: string }[] = [
+  { q: "How common is color blindness?", a: "About 1 in 12 men (8%) and 1 in 200 women have some color-vision deficiency. Red-green types (protan and deutan) are by far the most common; blue-yellow (tritan) is rare; total color blindness (achromatopsia) is very rare." },
+  { q: "Which CVD type should I design for?", a: "Deuteranopia and protanopia (red-green) cover the large majority of affected users, so a palette that stays distinguishable under both is a safe baseline. Never rely on color alone — pair it with labels, icons, or patterns." },
+];
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -29,10 +41,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      { "@type": "Question", name: "How common is color blindness?", acceptedAnswer: { "@type": "Answer", text: "About 1 in 12 men (8%) and 1 in 200 women have some color-vision deficiency. Red-green types (protan and deutan) are by far the most common; blue-yellow (tritan) is rare; total color blindness (achromatopsia) is very rare." } },
-      { "@type": "Question", name: "Which CVD type should I design for?", acceptedAnswer: { "@type": "Answer", text: "Deuteranopia and protanopia (red-green) cover the large majority of affected users, so a palette that stays distinguishable under both is a safe baseline. Never rely on color alone — pair it with labels, icons, or patterns." } },
-    ],
+    mainEntity: cvdFaq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } }))
   },
   {
     "@context": "https://schema.org",
@@ -153,6 +162,18 @@ const rows = [
       </p>
     </div>
   </section>
+
+  <section class="container-narrow cvd-faq section" aria-labelledby="cvd-faq-heading">
+    <h2 id="cvd-faq-heading">Common questions</h2>
+    <dl class="cvd-faq__list">
+      {cvdFaq.map((f) => (
+        <div class="cvd-faq__item">
+          <dt class="cvd-faq__q">{f.q}</dt>
+          <dd class="cvd-faq__a">{f.a}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
 </BaseLayout>
 
 <script>
@@ -198,6 +219,12 @@ const rows = [
 </script>
 
 <style>
+  /* FAQ (§E49) — renders `cvdFaq`, same array as the FAQPage schema. */
+  .cvd-faq__list { margin: 0; }
+  .cvd-faq__item + .cvd-faq__item { margin-top: 1rem; }
+  .cvd-faq__q { font-weight: 600; }
+  .cvd-faq__a { margin: 0.3rem 0 0; line-height: 1.6; }
+
   /* Instrument block spacing — matches the other tool pages. */
   .tool-destination {
     margin-block: 3rem;

@@ -116,6 +116,15 @@ const canonical = `/colors-that-go-with/${color.slug}/${ctx.slug}/`;
 const siblings = contexts.filter((c) => c.slug !== ctx.slug);
 const otherColors = commonColors.filter((c) => c.slug !== color.slug).slice(0, 7);
 
+/**
+ * FAQ — SINGLE SOURCE for the FAQPage schema below AND the visible <section>
+ * in the body. Never ship one without the other: shipping schema whose Q&A
+ * appears in no rendered HTML violates Google's structured-data guidelines,
+ * and since FAQ rich results were deprecated (2026-05-07) the schema's only
+ * remaining value is AI extraction — which reads rendered content. Measured
+ * 2026-09-06: 1,364 of 1,529 crawled pages had schema-only FAQs; this
+ * template's 702 pages were the largest block. §E46/§E47/§E48/§E49.
+ */
 const faq = [
   { q: `What colors go with ${color.name.toLowerCase()} for ${ctx.label}?`, a: answer },
   { q: `What is the hex code for ${color.name.toLowerCase()}?`, a: `${color.name} is ${color.hex} — ${color.descriptor}.` },
@@ -274,6 +283,20 @@ const jsonLd = [
             </a>
           );
         })}
+      </div>
+    </section>
+
+    <!-- FAQ — renders `faq`, the SAME array that feeds the FAQPage schema above.
+         Visible text matches the schema by construction. -->
+    <section class="mt-10">
+      <h2 class="mb-4 text-lg font-semibold text-stone-900">Questions about {color.name} for {ctx.label.toLowerCase()}</h2>
+      <div class="space-y-4">
+        {faq.map((f) => (
+          <div>
+            <p class="font-medium text-stone-900">{f.q}</p>
+            <p class="mt-1 text-sm text-stone-700">{f.a}</p>
+          </div>
+        ))}
       </div>
     </section>
 

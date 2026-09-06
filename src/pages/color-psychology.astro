@@ -54,6 +54,20 @@ const HUES: Hue[] = [
   { name: "Gray", hex: "#757575", associations: "Neutrality, balance, professionalism, restraint.", worksFor: "The connective tissue of almost every palette; UI, type and quiet backgrounds.", caveat: "All gray and no accent reads as indecisive or lifeless — it's a supporting role." },
 ];
 
+/**
+ * FAQ — SINGLE SOURCE for the FAQPage schema AND the visible section below.
+ * Schema whose Q&A renders nowhere violates Google's structured-data
+ * guidelines, and since FAQ rich results were deprecated (2026-05-07) the
+ * schema's only remaining value is AI extraction — which reads rendered
+ * content. §E46/§E47/§E48/§E49.
+ */
+const cpsyFaq: { q: string; a: string }[] = [
+  { q: "Is color psychology real or a myth?", a: "Both, in part. Strong universal 'colour X causes emotion Y' claims are not well supported by science — effects are small and heavily shaped by culture, context, saturation and personal experience. But colour associations are real and consistent enough within a culture to be a genuinely useful design tool, as long as you treat them as conventions, not laws." },
+  { q: "What color is best for a call-to-action button?", a: "There is no single best colour. What matters is contrast — the button should stand out from everything around it. A warm, saturated hue like red or orange often works because it draws the eye, but a green or blue CTA can outperform red on a page that is already warm. Test against your own palette rather than copying a rule." },
+  { q: "What does the color blue mean in branding?", a: "Blue is widely associated with trust, stability, calm and competence, which is why finance, tech and healthcare brands lean on it. The trade-off is that it is so common for 'trust' that it can read as generic, and it tends to suppress appetite, so it is a weak choice for food." },
+  { q: "Do colors mean the same thing in every culture?", a: "No. The same hue can carry opposite meanings across cultures — white signals purity in much of the West but mourning in parts of East Asia, and red means luck and celebration in China while signalling danger elsewhere. Always check colour meaning for the specific audience you are designing for." },
+];
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -71,28 +85,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Is color psychology real or a myth?",
-        acceptedAnswer: { "@type": "Answer", text: "Both, in part. Strong universal 'colour X causes emotion Y' claims are not well supported by science — effects are small and heavily shaped by culture, context, saturation and personal experience. But colour associations are real and consistent enough within a culture to be a genuinely useful design tool, as long as you treat them as conventions, not laws." },
-      },
-      {
-        "@type": "Question",
-        name: "What color is best for a call-to-action button?",
-        acceptedAnswer: { "@type": "Answer", text: "There is no single best colour. What matters is contrast — the button should stand out from everything around it. A warm, saturated hue like red or orange often works because it draws the eye, but a green or blue CTA can outperform red on a page that is already warm. Test against your own palette rather than copying a rule." },
-      },
-      {
-        "@type": "Question",
-        name: "What does the color blue mean in branding?",
-        acceptedAnswer: { "@type": "Answer", text: "Blue is widely associated with trust, stability, calm and competence, which is why finance, tech and healthcare brands lean on it. The trade-off is that it is so common for 'trust' that it can read as generic, and it tends to suppress appetite, so it is a weak choice for food." },
-      },
-      {
-        "@type": "Question",
-        name: "Do colors mean the same thing in every culture?",
-        acceptedAnswer: { "@type": "Answer", text: "No. The same hue can carry opposite meanings across cultures — white signals purity in much of the West but mourning in parts of East Asia, and red means luck and celebration in China while signalling danger elsewhere. Always check colour meaning for the specific audience you are designing for." },
-      },
-    ],
+    mainEntity: cpsyFaq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } }))
   },
   {
     "@context": "https://schema.org",
@@ -213,6 +206,18 @@ const jsonLd = [
       />
     </section>
 
+    <section class="container-narrow cpsy-faq" aria-labelledby="cpsy-faq-heading">
+      <h2 id="cpsy-faq-heading">Common questions</h2>
+      <dl class="cpsy-faq__list">
+        {cpsyFaq.map((f) => (
+          <div class="cpsy-faq__item">
+            <dt class="cpsy-faq__q">{f.q}</dt>
+            <dd class="cpsy-faq__a">{f.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
     <section class="container-narrow cpsy-sources">
       <h2 id="approach">Our approach</h2>
       <p class="cpsy-method">
@@ -229,6 +234,12 @@ const jsonLd = [
 </BaseLayout>
 
 <style>
+  /* FAQ (§E49) — renders `cpsyFaq`, same array as the FAQPage schema. */
+  .cpsy-faq__list { margin: 0; }
+  .cpsy-faq__item + .cpsy-faq__item { margin-top: 1rem; }
+  .cpsy-faq__q { font-weight: 600; }
+  .cpsy-faq__a { margin: 0.3rem 0 0; line-height: 1.6; }
+
   .cpsy-hero { padding: 3rem 0 1.5rem; }
   .cpsy-hero__lede { font-size: 1.2rem; line-height: 1.6; max-width: 48ch; margin-top: 1rem; }
   .cpsy-hero__meta { margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; }
