@@ -2295,3 +2295,13 @@ facts. The card's own closing note anticipates exactly this moment: *"if you are
 and neither [condition] has happened, stop here rather than re-verifying the resume condition a
 fifth time."* Stopped there — did not re-run the collision check, did not build. Would have been
 the 5th session to independently re-derive an answer already settled 4 times.
+
+### E37 · 2026-09-06 — swept page types not yet checked tonight; all clean, no defects found
+
+Checked page types untouched by E27-E36: the two priority-1.0 citation data studies + their CSV
+twins, the bulk `/data/colors.csv`, `/feed.xml`, `/methodology/`, `/about/`, `/shop/`, an embed
+route, and 3 `/tools/*` pages. All 200 with correct content-types; CSVs have real row data (177 rows
+on the color-analysis study, not empty/truncated); `feed.xml` parses as valid XML with 36 items.
+
+No defects found on this pass — recorded as "this class of check is clean," not as "the site is
+saturated" (a defect-check sweep only speaks to the classes it tested).
