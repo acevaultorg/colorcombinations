@@ -16,6 +16,18 @@
  * Override for a genuine offline/detached deploy: SKIP_GIT_GUARD=1
  */
 import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+// Run git from THIS REPO's root regardless of the caller's cwd. deploy.sh invokes this
+// as `node "$(dirname "$0")/scripts/..."` with NO cd before it (lines 16 + 41), so the
+// guard inherited the caller's directory. MEASURED 2026-09-06, both runs from the vault
+// root: unpatched reported "13 commits behind" — the VAULT repo's staleness — while this
+// repo was 1 behind; patched reported 1. Two verdicts for the same site, decided purely
+// by cwd. When the vault happens to be current, the unpatched guard prints a confident
+// PASS on a stale checkout — a fail-OPEN on the exact deploy it exists to block.
+// Ported from the canonical fleet guard (24 sibling sites already carry it, 2026-09-02).
+process.chdir(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
 
 if (process.env.SKIP_GIT_GUARD === '1') {
   console.log('⚠️  predeploy-git-guard: SKIPPED via SKIP_GIT_GUARD=1');
