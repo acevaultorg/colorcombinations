@@ -3476,3 +3476,42 @@ diff runs against THAT. Properties:
 **Do not "simplify" this back.** Dropping `interruptible: true` would fix the symptom by
 making every push burn a full build; diffing against live fixes the cause and keeps the
 cancellation benefit.
+
+### §E55-verification — the fix ran, the stranded §E52 change shipped (2026-09-06 11:08 UTC)
+
+**CI job trace (positive control that the NEW code path executed, not the old one):**
+```
+docs-only check: baseline = live deployment 275ea2ac32c1e90988ba4b62886a4d93378dcb2b
+docs-only check: building (changed paths include non-.claude files)
+$ npx astro build
+```
+Pipeline `2824114933` (e9ee68e) → **success in 174s**. Contrast the two skipped jobs it
+replaces: 22s and 31s. Duration is the cheapest ongoing tell — a build that ships 1,528
+pages cannot finish in 22 seconds.
+
+**CF Pages production deployments (baseline advanced, so the skip is now self-healing):**
+```
+success  e9ee68e5b  2026-09-06T11:08:32Z   <- this fix + the recovered sitemap-ai change
+success  275ea2ac3  2026-09-06T10:45:21Z   <- what live was stuck on for 23 min
+success  8e6d424ca  2026-09-06T10:34:24Z
+```
+
+**Live `sitemap-ai.xml`, cache-busted, `cf-cache-status: DYNAMIC`:**
+| check | expect | got |
+|---|---|---|
+| locs | 784 | **784** ✅ |
+| bare `<loc>…/palettes/</loc>` (the 301) | 0 | **0** ✅ |
+| `/browse/` present | 1 | **1** ✅ (control — proves the grep can find a loc) |
+| per-palette URLs present | ≥1 | **378** ✅ (control — proves the file is the real sitemap) |
+| `api/palettes.json` alternate on `/browse/` | 1 | **1** ✅ |
+
+`/browse/` now reads:
+`<loc>…/browse/</loc><changefreq>weekly</changefreq><priority>0.7</priority><xhtml:link rel="alternate" type="application/json" href="…/api/palettes.json"/>`
+
+**Parity restored:** `sitemap-0.xml` = 1,528 locs, bare `/palettes/` count **0** — both
+sitemaps now agree, which was the whole point of §E52.
+
+**What this leg actually cost, honestly:** §E52's code was correct and merged 23 minutes
+before anyone noticed it had not shipped. It was found only because the verification step
+fetched the LIVE file instead of trusting the green pipeline. Had §E52 been "verified" by
+reading `origin/main`, the defect would still be live and the CI hole would still be open.
