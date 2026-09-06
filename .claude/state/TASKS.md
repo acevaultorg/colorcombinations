@@ -4314,3 +4314,76 @@ is not ours* / *Trademarks* / *Notice and takedown* / *Contact*, naming
 Seigensha alongside the 1933 original); and images on `/paintings/` are 4/4
 `loading="lazy"`, 4/4 `decoding="async"` with dimensions present — full
 `fleet-images-standard` compliance.
+
+---
+
+## E72 — dateModified was the build clock across the whole site; two commits, two surfaces
+
+**Shipped `412902b7` (schema.org) and `a792ccd8` (OpenGraph). Both CI-green,
+both live-verified.**
+
+### The defect
+18 templates set `const BUILD_DATE = new Date().toISOString()` and fed it to
+schema.org `dateModified` — so ~51% of pageviews claimed "modified today" on
+every deploy, for a Sanzo Wada dataset fixed in 1933. `src/data/palettes.ts`
+last changed **2026-04-10**, so the 378 palette pages had overstated their
+freshness by ~5 months, and re-asserted it daily.
+
+Live before the fix, three pages, timestamps differing by *seconds* — the
+signature of a build clock rather than an edit:
+
+| page | before | after |
+|---|---|---|
+| `/methodology/` | 2026-09-06T13:49:53 | **2026-07-30** |
+| `/about/` | 2026-09-06T13:49:45 | **2026-08-15** |
+| `/learn/japanese-reds/` | 2026-09-06T13:49 | **2026-09-05** |
+| `/palettes/kurenai-kon/` | 2026-09-06T13:50:20 | 2026-09-06 (genuinely) |
+
+### Why precomputed, not `git log` at build time
+Card `mtpuh2vxd18d63` had already named the hazard: CI sets no `GIT_DEPTH`, so
+it can run shallow, where `git log -1 -- <file>` returns **empty** and the
+natural fallback is a clock — reinstating the bug in CI only, where nobody
+looks. `GIT_DEPTH: 0` would fix that by making every future build fetch full
+history forever, to solve a problem solved by committing the answer. So
+`scripts/gen-content-dates.mjs` writes `src/data/content-dates.json`, and
+`contentDate()` returns the newest date across a template and its data.
+The generator **exits 1** on an unknown path; `contentDate()` **throws** rather
+than falling back. Failure is a loud build break, never a quiet lie.
+
+### The second surface, found while sizing the first
+`BaseLayout` had `modifiedTime ?? new Date().toISOString()`, so **22 of 27**
+`type="article"` templates advertised `og:article:modified_time` = today. Two
+more passed the prop with a build-clock value, so they only *looked* compliant
+— counting "passes the prop" as a proxy for "honest" was itself a false
+measure and hid 2 of the 24.
+
+The sharpest case: `books/[slug].astro` deliberately withholds `dateModified`
+from its JSON-LD, saying so in a comment — *"stamping BUILD_DATE on 12 book
+pages that did not change is freshness inflation"* — while the layout stamped
+exactly that into its OG tags. Live before: that page served
+`article:modified_time="2026-09-06T14:07:01.774Z"`. **A page's careful
+decision was being undone one layer up.** BaseLayout now omits the tag when no
+date is known; absent metadata is honest, a clock is not.
+
+Final: 27 article templates — **26 honest, 0 build clock, 1 deliberately
+omitted** (books, which keeps its own reasoning).
+
+### The guard, because a comment did not hold
+Twenty minutes after writing *"do NOT re-run purely because a template was
+refactored"* into the generator's own header, I ran it to add 7 paths — and it
+re-dated all 18 existing templates to the refactor commit that had just
+introduced `contentDate()`. That would have reverted the live-verified fix
+(methodology 2026-07-30 → today) **without changing one line of content**.
+
+A prose warning is not a guard. The generator is now additive by default:
+
+```
+npm run dates                    # add new paths only, keep known dates
+npm run dates -- --refresh <p>   # re-date exactly <p>
+npm run dates -- --refresh-all
+```
+
+Verified both directions — default kept 25/25 and added 7 (0 moved); `--refresh
+methodology` moved that one key and left the rest untouched. Default failure
+mode is a **stale** date, which is conservative; the build clock failed the
+other way.
