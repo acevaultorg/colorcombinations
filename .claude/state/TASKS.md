@@ -1104,6 +1104,43 @@ when something references it — a breadcrumb, a nav link, a sitemap entry, a ca
 references before sizing the problem by the number of children.
 
 
+### E16. REFUTED 2026-09-06 — "AI visitors bounce because the colour pages are thin" (#18)
+
+`ai-citation-channel` LAW 4 says the binding constraint is **citation -> click**, and this site is
+the fleet's #2 by citations (~25,000 Copilot/30d) converting to ~1,037 AI sessions. Its AI landing
+data shows `/colors/kon` at **1.08 pv/session** — land, verify, leave. The rule's own prompt is
+"what can this page give the reader that the AI answer cannot?", which invites the conclusion that
+the page is thin.
+
+Checked the page before concluding anything. It already carries **12 sections**:
+
+```
+About Kon · The story of Kon · Colours that go with Kon · How to use Kon ·
+Taking Kon off the screen · Palettes with Kon · Specifications · Quick copy ·
+Go deeper on colour · Embed this color · Support the archive · [request a combination]
+```
+
+plus 31 copy affordances, an embed widget, and downloads. **It is already doing everything the AI
+answer cannot.** The 1.08 pv/session is an *answer page succeeding* — the reader got the fact they
+came for. Depth is a cost on a lookup surface, not a goal (§ E10, and `measured-vs-expected` on
+page ROLE).
+
+**No defect. Do not "enrich" the colour pages.** Adding more to a page that already answers the
+question would trade against the thing that makes it citable.
+
+**This is the eighteenth refutation in this session and it closes the pattern**: every
+content/hygiene/UX hypothesis tested on this site has come back either already-correct or priced
+under $1/mo. The picture is coherent and worth stating plainly rather than re-testing —
+
+- pages are well-built (one real structural defect found all session: § E14, fixed)
+- 89.9% of pages get traffic; there are essentially no orphans (§ E11)
+- the constraint is **external authority**: 9 inbound links vs a sibling's 983 (§ E3)
+- the opportunity is the **Bing-index channel at ~3.9x its console view** (§ E8), which the
+  shipped link test targets (§ E5, gate 2026-10-06)
+
+A future lane arriving here should start from that summary, not re-run the sweep.
+
+
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
 
 § E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
