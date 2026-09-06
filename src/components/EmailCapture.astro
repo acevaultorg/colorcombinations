@@ -93,6 +93,37 @@ const method = "post";
         });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.ok) {
+          /* INSTRUMENTATION (2026-09-06) — this form is the site's only engineered
+           * return-loop and it fired NO analytics: zero gtag/clarity/plausible calls
+           * anywhere in this component, so "does anyone subscribe?" was unanswerable
+           * from any dashboard (verified: none of the 26 GA4 event names on this
+           * property was subscribe-related). Forward-only — it cannot recover history.
+           *
+           * `pending_no_binding` is the important one. /api/subscribe deliberately
+           * fails OPEN: if the SUBSCRIBERS KV binding is missing it still returns
+           * {ok:true, pending:true} "so the form never *looks* broken". That means a
+           * lost binding silently discards every signup while showing the user a
+           * success message — a state indistinguishable from working, from outside.
+           * Emitting it as its own outcome is what makes that detectable at all.
+           * (Binding verified present on production + preview 2026-09-06.)
+           *
+           * window is untyped here because this is a bundled <script>, not the
+           * is:inline one FeedbackWidget.astro uses — hence the local shape. */
+          const outcome = data.pending
+            ? "pending_no_binding"
+            : data.status === "already_subscribed"
+              ? "already"
+              : "new";
+          const w = window as unknown as {
+            gtag?: (...args: unknown[]) => void;
+            clarity?: (...args: unknown[]) => void;
+          };
+          try {
+            w.gtag?.("event", "subscribe", { source, outcome });
+            w.clarity?.("event", "subscribe_" + outcome);
+          } catch {
+            /* analytics must never break the signup */
+          }
           if (status)
             status.textContent =
               data.status === "already_subscribed"
