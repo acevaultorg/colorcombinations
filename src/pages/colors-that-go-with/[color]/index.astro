@@ -3,6 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import BundleCta from "@components/BundleCta.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
+import ShareBar from "@components/ShareBar.astro";
 import { ART_SUPPLIES } from "@/config/monetization";
 import { bestTextColorOn, contrastRatio, hexToRgb } from "@/lib/color";
 import type { HexColor } from "@/types/palette";
@@ -129,6 +130,12 @@ const answer = `${color.name} (${color.hex}) — ${color.descriptor} — is a ${
 const description = `What colors go with ${color.name.toLowerCase()}? ${color.name} (${color.hex}) pairs with ${theory.slice(0, 2).map((t) => t.hex).join(" and ")} plus warm neutrals. ${settings.length} setting-specific guides — walls, weddings, clothes, kitchens, and more — from the 1933 Dictionary of Color Combinations.`;
 const canonical = `/colors-that-go-with/${color.slug}/`;
 
+// ShareBar composition — this page type's provenance is "computed from the
+// archive", distinct from a single palette's Wada-plate-or-editorial split.
+const shareUrl = new URL(canonical, Astro.site).toString();
+const sharePinterestMedia = new URL(`/og/colors-that-go-with/${color.slug}.png`, Astro.site).toString();
+const shareTweetText = `${h1} — ${color.hex}, computed pairings from Sanzo Wada's 1933 Dictionary of Color Combinations\n${theory.slice(0, 3).map((t) => t.hex).join("  ")}\n#ColorPalette #ColorTheory #InteriorDesign`;
+
 const faq = [
   { q: `What colors go with ${color.name.toLowerCase()}?`, a: answer },
   {
@@ -169,7 +176,7 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={title} description={description} canonical={canonical} jsonLd={jsonLd} adContent>
+<BaseLayout title={title} description={description} canonical={canonical} image={`/og/colors-that-go-with/${color.slug}.png`} jsonLd={jsonLd} adContent>
   <main class="mx-auto max-w-4xl px-5 py-10">
     <nav class="mb-6 text-sm text-stone-500">
       <a href="/" class="hover:underline">Home</a> ›
@@ -191,6 +198,8 @@ const jsonLd = [
       </div>
       <p class="mt-4 max-w-2xl text-stone-700">{answer}</p>
     </header>
+
+    <ShareBar title={h1} url={shareUrl} tweetText={shareTweetText} pinterestMedia={sharePinterestMedia} />
 
     <!-- Colour reference (computed, zero fabrication — same math as the leaf pages) -->
     <section class="mb-10 grid gap-4 sm:grid-cols-2">

@@ -1,44 +1,40 @@
 ---
 /**
- * ShareBar — compact share actions for palette pages.
+ * ShareBar — compact share actions, generic across page types.
  *
  * Three actions:
  *  - Copy link (clipboard) — single most-used action
- *  - Pinterest — visual, exact-match audience for palettes
+ *  - Pinterest — visual, exact-match audience for anything colour-swatch-shaped
  *  - Twitter/X — text-first, good for dev/design crowd
  *
  * All events are tracked via Clarity + GA4. No external JS libraries —
  * share intents use the official web intent URLs so no tracking scripts
  * leak into the museum identity.
+ *
+ * GENERALISED 2026-09-06 (was palette-only, `{ palette: Palette; url }`).
+ * Callers now compose their own tweetText + description + imageUrl — each
+ * page type has a genuinely different provenance story (Wada plate vs.
+ * editorial palette vs. computed pairing), and baking that into ShareBar
+ * itself is what made it palette-specific in the first place. `pinterestMedia`
+ * MUST be a real per-page image — pointing it at a shared/default OG image
+ * produces an undifferentiated Pinterest pin for every caller, which is worse
+ * than no Pinterest button (see the card that requested this generalisation).
  */
 
-import type { Palette } from "@/types/palette";
-
 export interface Props {
-  palette: Palette;
+  /** Display title — used in the Pinterest description, not rendered here. */
+  title: string;
   /** Absolute URL of this page, for sharing. */
   url: string;
+  /** Full tweet body — caller composes it (provenance/hashtags differ per type). */
+  tweetText: string;
+  /** Absolute URL of a REAL per-page image — never a shared default. */
+  pinterestMedia: string;
 }
 
-const { palette, url } = Astro.props;
+const { title, url, tweetText, pinterestMedia } = Astro.props;
 
-const title = palette.titleJa
-  ? `${palette.title} (${palette.titleJa})`
-  : palette.title;
-
-// Tweet text — include palette name, hex swatches, and discovery hashtags.
-// Provenance branches: only the 348 Wada plates may claim the 1933 dictionary;
-// the 30 editorial palettes are original compositions (see /methodology).
-const hexList = palette.colors.map((c) => c.hex).join("  ");
-const isWada = (palette.tags ?? []).includes("wada") || /^wada-\d+-/.test(palette.slug);
-const provenance = isWada
-  ? `a plate from Sanzo Wada's 1933 Dictionary of Color Combinations`
-  : `a ${palette.era}-era-inspired editorial palette from colorcombinations.org`;
-const tweetText = `${title} — ${provenance}\n${hexList}\n#ColorPalette #DesignInspiration #JapaneseColors`;
 const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(url)}`;
-
-// Pinterest needs `media` for the image — use the OG image on the page
-const pinterestMedia = new URL(`/og/${palette.slug}.png`, url).toString();
 const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(pinterestMedia)}&description=${encodeURIComponent(title + " — from the Dictionary of Color Combinations")}`;
 ---
 

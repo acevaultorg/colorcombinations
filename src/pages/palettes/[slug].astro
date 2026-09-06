@@ -104,6 +104,19 @@ const description =
 const pageUrl = new URL(`/palettes/${palette.slug}`, Astro.site).toString();
 const ogImage = `/og/${palette.slug}.png`;
 
+// Moved from ShareBar.astro when it was generalised (2026-09-06) — provenance
+// branching stays here because it's genuinely palette-specific: only the 348
+// Wada plates may claim the 1933 dictionary; the 30 editorial palettes are
+// original compositions (see /methodology).
+const shareTitle = palette.titleJa ? `${palette.title} (${palette.titleJa})` : palette.title;
+const shareHexList = palette.colors.map((c) => c.hex).join("  ");
+const isWadaPlate = (palette.tags ?? []).includes("wada") || /^wada-\d+-/.test(palette.slug);
+const shareProvenance = isWadaPlate
+  ? `a plate from Sanzo Wada's 1933 Dictionary of Color Combinations`
+  : `a ${palette.era}-era-inspired editorial palette from colorcombinations.org`;
+const shareTweetText = `${shareTitle} — ${shareProvenance}\n${shareHexList}\n#ColorPalette #DesignInspiration #JapaneseColors`;
+const sharePinterestMedia = new URL(ogImage, Astro.site).toString();
+
 // Per-combination "Historical context" — unique, fact-derived prose so each
 // palette page carries page-specific content (plate #, the actual colours,
 // hue, mood, era, and a computed contrast finding) instead of a shared
@@ -538,7 +551,7 @@ const jsonLd = [
 
         <ContrastMatrix palette={palette} />
 
-        <ShareBar palette={palette} url={pageUrl} />
+        <ShareBar title={shareTitle} url={pageUrl} tweetText={shareTweetText} pinterestMedia={sharePinterestMedia} />
 
         <div class="palette-library plate">
           <FurtherReading
