@@ -3370,3 +3370,60 @@ misread one of them.
 **Outcome: both hard gates verified clean. No change shipped, because there was
 nothing to fix — recorded so the next audit can start from evidence rather than
 re-run it.**
+
+### §E54 — images lever checked: the 18 "unsized" images are a FALSE POSITIVE I caught before filing (2026-09-06)
+
+`fleet-images-standard` requires every image lazy + **sized** so CLS is zero.
+Measured across 6 page types:
+
+```
+/                    imgs=3   lazy=3   width+height=0
+/paintings/          imgs=25  lazy=25  width+height=25   <- the detector discriminates
+/palettes/fuji-ai/   imgs=1   lazy=1   width+height=0
+/colors/kurenai/     imgs=11  lazy=11  width+height=0
+/shop/               imgs=11  lazy=11  width+height=0
+/collections/boho/   imgs=3   lazy=3   width+height=0
+```
+
+18 of 18 book covers carry no `width`/`height`. That reads as a fleet-standard
+breach on the site's #2-earner, and `/paintings/` scoring 25/25 proves the check
+is not blind — so it looked like a genuine finding.
+
+**It is not.** The rule's own wording allows *"explicit `width`/`height` **or a
+fixed-ratio container / `aspect-ratio`**"*, and the second form is what this
+component uses. Read from the served CSS (`/_astro/about.nhzKXRgV.css`):
+
+```css
+.further-reading__cover      { display:block; position:relative; width:100%; aspect-ratio:2 / 3; overflow:hidden }
+.further-reading__cover img  { position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
+```
+
+Space is reserved by the wrapper before the image exists, so CLS is zero by
+construction. **18 of 18 unsized images sit inside that ratio-reserved wrapper** —
+checked per image, not assumed from one sample.
+
+The component also implements the accuracy gate the same rule asks for:
+`onerror` plus `onload` with `naturalWidth < 10` adds `.is-missing`, which hides
+the `<img>` and reveals a CSS fallback layer showing the book's initials — so a
+cover that fails to load degrades to a designed placeholder rather than a broken
+image or, worse, a wrong one.
+
+**I flagged an attribute and had not read the mechanism** — `measured-vs-expected`
+§ *a defect in code you have not read is a guess about its author*. Caught before
+it reached a card; the cost of filing it would have been someone adding redundant
+`width`/`height` to 18 images across four templates for no CLS gain.
+
+⚠️ **My own control also mis-fired and I nearly let it pass unexplained.** A final
+`grep 'aspect-ratio:2 / 3'` against `about.BKX23xc5.css` returned nothing, which
+would read as "the rule isn't in the served CSS". The page links **three**
+stylesheets and the rule is in `about.nhzKXRgV.css` (0 · 1 · 0 across the three).
+A single-file grep is a claim about that file; the earlier concatenated fetch of
+all three is what actually established it.
+
+**Levers now run on this site, with the verdict:** FAQ render (fixed, 94%) ·
+search zero-result demand (fixed) · sitemap-0 sweep (fixed) · sitemap-ai sweep
+(fixed) · internal linking (healthy, measured) · AI-citation ownership (both
+clusters not-fundable) · titles (done) · Bing indexation (healthy, 127%) ·
+affiliate compliance (clean, 843 links) · money path (clean, safely probed) ·
+images (clean). **Remaining known work is one date-gated item**: the 69
+`/collections/` FAQ renders, after 2026-10-06.
