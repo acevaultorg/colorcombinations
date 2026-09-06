@@ -2173,3 +2173,38 @@ carries no further agent-eligible work as of this leg — remaining open items a
 (Wikipedia outreach `mtpazjk33khznb`, Pinterest setup `mq0supbru74rv5`, both need operator
 credentials/action) or `kind:reference` (the `/for-you` swipe-feed spec, deliberately bottom-ranked,
 a real but large speculative build not a filed task ready to pull).
+
+### E33 · 2026-09-06 — shipped the /colors/[slug] cross-link (4/10 reachable) + found a pre-existing 6-page route collision while verifying it
+
+Continued the gap sweep after E31/E32. Found: none of the 10 `/colors/[slug]/` pages whose slug
+also exists in `commonColors` (black, blue, brown, green, khaki, olive-green, orange, red, white,
+yellow — the only real overlap between the 210-entry Wada archive and the 67-entry modern-paint
+pairing dataset) linked to their matching `/colors-that-go-with/` hub. Shipped `69952c0`: a
+conditional callout on `src/pages/colors/[slug].astro`, gated on the identical
+`commonColors.find + palettesFor + MIN_PALETTES` check the hub pages themselves use, reusing the
+page's existing scoped `.pillar-callout` markup/CSS verbatim.
+
+**Live-verifying it caught a real, pre-existing defect unrelated to tonight's work.** 6 of the 10
+target URLs (blue, brown, green, orange, red, yellow) showed the callout NOT rendering — confirmed
+against a fresh cache-busted fetch (`cf-cache-status: DYNAMIC`, not a caching artifact) before
+suspecting my own code. Traced it to Astro's OWN build-log warning, present verbatim in every deploy
+trace including tonight's (`08:21:35 [WARN] [build] Could not render /colors/blue from route
+/colors/[slug] as it conflicts with higher priority route /colors/[hue]`): those 6 slugs collide
+with the 9-member `HUE_SLUGS` list (`src/pages/colors/[hue]/index.astro`, `/colors/hue/[hue]/`'s
+sibling directory route also matches bare `/colors/[hue]/`), so the individual-colour detail page
+for exactly those 6 names has been silently unreachable/shadowed by the hue-family aggregation page
+— confirmed live: `curl /colors/blue/` returns the hue hub's "Blue Color Combinations." H1, not the
+individual colour page; `/api/colors/blue.json` (a separate, unaffected route) still serves the
+correct individual-colour data, so this is an HTML-surface routing bug, not a data bug.
+
+**Did not fix the collision in this leg** — deciding which of the two templates should own
+`/colors/blue/` (and what happens to the other's content/URL/backlinks) is a judgment call with
+SEO implications, not a mechanical fix, and it predates tonight's work entirely (present in the
+prior deploy's trace too). Filed as its own task rather than folded into this one, so it gets
+deliberate attention rather than a rushed decision at the tail of an unrelated leg.
+
+**Honest scope of what shipped:** the callout is live and correct on all 4 reachable slugs
+(black, khaki, olive-green, white) — verified rendering + correct hub href on each, and verified
+absent on 3 non-overlapping control colours (kurenai, akane, matsuba). It is present in source and
+correctly gated for the other 6, but cannot render there until the routing collision is resolved —
+not a defect in this leg's code, a pre-existing block on 6 of the 10 target pages.
