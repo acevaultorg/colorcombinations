@@ -3914,3 +3914,67 @@ alternative (removing the disallow) would be worse.
   entries away. Sort on the epoch inside `/Date(...)/` before reading "latest".
 - The body parses to **`{"d": [...]}`**, not a list. `len()` on it returns **1**, which reads
   as "the API returned one row". Dumping `list(j.keys())` first is what caught it.
+
+---
+
+## §E61 — search-regression card measured, gate confirmed firing, card rescheduled to 09-08 (2026-09-06 11:50Z)
+
+Pulled `mtppvsfvvdszfx` (the 09-04/09-05 search-rate drop). Its decisive test needs a browser; `ToolSearch` re-confirmed **no Chrome MCP on this device**. Two of its three asks were answerable anyway.
+
+**Gate confirmed firing.** `dims=date,screenResolution`, 8 days, complete (`400 of 400`, `truncated=false`). Share of sessions in the four gated resolutions:
+
+```
+20260829 16.8% · 20260830 17.3% · 20260831 21.6% · 20260901 14.6%
+20260902 19.8% · 20260903 20.3% · 20260904 16.9%   <- 7-day pre-gate band 14.6-21.6, mean 18.2
+20260905  8.7%                                      <- 0ff5afe shipped 14:06Z, mid-day
+```
+
+`0ff5afe` covered ~9.9h of 09-05 = 41% of the day. Predicted `18.2% x (1-0.41) = 10.7%`; observed **8.7%**. Right day, right direction, right magnitude — the gate is running, and the card's denominator caveat is now measured rather than projected.
+
+**Rescheduled to 2026-09-08 09:00 UTC** (`status: scheduled`, verified `scheduledFor` reads back as that timestamp). Reason: the card had been pulled and re-blocked **three times in one day** by lanes that cannot run its test. A card that re-serves daily into a wall it cannot pass is the mirror of `measured-vs-expected` § "a scheduled verification that cannot fire" — same defect, opposite sign. Scheduling is the correct disposition; completing it would have been a lie.
+
+## §E62 — near-filed a false P0 on the #2 earner; an independent instrument killed it in one call (2026-09-06 11:52Z)
+
+While snapshotting a control, colorcombinations returned **1 session / 1 pageview for 09-06 at 11:52Z** on a ~230/day site, with *every* event type at 0 or 1. Indistinguishable from a collection outage — and a GA4-disabling viewport gate had shipped to this exact site 22 hours earlier, supplying a ready-made and completely wrong cause.
+
+Read the gate as it ships rather than as remembered: `var CS={"1280x1200":1,"1366x1366":1,"1600x1600":1,"393x851":1}` — four exact resolutions, cannot produce a 99% drop. Then went to Cloudflare zone analytics, which has no relationship to GA4:
+
+```
+              requests  pageViews  uniques
+2026-09-05      13,883      5,477    2,503   (full day)
+2026-09-06      22,215     17,296    1,721   (~12h in)
+```
+
+Normal-to-heavy day, above the previous *full* day at half elapsed. Site fine, instrument blind.
+
+**Two measurements shipped to fleet doctrine** (`origin/main` **a7b7fe87**, `fleet-rules/measured-vs-expected.md` 82,621 -> 87,246 bytes, append-only `1410a1411,1494`):
+
+1. Yesterday's row backfills. Read at 09:57Z vs 11:50Z: 09-05 moved **125->148 sess, 259->300 pv (+18.4%/+15.8%)** while **09-04 was byte-identical**. The two-day-old control not moving is what makes it a measurement. Sessions are the denominator of nearly every rate here, so the undercount *inflates* per-session rates — it moved a search rate 16.0 -> 20.3/1k on the same day.
+2. Intraday freshness is per-property and spans ~100x. Same instant: fitmylens 77%, dormbyschool 57%, cabinpets 56%, readinglist 6.8%, colorcombinations **0.7%**. Bimodal, not a uniform lag.
+
+Committed via temp index (`read-tree origin/main` -> `hash-object` -> `commit-tree -p origin/main`): the vault checkout is **105 behind with 107 dirty files belonging to other lanes**. Verified untouched afterwards.
+
+⚠️ **Instrument trap, caught by a control.** My first dedup grep of `fleet-rules/` said "not covered" — from a stale tree where `measured-vs-expected.md` is a **4,455-byte stub against 82,621 on origin**, and the control word returned **0 local vs 42 on origin**. Re-run against `origin/main` the finding was genuinely uncovered, so the first answer was right *by luck, not by method*. Also `grep -rlic` combines `-l` and `-c` and emits nonsense; the failing control is what caught that too.
+
+## §E63 — ownership check on the core query: we already have the best artifact, and it doesn't matter (2026-09-06 12:05Z)
+
+Queue was empty. Refuelled by lever, not by defect count: `affiliate-team-standard` § OWNERSHIP LAW names this check and records it as **unrun** for this site — *"who wins it, and what does their page have that ours does not?"*
+
+**The control failed, and that was the finding.** On `the dictionary of color combinations` — where this site holds a measured **45.7-70.5% AI citation share** — it does not appear in the Google top 10 **at all**. So `WebSearch` is not the engine our citation share lives in, and my earlier `y2k colors` classification is **void as AI-channel evidence**. Recorded rather than quietly dropped: I ran the check on the wrong engine, and only the control caught it.
+
+What the control *did* surface, measured with a browser UA and tags stripped:
+
+| site | bytes | words | JSON-LD |
+|---|--:|--:|--:|
+| **sanzo-wada.dmbk.io** — Wikipedia-linked, Google #3 | **496** | **7** | 0 |
+| colors.elwyn.co — Google #7 | 959,941 | 10,044 | 0 |
+| wada-sanzo-colors.com — Wikipedia-linked | 40,075 | 266 | 1 |
+| **colorcombinations.org** | 131,734 | 2,258 | 1 |
+
+The Google #3 result is a bare React shell: `<div id="root"></div>`, one deferred bundle, seven words. (Control: same command on `/palettes/` returns 707,717 bytes.)
+
+**Conclusion — a work class closed.** We already have the superior artifact on every axis and a 7-word SPA outranks us anyway. **Page quality is not the binding constraint on this query; links are** (9 inbound vs a sibling's 983). Refuse any "improve our Wada pages to win the SERP" proposal and cite the table.
+
+**And it explains the channel split with a mechanism.** GPTBot/PerplexityBot do not execute JS (`bot-harvest` Pattern 1), so `sanzo-wada.dmbk.io` is invisible to AI grounding while fully visible to Google. That is exactly why we hold 45-75% citation share on queries where we are absent from the Google top 10, and why 519 Bing clicks sit against 4 Google. **Static rendering IS the moat** — any future move to client-side content would hand the AI channel to a rival currently locked out of it by their own architecture.
+
+Wikipedia's article links **three** third-party Wada resources (`sanzo-wada.dmbk.io`, `wada-sanzo-colors.com`, `hexpot.com` blog), not two; filed as a revision on the operator card `mtpazjk33khznb`, which already independently carried the 9-vs-983 measurement. Still operator-only — I-34, and a self-added link is COI regardless.
