@@ -3701,3 +3701,78 @@ threshold expressed as a rate over that denominator — including ones filed hou
 the same session, in good faith, from correct data. When shipping or verifying an analytics
 exclusion, grep the board for live cards holding `per 1k` / `per session` thresholds and
 re-base them, or the next lane will read a mechanical shift as a real result.
+
+## §E59 — conversion by template, per-CTA normalised: no fundable gap, and one more false finding caught by reading the code (2026-09-06)
+
+Continuing the refuel sweep. §E57 corrected the depth read; this one does conversion properly.
+
+### Per-CTA table (nobody had this — raw clk/1k pv is not comparable across templates)
+
+CTA counts measured on the live pages (`grep -o 'href="/go/'`), control passing (the
+`/colors-that-go-with/` leaf returned exactly the 38 measured in §E57):
+
+| template | pv | clicks | clk/1k pv | CTAs | **per-CTA** |
+|---|--:|--:|--:|--:|--:|
+| `/books/<slug>` | 153 | 27 | 176.5 | **1** | **176.5** |
+| `/shop` | 167 | 65 | 389.2 | 54 | 7.21 |
+| `/` (home) | 3,035 | 54 | 17.8 | 31 | 0.57 |
+| `/palettes/<slug>` | 3,276 | 12 | 3.7 | 10 | 0.37 |
+| `/browse` | 2,185 | 19 | 8.7 | 30 | 0.29 |
+| `/colors/<slug>` | 2,115 | 16 | 7.6 | 40 | 0.19 |
+| `/collections/<slug>` | 1,097 | 2 | 1.8 | 30 | 0.06 |
+| `/colors-that-go-with/` LEAF | 1,059 | 2 | 1.9 | 38 | 0.05 |
+
+Two readings that survive:
+
+1. **Normalising does not rescue the content templates.** `/palettes/<slug>` at 0.37 per-CTA
+   is 2× `/colors/<slug>` despite having 4× fewer CTAs — so palettes are not
+   under-monetised relative to their siblings, they are simply a content surface.
+2. **`/books/<slug>` is the site's conversion engine and is starved**: one CTA, 176.5 clicks
+   per 1k pageviews, on **153 pageviews in 30 days**. It is 21× smaller than the palettes
+   template by traffic.
+
+⚠️ **That 176.5 is a selection effect and must not be projected.** Visitors on a book page
+already want the book. Routing palette browsers there does not reproduce the rate.
+
+### The false finding that came out of it, and what killed it
+
+Measured: **zero `href="/books/<slug>"` links from any of the six highest-traffic templates**
+(~80% of site pageviews), while every one of them links `/shop` 6–7 times. Control passed —
+`/books/` itself emits 11 such links, so the grep works.
+
+That reads as "the site never routes to its best-converting page." Then two corrections:
+
+**(a) The pages DO sell books — just directly.** `/palettes/kurenai-kon/` carries
+`/go/b/0300179359?c=palette` (Interaction of Color) ×3 alongside three product CTAs and a
+Prime trial. The internal-link count measured the wrong thing.
+
+**(b) The "Wada palettes don't link Wada's own book" follow-on was also wrong.** Six sampled
+palette pages showed Albers, Itten and others but never `4861522471` — the site's namesake,
+the source of every `wada-###` palette, and the single CTA on the 176.5/1k page. A very
+available finding.
+
+**Reading the code killed it** (`measured-vs-expected` § a defect in code you have not read
+is a guess about its author). `src/pages/palettes/[slug].astro:76`:
+
+> `// Deterministic book rotation — different palette pages show different books`
+> `// so impressions are distributed across the full FurtherReading inventory.`
+> `// Hash the slug to a stable offset into the book list.`
+
+Deliberate, documented, and the Wada dictionary is **entry #1** in the pool
+(`src/config/monetization.ts:390`). Re-measured on **18** palette pages instead of 6: it
+appears on **3/18 = 17%**, consistent with a ~1-in-11 rotation across 8 distinct ISBNs seen.
+My 6-page sample simply missed it — n=6 was never enough to claim absence.
+
+### The one refinement left on the table, priced so nobody re-derives it
+
+Preferring `4861522471` on `wada-###` slugs (contextual match: the palette's own source book)
+instead of uniform rotation. It trades directly against the author's stated goal of
+distributing impressions across inventory, and prices at roughly **+$2–4/mo** — palettes
+produce 12 clicks/30d today, and even tripling them is ~$3.4 at this site's $0.143/click.
+**Not worth overriding a deliberate, documented decision for that.**
+
+### Net
+
+No code change. Three candidate builds examined and all three declined on measurement:
+depth on `/colors-that-go-with/` (§E57, crawler), CTA count on `/palettes/` (per-CTA says
+no), book-CTA selection (documented rotation, ~$3/mo).
