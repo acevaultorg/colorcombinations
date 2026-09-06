@@ -2141,3 +2141,35 @@ lack one.
 success in ~154s. `sitemap-ai.xml` now serves **791** URLs (737+54, exact match), all 54 present with
 `<priority>0.8</priority><changefreq>monthly</changefreq>`, XML well-formed
 (`xml.etree.ElementTree.parse` clean), pipeline's own post-deploy assertion also passed.
+
+### E32 · 2026-09-06 — closing sweep: verified affiliate gate + nav + Bing-CTR guard on tonight's work; nothing further to fix right now
+
+Continued the gap sweep after E31. Two more checks, both closed clean (no false findings shipped,
+two near-misses caught before being reported):
+
+- **Affiliate compliance on the new hub pages.** `grep amazon` on `/colors-that-go-with/beige/`
+  returned 0 — nearly read as "monetization missing." It isn't: this site gates the tag behind
+  `/go/b/<isbn>?c=colors-that-go-with` (the tag never lives in served HTML, per this codebase's own
+  affiliate-link-gate pattern), confirmed present with `rel="sponsored nofollow noopener"`,
+  `target="_blank"`, `data-event="amazon_click"`, and the FTC disclosure text — identical on hub and
+  leaf. 100% compliant, matching every other page type.
+- **Nav-link trailing slash.** `/colors-that-go-with` is in the sitewide primary nav ("Colors that go
+  with…"), consistent with `/browse`, `/colors`, `/collections` — all trailing-slash-free, all 308 to
+  the slashed form. Not a regression, not isolated to this page type; the site's existing convention.
+
+**Checked the fleet metrics layer's own flags before considering any further work.** Confirmed via
+`node scripts/bing-ctr.mjs colorcombinations.org`: the page-level Bing feed **fails the
+click-selection guard here** (exit 2, CTR withheld) — exactly what this project's own flag already
+warned ("do NOT act on per-page Bing CTR until the script prints clean; 21 meta rewrites already
+shipped on a false premise"). No page-level Bing CTR lever is currently safe to act on for this site;
+did not chase one. Field CWV is GOOD (desktop LCP 0.92s, INP 24ms, n=6770) — the 50 lab score flag
+explicitly says not to fund a refactor on it. `/colors-that-go-with/*` carries no meaningful Bing
+impressions yet (too new — IndexNow submitted tonight, per E31/§CI trace).
+
+**No further genuine gap found this pass.** Session total tonight: §E27 (3 link-defect classes
+fixed) · §E28 (54-hub build) · §E29 (verified, no action needed) · §E30 (OG images + ShareBar) ·
+§E31 (sitemap-ai.xml fix) · §E32 (this closing sweep, clean). Board (`colorcombinations.org` project)
+carries no further agent-eligible work as of this leg — remaining open items are all `assignee:human`
+(Wikipedia outreach `mtpazjk33khznb`, Pinterest setup `mq0supbru74rv5`, both need operator
+credentials/action) or `kind:reference` (the `/for-you` swipe-feed spec, deliberately bottom-ranked,
+a real but large speculative build not a filed task ready to pull).
