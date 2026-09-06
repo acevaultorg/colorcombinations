@@ -893,12 +893,19 @@ Direct head landing pages          sess   pv/s
 **Direct's head is healthy** — `/collections` and `/colors` are its *deepest* entries on the
 site. The 1.62 average comes from its **tail**: Direct spreads across **278 landing pages**
 against Organic's 61 and AI's 45. Those are people arriving straight at one specific palette or
-colour page (`/palettes/entan-sumi` 21 sess @ 1.10) — bookmarks and returning visitors.
+colour page (`/palettes/entan-sumi` 21 sess @ 1.10) — ~~bookmarks and returning visitors.~~
 
-**A bookmark-return visit to one palette page is a SUCCESS, not a depth failure.** Same shape as
-the answer-page-vs-hub lesson: depth is a goal on browse surfaces and a cost on lookup surfaces.
-Prescribing "more pages per Direct session" would have meant adding distraction to the one
-behaviour that indicates the site is genuinely useful enough to bookmark.
+~~**A bookmark-return visit to one palette page is a SUCCESS, not a depth failure.**~~
+**(EXPLANATION SUPERSEDED 2026-09-06, same session, by measurement — see § E12. Direct is
+**87% NEW users** (2,354 new vs 396 returning, 12.8% returning — the LOWEST of any real channel,
+against Organic's 31.7% and AI's 24.8%). It is not bookmark traffic and the "returning user
+succeeding" reading is wrong.)**
+
+**What survives and what does not.** The MEASUREMENTS in this section stand: the head is healthy,
+the 1.62 mean comes from a 278-page tail plus 75 unattributed sessions at 0.00 pv/s, and depth is
+a cost on lookup surfaces rather than a goal. **The conclusion — "do not prescribe more depth" —
+also still stands**, because the tail is single-page lookups either way. What dies is the *reason*
+I gave for it.
 
 Also note `(not set)` appears in every channel at 0.00 pv/s (Direct 75, Organic 133, AI 47) —
 sessions GA4 could not attribute a landing page to. They depress every channel's mean, so
@@ -952,6 +959,43 @@ coverage                          89.9%   <- ~149 pages without traffic, out of 
 ⚠️ Careful reading: `pages_seen_for_site` counts pages GA4 has *rows* for, which is not identical
 to "indexed". It is a floor on coverage, not a search-index census. The Bing `InIndex` figure is
 the closer instrument for indexation, and it agrees.
+
+
+### E12. REFUTED 2026-09-06 — my own E10 explanation, 20 minutes after committing it (#16)
+
+E10 concluded Direct's 1.62 pv/session was "bookmarks and returning visitors succeeding". The
+DATA block lists new-vs-return segmentation as **not yet wired**, so I measured it rather than
+leaving my own explanation untested. Complete pull, `truncated: false`, 20 of 20 rows:
+
+| channel | new | returning | % returning |
+|---|---:|---:|---:|
+| **Direct** | **2,354** | 396 | **12.8%** |
+| Organic Search | 1,198 | 757 | 31.7% |
+| AI Assistant | 673 | 258 | 24.8% |
+| Referral | 75 | 92 | 40.7% |
+| Organic Social | 30 | 2 | 6.1% |
+
+**Direct is 87% NEW users — the LEAST returning channel on the site.** The bookmark reading is
+dead. E10's explanation is superseded in place above; its measurements and its practical
+conclusion are unaffected.
+
+**What Direct actually is remains UNIDENTIFIED, and I am not going to guess it.** The obvious
+candidate is referrer-stripped AI traffic — this site carries ~25,000 Copilot citations/30d while
+only ChatGPT arrives tagged (1,021 sessions), so Copilot referrals would land exactly here. But
+the landing mix does not settle it: Direct is homepage-heavy (`/` 590, `/browse` 339), which fits
+typed/brand traffic as readily as it fits AI. Do not write "Direct is Copilot" into anything
+without evidence that separates the two.
+
+**The one thing this DOES re-open:** 2,354 new users at a shallow tail is a different proposition
+from returning bookmarkers. New-user shallowness *can* be an activation problem. It is still not
+obviously actionable — Direct's own head pages are the site's deepest — but "returning users
+succeeding" is no longer available as the reason to dismiss it.
+
+**The lesson, and it is the one this session keeps re-learning:** I had a correct measurement, a
+plausible mechanism, and I committed the mechanism as if it were measured. The measurement that
+tested it took one API call and existed the whole time — it was sitting in the project's own
+"not yet wired" list. **When a card offers an explanation for a number, check whether the
+instrument that would test the explanation is one call away.**
 
 
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
