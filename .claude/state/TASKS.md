@@ -1686,3 +1686,39 @@ actual posting happens off-site and is unmeasurable from here. So:
 
 What §E22 does establish: the *share-event* half of that axis is instrumented and at target, so the
 layer can read it today. The *k-factor* half is a real gap and stays open.
+
+### E23 · 2026-09-06 — the crawler block is ONGOING (41% of Direct in the last 5 days), so the site's numbers keep drifting
+
+§E18/§E20 established the block and its effect on the 30d window. The question that decides whether
+anyone needs to act: **is it still happening, or did it pass?** Decomposed the recent daily series
+using the same two measured constants (crawler 1.00 pv/s, human 1.91 pv/s):
+
+```
+day         sess  human  crawler  crawler%
+20260901     117     58       59       50%
+20260902     106     74       32       31%
+20260903      96     43       53       55%
+20260904     108    100        8        7%
+20260905      55      9       46       84%
+
+last 5 days: 482 sessions -> human 284, crawler 198  (41%)
+```
+
+**Ongoing.** So `visitors_best` for this site will keep reading high until the block stops or the
+metrics layer accounts for it, and each week's figure drifts by however much the crawler did that
+week. That is the argument for the Fleet Dashboard card (`mtpdoesf3e5cam`) being worth doing rather
+than filed-and-forgotten.
+
+#### ⚠️ Limitation of the daily decomposition — do not quote single days
+
+2026-08-25 yields **human 99 against 94 sessions, i.e. crawler = −5**, which is impossible. The model
+assumes a fixed human pv/s of 1.91; on a day when real human reading ran deeper than that, it
+over-attributes and the residual goes negative.
+
+So: the **aggregate** decomposition is sound — it reproduced the independently-measured 915 to within
+1.6% (§E20) — and the **per-day** figures are noisy. Use 5-day or 15-day windows. A single day's
+crawler share from this method is not a measurement.
+
+That caveat is the honest counterpart to §E20's positive control: the same model that agrees to 1.6%
+over 30 days produces an impossible value on one day, and both facts are true. Aggregate agreement
+does not license per-element precision.
