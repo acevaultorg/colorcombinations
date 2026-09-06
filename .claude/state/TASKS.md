@@ -3159,3 +3159,88 @@ pipeline as redundant — so its status went to `canceled`, which the loop treat
 as neither success nor failure. The site was already deployed by the newer
 pipeline. **A per-SHA pipeline poll is only valid while that SHA is the tip;
 break on `canceled`/`skipped` as well, or poll the branch rather than the SHA.**
+
+### §E51 — ran the ownership test on both named headroom clusters; both close, nothing to ship (2026-09-06)
+
+`affiliate-team-standard` § THE OWNERSHIP LAW names two colorcombinations
+headroom items and says the deciding question — *who wins the citations we do
+not?* — is "answerable and nobody has asked it". Asked it. Both close, and
+neither closes toward a build.
+
+#### Cluster 1 — `y2k colors` (467 citations, 13–22% share, ~2,398 "unwon"): PEER-SATURATED, do not fund
+
+`WebSearch("y2k colors")` verbatim, result set classified per the rule's table:
+
+```
+colormagic.app       palette tool          <- dedicated archetype peer
+color-hex.com  x2     palette database      <- dedicated archetype peer (two rows)
+y2k-drip.com          shop + palette page   <- dedicated peer
+Wikipedia "Y2K aesthetic"                   <- ON-TOPIC -> contributes to OWNED
+pinterest / fizzymag / zazufeu              <- media
+```
+
+No standards body and no manufacturer, so it is not OWNED in the institutional
+sense — but **three or more dedicated peers whose whole product is this query**
+is the PEER-SATURATED verdict, not the winnable-wedge one. The rule's own
+warning applies exactly: *one* archetype peer is an encouraging existence proof,
+**three is the market**. Same "don't fund CTR" outcome, different reason, and
+only the institutional kind is ever worth revisiting.
+
+Bing volume confirms the scale is small anyway: the whole y2k cluster is
+**≥37 + 16 + 6 + …≈ 90 impressions** (floor) at positions 2–10.
+
+#### Cluster 2 — `color of the year 2026`: NOT owned, and still nothing to ship
+
+Ownership test says **winnable**: Benjamin Moore and Sherwin-Williams rank, but
+each covers **only its own brand** on a cross-brand question — per the rule's
+table that is ✅ not owned. The cross-brand answer is held by independent media
+(younghouselove "Every 2026 Color of the Year", wunderlabel, archdaily), no
+Wikipedia, no institution.
+
+But the build the verdict would license **already exists and is better**:
+
+```
+/trends/color-trends-2026/   title names "Pantone Cloud Dancer + 13 More"
+                             2,446 words · all 14 brands · 2025 comparison
+                             meta-trend section · sources & methodology · FAQ
+                             the site's #1 AI-cited page (6,064 citations/30d)
+Bing:  "color of the year 2026"  impressions >=632 (3rd-largest query)  position 5.0
+```
+
+So this is the **definitional zero-click** shape from `ai-citation-channel`, not
+a title or content defect: the query has a short factual answer, the AI gives it,
+and the citation does not become a click. The only remaining lever is *position*
+(5.0 → top-3), which is authority and internal linking — **not** a title rewrite.
+I did not touch the page: it earns 6,064 citations/30d and changing the fleet's
+most-cited asset on a hunch is the "remedy worse than the disease" trade.
+
+⚠️ **I also could not have judged CTR here even if I wanted to.** `bing-ctr.mjs`
+flags this site CLICK-SELECTED — CTR UNAVAILABLE, and the query feed is
+rank-ordered, so the `632 impressions / 2 clicks` above is a floor on impressions
+and says nothing reliable about rate.
+
+#### The forward-looking check — already done by someone else today
+
+The 2026 cluster is seasonal and will decay as 2027 announcements land
+(Sept–Dec 2026). `/trends/color-trends-2027/` is **already live, 2,069 words,
+`dateModified` 2026-09-06, "Verified 6 September 2026"**, covering the three
+announced picks (Valspar Cottage Door, Dutch Boy Deep Rooted, Behr Grounded),
+who has not announced, and correctly separating Sherwin-Williams *Rewild* as a
+forecast rather than a Color of the Year. Nothing to add. Checked before
+proposing, per `measured-vs-expected` § a fleet flag is a timestamp.
+
+#### 🔴 Instrument: `bing-probe`'s `chars` is CLAMPED at 200,000
+
+I passed `chars=400000` and got back a body of **exactly 200000** characters,
+cut mid-object, which threw `JSONDecodeError` at column 200001. My length guard
+tested `>= 399000` — the wrong threshold — so it printed "truncated? False" one
+line before the parse failed.
+
+Test **length at cap**, never parse-success, and know the cap is 200k not
+whatever you asked for. Repaired by trimming to the last complete object (965 of
+an unknown larger set, 716 distinct queries, ≥5,385 impressions) and every figure
+above is labelled a floor. The sample is also **rank-ordered**, so absent queries
+are unknown rather than zero.
+
+**Outcome: two named headroom items closed as not-fundable, with the evidence,
+instead of a speculative change to the site's most-cited page.**
