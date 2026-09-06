@@ -778,6 +778,64 @@ score-prefix convention leaking into the recorded repo path). The wrong path ret
 is not. Resolve it with `git remote get-url origin`, never from the card.
 
 
+### E8. CHANNEL MAP 2026-09-06 — Bing WMT sees only 26% of the Bing-index channel here
+
+The DATA block flags traffic-source segmentation as "not yet wired", and the numbers did not add
+up: 4,517 human visitors against 519 Bing + 4 Google clicks. So ~4,000 humans/month were arriving
+from something nobody had identified. Measured (GA4, 30d, `truncated:false` on the channel pull):
+
+| channel | sessions | share | pv/session |
+|---|---:|---:|---:|
+| Direct | 3,116 | 45.6% | 1.62 |
+| Organic Search | 2,380 | 34.9% | **2.99** |
+| **AI Assistant** | **1,037** | **15.2%** | **2.92** |
+| Referral | 226 | 3.3% | 2.41 |
+| Unassigned / Organic Social | 68 | 1.0% | — |
+
+**Direct is NOT crawler-shaped here** — s/u 1.29, pv/s 1.62, against the 1.00/1.00 signature. That
+matches this site's standing 0.0%-crawler flag, so these are real people and the denominator is
+sound. (Worth stating explicitly: on most fleet sites a 45.6% Direct share would be the first
+thing to distrust.)
+
+**🔴 The finding: Bing Webmaster Tools massively under-reports this site's search channel.**
+
+```
+organic by source          sessions
+  duckduckgo                   881   42.7%
+  bing                         696   33.7%
+  ecosia.org                   387   18.8%
+  yahoo                         43    2.1%
+  ------------------------------------------
+  Bing-index family          2,007
+  google                        19    0.9%   <- essentially zero
+
+Bing WMT reports              519 clicks
+=> WMT sees 25.9% of the Bing-index channel; the channel is ~3.9x its console view.
+```
+
+DuckDuckGo **alone** (881) outdraws Bing itself (696). DDG, Ecosia and Yahoo are all served from
+the Bing index and none of them appear in Bing Webmaster Tools — the same blindness recorded for
+fitmylens in `fleet-session-control`, but far larger here (3.9x vs 1.47x there). **Per-site, not
+inheritable: measure it rather than carrying either multiplier across.**
+
+**What this changes:**
+1. **The link-concentration test (§ E5) is ~3.9x more valuable than its WMT baseline implies.** A
+   position gain on `color of the year 2026` moves DDG + Bing + Ecosia + Yahoo together.
+2. **Google is confirmed worthless here — 19 sessions, position 58.3.** Do not spend effort on
+   Google rank on this site. This upgrades the project card's existing note from a CTR observation
+   to a session-count measurement.
+3. **The AI channel is ChatGPT, specifically** — `chatgpt.com / ai-assistant` = 1,021 of the 1,037
+   AI sessions, at 2.92 pv/session (as deep as organic). Not a generic "AI" bucket.
+
+⚠️ **Caveat:** the source/medium pull was `truncated: true` (60 of 72 rows). The 8 organic sources
+above are the head, so the Bing-family total is a **floor** — the missing tail can only raise it,
+never lower it. The 3.9x is therefore conservative.
+
+⚠️ Do not read the 2,380 GA4 "Organic Search" against 2,007 summed sources as a discrepancy — the
+channel pull and the source pull are different queries over different row sets, and the latter was
+truncated. Compare like with like.
+
+
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
 
 § E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
