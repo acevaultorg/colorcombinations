@@ -1399,3 +1399,68 @@ The hypothesis was wrong. Writing the three kill criteria into the card **before
 made the refutation fast and unambiguous — with a cosine spread of 0.004 and a passing control at
 0.88+, there was no room to talk myself into a resemblance. That is the matcher trap in
 `positive-control-before-absence` not firing, because the control was chosen first.
+
+### E19 · 2026-09-06 — 47.7% of the sitemap is a page type with no demand, and it is NOT an indexation blocker (measured, not inferred)
+
+Follow-on from §E18. The `/colors-that-go-with/` block that turned out to be crawler traffic is not a
+small corner of the site:
+
+```
+sitemap URLs (live, sitemap-0.xml)        1474
+  /colors-that-go-with/                    703   47.7%
+  /palettes/            (control)          378   25.6%
+```
+
+**Nearly half the site's indexable surface is one page type.** What it earns:
+
+```
+Bing impressions (30d)          17   across 11 pages   (site total 18,975)
+human sessions, ALL sources    ~68   (chatgpt 34, bing 18, ddg 9, ecosia 3, yandex 1)
+crawler sessions               915   (the §E18 block, 1.00 pv/s, 1.00 s/u)
+```
+
+0.1% of the site's search impressions for 47.7% of its URLs.
+
+#### The question that decides what to do — answered
+
+Per `realized-demand-discipline`, a large built asset with no traffic is a **blocked asset** (cheap
+unblock, real ceiling) *or* genuinely demandless (a valuable finding that prevents work). Those need
+opposite responses, and the rule is explicit that you must name the blocker rather than assume.
+Measured it with `GetCrawlStats`:
+
+```
+InIndex        1940      <- vs 1474 sitemap URLs = 131.6%
+CrawledPages    780
+Code2xx        2161   Code301 1   Code302 0   Code4xx 15   Code5xx 0
+InLinks           9
+```
+
+**Bing has MORE pages indexed than the sitemap lists.** There is no indexation blocker, no crawl
+error wall (15 4xx out of 2,161), nothing to unblock. The pages are indexed and nobody searches for
+them. ⇒ **Genuinely demandless.** That is the finding, and per `realized-demand-discipline` a
+measured "there is nothing here" is worth more than the work it prevents.
+
+`InLinks = 9` independently reconfirms §E3 — external authority (9 inbound vs a fleet sibling's 983)
+remains this site's actual constraint, and it is not something page-level work reaches.
+
+#### Instrument note — a control caught my own bad call
+
+First `GetCrawlStats` attempt returned a 53-byte `{"ErrorCode":8,"Message":"ERROR!!! InvalidParameter"}`
+and `params: "(none)"`. Before reading that as "this site has no crawl data", I ran the same call
+against **fitmylens** — which failed **identically**. So the fault was mine: the method takes
+`siteUrl=`, not the `site=` the other endpoints use. With `siteUrl=https://colorcombinations.org/`
+it returned 28,809 bytes and 91 rows. Also confirmed: **rows are NOT date-sorted** — the latest row
+was not `rows[0]`, so sort by the epoch inside `/Date(...)/ ` before reading "latest".
+
+Without the cross-site control this would have been filed as a false absence about the site.
+
+#### What this does and does not license
+
+- ✅ It **closes** the "is this page type a blocked asset?" question. Do not re-open it without new
+  evidence; it is indexed and unsearched.
+- ❌ It does **not** license a prune. The traffic veto (`check-safe-to-delete.mjs`) is mandatory
+  before any noindex/de-sitemap, and separately these pages may carry AI citations — this site's
+  actual strength — which no search metric here measures. `/colors-that-go-with/` took 34 ChatGPT
+  sessions, so the AI channel does reach it.
+- ⚠️ It **does** mean: do not build more of this page type, and do not count its 703 URLs as
+  progress toward the pageviews goal.
