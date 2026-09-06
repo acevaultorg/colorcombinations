@@ -1839,3 +1839,87 @@ site's only growing human channel (AI +35.4%). Feeds existing gate mtp835nfohbpe
 
 Net: a measured negative that prevents work on the site's #1 page. 8-for-8 on this fleet for "the
 obvious content/title fix, refuted on measurement."
+
+### E26 — the IndexNow manifest was git-tracked but never ADVANCED; next deploy would have announced 94% of the sitemap
+
+Closes card mtp18dxy3lsx9i, which asked for CI IndexNow wiring and named manifest persistence as the
+blocker. Two corrections came out of checking it.
+
+**1. The card's blocker was a false absence.** It concluded the manifest is untracked from
+`git ls-files | grep -i changed-urls` → zero results. That grep is for the wrong filename. The file
+is `.indexnow-manifest.json`, and it has been git-tracked since 46b11cd (2026-09-04). `.gitignore`
+does list `.changed-urls.json` — a different, optional producer file the script treats as input #1.
+So the wiring was already safe to do, and a prior leg had already shipped it (936756e). The lease
+expired before `complete_task`, which is why the card was still open.
+
+**2. The real defect was one layer down, and the card's own instruction is what found it** —
+*"verify by observing an actual deploy's submitted URL count, not by reasoning about it."*
+CI always had A baseline; it never had an ADVANCING one. Each job wrote a refreshed manifest into
+the container and discarded it, so the baseline stayed frozen at its commit date while content
+shipped over it. Measured, 35 `src/` commits past the baseline (incl. `21ad1ca` which touches all
+348 colour pages):
+
+```
+sitemap URLs 1,474 · manifest entries 1,471
+  unchanged (matches manifest)     54
+  genuinely CHANGED             1,386
+  NEW (absent from manifest)        3
+  => next deploy submits ~1,389 of 1,474  (94%)
+```
+
+Once is defensible — those pages really did change. The defect is that it repeats on EVERY deploy,
+because nothing advances the baseline. That is the batch-abuse pattern `scripts/indexnow-ping.mjs`
+exists to prevent, reached from the other side. It matters here specifically: Bing is this site's
+live channel (519 clicks vs 4 Google/30d) and ChatGPT grounds on the Bing index.
+
+**Fix (6abe199):** GitLab CI `cache:` keyed by `$CI_COMMIT_REF_SLUG` on `.indexnow-manifest.json`.
+Cache restores AFTER checkout, so the advanced manifest overwrites the git baseline; the job saves
+the refreshed one. Chosen over a git write-back because that needs a push credential this job does
+not have (minting one is an operator decision). **Cannot regress:** a cache miss leaves the
+git-tracked baseline in place — exactly today's behaviour.
+
+#### Three instruments that lied on the way, all caught by controls
+
+- **`git ls-files | grep changed-urls`** — the card's own blocker. Right command, wrong filename.
+- **`INDEXNOW_DRY_RUN=1` locally reported "1 URL"** and I nearly filed that as "verified, changed-only
+  works." It was an artifact: the script reads `dist/sitemap-0.xml`, my local `dist/` has no sitemap
+  at all (incomplete build — 2,102 html vs the CI floor's 2,128), so it fell through to the single
+  `PRIORITY_URLS` entry. A reassuring number produced by a blind instrument.
+- **Live-page hashing is unusable on this site.** Three fetches of `/about/` gave three different
+  `<main>` hashes at identical byte length — Cloudflare rotates `data-cfemail` email-obfuscation
+  tokens per request. Any live-vs-build comparison here is noise. Only build-output-vs-manifest is
+  valid. Caught only by fetching the same page three times before trusting one comparison.
+
+Also worth noting: the script's own header already said the job log proves nothing
+(*"a full submit and a correct submit produce near-identical logs"*) and prescribed the behavioural
+dry run. I spent a round chasing the CI job trace before reading that — and the trace was 403 anyway
+(`insufficient_granular_scope`, needs `Job: Read`; `ci/lint` likewise needs `CI Config: Validate`).
+Two more instances of the granular-PAT gap already recorded for `Merge Request: Merge`.
+
+#### Verification status — deliberately partial, and the gap is named
+
+**Verified:** YAML parses and GitLab accepted the `cache:` config; pipeline `2823866911` on `6abe199`
+ran a real build and reached **success in 171s**; site live after deploy (`/`, `/glossary/`,
+`/colors-that-go-with/` all 200); money path intact — a tokenless `/go/b/0714873896?c=book` probe
+returns **302 to bare root** (path stripped ⇒ the gate rejecting, not a canonical redirect), with
+`/shop/` at 54 `/go/` links as the positive control, and the leak detector self-tested against a
+synthetic tagged URL first.
+
+**NOT verified — the one thing the card actually asked for.** It said to confirm by *observing an
+actual deploy's submitted URL count*. I could not: reading a job trace needs a PAT with `Job: Read`,
+which this token lacks (403 `insufficient_granular_scope`), and there is no Chrome MCP on this lane
+to use the documented session-cookie path. So the cache round-trip — that run N+1 restores the
+manifest run N saved — is **reasoned, not measured**. I am not claiming it.
+
+What makes shipping it anyway defensible is the failure direction, not confidence: a cache miss
+leaves the git-tracked baseline in place, which is precisely today's behaviour. The change can be
+inert; it cannot be worse. That asymmetry is the whole argument.
+
+**The one command that closes it**, for whoever next has the scope or a browser — read the second
+deploy's log and look at the `changed:` figure:
+
+```
+Sitemap+priority: 1474 URLs · changed: N · via content-hash
+  N ~= 0-few  -> cache round-trip works, changed-only restored
+  N ~= 1,389  -> cache is NOT persisting; the baseline is still frozen
+```
