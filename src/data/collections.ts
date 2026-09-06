@@ -1856,13 +1856,16 @@ export const collections: Collection[] = [
     title: "Y2K Color Palettes",
     tagline: "Bubblegum pink, cyber lilac, sky blue — the early-2000s revival, historically grounded.",
     description:
-      "The Y2K aesthetic that designers have been reaching for since 2022 isn't actually a 2000s thing — it's an emotional shorthand for optimism, playfulness, and a specific register of digital-era color. The surprising thing is that Wada's 1933 catalog already contained those combinations, pulled from flower dyes and glazed ceramics rather than plastic and pixels. 'Nadeshiko' (撫子 — fringed pink) is the exact hot-pink of a 2001 flip phone. 'Sora' (空 — sky) is Windows XP blue filtered through a Kyoto summer. 'Fuji' (藤 — wisteria) is the early-iMac translucent lilac. 'Sakura' (桜) beside bright pop green is the TRL-era color moment pulled back to its flower-pigment source. These palettes are reference material for nostalgia-driven packaging, streetwear capsule collections, beauty and skincare relaunches, playful digital products, and any brand that wants the energy of 2001 without the cringe.",
+      "The Y2K aesthetic that designers have been reaching for since 2022 isn't actually a 2000s thing — it's an emotional shorthand for optimism, playfulness, and a specific register of digital-era color. The surprising thing is that Wada's 1933 catalog already contained those combinations, pulled from flower dyes and glazed ceramics rather than plastic and pixels. 'Nadeshiko' (撫子 — fringed pink) is the exact hot-pink of a 2001 flip phone. 'Sora' (空 — sky) is Windows XP blue filtered through a Kyoto summer. 'Fuji' (藤 — wisteria) is the early-iMac translucent lilac. 'Sakura' (桜) beside bright pop green is the TRL-era color moment pulled back to its flower-pigment source. These palettes are reference material for nostalgia-driven packaging, streetwear capsule collections, beauty and skincare relaunches, playful digital products, and any brand that wants the energy of 2001 without the cringe. Most people arrive with a specific canon in mind \u2014 bubblegum and hot pink, icy and electric blue, translucent lilac, lime and pop green, plus chrome and metallic silver \u2014 and Wada's plates answer nearly all of it: Nadeshiko (#EBA6B4) is the bubblegum, Mizu (#B4D6E5) and Sora (#7AB2D3) the icy and electric blues, Fuji (#B5A6C9) the lilac, Wakatake the pop green. The metallic register is here too, in the silver pairings \u2014 Murasaki-gin (\u7d2b\u9280) and Hanada-gin (\u82b1\u7530\u9280) each set a colour against #BCBCBE \u2014 and in the gold of Shu-kuro-kin (\u6731\u9ed2\u91d1). The one thing 1933 cannot supply is chrome as a specular render: that is a screen effect rather than a pigment, and no flower dye has an equivalent. Everything else the aesthetic reaches for turns out to have a pre-digital ancestor, which is the whole point of this collection.",
     keywords: [
       "y2k color palette",
       "y2k aesthetic colors",
+      "y2k colors",
       "2000s color palette",
       "early 2000s color scheme",
       "cyber pink color palette",
+      "y2k metallic silver palette",
+      "y2k pastel colors",
     ],
     curatedSlugs: [
       "nadeshiko-mizu",
@@ -1871,6 +1874,8 @@ export const collections: Collection[] = [
       "sora-shu",
       "ao-shiro",
       "daidai-kon",
+      "murasaki-gin",
+      "hanada-gin",
     ],
     match: (p) =>
       p.moods.includes("playful") &&
