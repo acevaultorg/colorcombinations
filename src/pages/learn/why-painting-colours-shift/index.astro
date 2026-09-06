@@ -17,27 +17,21 @@ const jsonLd = {
   mainEntityOfPage: new URL("/learn/why-painting-colours-shift/", Astro.site).href,
 };
 
+/**
+ * FAQ — SINGLE SOURCE for the FAQPage schema AND the visible section below.
+ * Schema whose Q&A renders nowhere breaches Google's structured-data guidelines,
+ * and with FAQ rich results deprecated (2026-05-07) the only remaining value is
+ * AI extraction — which reads rendered content. §E46/§E47/§E48/§E49.
+ */
+const shiftFaq: { q: string; a: string }[] = [
+  { q: "Do the colours in famous paintings change over time?", a: "Yes, and it is measurable. Conservation science has documented chrome yellow browning in van Gogh's Sunflowers, zinc yellow darkening to ochre in Seurat's La Grande Jatte, and cadmium yellow turning off-white in Munch's The Scream. A palette sampled from a painting today is the surface as it now stands, not the colours the artist mixed." },
+  { q: "Why did nineteenth-century yellows fail so often?", a: "The bright yellows that became available to painters in the nineteenth century were new industrial chemistry — chromates and sulfides adopted for their intensity before their long-term stability was understood. Chrome yellow, zinc yellow and cadmium yellow each degrade by a different mechanism, and all three were widely used at exactly the moment modern painting became most interested in colour." },
+];
+
 const faq = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "Do the colours in famous paintings change over time?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes, and it is measurable. Conservation science has documented chrome yellow browning in van Gogh's Sunflowers, zinc yellow darkening to ochre in Seurat's La Grande Jatte, and cadmium yellow turning off-white in Munch's The Scream. A palette sampled from a painting today is the surface as it now stands, not the colours the artist mixed.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Why did nineteenth-century yellows fail so often?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "The bright yellows that became available to painters in the nineteenth century were new industrial chemistry — chromates and sulfides adopted for their intensity before their long-term stability was understood. Chrome yellow, zinc yellow and cadmium yellow each degrade by a different mechanism, and all three were widely used at exactly the moment modern painting became most interested in colour.",
-      },
-    },
-  ],
+  mainEntity: shiftFaq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
 };
 ---
 
@@ -208,6 +202,18 @@ const faq = {
       <li><a href="https://www.nature.com/articles/s40494-020-00364-5" rel="noopener" target="_blank">“Out of the blue: Vermeer's use of ultramarine in <em>Girl with a Pearl Earring</em>” — <em>npj Heritage Science</em></a></li>
     </ul>
 
+    <section class="section shift-faq" aria-labelledby="shift-faq-heading">
+      <h2 id="shift-faq-heading">Common questions</h2>
+      <dl class="shift-faq__list">
+        {shiftFaq.map((f) => (
+          <div class="shift-faq__item">
+            <dt class="shift-faq__q">{f.q}</dt>
+            <dd class="shift-faq__a">{f.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
     <PaintThisPalette
       title="Mixing these yourself"
       intro="Modern cadmium-hue and chrome-hue replacements are stable — they are formulated to be the colours these paintings used to be."
@@ -217,6 +223,12 @@ const faq = {
 </BaseLayout>
 
 <style>
+  /* FAQ (§E49) — renders `shiftFaq`, same array as the FAQPage schema. */
+  .shift-faq__list { margin: 0; }
+  .shift-faq__item + .shift-faq__item { margin-top: 1rem; }
+  .shift-faq__q { font-weight: 600; }
+  .shift-faq__a { margin: 0.3rem 0 0; line-height: 1.6; }
+
   .crumbs { font-size: .8rem; opacity: .7; margin-bottom: 1.5rem; display: flex; gap: .4rem; flex-wrap: wrap; }
   .crumbs a { color: inherit; }
   .prose { max-width: 68ch; }

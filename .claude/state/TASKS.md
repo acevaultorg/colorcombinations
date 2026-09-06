@@ -2906,3 +2906,77 @@ template, so the four 4/4 readings are a measurement and not a constant-true.
 `/palettes/`). Remaining: 702 `/colors-that-go-with/[color]/[context]`, 69
 `/collections/` (**deferred until after 2026-10-06** — that template is inside
 the §E5 test and a content change would confound it), ~11 standalone pages.
+
+### §E49 — 705 more schema-only FAQs rendered, and a CORRECTION to the §E46 count (2026-09-06)
+
+Third pass on the §E46 defect, plus a measured correction to my own earlier
+audit.
+
+**Shipped `2cac3c5`** (704 pages) + the `/learn/` straggler:
+- `colors-that-go-with/[color]/[context]` — **702 pages**. `faq` was already a
+  frontmatter const feeding `mainEntity`; only the visible block was missing.
+  Tailwind classes here, matching the sibling `index.astro` that has rendered
+  its FAQ all along — the leaf was the one template that never did.
+- `color-psychology` (1) · `tools/color-blindness-simulator` (1) ·
+  `learn/why-painting-colours-shift` (1) — inline Q&As extracted into
+  `cpsyFaq` / `cvdFaq` / `shiftFaq` so schema and visible text share one source.
+
+**Verified live** (4 leaves drawn at random from the live sitemap):
+
+```
+/colors-that-go-with/mint/clothes/            http=200 schema=3 rendered=3 junk=0
+/colors-that-go-with/emerald-green/front-door/ http=200 schema=3 rendered=3 junk=0
+/colors-that-go-with/cloud-dancer/cabinets/   http=200 schema=3 rendered=3 junk=0
+/colors-that-go-with/yellow/living-room/      http=200 schema=3 rendered=3 junk=0
+/color-psychology/                            http=200 schema=4 rendered=4 junk=0
+/tools/color-blindness-simulator/             http=200 schema=2 rendered=2 junk=0
+control /collections/boho/  (untouched)       http=200 schema=4 rendered=0 junk=0
+control /colors/kurenai/    (§E47)            http=200 schema=4 rendered=4 junk=0
+```
+
+#### 🔴 CORRECTION — the "~11 standalone pages" tail in §E46 was OVERCOUNTED
+
+My audit checker did an exact substring match of each schema question against
+the stripped page text. **It does not decode HTML entities.** Rendered HTML
+carries `What&#39;s the difference…` while the JSON-LD carries `What's the
+difference…`, so every question containing an apostrophe read as MISSING on a
+page that renders it perfectly.
+
+Caught because the failures were suspiciously patterned — *every* MISS
+contained an apostrophe and *every* OK on the same page did not. Confirmed by
+reading the raw bytes at both sites:
+
+```
+JSON-LD : "name":"What\'s the single best gift for someone who loves color theory?"
+rendered: <summary …>What&#39;s the single best gift for someone who loves color theory?</summary>
+```
+
+Re-run with `html.unescape` + NFKC + curly-quote folding, controlled in both
+directions (`/colors-that-go-with/beige/` must read OK, `/collections/boho/`
+must read SCHEMA-ONLY — both did):
+
+| page | before (buggy) | after (correct) |
+|---|---|---|
+| `/gift-guide/` | 2 of 4 | **4 of 4 — fine all along** |
+| `/material-design/` | 5 of 6 | **6 of 6** |
+| `/accessibility/color-blind-tools/` | 5 of 6 | **6 of 6** |
+| `/trends/color-trends-2027/` | 4 of 5 | **5 of 5** |
+| `/learn/why-painting-colours-shift/` | 0 of 2 | 0 of 2 — genuinely broken |
+
+So **9 of the ~11 standalone pages were never defective**; only 3 were
+(`color-psychology`, `color-blindness-simulator`, `why-painting-colours-shift`),
+and all 3 are now fixed. The large template blocks (`/colors/`, `/palettes/`,
+`[context]`, `/collections/`) are unaffected by this correction — those were
+confirmed by *reading the templates* (no FAQ markup in the body at all), not by
+the string matcher.
+
+Generalisable: an exact-substring check against rendered HTML is blind to
+entity encoding and to typographic quote substitution, and it fails in the
+alarming direction — it manufactures defects on healthy pages. Decode and
+normalise before comparing, and treat a MISS/OK split that correlates with a
+punctuation character as an instrument fault rather than a finding.
+
+**Running total: 1,287 of 1,364 fixed.** Remaining: **69** `/collections/[slug]`
+pages, deliberately deferred until after **2026-10-06** — that template is
+inside the running §E5 link-concentration test and a content change would
+confound the read. Nothing else is outstanding.
