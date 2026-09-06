@@ -199,8 +199,10 @@ const jsonLd = [
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: "Trends", item: `${siteUrl}trends/color-trends-2027/` },
-      { "@type": "ListItem", position: 3, name: "Colors of the Year 2027" },
+      // No position-2 "Trends" crumb: there is no /trends/ hub (it 404s), so the middle
+      // crumb pointed at THIS page — a self-referential breadcrumb, which is malformed.
+      // Home > leaf is correct until a real /trends/ index exists. Fixed 2026-09-06.
+      { "@type": "ListItem", position: 2, name: "Colors of the Year 2027" },
     ],
   },
 ];
