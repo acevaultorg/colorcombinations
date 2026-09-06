@@ -2651,3 +2651,49 @@ searches", the exact opposite of the truth.
 **Still zero after this ship, and honestly so:** `Pale Purplish Vinaceous` (4) — genuine dataset
 absence, already documented; `fennel` (3); `Коричневый` (2, Russian "brown" — no i18n on this
 site); bare `#` (3). None is fixable by indexing.
+
+### E44 — REFUTED: "87.5% of amazon_click events are unattributed" (my own, ~10 minutes old) (2026-09-06)
+
+Chased it because the fleet feed's `amazon_clicks_by_position_30d` reads
+`{book:144, tool:25, reviewprobe:1}` = **170 against `amazon_clicks_30d: 366`**, which looks
+exactly like half the clicks losing their attribution. GA4 appeared to confirm it:
+
+```
+customEvent:shelf   203 '(not set)'   20 'book'    9 'tool'     (232 events, 30d)
+customEvent:dest    203 '(not set)'   29 'amazon'
+```
+
+**The control is what killed it.** `dest` is `(not set)` on the *same* 203 — so it was never
+"`shelf` is unset on some links", it was "these events carry no custom params **at all**", which
+points at a second emitter rather than a missing attribute. Splitting by date settled it:
+
+```
+date        (not set)   book   tool
+2026-08-07 .. 09-03        ALL      0      0
+2026-09-04                   0      7      6
+2026-09-05                   0     13      3
+```
+
+A clean cutover on **2026-09-04**, no mixing on either side. That is GA4 custom dimensions
+behaving exactly as documented: **registration is FORWARD-ONLY and never backfills**, so every
+event collected before the dimension existed reads `(not set)` forever. Nothing is broken; the
+`(not set)` block ages out of the 30-day window on **2026-10-04**.
+
+**Two things I nearly filed and should not have.**
+
+1. **`cta_position` "missing".** `/ga4-dimensions` reports it absent on this property — but that
+   endpoint audits a *fixed fleet-standard* request list (`cta_position, asin, dest, page`). This
+   site emits `{page, asin, dest, shelf}` from `public/amazon-track.js`, and all four are
+   registered. `cta_position` is not emitted anywhere in `src/` or `public/`, so registering it
+   would create a permanently empty dimension. **Read the emitter before acting on that audit.**
+2. **The second-emitter hypothesis.** `BaseLayout.astro` does carry a generic `[data-event]`
+   delegated handler, and it already excludes `amazon_click` explicitly ("already dual-sunk by
+   /amazon-track.js — don't double-count"). Reading it, rather than inferring from the shape of
+   the numbers, is what ruled it out.
+
+**The one thing worth carrying forward:** until 2026-10-04, both the GA4 shelf split and the
+fleet's `amazon_clicks_by_position_30d` describe a partial window and will read as a large
+unattributed majority. That is the same class the feed already flags for `ga4_key_events_30d`
+("NOT a 30d figure — it covers 2 of 30 days"). Do not re-derive "attribution is broken" from it,
+and do not rank surfaces on it before that date — the honest read of 2026-09-04..05 is
+**book 20 / tool 9**, on n=29.
