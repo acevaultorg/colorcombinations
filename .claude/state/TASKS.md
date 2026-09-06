@@ -1602,3 +1602,73 @@ So the type is demandless *in aggregate* with a small real tail, not uniformly d
 - The honest middle option nobody has costed: prune only the 138 never-seen URLs. That is 19.6% of
   the type and 9.4% of the sitemap — and per §E20 the site's constraint is external authority
   (`InLinks = 9`), which pruning does not touch. **Measure the benefit before doing it.**
+
+### E22 · 2026-09-06 — the "Refer / advocacy" axis is NOT unwired: the site emits it, the LAYER doesn't read it. Measured 2.95%. Plus an instrument trap that gave me a 3.7×-wrong number
+
+Last runnable item on the DATA block's "not yet wired" list that does not need Chrome
+(`Refer: k-factor / shares / embeds / TikTok→site`). It turns out to be a labelling problem, not a
+measurement gap.
+
+#### The site has been emitting advocacy events all along
+
+GA4 event inventory, 30d, 26/26 rows `truncated:false`:
+
+```
+share:        download_share_card 157 · share_pinterest 8 · share_download 4
+              quick_share_twitter 3 · share_copy 1 · share_twitter 1      = 174
+take-away:    export_click 48 · copy_hex_all 45 · GradientCopy 3          =  96
+(context)     amazon_click 232 · Search 342 · SearchNoResults 186 · explorer_use 612
+```
+
+Mechanism, read rather than assumed: components carry `data-event="share_pinterest"` etc.
+(`ShareActions.astro:103,132`, `ShareBar.astro:87`, `palettes/[slug].astro:425,442`) and a delegated
+emitter in `BaseLayout.astro:396` fires `gtag('event', name, {page: location.pathname, ...props})`.
+Grepping `ShareActions.astro` for `gtag` returns nothing — the emitter is one level up, which is why
+a component-local grep would have produced a false "not instrumented".
+
+So **"not yet wired" describes the fleet dashboard's metric coverage, not the site.** The data
+exists; the layer isn't reading it. That makes this a much cheaper dashboard win than "build to light
+up" implies — it is a read, not a build.
+
+#### Measured
+
+| | value | reference |
+|---|--:|---|
+| share-per-session | **2.95%** (174 / 5,905 human sessions) | `aceusergrowth` Part 12 target ≥3% |
+| incl. take-aways | 4.57% (270 / 5,905) | — |
+| amazon_click rate | 3.93% (232 / 5,905) | — |
+
+Essentially **at** the advocacy target. Not a gap, and not worth funding.
+
+`download_share_card` at 157 is 90% of all share events — the Canvas-drawn 1200×630 PNG. The social
+buttons (pinterest 8, twitter 3+1, copy 1) are near-zero. Per `aceusergrowth` Part 12 V-F1 the share
+card is the highest-k-factor affordance, so the mix is the *right* one; do not "fix" the social
+buttons.
+
+#### 🔴 The instrument trap — I nearly published 6.89%
+
+To get the denominator I called `/ga4-probe` with **metrics and no `dims`**, expecting one total row.
+It returned `sessions=2524`. I computed 174/2524 = **6.89%** and was about to write it down.
+
+**`/ga4-probe` injects `dims=pagePath` when you pass none, with a default `limit: 15`.** The echoed
+`request` shows it plainly. So `rows[0]` was the **homepage** — 2,524 sessions for `/` — and I read a
+single page's number as the site total. The output is a plausible integer with no error and no flag.
+
+Real denominator, built by two independent routes:
+
+```
+date x channel        6820 sessions   15948 pageviews
+landingPage x source  6807 sessions   15948 pageviews
+agreement                0.2%             0.0%
+```
+
+Corrected: 174 / (6,820 − 915 crawler) = **2.95%**. The figure I nearly shipped was **3.7× too high**.
+
+**Standing rule for this endpoint:** it has no "site total" mode. To get a site aggregate, pull a
+dimension you can sum and sum it — and cross-check with a second dimension, because a single summed
+pull cannot detect its own truncation. Never read `rows[0]` of a dimensionless call as a total.
+
+That is the third time tonight the same shape has bitten: §E19 (guessed field names on `/bing-detail`
+→ division by zero), §E21 (constructed a URL that didn't exist → false "safe to delete"), and now a
+default dimension I didn't ask for. **Print the echoed `request` before trusting any figure from this
+endpoint.**
