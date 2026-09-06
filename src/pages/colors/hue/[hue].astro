@@ -48,6 +48,12 @@ interface HueMeta {
    * /learn/japanese-color-glossary/ = "Japanese Color Glossary: 20 Traditional
    * Named Colors", /colors-that-go-with/{hue}/ = "Colors That Go With …".
    * See TaskPrio mtpl97zgpdxt7e.
+   *
+   * LENGTH BUDGET: the layout appends " — The Dictionary of Color
+   * Combinations" (39 chars), and Bing flags a <title> past ~95 (see
+   * bing-recommendations-autopilot.md rule 50). Keep metaTitle <= 56 chars.
+   * First shipped form ("… Traditional Color Names & Palettes") rendered
+   * 95-97 on yellow/purple/neutral and had to be shortened same-leg.
    */
   metaTitle: string;
   shortTitle: string;
@@ -59,7 +65,7 @@ interface HueMeta {
 const HUE_META: Record<DominantHue, HueMeta> = {
   red: {
     title: "Red Color Combinations",
-    metaTitle: "Japanese Red — Traditional Color Names & Palettes",
+    metaTitle: "Japanese Red — Traditional Names & Palettes",
     shortTitle: "Red",
     lede: "Crimson, vermillion, madder — the most historically loaded reds in Japanese tradition.",
     accentHex: "#9A2A2A",
@@ -68,7 +74,7 @@ const HUE_META: Record<DominantHue, HueMeta> = {
   },
   orange: {
     title: "Orange Color Combinations",
-    metaTitle: "Japanese Orange — Traditional Color Names & Palettes",
+    metaTitle: "Japanese Orange — Traditional Names & Palettes",
     shortTitle: "Orange",
     lede: "Persimmon, tangerine, amber — Japanese orange between red ceremony and yellow sunlight.",
     accentHex: "#C45C2A",
@@ -77,7 +83,7 @@ const HUE_META: Record<DominantHue, HueMeta> = {
   },
   yellow: {
     title: "Yellow Color Combinations",
-    metaTitle: "Japanese Yellow — Traditional Color Names & Palettes",
+    metaTitle: "Japanese Yellow — Traditional Names & Palettes",
     shortTitle: "Yellow",
     lede: "Yamabuki, ukon, kariyasu — luminous yellows from mustard to pale gold.",
     accentHex: "#D4A017",
@@ -86,7 +92,7 @@ const HUE_META: Record<DominantHue, HueMeta> = {
   },
   brown: {
     title: "Brown Color Combinations",
-    metaTitle: "Japanese Brown — Traditional Color Names & Palettes",
+    metaTitle: "Japanese Brown — Traditional Names & Palettes",
     shortTitle: "Brown",
     lede: "Tobi, kogecha, kuri — rich earth-tones from kite-brown to burnt cedar.",
     accentHex: "#7B4A2A",
@@ -95,7 +101,7 @@ const HUE_META: Record<DominantHue, HueMeta> = {
   },
   pink: {
     title: "Pink Color Combinations",
-    metaTitle: "Japanese Pink — Traditional Color Names & Palettes",
+    metaTitle: "Japanese Pink — Traditional Names & Palettes",
     shortTitle: "Pink",
     lede: "Sakura, nadeshiko, usubeni — the full nuanced range of Japanese pink.",
     accentHex: "#E8A0A0",
@@ -104,7 +110,7 @@ const HUE_META: Record<DominantHue, HueMeta> = {
   },
   green: {
     title: "Green Color Combinations",
-    metaTitle: "Japanese Green — Traditional Color Names & Palettes",
+    metaTitle: "Japanese Green — Traditional Names & Palettes",
     shortTitle: "Green",
     lede: "Moegi, matsuba, tokiwa — botanical greens from young bamboo to evergreen.",
     accentHex: "#3A6B45",
@@ -113,7 +119,7 @@ const HUE_META: Record<DominantHue, HueMeta> = {
   },
   blue: {
     title: "Blue Color Combinations",
-    metaTitle: "Japanese Blue — Traditional Color Names & Palettes",
+    metaTitle: "Japanese Blue — Traditional Names & Palettes",
     shortTitle: "Blue",
     lede: "Sora, asagi, hanada, ruri, kon — the full Japanese blue spectrum.",
     accentHex: "#1A3C6B",
@@ -122,7 +128,7 @@ const HUE_META: Record<DominantHue, HueMeta> = {
   },
   purple: {
     title: "Purple Color Combinations",
-    metaTitle: "Japanese Purple — Traditional Color Names & Palettes",
+    metaTitle: "Japanese Purple — Traditional Names & Palettes",
     shortTitle: "Purple",
     lede: "Murasaki, kikyo, fuji — purples from imperial robe to wisteria petal.",
     accentHex: "#5A2A7A",
@@ -131,7 +137,7 @@ const HUE_META: Record<DominantHue, HueMeta> = {
   },
   neutral: {
     title: "Neutral Color Combinations",
-    metaTitle: "Japanese Neutrals — Traditional Color Names & Palettes",
+    metaTitle: "Japanese Neutrals — Traditional Names & Palettes",
     shortTitle: "Neutral",
     lede: "Gofun, kinari, nezumi, sumi, gin — the chalk-to-ink spectrum of Japanese neutrals.",
     accentHex: "#8A8A8A",
