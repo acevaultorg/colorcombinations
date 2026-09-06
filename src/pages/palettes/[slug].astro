@@ -220,6 +220,44 @@ const FIRST_PUBLISHED_LABEL = new Date(SITE_FIRST_PUBLISHED).toLocaleDateString(
 });
 const BUILD_DATE = new Date().toISOString();
 
+/**
+ * FAQ — SINGLE SOURCE for both the FAQPage schema below AND the visible <section>
+ * near the bottom of this page. They must not drift apart.
+ *
+ * Why (2026-09-06, §E46/§E47/§E48): this schema was built inline here and rendered
+ * NOWHERE. Measured across all 1,529 crawled pages, 1,364 shipped FAQPage JSON-LD
+ * whose Q&A appeared in no visible HTML — these 378 palette pages among them.
+ * Google's general structured-data guidelines require markup to match visible page
+ * content, and FAQ rich results were deprecated 2026-05-07, so the schema's only
+ * remaining purpose is AI extraction — and AI extractors read RENDERED content.
+ *
+ * Rendering (not deleting) because the answers are substantive and computed per
+ * palette: the actual colours with hex, era, provenance, and the licence position.
+ * Same fix already verified live on /colors/[slug] (§E47, commit 82922e1).
+ */
+const paletteFaq: { q: string; a: string }[] = [
+  {
+    q: `What colors are in the "${palette.title}" palette?`,
+    a: `${palette.title}${palette.titleJa ? ` (${palette.titleJa})` : ""} contains ${palette.colors.length} colors: ${palette.colors.map((c) => `${c.nameRomaji ?? c.hex} (${c.hex})`).join(", ")}. ${isWada ? `From Sanzo Wada's "A Dictionary of Color Combinations" (1933).` : `An original editorial palette by colorcombinations.org, using traditional Japanese colour names.`}`,
+  },
+  {
+    q: `When was the "${palette.title}" palette created?`,
+    a: isWada
+      ? `This palette is from Sanzo Wada's 1933 reference work "A Dictionary of Color Combinations" (Seigensha Art Publishing 2010 reprint). The source work is in the public domain.`
+      : `This palette was composed by the editors of colorcombinations.org and first published in ${FIRST_PUBLISHED_LABEL}. It uses traditional Japanese colour names associated with the ${palette.era} era; it is not a plate from Sanzo Wada's 1933 dictionary.`,
+  },
+  {
+    q: `What style or era does the "${palette.title}" palette belong to?`,
+    a: `${palette.title} is associated with the ${palette.era} era and emphasizes ${palette.dominantHue} tones. ${palette.summary}`,
+  },
+  {
+    q: `Can I use the "${palette.title}" palette in my own design?`,
+    a: isWada
+      ? `Yes. The source palette by Sanzo Wada (1933) is in the public domain. This page's curation and metadata are CC BY 4.0 licensed — attribution to colorcombinations.org appreciated but not required for the colors themselves.`
+      : `Yes. This editorial palette and its metadata are CC BY 4.0 licensed — attribution to colorcombinations.org appreciated; the hex values themselves are facts and free to use.`,
+  },
+];
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -291,44 +329,11 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "@id": `${new URL(`/palettes/${palette.slug}`, Astro.site).toString()}#faq`,
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `What colors are in the "${palette.title}" palette?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `${palette.title}${palette.titleJa ? ` (${palette.titleJa})` : ""} contains ${palette.colors.length} colors: ${palette.colors.map((c) => `${c.nameRomaji ?? c.hex} (${c.hex})`).join(", ")}. ${isWada ? `From Sanzo Wada's "A Dictionary of Color Combinations" (1933).` : `An original editorial palette by colorcombinations.org, using traditional Japanese colour names.`}`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `When was the "${palette.title}" palette created?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: isWada
-            ? `This palette is from Sanzo Wada's 1933 reference work "A Dictionary of Color Combinations" (Seigensha Art Publishing 2010 reprint). The source work is in the public domain.`
-            : `This palette was composed by the editors of colorcombinations.org and first published in ${FIRST_PUBLISHED_LABEL}. It uses traditional Japanese colour names associated with the ${palette.era} era; it is not a plate from Sanzo Wada's 1933 dictionary.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `What style or era does the "${palette.title}" palette belong to?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `${palette.title} is associated with the ${palette.era} era and emphasizes ${palette.dominantHue} tones. ${palette.summary}`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Can I use the "${palette.title}" palette in my own design?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: isWada
-            ? `Yes. The source palette by Sanzo Wada (1933) is in the public domain. This page's curation and metadata are CC BY 4.0 licensed — attribution to colorcombinations.org appreciated but not required for the colors themselves.`
-            : `Yes. This editorial palette and its metadata are CC BY 4.0 licensed — attribution to colorcombinations.org appreciated; the hex values themselves are facts and free to use.`,
-        },
-      },
-    ],
+    mainEntity: paletteFaq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
   },
   {
     "@context": "https://schema.org",
@@ -699,6 +704,21 @@ const jsonLd = [
 
   {/* ============ RELATED ============ */}
   {related.length > 0 && (
+    <!-- FAQ — renders `paletteFaq`, the SAME array that feeds the FAQPage schema in
+         the frontmatter. Visible text matches the schema by construction; never build
+         one without the other (§E46). -->
+    <section class="section palette-faq-section" aria-labelledby="palette-faq-heading">
+      <h2 id="palette-faq-heading" class="palette-faq__title">Questions about {palette.title}</h2>
+      <dl class="palette-faq__list">
+        {paletteFaq.map((f) => (
+          <div class="palette-faq__item">
+            <dt class="palette-faq__q">{f.q}</dt>
+            <dd class="palette-faq__a">{f.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
     <section class="section related">
       <div class="container-wide">
         <header class="section-head">
@@ -847,6 +867,13 @@ const jsonLd = [
 </script>
 
 <style>
+  /* FAQ block (§E48) — scoped, matching this page's section conventions. */
+  .palette-faq__title { font-size: 1.05rem; font-weight: 600; margin: 0 0 0.9rem; color: var(--color-ink-900, #1a1714); }
+  .palette-faq__list { margin: 0; }
+  .palette-faq__item + .palette-faq__item { margin-top: 0.9rem; }
+  .palette-faq__q { font-weight: 600; font-size: 0.95rem; color: var(--color-ink-900, #1a1714); }
+  .palette-faq__a { margin: 0.25rem 0 0; font-size: 0.9rem; line-height: 1.55; color: var(--color-ink-500, #8a8378); }
+
   /* ============ QUICK SHARE STRIP ============ */
   .quick-share {
     display: flex;
