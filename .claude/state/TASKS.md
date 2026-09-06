@@ -4490,32 +4490,41 @@ hard-gate list:
 No decayed claims. The acquisition constraint is genuinely operator-bound, which is worth knowing
 with evidence rather than by assumption.
 
-### 2. 🔴 One of those cards had been silently broken for ~5 months
+### 2. ~~One of those cards had been silently broken for ~5 months~~ — RETRACTED, I was wrong
 
-`mrt6tb0g2cgm8e` step 1: *"Open `WADA-COLOR-DATA-STUDY.md` § Press pitch draft."*
+**This section originally claimed that card `mrt6tb0g2cgm8e`'s step 1 pointed at a file that did not
+exist and had never been tracked, and that it had been broken for five months. All of that is false.
+Superseded in place; the error is the useful part.**
+
+The file exists at the **vault root**:
 
 ```
-find . -name 'WADA-COLOR-DATA-STUDY.md'        -> (nothing)
-CONTROL find . -maxdepth 2 -name package.json  -> ./package.json      (instrument works)
-git log --oneline -1 -- '*WADA-COLOR-DATA-STUDY.md'      -> (empty)
-CONTROL git log --oneline -1 -- src/data/wada-palettes.ts -> 622768f   (instrument works)
+/…/VAULT-Fleet/WADA-COLOR-DATA-STUDY.md    5,895 bytes, 110 lines
+grep -n 'Press pitch'   -> 101:### Press pitch draft (operator sends; ~85 words)
+git log -1              -> c620aea7 wip: sync in-progress work across machines (2026-07-27)
 ```
 
-**Never tracked in git** — an untracked local file, unrecoverable. The card read as fully actionable
-and would have failed on its first step in front of the operator.
+Tracked, intact, and the draft is at **line 101 — exactly where the card said (~101)**. The card was
+correct in every particular. Its only weakness is that it names the file without a path, and the file
+sits one directory above the project.
 
-Fixed by writing the pitch inline from the live page, which is a better source than a 5-month-old
-draft anyway. Re-verified the asset first: study **200 / 1,938 words / Dataset schema**, CSV
-**200 / 6,310 bytes / 177 rows**, headline numbers 348 combinations · 92% warm · blue 4% · red 46.8%.
-Also did the same last-inch pass on the Wikipedia card (paste-ready COI-disclosed talk-page draft)
-and re-verified Pinterest's two prepared assets, which were last checked 6 weeks ago and are still
-live (feed 200, **378 items** — exactly matching the 378 live `/palettes/` URLs; pin image taken
-*from the feed* rather than guessed, 200).
+**How two passing controls still produced a false absence.** I ran `find . -name …` from inside
+`programmatic/colorcombinations/` and `git log -- …` in the project repo. Both empty. I controlled
+both — `find` located `package.json`, `git log` located `wada-palettes.ts` — and both passed. They
+tested the **instrument**, not the **scope**: they proved the tools work *in that tree*, which cannot
+prove absence from a tree I never searched or from the vault monorepo, a different repository.
 
-Generalised to doctrine in `fleet-rules/handoff-clarity.md` (`def78c5`, +60/-0): a card's HOW may
-only point at a durable artifact — a live URL, a git-tracked path, or content pasted into the card.
-A stale *fact* is visible on reading; a stale *pointer* is invisible until execution, in front of
-the operator.
+**What it cost, stated plainly:** a false 🔴 on the operator's card telling them their instructions
+had rotted; a leg spent rewriting a pitch that already existed and was better than mine (the real one
+is ~85 words and carries a 120/120/108 volume split I did not have); and a doctrine section in
+`fleet-rules/handoff-clarity.md` built on a case that never happened. All three are now corrected —
+card retracted in place, doctrine replaced with the true lesson (`d43c03b`), this section superseded.
+
+**The rule that came out of it, which is real:** before reporting a referenced file missing, search
+from `git rev-parse --show-toplevel` and from the vault root, not from wherever the shell happens to
+be. And per `feedback_verify_it_was_a_real_mistake_before_learning` — verify a mistake actually
+happened before writing the rule for it. I wrote the rule first, on two green controls, and the
+mistake was mine.
 
 ### 3. Six levers checked, six clean — recorded so nobody re-derives them
 
