@@ -3575,3 +3575,83 @@ axes), cabinpets (`mtp9ygyqavnges`, zero search events in 90d), and here.
 **Do not re-open this by re-reading the zero-result log.** The log is a *timestamp*, not a
 state: 82.3% of it is already answered in production. Re-derive from a window that starts
 **after 2026-09-07** or not at all.
+
+## §E57 — the "#2 landing template is a dead end" finding was FALSE: it is 93.1% crawler (2026-09-06)
+
+Refuel leg, continuing from §E56. The project cockpit names **Pageviews (16,213 / 40,000,
+41%, at-risk)** as the biggest gap, so I went looking for where depth dies. What I found
+looked like the clearest defect on the site — and it is not one.
+
+### The finding that was available, and wrong
+
+Landing templates by depth, 30d:
+
+| landing template | sess | pv | pv/sess | % sess |
+|---|--:|--:|--:|--:|
+| `/` (home) | 2,298 | 7,085 | 3.08 | 33.7% |
+| **`/colors-that-go-with/<slug>`** | **983** | **1,046** | **1.06** | **14.4%** |
+| `/colors/<slug>` | 802 | 1,802 | 2.25 | 11.8% |
+| `/browse` | 736 | 1,522 | 2.07 | 10.8% |
+| `/palettes/<slug>` | 495 | 1,188 | 2.40 | 7.3% |
+| `/collections/<slug>` | 374 | 1,181 | 3.16 | 5.5% |
+
+The #2 entry surface at **1.06 pv/session** against a 2.34 site mean, plus **1.9 Amazon
+clicks/1k pv** against 14.6 site-wide, reads as a total dead end — "lands, sees one page,
+converts at nothing." Lifting it to `/colors/<slug>`'s 2.25 would be **+1,170 pv/30d**,
+which is 7.3% of site pageviews: precisely the metric the cockpit flags. Very fundable-looking.
+
+### What killed it
+
+**Read the page first.** `/colors-that-go-with/rust/an-outfit/` (top leaf, 17 pv) carries
+**110 internal links** — 21 to sibling contexts, 8 to palettes, 5 to tools — **38 `/go/`
+affiliate links**, ~1,969 visible words, a sibling-contexts block and a visible FAQ. A page
+with 110 outbound links and 38 CTAs does not produce 1.06 pv/session because it is a dead
+end.
+
+**Then segment the traffic** (`measured-vs-expected` § a channel can pass while containing a
+pure-crawler block — which names this exact template):
+
+| channel into `/colors-that-go-with/` | sess | users | pv | sess/usr | pv/sess |
+|---|--:|--:|--:|--:|--:|
+| **Direct** | **916** | **916** | **916** | **1.00** | **1.00** ← crawler-shaped |
+| AI Assistant | 35 | 32 | 80 | 1.09 | **2.29** |
+| Organic Search | 31 | 26 | 48 | 1.19 | **1.55** |
+| Unassigned | 2 | 2 | 3 | 1.00 | 1.50 |
+
+**93.1% of that template's sessions are one bot fetching one URL once.** Its ~68 human
+sessions read 2.29 pv/session from AI Assistant and 1.55 from Organic — normal for an answer
+page. There is nothing to fix, and "adding onward links" would have been aimed at a
+population that cannot follow them.
+
+The crawl is bursty, not steady: **4 days (08-22, 08-23, 08-26, 08-27) carry 481 of the 916
+sessions — 52.5%.** Baseline is 7–20/day.
+
+### The asymmetry worth remembering
+
+Crawler contamination here inflates **sessions by 13.7%** (885 of 6,471 over the pre-window)
+but **pageviews by only ~5.7%**, because each crawler session is exactly one pageview. So on
+this site:
+
+- any **per-session or per-user** rate is materially contaminated
+- any **per-pageview** rate is barely affected
+- and site-level **pv/session is UNDER-stated**: true human ≈ 15,076/5,919 = **2.55**, not 2.34
+
+### Effect on the §E56-adjacent search finding (card `mtppvsfvvdszfx`)
+
+Recomputed on crawler-corrected human sessions, it **survives**:
+
+```
+09-04  236 raw − 26 crawler = 210 human -> 14.29 searches/1k  (raw 12.71)
+09-05  134 raw −  5 crawler = 129 human -> 15.50 searches/1k  (raw 14.93)
+PRE 28d: 6,471 sess − 885 crawler = 5,586 human
+```
+
+Correcting moves both post days by ~1.5 points and lifts the pre-window baseline too, so the
+gap widens slightly rather than closing. The conclusion is unchanged; the numbers on that card
+should be read as raw-session rates.
+
+### Not filed as work
+
+No code change. Recorded so the next lane that reads the cockpit's "pageviews at-risk" flag
+and walks into the same 1.06 does not re-derive it — it is the single most available false
+finding on this site, sitting on 14.4% of sessions.
