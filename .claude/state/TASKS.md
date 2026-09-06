@@ -1306,3 +1306,96 @@ deep, growing, and landing on the right pages. There is no defect here to fix.**
   (1.64 pv/s) and is 42% of sessions — **it is the largest unexamined block on the site** and the
   honest next question, though note §E12 already established Direct here is 87% new users, so it is
   not returning-visitor traffic wearing a Direct label.
+
+### E18 · 2026-09-06 — hypothesis REFUTED as stated, and the refutation found a real measurement error: a CRAWLER-SHAPED sub-block hiding inside a channel that passes the crawler test
+
+Ran the card I filed one leg earlier (`mtpd5oldyw1qcx`): *is Direct referrer-stripped AI traffic?*
+Falsification criteria were written into the card **before** any pull. All three are met. The
+hypothesis is dead — and the measurement that killed it is more valuable than the hypothesis was.
+
+#### The kill (1,492/1,492 rows, `truncated:false`)
+
+Landing-page mix by source, and the cosine similarity of Direct's mix against each:
+
+```
+                       DIRECT  ChatGPT     Bing      DDG
+/colors-that-go-with/   30.4%     3.4%     2.8%     1.1%
+/                       19.7%    53.1%    39.6%    46.7%
+/collections/            3.9%     1.8%    14.7%    12.2%
+/trends/                 1.7%     0.0%    16.5%     3.7%
+(distinct landing pages)  929       97       90      114
+
+cosine(DIRECT, ChatGPT) = 0.6180
+cosine(DIRECT, Bing)    = 0.6142
+cosine(DIRECT, DDG)     = 0.6157
+control cosine(ChatGPT, Bing) = 0.8800
+control cosine(Bing, DDG)     = 0.9490
+```
+
+Direct resembles ChatGPT **no more than it resembles Bing or DDG** — 0.618 vs 0.614 vs 0.616, a
+0.004 spread. The controls prove the metric discriminates: the three *referred* channels resemble
+each other at 0.88–0.95. Device kills it independently — Direct is **65.6% desktop**, ChatGPT is
+**76.8% mobile**. Both stated kill criteria fired.
+
+#### 🔴 What the kill exposed
+
+Direct is not head-concentrated like a referred channel; it is an extreme flat tail:
+
+```
+                top-10 pages    distinct pages   median sess/page
+DIRECT              38.8%             930              1
+ChatGPT             86.5%              98              —
+Bing                84.6%              91              —
+```
+
+**597 of Direct's 930 landing pages received exactly one session.** And 30.4% of Direct — 915
+sessions — lands on `/colors-that-go-with/`, spread over **553 distinct URLs at a median of 1 session
+each**. So I shape-tested that block on its own:
+
+```
+                                  sess   pv/s   s/u   fleet test (s/u<=1.02 AND pv/s<=1.10)
+Direct AS TESTED (channel level)  3089   1.64  1.19   passes as human
+  |- /colors-that-go-with/ block   915   1.00  1.00   CRAWLER-SHAPED
+  |- everything else              2174   1.91  1.29   passes as human
+controls: chatgpt.com             1031   2.94  1.28   human
+          bing                     695   2.99  1.32   human
+```
+
+**915 sessions, 915 users, 915 pageviews — exactly 1.00 on both ratios.** That is the signature the
+fleet crawler test exists to catch, and the channel-level test **misses it**, because the block is
+diluted by 2,174 genuinely human Direct sessions into an aggregate of 1.64 pv/s.
+
+#### Why this matters beyond this site
+
+This site is recorded fleet-wide as **0.0% crawler-shaped** and `ai-citation-channel` calls it *"the
+only ungated earner, the one number to trust unreservedly."* Both statements are true **at the
+channel level** and both are misleading, because the crawler test as applied is a per-channel test
+and this contamination lives one level below it.
+
+Corrected figures:
+
+| | as reported | crawler block | corrected | overstated by |
+|---|--:|--:|--:|--:|
+| GA4 users/30d | 4,517 | 915 | **3,602** | **25.4%** |
+| pageviews/30d | 16,213 | 915 | **15,298** | 6.0% |
+
+The users figure — the one on the "Human visitors 4,517 / goal 5,000 / 90%" progress bar — is
+**overstated by a quarter**. Real progress against that goal is 72%, not 90%.
+
+#### Second finding, free from the same pull
+
+`/colors-that-go-with/` takes **983 sessions from ALL sources at 1.06 pv/s** — 915 Direct-crawler
+plus 68 from everywhere else (chatgpt 34, bing 18, ddg 9, ecosia 3, yandex 1). Essentially the
+**entire page type is non-human**. 553 landing URLs with ~zero human demand: built ≠ trafficked,
+exactly the `realized-demand-discipline` case.
+
+⚠️ **Do NOT noindex or prune it on this evidence.** The traffic veto is mandatory before any such
+action, and separately: a page type with no *human* traffic may still be earning AI citations, which
+is this site's actual strength. Measure that first. This is a note, not a licence.
+
+#### What I got wrong, and what the process got right
+
+The hypothesis was wrong. Writing the three kill criteria into the card **before** pulling is what
+made the refutation fast and unambiguous — with a cosine spread of 0.004 and a passing control at
+0.88+, there was no room to talk myself into a resemblance. That is the matcher trap in
+`positive-control-before-absence` not firing, because the control was chosen first.
