@@ -161,4 +161,29 @@ deploy_cf_pages:
     # _worker.js is the advanced-mode artifact the local chunked deployer needs).
     # Adding --pre here would fail every build. Do not "fix" that by adding it.
     - node scripts/verify-deploy-integrity.mjs --post
+    # INDEXNOW (added 2026-09-06). Was NEVER CALLED FROM CI at all — only from
+    # deploy.sh, the deprecated laptop fallback (package.json's own _deploy_note
+    # says "DEPLOY VIA CI, NOT FROM A LAPTOP"), so this site's #1 traffic channel
+    # (Bing-native — 472 Bing clicks vs 6 Google/30d, and ChatGPT grounds on the
+    # Bing index) has been getting zero fast-recrawl signal from any CI-shipped
+    # deploy. Runs LAST, same reasoning as the money-path gate above: only ping
+    # once the deployment for THIS commit is confirmed live.
+    #
+    # Safe to add now specifically because `.indexnow-manifest.json` (the
+    # change-detection baseline the script's own header calls the missing
+    # persistence piece) is ALREADY git-tracked (commit 46b11cd, 2026-09-04) —
+    # it survives a fresh CI checkout for free, no GitLab cache/artifact needed.
+    #
+    # KNOWN RESIDUAL GAP (not fixed here, small in scope): this step's own
+    # updated manifest is written to the job's ephemeral filesystem and is NOT
+    # committed back to git, so the next CI run starts from the SAME baseline
+    # again rather than an advancing one. Consequence is bounded and mild —
+    # some already-submitted URLs may be resubmitted on a later deploy until a
+    # human re-commits a fresh manifest — never the original 1,469-URL-every-
+    # deploy batch-abuse pattern this script exists to prevent. A future
+    # improvement would have this job commit the refreshed manifest back
+    # (guarded with `[skip ci]` to avoid a self-triggering loop); scoped out of
+    # this change since it needs a git-write credential this job does not yet
+    # have configured.
+    - node scripts/indexnow-ping.mjs || echo "IndexNow ping failed non-fatally — see script output above; does not block the deploy"
 
