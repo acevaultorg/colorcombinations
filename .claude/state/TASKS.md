@@ -4219,3 +4219,45 @@ non-in-content unit types are controlled dashboard-side, outside this repo. The
 six policy pages are handled by exactly this mechanism and are considered
 compliant, so `/books/` now matches the site's own established standard — that is
 the claim, and no more.
+
+### E70 — every collection page told readers it was "updated today", every deploy, for a 1933 dataset (2026-09-06)
+
+Shipped `38b2a2b7`. `src/pages/collections/[slug].astro:220` rendered the hero
+byline as `Curated by … · updated <time>{BUILD_DATE}</time>`, and `BUILD_DATE`
+is literally `new Date().toISOString()`. So all 70 collection pages showed the
+current date to every reader on every deploy, for a Sanzo Wada dataset fixed in
+1933. Live-confirmed before the fix:
+
+```
+/collections/japanese/  ->  updated <time datetime="2026-09-06">2026-09-06</time>
+```
+
+**Why this one was worth shipping when the wider question was not.** `75dcb84`
+(earlier today) fixed two pages where an honest human "Last verified" byline was
+contradicted by the machine-readable half. This is the **inverse and worse**
+case: the schema question is genuinely open, but the *visible* half — the part a
+human actually reads — was the false claim. A reader has no way to check it.
+
+**Removed, not replaced.** None of the 10 files in `src/data` carries a date or
+curation field (checked, control: 10 files scanned). So there is no honest
+per-collection date to substitute, and minting one for 70 collections would be
+fabrication. The site already reasons exactly this way at
+`src/pages/books/[slug].astro:80`, which explains why 12 book pages are
+deliberately not stamped — this follows that precedent rather than inventing one.
+
+**Scope held deliberately narrow.** `BUILD_DATE` still feeds `dateModified` in
+the schema here and in 17 other templates (~51% of pageviews). That is a real
+decision with SEO risk in both directions, and option (a) — deriving an honest
+date from `git log` on the data file — has a **silent-failure mode**: it needs
+full history, and this repo's own `.gitlab-ci.yml` twice contemplates running on
+a shallow clone. On a shallow clone the lookup returns nothing and the natural
+fallback is `BUILD_DATE`, silently reinstating the anti-pattern in CI only. Sized
+and left open in TaskPeace `mtpuh2vxd18d63` with that hazard written down.
+
+**Verified live** (pipeline 2824262769, success, 275s — a real build, not a
+docs-skip): `updated <time` = 0 across `/collections/japanese/`, `/winter/`,
+`/y2k/`; the `Curated by` byline still renders on all three; pages intact (24 /
+17 / 8 palette links). Controls: schema `dateModified` still present and
+matched by the same grep (so the zero is not a blind pattern); `/`,
+`/palettes/kurenai-kon/`, `/colors/blue/` all 200; money path
+`/go/b/4861522471` still 302s to bare own-origin on a bare probe.
