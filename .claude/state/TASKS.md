@@ -2028,3 +2028,25 @@ own instrument-trap sections argue for over trusting a green pipeline.
 combined — weak evidence the section can rank at all. The ownership check says the head query is
 winnable; it does not prove this site wins it. This is a measured ship, not a booked one — re-check
 Bing impressions on `/colors-that-go-with/beige/` et al. in a future pass rather than assuming.
+
+### E29 · 2026-09-06 — checked the remaining zero-result search terms after §E28; "wada"/"292" are already fixed, not a residual gap
+
+Board's agent-zone empty after §E27+§E28. Pulled the full zero-result search log fresh
+(`GA4 SearchNoResults`, 30d, `truncated: false`, 164/164 rows) to see if anything else cheap and
+real was left, now that the search-index instrument was already warm.
+
+`wada` and `292` each still show 2 events in the 30d window. `search-index.json.ts`'s own comment
+claims both were fixed. Verified against the LIVE index rather than trusting the comment: `wada`
+matches 348 rows, `292` matches exactly 1 (the correct plate — `/palettes/wada-292-...`). Simulated
+the site's own match logic (title+x, lowercased substring) against both terms directly. **Both are
+genuinely fixed and live.** The 2 events each are residual from inside the 30-day window, before the
+fix shipped — not an ongoing gap. Nothing to do here; recording it so a future session doesn't
+re-open it on the strength of the raw event count alone (this file's own doctrine: a fleet flag is a
+timestamp, not a state).
+
+Everything else in the top 30 zero-result terms is either already-documented-as-genuine-absence
+(`Pale Purplish Vinaceous`, `Sulphur yellow`'s upstream typo), a bare hex code (routed to
+`/tools/palette-from-color` per the generator's existing comment), a non-English query
+(`Коричневый`), or a typing fragment of an already-fixed term (`black wi` → `black white`, fixed
+per the generator's own before/after table). No further action identified. Closing this leg here —
+agent-eligible queue is empty; remaining cards are `assignee:human` or `kind:reference`.
