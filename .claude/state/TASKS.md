@@ -598,7 +598,7 @@ affordance is **one link on one page**.
 ### Competitor
 
 **`wada-sanzo-colors.com`** — same dataset, near-same name — ranks page 1 for `japanese color
-palette`, our best query (1,446 impr, 6.09%, pos 4.2). They have 553 pages to our 1,470 and emit
+palette`, our best query (1,446 impr, pos 4.2 — CTR withheld, feed failed the click-selection guard). They have 553 pages to our 1,470 and emit
 **`WebSite` schema only** against our BreadcrumbList/FAQPage/CreativeWork/Book/Dataset. Schema
 richness + surface size is our moat; protect it. Their LAB pitch is not a gap (above).
 
@@ -630,9 +630,57 @@ title** — the 95-char title is correctly front-loaded and intent-matched.
 - **2026-10-06** `mtp835nfohbpez` — AI citation share. Needs a Chrome-MCP lane; the public API has
   no AI-performance surface (probed, 404 against a passing `GetCrawlStats` control).
 
+### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
+
+§ E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
+properly and I did not know it existed until the project card named it:
+
+```
+node tooling/55-fleet-dashboard/scripts/bing-ctr.mjs colorcombinations.org
+```
+
+Its verdict on this site, run 2026-09-06:
+
+```
+queries  clicked=359  clicks>=impr=169  medianImpr= 2  -> CLICK-SELECTED - CTR UNAVAILABLE
+pages    clicked= 31  clicks>=impr=  5  medianImpr= 8  -> CLICK-SELECTED - CTR UNAVAILABLE
+X the PAGE feed also failed the guard - no CTR on this site is trustworthy.
+```
+
+**POSITIVE CONTROL RUN, and it passes** — without it, "failed the guard" could just mean the
+guard always fails. `node scripts/bing-ctr.mjs cabinpets.com` reports pages **`clean`**
+(clicks>=impr = 0, median 79 impressions) and hits its reference figure (2.24% vs ~2.3% expected
+-> PASS). So the instrument discriminates, and its verdict here is real.
+
+**What is and is not usable from `/bing-detail` on this site:**
+
+| quantity | usable? | why |
+|---|---|---|
+| page/query **impressions** | ✅ yes | the demand-shape column the tool endorses |
+| **position** | ✅ yes | not a ratio of the two corrupted columns |
+| absolute **CTR** | ❌ no | feed failed the guard |
+| **CTR ratio** between two pages | ❌ no | selection is per-row, not a scale factor |
+| any **per-query** CTR | ❌ never | the tool refuses it under any flag, on any site |
+
+**This does not move tonight's two surviving findings.** The open lever card
+(`mtpael6g080ld1`) rests on impressions + position + internal-link counts; the AI-channel finding
+is GA4-sourced. Both are independent of this feed's clicks column. The `/collections/y2k/`
+"title bug" hypothesis was killed by an independent SERP read, not by the CTR it was explaining —
+so that refutation stands, and is now doubly supported.
+
+**Standing instruction for the next lane on this site: run `bing-ctr.mjs` BEFORE quoting any
+rate, and run its cabinpets control before believing a failure verdict.** The tool's header
+records four published-then-retracted fleet findings from this exact trap; a prose memory existed
+for two of them and stopped neither.
+
 ### Method note
 
 I used the `/bing-detail` per-page CTRs before noticing this file's own **2.54× enrichment
-calibration** above. Ratios between pages survive a uniform enrichment; absolute CTRs do not.
+calibration** above. ~~Ratios between pages survive a uniform enrichment; absolute CTRs do not.~~
+**(SUPERSEDED 2026-09-06, same session, by measurement — see § E2. The page feed is
+CLICK-SELECTED, not uniformly enriched: 5 of its 31 clicked rows carry `clicks >= impressions`
+(all at impr=1, clicks=1 → a literal 100% CTR). That is per-row selection concentrated at the
+low end, so it does NOT cancel in a ratio between two pages either. Neither absolute CTRs nor
+inter-page CTR ratios from this feed are usable.)**
 Use `GetRankAndTrafficStats` for any rate. Searching the board is not enough — **read this file
 first**; that lesson cost a duplicate card tonight.
