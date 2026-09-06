@@ -2208,3 +2208,52 @@ deliberate attention rather than a rushed decision at the tail of an unrelated l
 absent on 3 non-overlapping control colours (kurenai, akane, matsuba). It is present in source and
 correctly gated for the other 6, but cannot render there until the routing collision is resolved —
 not a defect in this leg's code, a pre-existing block on 6 of the 10 target pages.
+
+### E34 · 2026-09-06 — fixed mtpju7edkbygfv: stopped advertising the 6 shadowed /colors/[slug] pages, hit + fixed a real Astro build gotcha along the way
+
+Ranked and worked the routing-collision task filed in E33 myself rather than leaving it purely for
+a human — the diligence its own "suggested next step 1" asked for (check `COLOR_STORIES` for unique
+content on the 6 colliding slugs) answered the open question: that set is fixed at the 20 canonical
+Japanese names in `colorStories.ts`; none of blue/brown/green/orange/red/yellow are in it. No unique
+editorial content exists at the shadowed URL, so "which template should own it" resolves itself —
+there's nothing to preserve, so the correct minimal fix is to stop CLAIMING an individual page
+exists there, not relocate one.
+
+**Shipped `31621cc` → broke CI → fixed with `87866fa`, all in this leg, live site never affected.**
+First commit excluded the 6 slugs from `[slug].astro`'s `getStaticPaths()` and from
+`sitemap-ai.xml.ts`'s per-colour loop, via a module-scope `const HUE_COLLISION_SLUGS`. `astro check`
+passed clean (0 errors) — and then the real GitLab build failed:
+`[ERROR] Failed to call getStaticPaths for src/pages/colors/[slug].astro — HUE_COLLISION_SLUGS is
+not defined`, thrown from the compiled `_slug_.astro.mjs`. Real, reproducible Astro behaviour:
+`getStaticPaths()` is extracted and run in an isolated context at build time, and a sibling
+module-scope `const` is not guaranteed to survive that extraction — confirmed by hitting it, not
+by reading docs first. **`astro check` cannot catch this class of bug — it verifies types, not this
+build-time extraction behaviour** — worth remembering for every future `getStaticPaths` edit on this
+codebase: a clean `astro check` is not sufficient, only a real GitLab build confirms it.
+
+Checked the live site immediately per this project's own deploy-truth doctrine before touching
+anything further: a failed pipeline never reaches the deploy step, so `29109fd` (the last successful
+deploy) stayed live and unaffected throughout — this was a same-session catch-and-fix, never an
+incident. Fixed by moving the `Set` inside `getStaticPaths()` itself, self-contained. Left
+`sitemap-ai.xml.ts`'s identical `Set` untouched — it's declared inside a plain `GET` function (no
+`getStaticPaths` extraction involved, a different execution model), and the first build never even
+reached it (aborted earlier, at `colors/[slug].astro`, in build order) — confirmed clean on this
+successful build rather than assumed safe.
+
+**Verify, live, pipeline `87866fa` success:**
+- Build trace: 0 collision warnings (was 1+ on every prior deploy).
+- `/colors/blue/` still correctly serves the hue-family page — unaffected, as expected (this fix
+  only stops the futile competing build, it doesn't change which template wins).
+- `/api/colors/blue.json` still 200 — unaffected route, as expected.
+- `sitemap-ai.xml` now serves exactly **785** URLs (791 − 6), all 6 excluded slugs confirmed absent
+  from the `/colors/<slug>/` entries specifically (their sitemap `/colors/hue/<slug>/` counterparts,
+  a different path, are untouched).
+- E33's cross-link callout re-verified still correct on khaki (one of the 4 reachable colours) —
+  this fix didn't regress the earlier ship.
+
+**Documented, not fixed (same root cause, lower severity, deliberately out of scope for this leg):**
+`/api/colors/blue.json`'s own `urls.canonical` field still points at `/colors/blue/` (pre-existing,
+unaffected either way by this fix); `search-index.json.ts` and `colors/index.astro` still list these
+6 (both resolve to the hue page, a valid destination, just not an individual-colour one);
+`og/colors/[slug].png.ts` still generates a per-colour OG image for all 6 (harmless — no route
+collision exists for image assets).
