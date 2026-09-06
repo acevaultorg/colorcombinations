@@ -3100,3 +3100,38 @@ events/30d each, and the context case has no clean fix: 702 `[context]` pages
 exist but there is no per-context landing page to point a search at, and indexing
 all 702 would double the 118KB payload every page downloads. Left unfixed
 deliberately, with the numbers recorded rather than a speculative change shipped.
+
+#### §E50 addendum — a cross-site "correction" I nearly filed, and the control that killed it
+
+Sibling card `mtp8gokr3mtgox` (readinglist.school) is a 2026-09-13 gate whose
+premise is *"the instrument only started capturing `q` on 2026-09-04, so no
+readable demand data exists yet"*. Having just found the reserved-name trap here,
+the obvious move was to tell them their data already exists in the built-in
+dimension — a week of waiting saved.
+
+First read supported it: `dims=searchTerm` on readinglist returns **20 real
+queries** (`2nd grade math`, `Girl in the arena`, `The book of bones`…).
+
+Split by event, it collapses:
+
+```
+readinglist  dims=searchTerm      ev=SearchNoResults  30d -> 1 row, BLANK, 357 events
+readinglist  dims=customEvent:q   ev=SearchNoResults  30d -> 1 row, "(not set)", 357
+```
+
+**Neither dimension carries their zero-result queries.** The 20 values come from
+other events. Their gate card is right and my correction would have been wrong.
+
+Why the two sites differ: colorcombinations sends the **reserved** `search_term`,
+so its values land in the built-in dimension by accident of naming; readinglist
+sends `q`, which is not reserved, so its built-in stays empty and its custom
+dimension is genuinely on the forward-only boundary. **The finding in §E50 is
+site-specific, not fleet-general** — the reference card was written before this
+check and says "any fleet site following `fleet-search-standard` will show the
+same `(not set)`", which is true of the custom dimension but does **not** imply
+the built-in has the data. Corrected in the card.
+
+The discriminator was one extra parameter — `ev=SearchNoResults` — on a query I
+had already run without it. An aggregate that mixes events answers a different
+question than the one being asked, and the aggregate's answer was the flattering
+one.
