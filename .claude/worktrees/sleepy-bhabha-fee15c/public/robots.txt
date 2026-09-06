@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /og/
-
-Sitemap: https://colorcombinations.org/sitemap-index.xml
