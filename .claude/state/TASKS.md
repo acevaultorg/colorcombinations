@@ -1031,6 +1031,79 @@ better-converting half of the site.** A mobile regression here costs more than a
 finding is about where verification effort matters, not about a defect.
 
 
+### E14. SHIPPED 2026-09-06 — malformed BreadcrumbList on the site's #1 page (fbe7053)
+
+A genuine correctness defect, not an optimisation — which is why this one shipped where the three
+hygiene levers did not. `/trends/color-trends-2026/` (6,777 impressions, 35.7% of site volume)
+emitted:
+
+```
+1 Home   -> /
+2 Trends -> /trends/color-trends-2026/     <- the page ITSELF
+3 Colors of the Year 2026
+```
+
+The middle crumb pointed at the same URL as the leaf, because **there is no `/trends/` hub — that
+path 404s**. A self-referential breadcrumb is malformed; engines may discard the whole rich result.
+
+**Isolated, and verified rather than assumed** — exactly **2 occurrences across the 45 files
+containing a BreadcrumbList**, both trends pages. Every other template is correct and points at a
+hub that resolves:
+
+| template | crumb 2 | resolves? |
+|---|---|---|
+| `/collections/japanese/` | `/collections` | ✅ |
+| `/colors/aconite-violet/` | `/colors` | ✅ |
+| `/books/*` (shipped earlier tonight) | `/books/` | ✅ |
+| **`/trends/color-trends-2026/`** | **itself** | ❌ fixed |
+
+Fix is `Home > leaf`, correct until a real `/trends/` index exists.
+
+**Deliberately did NOT build the `/trends/` hub.** It has no measured demand — queries containing
+"2027" carry **2 impressions site-wide** (§ E6) — and inventing a hub on a hypothesis is the exact
+shape refuted 16 times in this session. The 404 parent is noted, not fixed by invention.
+
+**Why this passed the funding bar when title/meta/CTR did not:** those were *optimisations* whose
+effect is unmeasurable here (the CTR feed failed the click-selection guard). This is a
+*correctness* bug in structured data on the highest-value page, the fix is four lines, and CI
+builds cost 139s. Different category, different bar.
+
+Both files batched into one build per the project's batching note.
+
+
+### E15. REFUTED 2026-09-06 — "378 palette pages have a broken breadcrumb" (#17, the alarming one)
+
+The E14 fix prompted a structural sweep: which top-level parent paths 404 while having children?
+Four do, and one looked serious:
+
+| parent | children | status |
+|---|---:|---|
+| **`/palettes/`** | **378** | **404** |
+| `/compare/` | 4 | 404 |
+| `/trends/` | 2 | 404 |
+| `/accessibility/` | 1 | 404 |
+
+Control passed — `/` and nine other parents return 200 — so the 404s are real. A 404 parent under
+the site's second-largest page type reads like 378 broken breadcrumbs.
+
+**It is not.** Checked the children before filing anything:
+
+- `/palettes/kurenai-kon/` → crumb 2 is **"Browse" → `/browse`**, which is **200**. The palette
+  pages were never routed through `/palettes/`. And `href="/palettes/"` appears **0** times on the
+  page — nothing links to the 404 at all.
+- `/accessibility/color-blind-tools/` → already `Home > leaf`, the exact shape E14 just shipped.
+- `/compare/adobe-vs-coolors/` → middle crumb carries no `item`. Permitted by schema.org and
+  inconsistent with other templates rather than malformed. 4 pages. Not worth a build.
+
+So the sweep found **one** real defect (`/trends/`, fixed in `fbe7053`) and refuted the
+larger-looking one. **The `count: 0` control is what settled it** — a 404 parent only matters if
+something points at it, and measuring "does anything link here" is one grep.
+
+**The shape worth keeping:** an unreachable URL is not a defect on its own. It becomes one only
+when something references it — a breadcrumb, a nav link, a sitemap entry, a canonical. Check the
+references before sizing the problem by the number of children.
+
+
 ### E2. THE FEED CALIBRATION HAS A TOOL, AND THIS SITE FAILS ITS GUARD (2026-09-06)
 
 § E above derived the 2.54× enrichment by hand. There is a **fleet tool** that answers this
