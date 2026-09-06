@@ -1722,3 +1722,70 @@ crawler share from this method is not a measurement.
 That caveat is the honest counterpart to §E20's positive control: the same model that agrees to 1.6%
 over 30 days produces an impossible value on one day, and both facts are true. Aggregate agreement
 does not license per-element precision.
+
+### E24 — Shelf attribution: NOT broken. GA4 shows 87.5% `(not set)` because the custom dimensions were registered 2026-09-04 (forward-only). The beacon has the answer for the full 30d. (2026-09-06)
+
+Gap-sweep leg. Chased the money constraint recorded in `PaintThisPalette.astro` and card
+`mspu9hngsintyv` — conversion is fleet-BEST (9.23%) while $/click is fleet-WORST, so **basket
+size**, not persuasion, is the lever. To act on that you must know which shelf earns. Measured it.
+
+**GA4 `amazon_click`, 30d — reads BROKEN, is not:**
+
+| dimension | `(not set)` | tagged |
+|---|--:|--:|
+| `customEvent:shelf` | 203 (87.5%) | book 20 · tool 9 |
+| `customEvent:dest`  | 203 (87.5%) | amazon 29 |
+| `customEvent:asin`  | 203 (87.5%) | 11 distinct ASINs |
+
+Identical 203 across all three = same-source signature. Split by date it is a **perfectly clean
+cutover — 0 tagged on every day 08-07→09-03, 100% tagged on 09-04 and 09-05, not one mixed day.**
+
+**Cause is registration, not code.** `public/amazon-track.js` has sent `{page, asin, dest, shelf}`
+since at least `9beddee` (2026-09-02), and `&f=<shelf>` on the beacon since `f642415`
+(2026-08-24, *"177 clicks/30d were arriving unattributed"*). Verified by reading the pre-09-04
+blob: `git show 9beddee:public/amazon-track.js` contains `shelf:shelf`, `asin:asin`, `dest:dest`.
+So the params were being SENT and simply not RECORDED as dimensions until registered — and GA4
+custom-dimension registration is **forward-only**. The 08-07→09-03 window is permanently
+unattributable *in GA4*.
+
+🔴 **The trap: a 30d GA4 query today returns 87.5% `(not set)` and reads exactly like broken
+instrumentation.** It is not. Window any shelf/asin/dest analysis to **≥ 2026-09-04**, or use the
+beacon.
+
+**The beacon already has the full 30d** (`data.json`, `amazon_clicks_by_position_30d`):
+
+```
+book 144  ·  tool 25  ·  reviewprobe 1      (170 tagged of 366 beacon clicks)
+```
+
+So the high-basket rail (`tool` = ART_SUPPLIES: Pantone guides, Calibrite colorimeter) takes
+**14.7% of tagged clicks**; books take **84.7%**. The rail is NOT structurally unreachable — it
+renders on the four largest page types (`/colors/[slug]`, `/colors-that-go-with/[color]/[context]`,
+`/collections/[slug]`, `/palettes/[slug]`), and a served `/palettes/akane-tokiwa/` carries 9
+`amazon_click` anchors, 6 with `data-tool`.
+
+**Money, same window:** $52.32 / 594 Amazon-counted clicks = **$0.088/click**, 64 orders, 9.23%.
+
+**What this does NOT establish — and must not be read as establishing.** A shelf CLICK mix is not
+a shelf REVENUE mix. Shifting clicks book→tool is a *hypothesis*, not a conclusion: a $200+
+Pantone fan guide is a considered professional purchase and may convert far below a $15 Wada
+volume, so `clicks × conv × AOV × commRate` could fall. Per `earner-allocation-floor`, never rank
+a shelf on click share alone.
+
+**The measurement that would settle it** is per-shelf revenue = Amazon **Linked-Product** report
+joined to the now-live `asin` dimension. Linked-Product is not in `data.json`; the per-tag report
+carries tags without products and vice-versa (see `affiliate-link-gate` § attribution limit). That
+join — not another page type — is the next real step on the basket-size thesis.
+
+**Caveat on the mix itself:** beacon undercounts Amazon 1.62× (594/366 — consent + adblock). If
+adblock correlates with the professional audience that buys the `tool` rail, 14.7% is a *floor*.
+
+**Instrument notes from this leg (both cost a wrong answer first):**
+- Probed `customEvent:tool` / `customEvent:book` initially — params `amazon_click` **never sends**.
+  Returned a plausible 222/10 split that meant nothing. The real names are `shelf`/`asin`/`dest`,
+  and they live in `public/amazon-track.js`, not in `BaseLayout.astro` — whose delegated listener
+  **explicitly skips** `amazon_click` (`if (name !== 'amazon_click')`, to avoid double-counting).
+  Read the actual sender before naming a param.
+- `sed 's|</\?loc>||g'` on the sitemap: BSD sed needs `-E` for `\?`, so the `<loc>` tags survived,
+  curl rejected the URL, and every count came back 0 — including the control. Caught only because
+  the control was there.
