@@ -24,9 +24,13 @@ import type { HexColor } from "@/types/palette";
 // the 20 canonical Japanese names in colorStories.ts), so nothing unique is
 // lost by not attempting them -- this just stops a futile, warned-about build
 // for pages that could never render anyway. See TaskPrio mtpju7edkbygfv.
-const HUE_COLLISION_SLUGS = new Set(["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"]);
-
 export function getStaticPaths() {
+  // Astro extracts + runs getStaticPaths in an isolated context at build time --
+  // a module-scope const declared alongside it is NOT guaranteed to survive that
+  // extraction (confirmed: shipped that way first, broke CI with "HUE_COLLISION_
+  // SLUGS is not defined" inside the compiled _slug_.astro.mjs). Keep the set
+  // self-contained inside the function instead.
+  const HUE_COLLISION_SLUGS = new Set(["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"]);
   return allColors()
     .filter((c) => !HUE_COLLISION_SLUGS.has(c.slug))
     .map((c) => ({ params: { slug: c.slug } }));
