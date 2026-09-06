@@ -383,8 +383,15 @@ async function post() {
     /var isGo\s*=\s*false/.test(trkBody) && /isGo\s*=\s*a\.host\s*===\s*location\.host/.test(trkBody),
     "tracker uses the STRUCTURAL /go/ match (counts /go/p and /go/prime, not just /go/b)",
   );
+  // `trk.ok &&` is load-bearing. Measured 2026-09-06 with VERIFY_ORIGIN=example.com:
+  // 9 of 13 post checks correctly FAILED against a gateless host, but THIS one
+  // passed — because trkBody is "" when the fetch 404s, and !regex.test("") is
+  // true. A negative assertion about a file that does not exist is vacuous, and
+  // it reported "pass" in a run where the tracker was entirely absent. The
+  // sibling check above catches the absence, so nothing shipped broken; this
+  // just stops the report itself from lying about which checks were reached.
   check(
-    !/var isGo\s*=\s*\/\\\/go\\\/b/.test(trkBody),
+    trk.ok && !/var isGo\s*=\s*\/\\\/go\\\/b/.test(trkBody),
     "tracker no longer uses the enumerated /go/b-only regex",
   );
 }
