@@ -52,8 +52,11 @@ if (downloadSwatches.length === 0 || downloadSwatches[0].hex.toLowerCase() !== c
 // Pillar-article cross-link — when a collection has a matching /learn pillar,
 // surface it as a "From the editorial" callout. Compounds internal-link
 // density between thematic palettes and long-form context.
-import { pillarForCollection } from "@data/pillarMap";
-const pillar = pillarForCollection(collection.slug);
+import { pillarForCollection, TRENDS_FALLBACK } from "@data/pillarMap";
+// Fall back to the colour-trends editorial when this collection has no /learn
+// pillar (51 of 69). Link-concentration test — see TRENDS_FALLBACK in pillarMap.ts
+// for the measurement, the success metric and why this is not in pillarForCollection().
+const pillar = pillarForCollection(collection.slug) ?? TRENDS_FALLBACK;
 
 // `collection.title` also renders the H1 (below) and the embed-snippet label, so
 // the search title gets its own optional field rather than overloading this one.

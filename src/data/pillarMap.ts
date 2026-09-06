@@ -80,6 +80,41 @@ export const COLLECTION_TO_PILLAR: Record<string, keyof typeof PILLAR_LINKS> = {
   winter: "heian-court-color-theory",
 };
 
+/**
+ * TRENDS_FALLBACK — the editorial cross-link used by /collections/[slug] when a
+ * collection has no matching /learn pillar (51 of 69 as of 2026-09-06).
+ *
+ * WHY THIS EXISTS. /trends/color-trends-2026/ is the site's highest-value page —
+ * 6,777 Bing impressions, 35.7% of all site impression volume — and it received
+ * internal links from exactly 2 of ~1,470 pages while linking OUT to 51. It was
+ * an authority donor, not a recipient.
+ *
+ * The diagnosis this tests (measured 2026-09-06, impressions + position only —
+ * this site's /bing-detail CTR failed the click-selection guard, so no CTR was
+ * used): on the 2026 cluster we rank an impression-weighted 2.36 on
+ * conversational phrasings (20 rows, 118 impr) and 5.89 on the head keywords
+ * that carry 85% of the volume (5 rows, 2,080 impr). Content quality is
+ * therefore not the constraint — it wins where competition is thin. Authority
+ * is: 2 internal inbound links, and Bing reports 9 external inbound links
+ * site-wide (readinglist.school reads 983 on the same call).
+ *
+ * DELIBERATELY *NOT* wired into pillarForCollection(): that helper is also
+ * imported by /palettes/[slug] (378 pages). Changing it there would make this a
+ * 429-page bulk change instead of a 51-page test, and bulk changes on this site
+ * were refuted 14 times in one session. Collections only.
+ *
+ * SUCCESS METRIC = position on `color of the year 2026` moving toward 3,
+ * read from GetRankAndTrafficStats (unselected). NOT CTR. Baseline 2026-09-06:
+ * page position 4.9, head-term 5.5, 6,777 impressions. Read after 3-4 weeks;
+ * a 1-week read is noise. If 51 pages move nothing, internal linking is dead as
+ * a lever here and the constraint is external authority (operator-gated).
+ */
+export const TRENDS_FALLBACK: PillarLink = {
+  href: "/trends/color-trends-2026/",
+  title: "Color of the Year 2026: Every Official Pick",
+  lede: "Pantone, Benjamin Moore, Behr, Sherwin-Williams and the rest — every official 2026 Color of the Year, and the palette each one sits in.",
+};
+
 /** Lookup helper: given a collection slug, return its pillar link or null. */
 export function pillarForCollection(slug: string | undefined | null): PillarLink | null {
   if (!slug) return null;
