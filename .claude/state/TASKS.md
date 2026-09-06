@@ -3515,3 +3515,63 @@ sitemaps now agree, which was the whole point of §E52.
 before anyone noticed it had not shipped. It was found only because the verification step
 fetched the LIVE file instead of trusting the green pipeline. Had §E52 been "verified" by
 reading `origin/main`, the defect would still be live and the CI hole would still be open.
+
+## §E56 — the search lever, CLOSED on measurement: 82.3% of the zero-result log already resolves (2026-09-06)
+
+Refuel leg — board empty, so ran the documented `fleet-search-standard` demand-discovery
+lever. Result: **no fundable gap, and two shipped fixes verified against real user queries
+for the first time.**
+
+### Method
+
+Replayed **all 164 distinct zero-result queries (186 events, 30d, `truncated=false`)** against
+the **live** `/search-index.json` (769 entries) through a faithful Python port of the live
+matcher — `hexOf()` → `srch()` → `loose()` → `fuzzy()`, same scoring constants, same
+`norm()`.
+
+Controls both directions: `srch("kurenai")` → 3 hits ✅ · `srch("beige")` → "Colors that go
+with Beige" ✅ · `srch/loose/fuzzy("zzqxwv")` → 0/0/0 ✅. A matcher that matched everything or
+nothing would have been caught.
+
+### Result
+
+| outcome on the live site | events | share |
+|---|--:|--:|
+| strict `srch()` match | 55 | 29.6% |
+| hex → palette-from-color tool row | 36 | 19.4% |
+| `loose()` match | 33 | 17.7% |
+| `fuzzy()` typo rescue (§E50) | 29 | 15.6% |
+| **STILL dead** | **33** | **17.7%** |
+
+**82.3% of what dead-ended over 30 days now resolves.**
+
+### 🔴 That 82.3% is an IN-SAMPLE fit, not a forecast
+
+Both fixes that produce most of it were **built from this exact log**: `hexOf` routing
+(§ 2026-09-03, comment cites `#71406B`, `#df6616`, `00908a`, `F0CCAC`, `ff4d52` — five of the
+hexes in this window) and `fuzzy()` (§E50, built today from "lavendar"/"cinamon"/"Eugenua").
+The sibling lane's 54 `/colors-that-go-with/` "Pairing guide" index entries (`a8adb1c`, card
+`mtph3aaiz2ylei`) were likewise found by reading this log.
+
+So this measurement proves the fixes **do what they were built to do on the data they were
+built from**. It does not predict the next 30 days. A forward number needs a fresh window —
+which the gate on card `mtppvsfvvdszfx` will produce.
+
+### The residual, itemised — 33 events, 30 distinct, ~1.1/day
+
+- **typing fragments** (`Bor`, `Buttr`, `Conti`, `Olv`, `Eis`, `Contains p`, bare `#` ×3): ~9 ev — noise, not fixable
+- **Cyrillic** (`Коричневый` ×2, `коричневый`, `Корич`, `Темно коричневый`, `виноград`): 6 ev — real Russian colour queries (brown, dark brown, grape); no i18n index. `пкуу`/`пщдв` are Latin typed on a Cyrillic layout = noise
+- **genuine one-off English words**: `Copenhagen`/`Kopenhavn`/`Kopenhavngreen` (3 ev — likely Copenhagen green pigment), `Glicini`/`Glicinia` (2 — wisteria), `biscuit`, `hemp`, `nude`, `monotone`, `chinese`, `R102B`
+- **format/feature intent, not colour**: `tech`/`technical`/`technology` (3), `print`, `csv` (2)
+
+### Why this is CLOSED and not a build queue
+
+33 events / 30 days ≈ **1.1 dead searches per day** against ~230 sessions/day. Every
+sub-cluster is 1–3 events. There is no cluster large enough to fund, and the fleet has now
+closed this same lever with a measured negative on four sibling sites the same week —
+readinglist (`mtpdoou5yer7mc`, ceiling $0.53/mo), fitmylens (`mtpdg5qlx6b72e`, no gap on 5
+axes), cabinpets (`mtp9ygyqavnges`, zero search events in 90d), and here.
+
+**Do not re-open this by re-reading the zero-result log.** The log is a *timestamp*, not a
+state: 82.3% of it is already answered in production. Re-derive from a window that starts
+**after 2026-09-07** or not at all.
