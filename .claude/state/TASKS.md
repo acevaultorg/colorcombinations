@@ -1437,7 +1437,7 @@ InLinks           9
 
 **Bing has MORE pages indexed than the sitemap lists.** There is no indexation blocker, no crawl
 error wall (15 4xx out of 2,161), nothing to unblock. The pages are indexed and nobody searches for
-them. ⇒ **Genuinely demandless.** That is the finding, and per `realized-demand-discipline` a
+them. ⇒ ~~**Genuinely demandless.**~~ **(REFINED by §E21 — demandless at the TYPE level, but not uniformly: 43 of 703 pages (6.1%) take referred traffic and 16 (2.3%) read at human depth. 'Demandless' is right in aggregate and too strong as a blanket.)** That is the finding, and per `realized-demand-discipline` a
 measured "there is nothing here" is worth more than the work it prevents.
 
 `InLinks = 9` independently reconfirms §E3 — external authority (9 inbound vs a fleet sibling's 983)
@@ -1533,3 +1533,72 @@ because it looks like momentum.
 **Standing check for this site:** any Direct-channel figure must be decomposed before use. The
 channel-level crawler test passes here (§E18) and will keep passing, because dilution is exactly what
 it cannot see.
+
+### E21 · 2026-09-06 — ran the mandated traffic veto, caught my own invalid probe, and got a precise answer plus a tool limitation
+
+§E19 left the prune question open with a caveat. Closed it — after first invalidating my own test.
+
+#### 🔴 My first veto run was worthless, and it "passed"
+
+I fed the tool `https://colorcombinations.org/colors-that-go-with/an-outfit`. It returned
+**✅ OK — safe to delete, 0 impressions, 0 views**, twice, with a passing control (the trends page
+correctly returned 🔴 BLOCK at 245 entrances). Everything looked clean.
+
+**That URL does not exist.** The real structure is two-segment —
+`/colors-that-go-with/<colour>/an-outfit`. I built the URL from my own bucket aggregation, which
+strips to the first path segment. So the tool correctly reported no traffic for a page that isn't
+there, and I nearly recorded it as evidence the page type is safe to prune.
+
+Caught only because the verdict **contradicted my own data**: I had `an-outfit` at 17+13+13 sessions.
+Two instruments disagreeing is the signal; picking the convenient one is the failure. The real
+strings are 51 distinct `/colors-that-go-with/<colour>/an-outfit` pages.
+
+`positive-control-before-absence` says it outright: *URLs come from the sitemap, verbatim; never
+construct one to test whether a thing exists.* I constructed one. The control passing did not save
+me, because the control tested the instrument, not my URL.
+
+#### Re-run with verbatim sitemap URLs — now it discriminates
+
+```
+A  /colors-that-go-with/rust/an-outfit        🔴 BLOCK  16 entrances, 16 pv, entry rank #27/1325
+B  /colors-that-go-with/turquoise/nursery/    ✅ OK     0 GSC impressions AND 0 GA4 views
+C  /colors-that-go-with/burgundy/an-outfit    🔴 BLOCK  GSC serving it: 1 impr at avg position 2
+```
+
+#### 🔴 Tool limitation worth carrying: the veto does not apply the crawler-shape test
+
+Case A is **16 entrances / 16 pageviews — exactly 1.00 pv/s**, i.e. the §E18 crawler. The veto calls
+it *"a working page"* and blocks.
+
+That is **conservative in the correct direction** — protecting a crawler-only page costs nothing,
+deleting a human page costs a lot — so this is not a defect to fix. But it does mean: **on a
+crawler-contaminated site, a `BLOCK` verdict does not imply humans use the page.** Read the evidence
+line, not just the verdict; `entrances == pageviews` is the tell.
+
+#### The precise answer §E19 should have given
+
+Of the 703 `/colors-that-go-with/` URLs, over 30d:
+
+| | pages | share |
+|---|--:|--:|
+| appear in GA4 at all | 565 | 80.4% |
+| **have ANY referred (non-Direct) session** | **43** | **6.1%** |
+| **read deeper than 1.10 pv/s (human-shaped)** | **16** | **2.3%** |
+| never seen at all | 138 | 19.6% |
+
+Referred traffic to the whole type: **68 sessions across 43 pages.** Some of it is genuinely good —
+`/burgundy/an-outfit` takes 4 ChatGPT sessions at **3.50 pv/s**, and case C shows Google ranking one
+at **position 2**.
+
+So the type is demandless *in aggregate* with a small real tail, not uniformly dead. §E19's
+"genuinely demandless" is corrected in place above.
+
+#### Standing verdict for the next lane
+
+- ✅ **Do not build more of this page type.** 703 URLs returning 68 referred sessions is settled.
+- ❌ **Do not bulk-prune it either.** 43 pages have referred demand and Google ranks at least one at
+  position 2; a type-wide noindex would cut them. Any prune must be **per-URL through the veto**, and
+  the veto's BLOCKs must be read for `entrances == pageviews` to avoid protecting crawler-only pages.
+- The honest middle option nobody has costed: prune only the 138 never-seen URLs. That is 19.6% of
+  the type and 9.4% of the sitemap — and per §E20 the site's constraint is external authority
+  (`InLinks = 9`), which pruning does not touch. **Measure the benefit before doing it.**
