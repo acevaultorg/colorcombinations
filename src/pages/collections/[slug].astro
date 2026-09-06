@@ -67,6 +67,22 @@ const description = collection.description.replace(/<[^>]+>/g, "");
 
 // Freshness signals for LLM citation + Google Freshness (Aleyda #9).
 const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
+/* NO USER-VISIBLE "updated <date>" HERE (2026-09-06).
+ * The hero byline used to render `updated {BUILD_DATE}`, which told every
+ * reader the collection had been updated TODAY — on every deploy, for a
+ * fixed 1933 Sanzo Wada dataset that had not changed. That is a false
+ * freshness claim in the half a human actually reads, the inverse of the
+ * schema/byline contradiction fixed in 75dcb84.
+ *
+ * Removed rather than replaced: none of the 10 files in src/data carries a
+ * date/curation field (checked), so there is no honest per-collection date
+ * to substitute, and inventing one for 70 collections would be fabrication.
+ * Same reasoning src/pages/books/[slug].astro already applies at its own
+ * line 80. Do NOT re-add a build-clock date here.
+ *
+ * BUILD_DATE still feeds `dateModified` in the schema below — that is the
+ * wider 18-template question, sized and left deliberately open in TaskPeace
+ * card mtpuh2vxd18d63, not something to change piecemeal in this file. */
 const BUILD_DATE = new Date().toISOString();
 
 // Named human author (E-E-A-T / GEO "Credible" + "Recognizable"). Same @id as the
@@ -217,7 +233,7 @@ const jsonLd = [
       <p class="collection-hero__tagline cc-collection-intro">{collection.tagline}</p>
       <p class="collection-hero__byline">
         Curated by <a href="/about/" rel="author">Paulo de Vries</a> · from Sanzo Wada's 1933
-        <em>Dictionary of Color Combinations</em> · updated <time datetime={BUILD_DATE.slice(0, 10)}>{BUILD_DATE.slice(0, 10)}</time>
+        <em>Dictionary of Color Combinations</em>
       </p>
       <div class="collection-hero__description" set:html={collection.description}></div>
       <ShareActions
