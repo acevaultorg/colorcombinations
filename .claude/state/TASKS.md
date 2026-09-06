@@ -2365,3 +2365,95 @@ pages, which needs its own deliberate pass with a SERP ownership check first (an
 justified by Bing CTR, which `bing-ctr.mjs` reports CLICK-SELECTED/unavailable here). Filed with the
 full measurement as `mtpl97zgpdxt7e` rather than rushed at the tail of a long session — same call as
 E33→E34, which worked well.
+
+### E40 — the 9 hue families were published at two indexed URLs with the SAME `<title>`; gave the lower-traffic variant its own (2026-09-06)
+
+**What was true.** Every one of the 9 hue families ships at two self-canonical, sitemapped
+URLs — `/colors/{hue}/` (`colors/[hue]/index.astro`) and `/colors/hue/{hue}/`
+(`colors/hue/[hue].astro`) — and both served a **byte-identical `<title>`**. Measured on the
+live site before the change, 9 of 9 pairs matched exactly:
+
+```
+red      hue/: Red Color Combinations — The Dictionary of Color Combinations
+         colors/: Red Color Combinations — The Dictionary of Color Combinations   IDENTICAL
+… same for orange, yellow, brown, pink, green, blue, purple, neutral (9/9)
+```
+
+18 indexed URLs targeting 9 queries. Descriptions already differed, so **the `<title>` was
+the only field actually colliding** — a much smaller fix than the card estimated.
+
+**Why it is worth fixing here specifically.** The site's measured binding constraint is
+external authority: Bing `GetCrawlStats` reports `InLinks = 9` domain-wide, flat across the
+whole reporting window (§E38). Splitting nine queries across two self-canonical URLs dilutes
+exactly the signal that is already scarce. Neither variant appears anywhere in the Bing
+per-page feed (139 rows against `limit=5000`, so untruncated — positive control
+`/colors/daidai/` at 17 impressions does appear), so neither is currently ranking.
+
+**Removal was ruled out by measurement, not preference.** `check-safe-to-delete.mjs` BLOCKs
+7 of the 9 `/colors/hue/*` pages on live entrances (`/colors/hue/neutral/` 5 ent,
+`/colors/hue/pink/` 4 ent) **and** BLOCKs the `/colors/{hue}/` counterparts too
+(`/colors/blue/` 5 ent / 53 views / entry rank #111 of 1,325). So: no noindex, no 301, no
+cross-canonical — canonicalising a page that receives entrances deindexes a working page.
+Differentiating the titles is the only intervention that survives the veto.
+
+**Ownership check run first** (`affiliate-team-standard.md` § THE OWNERSHIP LAW), before
+writing a single title. `WebSearch("blue color combinations")` returns venngage, canva,
+**palettehunt.com**, pinterest ×3, farrow-ball (its own paint range only), and Wikipedia on
+**"Baby blue"** — an *adjacent* entity, which that rule reads as absence, not ownership. No
+standards body, no on-topic Wikipedia, **one** dedicated archetype peer rather than 3+.
+Verdict: **NOT OWNED — winnable wedge**, so retitling is worth doing rather than a page to
+judge on conversion instead.
+
+**The fix.** `metaTitle` added to `HueMeta` in `colors/hue/[hue].astro`; it feeds the
+`<title>` **only**. The nine new titles describe what that template actually contains, which
+its own copy already says — every lede there is Japanese-tradition specific (sora / asagi /
+hanada / kon; murasaki / kikyo / fuji; gofun / kinari / nezumi) and its keyword array already
+carried `Japanese {hue} colors`:
+
+```
+Japanese Red — Traditional Color Names & Palettes      (… ×9)
+```
+
+Checked against the neighbours so this does not create a NEW duplicate:
+`/learn/japanese-reds/` = "The Four Reds: Kurenai, Akane, Shu, Entan";
+`/learn/japanese-color-glossary/` = "Japanese Color Glossary: 20 Traditional Named Colors";
+`/colors-that-go-with/{hue}/` = "Colors That Go With X — Pairing Guide" (already distinct).
+
+**Deliberately minimal.** The visible H1, the OG share card and the meta description are
+untouched — no user-visible content change on 9 pages that carry live traffic. One string
+field, fully reversible.
+
+**NOT justified by Bing CTR.** `bing-ctr.mjs` prints `CLICK-SELECTED — CTR UNAVAILABLE` for
+this site, so per-page Bing CTR must not be used here (21 meta rewrites already shipped
+fleet-wide on that false premise). The basis is the identical `<title>` string, readable
+straight from the served HTML.
+
+**Honest residual.** The two pages still carry ~0.69 Jaccard content overlap; only the title
+signal is separated. If Google or Bing later collapses them anyway, the next move is a
+content split (make `/colors/hue/*` genuinely the Japanese-tradition view and `/colors/{hue}/`
+the modern-palette view) — a bigger job, and one that needs the traffic veto re-run at the
+time.
+
+**Same-leg correction — I fixed one signal and breached another.** Live-verifying the first
+deploy (`7cf2224`) showed the differentiation worked, and that 3 of the 9 new titles rendered
+**95 / 95 / 97 characters** (yellow, purple, neutral) — at or over the ~95 bound Bing flags as
+rule 50 "Title too long" (`bing-recommendations-autopilot.md`; already hitting 23 fleet sites
+/ 134 pages). Cause: the layout appends `" — The Dictionary of Color Combinations"` (39 chars),
+so `metaTitle` has a **56-char budget** and `"… Traditional Color Names & Palettes"` is 53–58.
+Dropping the redundant "Color" — the word still appears twice in the full rendered string —
+brings all nine to **82–87 characters** (max 87, neutral). Shipped as `2782910`; the budget is
+now a comment on the `HueMeta.metaTitle` field, including what the first form measured, so the
+next edit does not re-breach it.
+
+**Verified live after `2782910`** (pipeline `success`, served HTML):
+
+```
+9/9 pairs differentiated · max title 87 chars (bound 95) · 0 breaches
+h1 on /colors/hue/{hue}/ unchanged: "Red Color Combinations" … (9/9)
+/colors/blue/ title unchanged: "Blue Color Combinations — The Dictionary of Color Combinations"
+money path unaffected: /go/b/4861522471?c=book → 302 → https://colorcombinations.org/
+```
+
+**Measurement note:** `${#T}` in bash counts BYTES, and the em-dashes are 3 bytes each — the
+shell reports 86–91 where the character count is 82–87. Both are under the bound; the
+character count is the one the rule means.
