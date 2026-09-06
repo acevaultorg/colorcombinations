@@ -1672,3 +1672,17 @@ That is the third time tonight the same shape has bitten: §E19 (guessed field n
 → division by zero), §E21 (constructed a URL that didn't exist → false "safe to delete"), and now a
 default dimension I didn't ask for. **Print the echoed `request` before trusting any figure from this
 endpoint.**
+
+**§E22 precision fix (same leg):** I called 2.95% a "share-per-session rate", and 90% of that number
+is `download_share_card` — a **download**, which is an *intent* to share, not a confirmed share. The
+actual posting happens off-site and is unmeasurable from here. So:
+
+- ✅ **2.95% is a real share-*affordance-use* rate** and is the right number to compare against the
+  ≥3% target.
+- ❌ It is **not** k-factor. `aceusergrowth` Part 12 V1 (k-factor = new users brought per user)
+  remains genuinely **unmeasured** on this site, and nothing available without inbound-attribution
+  data can measure it. The DATA block's "Refer: k-factor ... not yet wired" is therefore **correct
+  about k-factor specifically** — my §E22 heading overstated by treating the whole axis as covered.
+
+What §E22 does establish: the *share-event* half of that axis is instrumented and at target, so the
+layer can read it today. The *k-factor* half is a real gap and stays open.
