@@ -2866,3 +2866,43 @@ CONTROL  /colors-that-go-with/beige/   schema 3 · rendered 3   ✅ reference te
 
 Remaining from §E46: **1,160 pages** across `/palettes/` (378), `/colors-that-go-with/[context]`
 (702), `/collections/` (69) and a handful of standalone pages. Carried on `mtpngwzp68woij`.
+
+### §E48 — render the FAQ that was schema-only on 378 `/palettes/` pages (2026-09-06)
+
+Second template of the §E46 defect (1,364 of 1,529 crawled pages ship FAQPage
+JSON-LD whose Q&A renders nowhere). Same fix as §E47, chosen next because
+`/palettes/` is the largest block outside the running §E5 link-concentration
+test.
+
+**Shipped** `ae36a96` — `src/pages/palettes/[slug].astro`:
+- extracted the 4 inline Q&As into `const paletteFaq` (single source, doc-commented)
+- `mainEntity` now maps that array — schema and visible text cannot drift
+- visible `<dl class="palette-faq__list">` before the `related` section, scoped
+  CSS (this template is scoped-CSS, not Tailwind — the `colors-that-go-with`
+  precedent uses Tailwind and could not be copied verbatim)
+
+Rendered rather than deleted because the answers are computed per palette:
+actual colours with hex, era, provenance (Wada 1933 vs original editorial),
+and the licence position. `isWada` branching preserved verbatim.
+
+**Verified live** (4 slugs pulled from the live sitemap, not guessed — a guessed
+slug 404s and reads as a failure):
+
+```
+/palettes/kurenai-kon/                              http=200 schema=4 rendered=4 heading=1 junk=0
+/palettes/wada-176-hermosa-pink-seashell-pink/      http=200 schema=4 rendered=4 heading=1 junk=0
+/palettes/wada-064-aconite-violet-dark-soft-violet/ http=200 schema=4 rendered=4 heading=1 junk=0
+/palettes/fuji-ai/                                  http=200 schema=4 rendered=4 heading=1 junk=0
+control A /colors/kurenai/    (fixed §E47)          http=200 schema=4 rendered=4 heading=1 junk=0
+control B /collections/boho/  (untouched)           http=200 schema=4 rendered=0 heading=0 junk=0
+```
+
+Control B is the one that matters: the detector still reads 0 on an untouched
+template, so the four 4/4 readings are a measurement and not a constant-true.
+`astro check` 0 errors / 0 warnings. `junk=0` = no `undefined`/`NaN`/`[object`/
+`>null<` in the rendered answers.
+
+**Running total:** 582 of 1,364 schema-only pages fixed (204 `/colors/` + 378
+`/palettes/`). Remaining: 702 `/colors-that-go-with/[color]/[context]`, 69
+`/collections/` (**deferred until after 2026-10-06** — that template is inside
+the §E5 test and a content change would confound it), ~11 standalone pages.
