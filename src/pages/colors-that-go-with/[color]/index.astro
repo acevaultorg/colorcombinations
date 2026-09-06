@@ -1,0 +1,310 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import BundleCta from "@components/BundleCta.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
+import { ART_SUPPLIES } from "@/config/monetization";
+import { bestTextColorOn, contrastRatio, hexToRgb } from "@/lib/color";
+import type { HexColor } from "@/types/palette";
+import {
+  commonColors,
+  commonColorBySlug,
+  contexts,
+  palettesFor,
+  partnerColors,
+  MIN_PALETTES,
+} from "@data/pairings";
+
+// The per-colour hub — closes the gap between the 703 [color]/[context] leaves
+// (no landing page one level up) and the root /colors-that-go-with/ index
+// (lists all 54 colours, not a single colour in depth). Per the ownership
+// check on this card: "colors that go with beige"/"...green" are NOT OWNED —
+// no standards body, no manufacturer page, no on-topic Wikipedia — so this is
+// a winnable page type, not a speculative one.
+//
+// Content policy: every number here is COMPUTED from the hex or drawn from
+// the existing archive-match engine (@data/pairings, already used by the leaf
+// pages) — zero fabrication, same idiom as [context].astro.
+
+export function getStaticPaths() {
+  return commonColors
+    .filter((c) => contexts.some((ctx) => palettesFor(c.hex, ctx).length >= MIN_PALETTES))
+    .map((c) => ({ params: { color: c.slug } }));
+}
+
+const { color: colorSlug } = Astro.params;
+const color = commonColorBySlug(colorSlug ?? "");
+if (!color) return Astro.redirect("/404");
+
+// ---- Colour science (identical formulas to [context].astro — zero fabrication) ----
+function hsl(hex: string) {
+  const h = hex.replace("#", "");
+  let [r, g, b] = [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)].map((v) => v / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  const l = (max + min) / 2;
+  let hue = 0, s = 0;
+  if (d !== 0) {
+    s = d / (1 - Math.abs(2 * l - 1));
+    if (max === r) hue = ((g - b) / d) % 6;
+    else if (max === g) hue = (b - r) / d + 2;
+    else hue = (r - g) / d + 4;
+    hue = Math.round(hue * 60); if (hue < 0) hue += 360;
+  }
+  return { hue, s, l };
+}
+function family(hex: string): string {
+  const { hue, s, l } = hsl(hex);
+  if (l > 0.82 && s < 0.22) return "soft cream & off-white";
+  if (l < 0.2) return "deep charcoal";
+  if (s < 0.14) return "warm greige & grey";
+  if ((hue >= 20 && hue < 45) && l < 0.45 && s < 0.55) return "soft brown";
+  if (hue < 18 || hue >= 340) return "muted red";
+  if (hue < 45) return "terracotta & clay";
+  if (hue < 70) return "ochre & gold";
+  if (hue < 160) return "green";
+  if (hue < 200) return "teal";
+  if (hue < 255) return "slate & blue";
+  if (hue < 292) return "muted violet";
+  return "dusty rose";
+}
+
+const rgb = hexToRgb(color.hex);
+const { hue: cHue, s: cS, l: cL } = hsl(color.hex);
+const sPct = Math.round(cS * 100);
+const lPct = Math.round(cL * 100);
+const _r = rgb.r / 255, _g = rgb.g / 255, _b = rgb.b / 255;
+const _k = 1 - Math.max(_r, _g, _b);
+const cmyk = _k >= 0.999
+  ? { c: 0, m: 0, y: 0, k: 100 }
+  : {
+      c: Math.round(((1 - _r - _k) / (1 - _k)) * 100),
+      m: Math.round(((1 - _g - _k) / (1 - _k)) * 100),
+      y: Math.round(((1 - _b - _k) / (1 - _k)) * 100),
+      k: Math.round(_k * 100),
+    };
+const temperature = cS < 0.12 ? "neutral" : (cHue < 75 || cHue >= 300) ? "warm" : (cHue >= 140 && cHue < 260) ? "cool" : "balanced";
+const lightWord = cL > 0.7 ? "light and airy" : cL > 0.45 ? "mid-toned" : "deep and grounding";
+const satWord = cS < 0.2 ? "nearly neutral" : cS < 0.5 ? "gently muted" : "saturated";
+const textOn = bestTextColorOn(color.hex);
+const cr = Math.round(contrastRatio(color.hex, textOn === "dark" ? "#1c1917" : "#fafaf9") * 10) / 10;
+const wcag = cr >= 7 ? "AAA" : cr >= 4.5 ? "AA" : cr >= 3 ? "AA for large text" : "below AA (decorative use)";
+
+// ---- Computed theoretical partners (HSL rotation — the same function the
+//      leaf pages' "partner families" summary is derived from, exposed here
+//      as its own citable block) ----
+const theory = partnerColors(color.hex);
+
+// ---- Per-setting summary: every context that clears the same quality guard
+//      the leaf pages use, each with its own archive-match count + top family
+//      (so this is a genuine roll-up, not a re-list of links) ----
+const settings = contexts
+  .map((ctx) => {
+    const matches = palettesFor(color.hex, ctx);
+    if (matches.length < MIN_PALETTES) return null;
+    const famCount = new Map<string, number>();
+    for (const m of matches.slice(0, 8)) {
+      for (const p of m.partners) famCount.set(family(p), (famCount.get(family(p)) ?? 0) + 1);
+    }
+    const topFamily = [...famCount.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "warm neutrals";
+    return { ctx, count: matches.length, topFamily, preview: matches.slice(0, 3) };
+  })
+  .filter((s): s is NonNullable<typeof s> => s !== null);
+
+// ---- Archive matches overall (context-neutral, for the hero grid) ----
+const heroMatches = settings
+  .flatMap((s) => s.preview)
+  .filter((m, i, arr) => arr.findIndex((x) => x.palette.slug === m.palette.slug) === i)
+  .slice(0, 6);
+
+const otherColors = commonColors
+  .filter((c) => c.slug !== color.slug && contexts.some((ctx) => palettesFor(c.hex, ctx).length >= MIN_PALETTES))
+  .slice(0, 8);
+
+const supplyOffset = color.slug.split("").reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % ART_SUPPLIES.length;
+
+// ---- SEO ----
+const h1 = `Colors That Go With ${color.name}`;
+const title = `Colors That Go With ${color.name} — Pairing Guide by Room & Use`;
+const answer = `${color.name} (${color.hex}) — ${color.descriptor} — is a ${temperature}, ${satWord} ${lightWord} colour. It pairs best with ${theory[0].role.toLowerCase()} ${theory[0].hex}, ${theory[1].role.toLowerCase()} ${theory[1].hex}, and grounding neutrals, drawn from ${settings.reduce((s, x) => s + x.count, 0)} historically-grounded combinations across ${settings.length} settings below.`;
+const description = `What colors go with ${color.name.toLowerCase()}? ${color.name} (${color.hex}) pairs with ${theory.slice(0, 2).map((t) => t.hex).join(" and ")} plus warm neutrals. ${settings.length} setting-specific guides — walls, weddings, clothes, kitchens, and more — from the 1933 Dictionary of Color Combinations.`;
+const canonical = `/colors-that-go-with/${color.slug}/`;
+
+const faq = [
+  { q: `What colors go with ${color.name.toLowerCase()}?`, a: answer },
+  {
+    q: `Is ${color.name.toLowerCase()} warm or cool?`,
+    a: `${color.name} is a ${temperature} colour — ${sPct}% saturation, ${lPct}% lightness. ${
+      temperature === "warm" ? `Balance it with ${theory[2].hex} or another cool/neutral partner.`
+      : temperature === "cool" ? `Balance it with ${theory[1].hex} or another warm partner.`
+      : `It reads as a backdrop colour — pair it with one saturated accent for contrast.`
+    }`,
+  },
+  {
+    q: `What is the hex code for ${color.name.toLowerCase()}?`,
+    a: `${color.name} is ${color.hex} — RGB(${rgb.r}, ${rgb.g}, ${rgb.b}), CMYK(${cmyk.c}, ${cmyk.m}, ${cmyk.y}, ${cmyk.k}).`,
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    url: `https://colorcombinations.org${canonical}`,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://colorcombinations.org/" },
+      { "@type": "ListItem", position: 2, name: "Colors that go with", item: "https://colorcombinations.org/colors-that-go-with/" },
+      { "@type": "ListItem", position: 3, name: color.name, item: `https://colorcombinations.org${canonical}` },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  },
+];
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} jsonLd={jsonLd} adContent>
+  <main class="mx-auto max-w-4xl px-5 py-10">
+    <nav class="mb-6 text-sm text-stone-500">
+      <a href="/" class="hover:underline">Home</a> ›
+      <a href="/colors-that-go-with/" class="hover:underline">Colors that go with</a> ›
+      <span>{color.name}</span>
+    </nav>
+
+    <header class="mb-8">
+      <div class="flex items-center gap-4">
+        <span
+          class="inline-block h-16 w-16 shrink-0 rounded-xl shadow-inner ring-1 ring-black/10"
+          style={`background:${color.hex}`}
+          title={color.hex}
+        ></span>
+        <div>
+          <h1 class="text-3xl font-semibold tracking-tight text-stone-900">{h1}</h1>
+          <p class="mt-1 font-mono text-sm text-stone-500">{color.hex} · {color.descriptor}</p>
+        </div>
+      </div>
+      <p class="mt-4 max-w-2xl text-stone-700">{answer}</p>
+    </header>
+
+    <!-- Colour reference (computed, zero fabrication — same math as the leaf pages) -->
+    <section class="mb-10 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-stone-200 p-5">
+        <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-stone-500">Colour reference</h2>
+        <dl class="space-y-1 text-sm text-stone-700">
+          <div class="flex justify-between"><dt>Hex</dt><dd class="font-mono">{color.hex}</dd></div>
+          <div class="flex justify-between"><dt>RGB</dt><dd class="font-mono">{rgb.r}, {rgb.g}, {rgb.b}</dd></div>
+          <div class="flex justify-between"><dt>CMYK</dt><dd class="font-mono">{cmyk.c}, {cmyk.m}, {cmyk.y}, {cmyk.k}</dd></div>
+          <div class="flex justify-between"><dt>Temperature</dt><dd>{temperature}</dd></div>
+          <div class="flex justify-between"><dt>Lightness</dt><dd>{lightWord} ({lPct}%)</dd></div>
+          <div class="flex justify-between"><dt>Contrast on {textOn === "dark" ? "white" : "black"} text</dt><dd>{cr}:1 ({wcag})</dd></div>
+        </dl>
+      </div>
+      <div class="rounded-xl border border-stone-200 p-5">
+        <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-stone-500">Computed partners</h2>
+        <div class="space-y-2">
+          {theory.map((t) => (
+            <a href={`/tools/palette-from-color?hex=${encodeURIComponent(t.hex.replace("#", ""))}`} class="flex items-center gap-2 text-sm text-stone-700 hover:underline">
+              <span class="inline-block h-5 w-5 shrink-0 rounded ring-1 ring-black/10" style={`background:${t.hex}`}></span>
+              <span>{t.role}</span>
+              <span class="ml-auto font-mono text-xs text-stone-400">{t.hex}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Per-setting roll-up: the internal-linking engine to the 13 leaves -->
+    <section class="mb-12">
+      <h2 class="mb-4 text-lg font-semibold text-stone-900">{color.name} by setting</h2>
+      <div class="grid gap-4 sm:grid-cols-2">
+        {settings.map(({ ctx, count, topFamily }) => (
+          <a
+            href={`/colors-that-go-with/${color.slug}/${ctx.slug}/`}
+            class="group block rounded-xl border border-stone-200 p-4 transition hover:border-stone-400 hover:shadow-sm"
+          >
+            <p class="font-medium text-stone-900 group-hover:underline">{color.name} for {ctx.label}</p>
+            <p class="mt-1 text-sm text-stone-600">{ctx.tip} {topFamily}. {count} matching combinations.</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Archive combinations featuring this colour -->
+    <section class="mb-12">
+      <h2 class="mb-4 text-lg font-semibold text-stone-900">
+        Combinations with {color.name.toLowerCase()}, from the 1933 Dictionary
+      </h2>
+      <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
+        {heroMatches.map((m) => {
+          const all = [m.matchHex, ...m.partners] as HexColor[];
+          return (
+            <a
+              href={`/palettes/${m.palette.slug}/`}
+              class="group block overflow-hidden rounded-xl border border-stone-200 transition hover:shadow-md"
+            >
+              <div class="flex h-16">
+                {all.map((hx) => (
+                  <span class="flex-1" style={`background:${hx}`} title={hx}></span>
+                ))}
+              </div>
+              <div class="p-3">
+                <p class="text-sm font-medium text-stone-900 group-hover:underline">{m.palette.title}</p>
+                <p class="mt-0.5 line-clamp-2 text-xs text-stone-500">{m.palette.summary}</p>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- FAQ (feeds the FAQPage schema above — visible text matches schema) -->
+    <section class="mb-12">
+      <h2 class="mb-4 text-lg font-semibold text-stone-900">FAQ</h2>
+      <div class="space-y-4">
+        {faq.map((f) => (
+          <div>
+            <p class="font-medium text-stone-900">{f.q}</p>
+            <p class="mt-1 text-sm text-stone-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Other colours -->
+    <section class="mt-8 border-t border-stone-200 pt-6">
+      <h2 class="mb-3 text-base font-semibold text-stone-900">Other colors</h2>
+      <div class="flex flex-wrap gap-2">
+        {otherColors.map((c) => (
+          <a
+            href={`/colors-that-go-with/${c.slug}/`}
+            class="flex items-center gap-2 rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
+          >
+            <span class="inline-block h-3 w-3 rounded-full" style={`background:${c.hex}`}></span>
+            {c.name}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <div class="mt-10">
+      <PaintThisPalette
+        title="Work with this colour"
+        intro={`You have the hex code, the RGB/CMYK values and the computed partners for ${color.name}. These are the materials a colour study like this actually gets made with.`}
+        limit={2}
+        offset={supplyOffset}
+      />
+      <BundleCta />
+      <FurtherReading
+        pageClass="colors-that-go-with"
+        title="Go deeper on colour"
+        intro={`The colour-theory books behind pairings like ${color.name} — history, reference and the science of what works together.`}
+      />
+    </div>
+  </main>
+</BaseLayout>

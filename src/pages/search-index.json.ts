@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { allPalettes } from "@data/palettes";
 import { allColors } from "@data/colors";
 import { collections } from "@data/collections";
+import { commonColors, contexts, palettesFor, MIN_PALETTES } from "@data/pairings";
 
 // Fleet Search Standard v1.0 — compact client-side instant-search index.
 // Palettes + colors + collections; the search UI fetches /search-index.json once.
@@ -64,9 +65,17 @@ export const GET: APIRoute = () => {
         //   "black white"   0 → 3      "white"  3 → 15
         //   "lapis lazuli"  0 → 1      "black" 12 → 45
         //   "violet"       25 → 65     "olive" 23 → 42
-        // It does NOT fix "beige" or "matcha and white" (0 → 0): no Wada colour
-        // is named or means beige. Those are dataset absences, not index gaps,
-        // and indexing cannot invent them.
+        // It does NOT fix "matcha and white" (0 → 0): no Wada colour is named or
+        // means matcha. That is a genuine dataset absence.
+        //
+        // CORRECTED 2026-09-06: this comment originally also listed "beige" as
+        // a dataset absence ("no Wada colour is named or means beige"). That
+        // was true of the WADA PALETTE dataset and was over-generalised to
+        // "the site" — the /colors-that-go-with/ pairing engine (@data/pairings,
+        // 54 common colours incl. Beige, Burgundy, Emerald Green) has since
+        // made it false for those three colours. Fixed by indexing the pairing
+        // hubs below (one row per colour, not per leaf — see the block after
+        // `collections`), so "beige" now resolves to /colors-that-go-with/beige/.
         x: [
           p.era,
           p.dominantHue,
@@ -96,6 +105,19 @@ export const GET: APIRoute = () => {
       k: "Collection",
       x: "",
     })),
+    // "colors that go with X" hubs — indexed as a colour-adjacent entry, one row
+    // per colour (NOT per leaf: indexing all 702 [color]/[context] leaves would
+    // put 13 near-identical "X — bedroom / X — bathroom / ..." rows ahead of the
+    // Wada archive colours for a bare colour-name search, which is the crowding
+    // regression this design was picked specifically to avoid).
+    ...commonColors
+      .filter((c) => contexts.some((ctx) => palettesFor(c.hex, ctx).length >= MIN_PALETTES))
+      .map((c) => ({
+        s: `/colors-that-go-with/${c.slug}/`,
+        t: `Colors that go with ${c.name}`,
+        k: "Pairing guide",
+        x: [c.name.toLowerCase(), "pairing", "goes with", "match"].join(" "),
+      })),
   ];
   return new Response(JSON.stringify(idx), {
     headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=3600" },

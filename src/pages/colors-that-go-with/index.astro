@@ -38,7 +38,7 @@ const jsonLd = {
         <section>
           <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold text-stone-900">
             <span class="inline-block h-5 w-5 rounded-md ring-1 ring-black/10" style={`background:${color.hex}`}></span>
-            Colors that go with {color.name}
+            <a href={`/colors-that-go-with/${color.slug}/`} class="hover:underline">Colors that go with {color.name}</a>
           </h2>
           <div class="flex flex-wrap gap-2">
             {ctxs.map((ctx) => (
