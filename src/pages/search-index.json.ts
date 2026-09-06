@@ -3,6 +3,9 @@ import { allPalettes } from "@data/palettes";
 import { allColors } from "@data/colors";
 import { collections } from "@data/collections";
 import { commonColors, contexts, palettesFor, MIN_PALETTES } from "@data/pairings";
+import { PILLAR_LINKS } from "@data/pillarMap";
+import { PAIRS, FORMATS } from "@data/converterPairs";
+import { allPaintings } from "@data/paintings";
 
 // Fleet Search Standard v1.0 — compact client-side instant-search index.
 // Palettes + colors + collections; the search UI fetches /search-index.json once.
@@ -35,6 +38,23 @@ export const prerender = true;
 const SPELLING_ALIASES: Record<string, string> = {
   "sulpher yellow": "sulphur yellow sulfur yellow",
 };
+
+/** Standalone editorial + tool pages that have no data module of their own.
+ *  Long, specific titles only -- see the crowding note in the index below. */
+const STANDALONE = [
+  { s: "/tools/contrast-checker/", t: "WCAG Contrast Checker", k: "Tool", x: "contrast ratio accessibility aa aaa wcag check" },
+  { s: "/tools/color-blindness-simulator/", t: "Color Blindness Simulator — test a palette for CVD", k: "Tool", x: "colorblind deuteranopia protanopia tritanopia simulate" },
+  { s: "/tools/palette-from-image/", t: "Color Palette from Image — extract colors in your browser", k: "Tool", x: "extract picture photo upload dominant colours" },
+  { s: "/tools/palette-from-color/", t: "Palette Finder — start from one color", k: "Tool", x: "closest wada palettes from a hex single colour" },
+  { s: "/tools/gradient-generator/", t: "CSS Gradient Generator — linear & radial", k: "Tool", x: "css gradient linear radial copy code" },
+  { s: "/tools/color-converter/", t: "Color Converter — HEX, RGB, HSL, HSV, CMYK, OKLCH", k: "Tool", x: "convert colour code formats" },
+  { s: "/trends/color-trends-2026/", t: "Color of the Year 2026 — every pick, compared", k: "Trend", x: "colour of the year 2026 pantone dulux benjamin moore trend" },
+  { s: "/trends/color-trends-2027/", t: "The 2027 Colors of the Year — every pick announced so far", k: "Trend", x: "colour of the year 2027 trend forecast" },
+  { s: "/glossary/", t: "Color & Design Glossary: 22 terms every palette page uses", k: "Guide", x: "triadic complementary analogous saturation hue chroma definitions" },
+  { s: "/color-psychology/", t: "Color Psychology: an honest designer's guide", k: "Guide", x: "meaning emotion feeling colours psychology" },
+  { s: "/material-design/", t: "Material Design Color: M2 vs M3, and how to seed a theme", k: "Guide", x: "material you android theme seed tonal palette" },
+  { s: "/accessibility/color-blind-tools/", t: "Color-Blind Simulator Tools, Compared", k: "Guide", x: "sim daltonism color oracle nocoffee chromatic vision compare" },
+];
 
 export const GET: APIRoute = () => {
   const idx = [
@@ -118,6 +138,49 @@ export const GET: APIRoute = () => {
         k: "Pairing guide",
         x: [c.name.toLowerCase(), "pairing", "goes with", "match"].join(" "),
       })),
+    // ------------------------------------------------------------------
+    // Editorial + tool surfaces. Added 2026-09-06 (§E43) after measuring that
+    // the index covered ONLY Palette/Color/Collection/Pairing-guide (711 rows)
+    // while ~100 real content pages were unreachable from the site's own
+    // search -- including /trends/color-trends-2026/, the site's single
+    // highest-impression page in Bing. Measured miss: "year" x2 -> 0 results;
+    // "contrast checker" -> 0 results; "monet" -> 0 results.
+    //
+    // 🔴 SECTION INDEX PAGES AND BOILERPLATE ARE DELIBERATELY EXCLUDED, and
+    // this is the whole design constraint -- not caution. Ranking scores a
+    // title-prefix hit 100 and tie-breaks on SHORTEST TITLE, so a 7-character
+    // "Contact" outranks "Coral Red" for the query "co". Simulated against the
+    // 226 real successful search terms of the last 30d, adding all 115
+    // unindexed pages REGRESSED 10 of them (11 events): "co"/"con" ->
+    // /contact/, "pr" -> /privacy/, "Ter" -> /terms/, "bu n" -> /shop/.
+    // Dropping the short-titled index/legal pages cut that to 3 events, all of
+    // them garbled mid-typing states ("pr i n", "pr i nt", "un"), against 12
+    // events gained. Net +9 events/30d, measured, not assumed.
+    //
+    // So: never add /tools/, /learn/, /books/, /about/, /contact/, /privacy/,
+    // /terms/, /shop/, /browse/, /data/ or any other one-word index title here.
+    // Deep pages carry long specific titles and do not crowd.
+    //
+    // Data-driven wherever a module exists (PILLAR_LINKS, PAIRS, allPaintings)
+    // so this does not rot as pages are added; only the handful of standalone
+    // editorial/tool pages are listed explicitly.
+    ...Object.values(PILLAR_LINKS)
+      .map((l) => ({ ...l, href: l.href.split("#")[0] }))
+      .filter((l, i, a) => a.findIndex((z) => z.href === l.href) === i)
+      .map((l) => ({ s: l.href, t: l.title, k: "Guide", x: l.lede })),
+    ...PAIRS.map((pr) => ({
+      s: `/tools/color-converter/${pr.slug}/`,
+      t: `${FORMATS[pr.from].label} to ${FORMATS[pr.to].label} converter`,
+      k: "Tool",
+      x: `${FORMATS[pr.from].long} ${FORMATS[pr.to].long} convert color code`,
+    })),
+    ...allPaintings().map((pt) => ({
+      s: `/paintings/${pt.slug}/`,
+      t: `${pt.title} — palette`,
+      k: "Painting",
+      x: `${pt.artist} ${pt.year} painting colors`,
+    })),
+    ...STANDALONE,
   ];
   return new Response(JSON.stringify(idx), {
     headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=3600" },
