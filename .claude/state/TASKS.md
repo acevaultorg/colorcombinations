@@ -521,3 +521,118 @@ Use `GetRankAndTrafficStats` (the unselected daily rollup) for any rate or denom
 (`affiliate-team-standard` § the intersection law — readinglist shipped 98 decade×grade pages for 0
 impressions on exactly this mistake), and check no other lane is on it (one shipped to
 `/shop/` + `monetization.ts` during this very session).
+
+---
+
+## 2026-09-06 · imac-color-lane · what the site's own data says (read this before proposing work)
+
+Fifteen hypotheses tested in one session. **Thirteen were refuted by measurement.** Recording the
+survivors and — more usefully — the things that look obviously worth doing and are not, because
+every one of them was arrived at independently and cost a leg.
+
+### The two findings that survived
+
+**1. The AI channel is real, measured, and converts.** GA4 30d, complete pulls:
+
+```
+channel           sess     pv  users  pv/s  s/u   amazon_clicks  clk/1k sess  scroll90
+Direct            3216   5243   2485  1.63 1.29             32         10.0     17.2%
+Organic Search    2451   7298   1321  2.98 1.86            129         52.6     17.7%
+AI Assistant      1055   3074    701  2.91 1.50             63         59.7     17.4%
+```
+
+15.0% of sessions → **26.1% of Amazon clicks**. Statistically **at parity** with Organic Search
+(z=0.85, p=0.398 — claim parity, NOT superiority) and **6× Direct** (p=1.9e-21). Scroll engagement
+is flat across channels, so it is intent, not attention. The cohort is human-shaped (1.50 s/u) and
+this site is separately measured at 0.0% crawler-shaped, so the denominator is clean.
+
+**2. Four URLs carry 14.1% of that channel** — 0.27% of the ~1,470-page sitemap:
+
+```
+/books/a-dictionary-of-color-combinations/   86 AI sessions   <- 94.5% of ALL /books/ AI traffic
+/data/                                       28              <- 100% of /data/
+/compare/wada-vol-1-vs-vol-2/                24              <- 100% of /compare/
+/learn/color-data-analysis/                  11
+```
+
+Treat as crown jewels: protect freshness, schema and paths; never silently restructure them.
+
+### Page ROLE — the single most useful table here
+
+Judging any surface on another's metric produces a wrong verdict. This site has exactly **two**
+commercial-intent surfaces; everything else is acquisition or citation inventory.
+
+```
+surface                 pages   pv    clk/1k pv   CTAs   PER-CTA   role
+/books/a-dict...            1  163       165.6       1     165.6   COMMERCIAL
+/compare/wada...            1   67       164.2      10      16.4   COMMERCIAL
+/shop/                      2  180       383.3      54       7.1   index (density, not persuasion)
+/learn/                    13  261         0.0      12       0.0   citation + ad inventory
+/colors-that-go-with/     703  824         2.4      38       0.1   ANSWER surface
+/palettes/                378  968         3.6       —         —   browse
+/colors/                  223 1831         5.7       —         —   browse
+```
+
+**Do not add CTAs anywhere.** The relationship is inverse across two orders of magnitude:
+1 CTA → 165.6 per-CTA · 10 → 16.4 · 12 → 0.0 · 54 → 7.1. The site's single best commercial
+affordance is **one link on one page**.
+
+### Refuted — do not re-derive these
+
+| hypothesis | killed by |
+|---|---|
+| search-index has gaps | already fixed 09-03/04; verified live (696 `wada` tokens, hex indexed, alias present) |
+| search instrumentation broke 09-04 | daily series minimum is **0** (range 0–34); n=1 clean day. Gated to 09-09 |
+| `/colors-that-go-with/` 1.06 pv/sess is a leak | 27.7% scroll-90 (2nd best on site), links in top quarter — it is the page's ROLE |
+| ...and it under-converts | n=2 clicks, P(≤2)≈0.31 |
+| perf 50 / LCP 11.7s is real | **lab-only**; CrUX field PASSES (LCP 1.0s, INP 113ms, CLS 0) |
+| expand `/books/` (7.58 AI sess/page) | 94.5% is ONE page wearing a template average; a 13th page draws ~0.5 |
+| route internal traffic to converters | `/shop` has **6× the links** of `/books` and the SAME pageviews (8,820 instances → 180 pv) |
+| `/learn/` 0 clicks is a placement bug | CTAs sit mid-body at 43–59%; cause is intent (research surface) |
+| 40 titles exceed 95 chars | 38 of them sit on pages with **35 impressions total** |
+| `/collections/y2k/` 1.54% vs sibling 6.09% is a title bug | SERP intent: y2k = 4/10 image-marketplace results, japanese = 1/10 |
+| add LAB to match the competitor | **0 of 455** distinct search terms in 30d contain "lab" |
+| competitor is client-rendered (AI can't read them) | their `/colors` serves 171 hex codes in HTML |
+| `/palettes/` 404s | intentional non-page — not in sitemap, nothing links it; `/browse/` is the index |
+
+### Competitor
+
+**`wada-sanzo-colors.com`** — same dataset, near-same name — ranks page 1 for `japanese color
+palette`, our best query (1,446 impr, 6.09%, pos 4.2). They have 553 pages to our 1,470 and emit
+**`WebSite` schema only** against our BreadcrumbList/FAQPage/CreativeWork/Book/Dataset. Schema
+richness + surface size is our moat; protect it. Their LAB pitch is not a gap (above).
+
+### Ownership check — first run on this site
+
+`color of the year 2026` (6,777 impr = **35.7% of all site Bing impressions**, pos 4.9) is
+**NOT institution-owned** — manufacturers cover only their own colour, no Pantone page ranks, and
+three archetype peers hold page 1. **Winnable. The lever is position (4.9 → top-3), not the
+title** — the 95-char title is correctly front-loaded and intent-matched.
+
+### Verified clean (do not re-check)
+
+- Money path: 13/13 live checks, detector controlled via `VERIFY_ORIGIN=example.com` (9 FAILs).
+- IndexNow: **200** from both `api.indexnow.org` and Bing — genuinely registered, not silently
+  403ing behind the CI's non-fatal `||`.
+- copyright-safety: `/copyright/` 948w with notice-and-takedown + non-affiliation; contact is in
+  JSON-LD `ContactPoint` (the `[email protected]` render is Cloudflare obfuscation, not a gap).
+- Breadcrumb schema: 18 templates audited, **zero** visible-crumb-without-`BreadcrumbList`.
+
+### Shipped
+
+`d0619ff` verify-guard (a negative assertion passed vacuously for an absent file) ·
+`77283b3` BreadcrumbList on `/books/[slug]`, live-verified with controls.
+
+### Scheduled gates (fireable — `status: scheduled`, non-null `scheduledFor`)
+
+- **2026-09-09** `mtp8e5hv6zefhh` — search zero-result rate; baseline to beat **34.0%**. Read the
+  RATE not the count; post-fix n was only 5 events.
+- **2026-10-06** `mtp835nfohbpez` — AI citation share. Needs a Chrome-MCP lane; the public API has
+  no AI-performance surface (probed, 404 against a passing `GetCrawlStats` control).
+
+### Method note
+
+I used the `/bing-detail` per-page CTRs before noticing this file's own **2.54× enrichment
+calibration** above. Ratios between pages survive a uniform enrichment; absolute CTRs do not.
+Use `GetRankAndTrafficStats` for any rate. Searching the board is not enough — **read this file
+first**; that lesson cost a duplicate card tonight.
