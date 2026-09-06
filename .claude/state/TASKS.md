@@ -2765,3 +2765,55 @@ the levers are enumerated separately, by name, with why each is not runnable fro
 not "nothing left to do", and not a claim earned by counting clean defect checks. The single
 highest-value item on the list is unchanged and unchangeable from here: **9 external inbound
 links** is the binding constraint, and closing it needs the operator.
+
+### E46 — 1,364 pages ship `FAQPage` schema whose Q&A is NOT on the page (2026-09-06)
+
+Found in a structured-data integrity pass over all 1,529 crawled pages. Filed, **not fixed** — it
+is a 1,364-page policy judgement on the #2 earner, and this codebase's own repeated lesson is that
+a bulk change of that shape needs its own deliberate pass.
+
+**Structured data is otherwise in excellent health:** 1,528 of 1,529 pages carry JSON-LD,
+**0 malformed**, and the only page without any is `/palettes/` — correctly, since §E41 made it a
+301. `@type` histogram is sane (WebSite 1529, Organization 1528, BreadcrumbList 1513, WebPage 1357,
+ItemList 708, Person 72, Dataset 2…).
+
+**The finding.** Every `FAQPage` block on the site has exactly ONE block per page with 3–6 Q&A
+pairs — the count discipline `seo-geo-mastery` Part 14.1 asks for is followed exactly, and
+**0 pages** have multiple blocks (the `faqpage_schema_spam_multiple_blocks × -1000` hard-reject
+does not fire). What fails is *visibility*:
+
+| page type | FAQ rendered | **FAQ schema-only** |
+|---|---:|---:|
+| `/colors-that-go-with/` hubs (`[color]/index.astro`) | **54** | 0 |
+| `/colors-that-go-with/` leaves (`[color]/[context].astro`) | 0 | **702** |
+| `/palettes/[slug]` | 0 | **378** |
+| `/colors/[slug]` | 0 | **204** |
+| `/collections/[slug]` | 0 | **69** |
+| `/tools/`, `/compare/`, `/trends/` | 17 | 7 |
+| **TOTAL** | **71** | **1,364** |
+
+**The detector is controlled in both directions** — 71 pages (the newer hub/tool/compare templates)
+render every schema question verbatim in rendered text, so it is not flagging everything. Verified
+by hand on `/collections/boho/`: the string `What is in the "Boho Color Palettes" collection?`
+occurs **only inside the `<script type="application/ld+json">` block** (escaped as `\"`, immediately
+followed by `,"acceptedAnswer"`), and the page's rendered headings are the collection title, share,
+six palette names and "Off the screen". The one `<details>/<summary>` on the page is the data
+disclosure, not an FAQ.
+
+**It was introduced deliberately.** Both emitters carry the comment
+`// FAQPage + Speakable per rules/seo-geo-mastery.md Part 14.` — so this is a rule being followed,
+not an oversight. **The rule specifies the count discipline and omits Google's visibility
+requirement**, which is a gap that affects every fleet site using Part 14, not just this one.
+
+**External check, because the severity depends on current policy** (searched 2026-09-06): Google's
+general structured-data guidelines still require markup to match visible page content — *"every
+question and answer in the JSON-LD must appear in visible HTML"* — while FAQ **rich results were
+deprecated on 2026-05-07** and no longer render in Search at all.
+
+So the honest severity is **moderate, not catastrophic**: there is no rich result left to lose and
+no obvious manual-action trigger, but it breaches the general guideline and this fleet's own I-43
+Schema Honesty dimension. And it cuts the other way too — with rich results gone, the schema's only
+remaining purpose is AI extraction, and **AI extractors read rendered content anyway**, so a
+schema-only FAQ is of dubious value even for the reason it was added.
+
+Filed as `mtpngzrvcbn5ln` with three options (render / drop / leave). Not actioned here.
