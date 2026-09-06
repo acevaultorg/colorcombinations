@@ -31,6 +31,34 @@ deploy_cf_pages:
     CF_PAGES_PROJECT: "colorcombinations"
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
+  # ── IndexNow manifest persistence (2026-09-06) ────────────────────────────
+  # `.indexnow-manifest.json` IS git-tracked (46b11cd), so a fresh CI checkout
+  # always has A baseline — that is why wiring IndexNow into CI at all was safe.
+  # But the manifest the job WRITES was thrown away with the container, so the
+  # baseline never advanced: it stayed frozen at its commit date while content
+  # shipped on top of it. Measured 2026-09-06, 35 src/ commits after the
+  # baseline: 1,386 of 1,474 sitemap URLs no longer matched it, so the next
+  # deploy would have announced ~94% of the sitemap — and then done it AGAIN on
+  # every subsequent deploy, since nothing advanced the baseline. That repetition
+  # is the batch-abuse pattern scripts/indexnow-ping.mjs exists to prevent,
+  # arriving through the back door. It matters here specifically because this
+  # site is Bing-native (519 Bing clicks vs 4 Google/30d) and ChatGPT grounds on
+  # the Bing index — the one channel worth protecting.
+  #
+  # Cache, not a git write-back: the alternative needs a push credential this job
+  # does not have (and minting one is an operator decision). GitLab restores the
+  # cache AFTER checkout, so the advanced manifest correctly overwrites the git
+  # baseline, and the job saves the refreshed one for the next run.
+  #
+  # STRICTLY CANNOT BE WORSE THAN TODAY: a cache miss (eviction, new branch,
+  # runner change) simply leaves the git-tracked baseline in place — i.e. exactly
+  # the current behaviour, submitting the genuinely-changed set. It degrades to
+  # today's state, never to something new.
+  cache:
+    key: "indexnow-manifest-$CI_COMMIT_REF_SLUG"
+    paths:
+      - .indexnow-manifest.json
+    policy: pull-push
   script:
     # DOCS-ONLY SHORT-CIRCUIT. A build here is ~8-10 min against a 400-minute
     # free monthly budget for the WHOLE acevault-lab namespace — roughly 40-50
