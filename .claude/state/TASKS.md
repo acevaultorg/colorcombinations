@@ -1195,3 +1195,114 @@ low end, so it does NOT cancel in a ratio between two pages either. Neither abso
 inter-page CTR ratios from this feed are usable.)**
 Use `GetRankAndTrafficStats` for any rate. Searching the board is not enough — **read this file
 first**; that lesson cost a duplicate card tonight.
+
+### E17 · 2026-09-06 — retention measured (the unwired axis), and it reframed the whole session: ORGANIC SEARCH IS FLAT, ChatGPT is the #2 source
+
+The DATA block's "not yet wired" list names `Retain: D1/D7/D30 cohorts`. Unlike the AEO item it does
+NOT need Chrome, so it was the one genuinely-unrun in-scope lever left. Ran it. It answered a smaller
+question than expected and surfaced a much bigger one.
+
+**Instrument note first:** true D1/D7/D30 cohorts need GA4's `cohortSpec`, which `/ga4-probe` does not
+expose. `daysSinceLastSession` is a **Universal Analytics** dimension and is invalid in Data API v1
+(`"Field daysSinceLastSession is not a valid dimension"` — with a passing control on `newVsReturning`
+in the same minute, so that absence is the API's, not the probe's). What follows is the daily
+new-vs-returning series, an honest **proxy**, not cohorts. Do not quote it as cohort retention.
+
+#### Retention: real, healthy, and not worth building for
+
+30d, 90/90 rows, `truncated:false`:
+
+| | users | share | pv/session |
+|---|--:|--:|--:|
+| new | 4,357 | 81.7% | 2.30 |
+| returning | 974 | 18.3% | 3.35 |
+
+Returning users are 18.3% of users but **33.8% of pageviews**.
+
+🔴 **One day (2026-08-14) shows returning pv/session of 23.29** — 17 users, 21 sessions, 489 pageviews,
+i.e. one very heavy session. Checked rather than reported, per the dominant-member rule:
+
+```
+WITH outlier      new 2.30  ret 3.35  = 1.46x
+WITHOUT outlier   new 2.29  ret 3.07  = 1.34x
+medians           new 2.28  ret 2.94  = 1.29x
+returning out-reads new on 24 of 30 days
+```
+
+So the effect is real and consistent, and the headline 1.46× was inflated ~9% by one session.
+**Use 1.34×.**
+
+**Priced before proposing anything.** Site earns $0.0117/session (measured this session); pageviews
+gap is 16,213 → 40,000, i.e. **+146%**:
+
+| returning share | extra pv | % of the gap | $/mo |
+|---|--:|--:|--:|
+| 18.3% → 22% | +610 | 3.8% | $2.33 |
+| 18.3% → 25% | +1,101 | 6.8% | $4.20 |
+| 18.3% → 30% | +1,920 | 11.8% | $7.32 |
+
+A **heroic** 18.3%→30% closes 11.8% of a 146% gap for $7.32/mo. ⇒ **Do not fund retention work here.**
+Checked what already exists before saying that: `EmailCapture.astro` ships, share/Pinterest/save-image
+ships, and there is **no** saved-palettes / favourites / recently-viewed feature. That is the obvious
+lever and it is the one the arithmetic kills.
+
+#### 🔴 The finding that actually matters — I had been working a FLAT channel all session
+
+Same window, sessions by channel, first 15d → last 15d (158/158 rows, `truncated:false`):
+
+```
+Direct          1319 -> 1772   +453  (+34%)   1.64 pv/s
+AI Assistant     443 ->  600   +157  (+35%)   2.90 pv/s   <- deepest channel on the site
+Referral         104 ->  122    +18  (+17%)
+Organic Search  1196 -> 1194     -2   (-0%)   2.98 pv/s   <- FLAT
+TOTAL           3089 -> 3731   +642  (+21%)
+```
+
+**Organic Search is flat.** Every lever I priced this session — title length, meta descriptions, the
+Bing SEO rules, breadcrumbs — sits on that channel. They were all correctly measured and all
+correctly priced under \$1/mo, and now I can see they were also aimed at the one channel that is not
+moving. The growth is Direct (+34%) and AI Assistant (+35%).
+
+#### Sources, and the sharp contrast inside them
+
+72/72 rows, `truncated:false`:
+
+```
+(direct)        3122   Direct          1.62 pv/s
+chatgpt.com     1022   AI Assistant    2.93 pv/s   <- #2 source on the whole site
+duckduckgo       882   Organic Search  2.57
+bing             696   Organic Search  2.98
+ecosia.org       387   Organic Search  3.84
+yandex.ru        207   Organic Search  3.06
+```
+
+**ChatGPT outranks every individual search engine on this site.** AI Assistant breaks down as
+chatgpt.com 1,022 · copilot.com 9 · claude.ai 5 · perplexity.ai 2 — **98.5% ChatGPT**.
+
+🔴 **And this site is credited with ~24,987 Copilot citations/30d, which return NINE copilot.com
+sessions.** 0.036%. That is `ai-citation-channel` LAW 4 made concrete inside one site: the engine the
+site is famous for citing it sends essentially nobody, and the traffic comes from a different
+assistant entirely. Flagged upstream — see the fleet-rule note, because the rule's headline 3.63%
+citation→click figure for this site joins a Bing-WMT **Copilot** citation count to a GA4 session count
+that is 98.5% **ChatGPT**.
+
+#### Landing pages (1000/1492 rows, TRUNCATED — head complete, tail cut, figures are FLOORS)
+
+```
+ChatGPT   /  53.0%   /browse 9.9%   /books/ 8.9%   ( /books/a-dictionary-of-color-combinations = 86 sess @ 3.51 pv/s )
+Bing      /  38.4%   /trends/ 16.0% /collections/ 13.6%
+DDG       /  46.8%   /browse 12.8%  /collections/ 11.8%
+```
+
+ChatGPT lands on the homepage and the book page — entity-driven, exactly matching the site's known
+45–75% citation share on "dictionary of colour combinations" queries. **The AI channel is working,
+deep, growing, and landing on the right pages. There is no defect here to fix.**
+
+#### What this changes for whoever works this site next
+
+- Stop pricing search-side hygiene levers. Measured flat, and separately worth <\$1/mo each.
+- Retention is measured, healthy (1.34× depth), and not fundable (\$7.32/mo at a heroic target).
+- The two growing channels are Direct (+34%) and AI/ChatGPT (+35%). Direct reads shallowest
+  (1.64 pv/s) and is 42% of sessions — **it is the largest unexamined block on the site** and the
+  honest next question, though note §E12 already established Direct here is 87% new users, so it is
+  not returning-visitor traffic wearing a Direct label.
