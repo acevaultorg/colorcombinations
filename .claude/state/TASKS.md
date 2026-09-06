@@ -2305,3 +2305,26 @@ on the color-analysis study, not empty/truncated); `feed.xml` parses as valid XM
 
 No defects found on this pass — recorded as "this class of check is clean," not as "the site is
 saturated" (a defect-check sweep only speaks to the classes it tested).
+
+### E38 · 2026-09-06 — logged a pre-change Bing crawl-stats baseline; nothing actionable yet (reporting lag)
+
+Board still empty. Checked `GetCrawlStats` (Bing WMT) as a genuinely new signal — none of tonight's
+checks so far covered index-crawl PROGRESS, only my own code's live correctness. Parsed the response
+properly (rows are NOT date-sorted, per `ai-citation-channel.md` — sorted by the embedded `/Date()/`
+epoch before reading, not `rows[0]`).
+
+Latest available row is **2026-09-04** — 2 days of reporting lag, so tonight's IndexNow submissions
+(E30/E31, the 54 hub pages) aren't reflected yet; too early to see any effect, as already expected
+from E31's own note. Recorded as a baseline for a later session to diff against:
+
+```
+2026-09-01  InIndex=1932  CrawledPages=378   InLinks=9
+2026-09-02  InIndex=1934  CrawledPages=411   InLinks=9
+2026-09-03  InIndex=1937  CrawledPages=420   InLinks=9
+2026-09-04  InIndex=1940  CrawledPages=780   InLinks=9   <- latest available
+```
+
+`InLinks=9` domain-wide, unchanged across the whole window — confirms the external-authority
+constraint the `/for-you` card's triage (E36) cited independently from Bing's own stats. `InIndex`
+climbing steadily (+207 over 9 days) — healthy trend, nothing broken. No action taken; nothing to
+act on until the lag clears.
