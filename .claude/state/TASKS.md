@@ -3978,3 +3978,42 @@ The Google #3 result is a bare React shell: `<div id="root"></div>`, one deferre
 **And it explains the channel split with a mechanism.** GPTBot/PerplexityBot do not execute JS (`bot-harvest` Pattern 1), so `sanzo-wada.dmbk.io` is invisible to AI grounding while fully visible to Google. That is exactly why we hold 45-75% citation share on queries where we are absent from the Google top 10, and why 519 Bing clicks sit against 4 Google. **Static rendering IS the moat** — any future move to client-side content would hand the AI channel to a rival currently locked out of it by their own architecture.
 
 Wikipedia's article links **three** third-party Wada resources (`sanzo-wada.dmbk.io`, `wada-sanzo-colors.com`, `hexpot.com` blog), not two; filed as a revision on the operator card `mtpazjk33khznb`, which already independently carried the 9-vs-983 measurement. Still operator-only — I-34, and a self-added link is COI regardless.
+
+## §E64 — the Pageviews goal cannot be reached through depth; every low-depth surface is role or crawler (2026-09-06 12:00Z)
+
+Refuel leg. The cockpit flags **Pageviews 16,213 / 40,000 = 41% at-risk**, which invites engagement work. Classified all 14 landing templates by role *and* crawler shape first (complete pull, `1030 of 1030`, `truncated=false`), because a reference site's leaf page may be correctly shallow.
+
+Three low-depth surfaces, three different explanations, **none a defect**:
+
+- **`/browse/` 2.07 pv/s** — looked like a hub doing leaf depth. It has the site's **highest sessions-per-user, 1.93**: `1.93 x 2.07 = 4.0 pv/user`, level with the homepage's `1.33 x 3.07 = 4.08`. A return-visitor signature, not a shallow one. Hypothesis killed before it became work.
+- **`/trends/*` 1.34 pv/s** — this is `/trends/color-trends-2026/`, the site's **most-cited page (6,064 citations, 96% of its top-25)**. A definitional answer page. 1.34 is that working, not failing.
+- **`/colors-that-go-with/*` 1.06 pv/s** — crawler-shaped (s/u **1.01**, 566 pages, 14.3% of sessions).
+
+**A false finding I killed with one more fetch.** The trends page sends **14 of its 21 in-`<main>` links** into `/colors-that-go-with/*` and **zero** to `/palettes/`, `/colors/` or `/collections/` — which reads as "most-cited page funnels readers into a dead surface". It does not: those destinations are 1,558–1,714 words with 31 links in main, **8 of them to `/palettes/`**, plus the affiliate CTA. Well-built pages; the 1.06 is bots averaging out humans. I nearly filed the framing without fetching the destination.
+
+**The arithmetic that settles it.** Human-only (crawler block + pageview-less `(not set)` removed): 5,653 sess / 15,176 pv = **2.68 pv/s**.
+
+```
+to reach 40,000 pv at human depth 2.68  -> 14,900 sessions = 2.64x current human
+ceiling: EVERY surface lifted to 4.07 (the site's best hub, on 54 sessions)
+         5,653 x 4.07 = 23,008 pv = 58% of goal
+```
+
+**No depth value reaches the goal at current traffic.** It is 100% acquisition-bound. Closes the "improve engagement to close the Pageviews gap" work class. Second fleet site to land here — ReadingList `msmydzff51l6ki` result: *"the link-adding hypothesis is SPENT — no links shipped, deliberately."*
+
+## §E65 — measured my own 20-minute-old fleet rule and it was wrong by 4x; corrected in place (2026-09-06 12:10Z)
+
+I shipped `A GA4 DAILY ROW IS NOT FINAL` on **n=1 property, one timepoint pair**, with "~15-18% undercount". Ran the follow-up I owed. In **14 minutes**:
+
+```
+                       09-04 (2d old)   09-05 (1d old)    09-06 (today)
+colorcombinations.org  unchanged        +41.2% sess       1 -> 5 sess
+readinglist.school     unchanged        unchanged         19 -> 20
+fitmylens.com          unchanged        unchanged         54 -> 57
+dormbyschool.com       unchanged        unchanged         unchanged
+cabinpets.com          unchanged        unchanged         unchanged
+```
+
+**Both halves changed.** The 2-day control now holds across **all five properties** (n=5, not n=1) — much stronger. But the magnitude was badly understated: colorcombinations 09-05 cumulative **125 -> 148 -> 209 sessions = +67%**, pv +95%, searches **2 -> 6**, still climbing ~36h after the day closed. Corrected **in place** per `correction-style` (no banner-stacking), `origin/main` **e9bbeb1d**, 87,246 -> 88,688 bytes. The rule is now **"wait"**, not "adjust by N%" — any factor a reader carries away will be too small. Verified the stale figure survives only inside its explicit supersession sentence.
+
+**Knock-on: the search card `mtppvsfvvdszfx` is DOWNGRADED.** Its 09-05 rate has been climbing all morning — 16.0 -> 20.3 -> **28.7/1k**, now **above its own `<=25/1k` regression bar**. Its claim was "two consecutive bottom-7% days, p≈0.005"; that is now **one** day (09-04, settled, 12.7/1k), p≈0.07 on a post-hoc test. Finding drops from suggestive to unremarkable, and a browser lane should **not** be spent on it before 09-08. Had I not re-read for an unrelated reason, scarce Chrome MCP time would eventually have gone to an anomaly that had already halved.
