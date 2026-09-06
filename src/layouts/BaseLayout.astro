@@ -72,7 +72,15 @@ const {
 // Default freshness anchors (matches detail-page JSON-LD).
 const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";
 const articlePublished = publishedTime ?? SITE_FIRST_PUBLISHED;
-const articleModified = modifiedTime ?? new Date().toISOString();
+// article:modified_time is OMITTED when a page has no known modification date,
+// rather than defaulting to the build clock. The old fallback made 22 of the 27
+// type="article" templates advertise "modified today" on every deploy — and it
+// silently overrode deliberate decisions: books/[slug].astro withholds
+// dateModified from its JSON-LD on the stated grounds that "stamping BUILD_DATE
+// on 12 book pages that did not change is freshness inflation", while this line
+// stamped exactly that into its OG tags. Absent metadata is honest; a clock is
+// not. Pages with a real date pass modifiedTime explicitly.
+const articleModified = modifiedTime ?? null;
 
 const siteName = "The Dictionary of Color Combinations";
 // `bareTitle` is for pages whose own title ALREADY contains the brand — the
@@ -217,7 +225,9 @@ const jsonLdArray = jsonLd
     {type === "article" && (
       <>
         <meta property="article:published_time" content={articlePublished} />
-        <meta property="article:modified_time" content={articleModified} />
+        {articleModified && (
+          <meta property="article:modified_time" content={articleModified} />
+        )}
         <meta property="article:author" content={author} />
         <meta property="article:section" content="Color theory" />
       </>

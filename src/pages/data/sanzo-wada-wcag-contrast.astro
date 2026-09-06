@@ -113,7 +113,9 @@ const bottom5 = sorted.slice(-5).reverse();
 // undefined one.
 const title = `Data Study: Just ${pairAAShare}% of Sanzo Wada's 1933 Color Pairs Pass WCAG AA (${aaShare}% of Plates Contain One)`;
 const description = `We tested all ${total} combinations in Sanzo Wada's 1933 Dictionary of Color Combinations against the WCAG 2.x accessibility standard. Of the ${totalPairs} colour pairs in the book, ${pairAAShare}% pass AA (≥4.5:1) — while ${aaShare}% of plates contain at least one AA-safe pairing, ${pct(passAAA)}% reach AAA, and ${pct(failAll)}% fail every text level. Full tables, WCAG methodology, downloadable CSV.`;
-const modified = new Date().toISOString();
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified — was the build clock. See src/lib/contentDate.ts. */
+const modified = contentDate("src/pages/data/sanzo-wada-wcag-contrast.astro", "src/data/wada-palettes.ts");
 const published = "2026-07-16T00:00:00Z";
 const canonicalUrl = "https://colorcombinations.org/data/sanzo-wada-wcag-contrast/";
 

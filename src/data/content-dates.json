@@ -23,5 +23,12 @@
   "src/pages/learn/wabi-sabi-color-theory/index.astro": "2026-09-06T08:59:57+02:00",
   "src/pages/learn/wada-color-psychology/index.astro": "2026-09-05T16:50:28+02:00",
   "src/pages/learn/wada-palettes-by-mood/index.astro": "2026-09-05T16:50:28+02:00",
-  "src/pages/learn/wada-palettes-web-design/index.astro": "2026-09-05T16:50:28+02:00"
+  "src/pages/learn/wada-palettes-web-design/index.astro": "2026-09-05T16:50:28+02:00",
+  "src/pages/data/sanzo-wada-color-analysis.astro": "2026-09-06T08:59:57+02:00",
+  "src/pages/data/sanzo-wada-wcag-contrast.astro": "2026-09-06T08:59:57+02:00",
+  "src/pages/learn/why-painting-colours-shift/index.astro": "2026-09-06T12:30:23+02:00",
+  "src/pages/colors/[hue]/index.astro": "2026-09-05T16:50:28+02:00",
+  "src/pages/colors-that-go-with/[color]/[context].astro": "2026-09-06T12:26:25+02:00",
+  "src/pages/tools/color-converter/[pair].astro": "2026-09-05T16:50:28+02:00",
+  "src/pages/paintings/[slug].astro": "2026-09-05T12:39:35+02:00"
 }

@@ -57,6 +57,10 @@ const jsonLd = [
     ],
   },
 ];
+import { contentDate } from "@/lib/contentDate";
+/* Honest article:modified_time — BaseLayout omits it entirely rather than
+ * defaulting to the build clock, so pages with a real date pass one. */
+const CONTENT_MODIFIED = contentDate("src/pages/paintings/[slug].astro", "src/data/paintings.ts");
 ---
 
 <BaseLayout
@@ -64,6 +68,7 @@ const jsonLd = [
   title={title}
   description={description}
   type="article"
+  modifiedTime={CONTENT_MODIFIED}
   image={`/paintings/${painting.slug}.jpg`}
   jsonLd={jsonLd}
   keywords={[

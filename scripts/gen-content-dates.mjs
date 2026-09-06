@@ -34,7 +34,7 @@
  * Run: node scripts/gen-content-dates.mjs   (then commit the JSON)
  */
 import { execFileSync } from "node:child_process";
-import { writeFileSync, existsSync } from "node:fs";
+import { writeFileSync, existsSync, readFileSync } from "node:fs";
 
 /** Every source file whose git date can stand in for "content last changed". */
 const TRACKED = [
@@ -63,12 +63,47 @@ const TRACKED = [
   "src/pages/learn/wada-color-psychology/index.astro",
   "src/pages/learn/wada-palettes-by-mood/index.astro",
   "src/pages/learn/wada-palettes-web-design/index.astro",
+  "src/pages/data/sanzo-wada-color-analysis.astro",
+  "src/pages/data/sanzo-wada-wcag-contrast.astro",
+  "src/pages/learn/why-painting-colours-shift/index.astro",
+  "src/pages/colors/[hue]/index.astro",
+  "src/pages/colors-that-go-with/[color]/[context].astro",
+  "src/pages/tools/color-converter/[pair].astro",
+  "src/pages/paintings/[slug].astro",
 ];
+
+// ADDITIVE BY DEFAULT — an existing date is NEVER silently moved.
+//
+// A prose warning is not a guard, and this one failed in practice: 20 minutes
+// after the header note below was written, a run to add 7 new paths also
+// re-dated all 18 existing templates to the refactor commit that had just
+// introduced contentDate(). That would have reverted a live-verified fix
+// (methodology 2026-07-30 -> today) without touching a single line of content.
+//
+// So refreshing an existing key is now an explicit act:
+//   npm run dates                  -> add new paths only, keep known dates
+//   npm run dates -- --refresh <p> -> re-date exactly <p> (repeatable)
+//   npm run dates -- --refresh-all -> re-date everything (rarely correct)
+// Default failure mode is a STALE date, which is conservative. The build clock
+// this script replaced failed the other way, claiming freshness daily.
+const argv = process.argv.slice(2);
+const refreshAll = argv.includes("--refresh-all");
+const refreshOne = new Set(
+  argv.flatMap((a, i) => (a === "--refresh" && argv[i + 1] ? [argv[i + 1]] : [])),
+);
+let prev = {};
+try {
+  prev = JSON.parse(readFileSync("src/data/content-dates.json", "utf8"));
+} catch { /* first run */ }
 
 const out = {};
 const missing = [];
+const kept = [];
 for (const p of TRACKED) {
   if (!existsSync(p)) { missing.push(`${p} (not on disk)`); continue; }
+  if (prev[p] && !refreshAll && !refreshOne.has(p)) {
+    out[p] = prev[p]; kept.push(p); continue;
+  }
   const iso = execFileSync("git", ["log", "-1", "--format=%cI", "--", p], {
     encoding: "utf8",
   }).trim();
@@ -86,4 +121,5 @@ if (missing.length) {
 }
 
 writeFileSync("src/data/content-dates.json", JSON.stringify(out, null, 2) + "\n");
+if (kept.length) console.log(`kept ${kept.length} existing date(s) — pass --refresh <path> to re-date one`);
 console.log(`wrote src/data/content-dates.json — ${Object.keys(out).length} entries`);

@@ -65,7 +65,9 @@ const topMoods = desc(mood).slice(0, 6);
 
 const title = "Data Study: Sanzo Wada's 1933 Color Bible Was 92% Warm";
 const description = `We computed all ${total} combinations in Sanzo Wada's 1933 Dictionary of Color Combinations. ${warmShare}% are anchored by a warm hue; blue appears in just ${pct(hue.get("blue") ?? 0)}%; and black is the single most-used color. Full tables, methodology, and a downloadable CSV.`;
-const modified = new Date().toISOString();
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified — was the build clock. See src/lib/contentDate.ts. */
+const modified = contentDate("src/pages/data/sanzo-wada-color-analysis.astro", "src/data/wada-palettes.ts");
 const lastVerified = modified.slice(0, 10);
 const canonicalUrl = "https://colorcombinations.org/data/sanzo-wada-color-analysis/";
 

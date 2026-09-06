@@ -165,6 +165,10 @@ const jsonLd = [
     url: `https://colorcombinations.org${canonical}`,
   },
 ];
+import { contentDate } from "@/lib/contentDate";
+/* Honest article:modified_time — BaseLayout omits it entirely rather than
+ * defaulting to the build clock, so pages with a real date pass one. */
+const CONTENT_MODIFIED = contentDate("src/pages/colors-that-go-with/[color]/[context].astro", "src/data/pairings.ts");
 ---
 
 <BaseLayout
@@ -173,6 +177,7 @@ const jsonLd = [
   description={description}
   canonical={canonical}
   type="article"
+  modifiedTime={CONTENT_MODIFIED}
   keywords={[`colors that go with ${color.name.toLowerCase()}`, `${color.name.toLowerCase()} ${ctx.label}`, `${color.name.toLowerCase()} color combinations`, `what goes with ${color.name.toLowerCase()}`]}
   jsonLd={jsonLd}
 >

@@ -148,9 +148,13 @@ const jsonLd = [
     ],
   },
 ];
+import { contentDate } from "@/lib/contentDate";
+/* Honest article:modified_time — BaseLayout omits it entirely rather than
+ * defaulting to the build clock, so pages with a real date pass one. */
+const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/data/colors.ts", "src/data/palettes.ts");
 ---
 
-<BaseLayout title={title} description={description} keywords={meta.keywords} image={`/og/hue/${hue}.png`} type="article" jsonLd={jsonLd} adContent>
+<BaseLayout title={title} description={description} keywords={meta.keywords} image={`/og/hue/${hue}.png`} type="article" modifiedTime={CONTENT_MODIFIED} jsonLd={jsonLd} adContent>
 
   {/* ==================== HERO ==================== */}
   <section class="hue-hero" style={`--hue-accent: ${meta.accentHex}; --hue-text: ${bestTextColorOn(meta.accentHex as any) === "dark" ? "#1a1a1a" : "#f8f7f4"}`}>

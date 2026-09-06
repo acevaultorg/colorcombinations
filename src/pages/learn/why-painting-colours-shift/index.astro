@@ -33,6 +33,10 @@ const faq = {
   "@type": "FAQPage",
   mainEntity: shiftFaq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
 };
+import { contentDate } from "@/lib/contentDate";
+/* Honest article:modified_time — BaseLayout omits it entirely rather than
+ * defaulting to the build clock, so pages with a real date pass one. */
+const CONTENT_MODIFIED = contentDate("src/pages/learn/why-painting-colours-shift/index.astro", "src/data/paintings.ts");
 ---
 
 <BaseLayout
@@ -40,6 +44,7 @@ const faq = {
   title="The Yellow Problem — Why Painting Colours Are Not What the Artist Mixed"
   description="Chrome yellow browns. Zinc yellow darkens to ochre. Cadmium yellow turns off-white. Three famous paintings, three different chemical failures, and what it means for sampling colour palettes from art."
   type="article"
+  modifiedTime={CONTENT_MODIFIED}
   jsonLd={[jsonLd, faq]}
   keywords={[
     "do painting colors fade",

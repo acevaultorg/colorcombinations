@@ -70,9 +70,13 @@ const jsonLd = [
 
 // Sibling links (other conversions) — internal-link hub-and-spoke for indexing.
 const siblings = PAIRS.filter((p) => p.slug !== pair.slug && (p.from === pair.from || p.to === pair.to)).slice(0, 5);
+import { contentDate } from "@/lib/contentDate";
+/* Honest article:modified_time — BaseLayout omits it entirely rather than
+ * defaulting to the build clock, so pages with a real date pass one. */
+const CONTENT_MODIFIED = contentDate("src/pages/tools/color-converter/[pair].astro");
 ---
 
-<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd} type="article" adContent>
+<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd} type="article" modifiedTime={CONTENT_MODIFIED} adContent>
   <section class="tool-hero">
     <div class="container-wide tool-hero__inner">
       <p class="eyebrow">
