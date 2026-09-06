@@ -2328,3 +2328,40 @@ from E31's own note. Recorded as a baseline for a later session to diff against:
 constraint the `/for-you` card's triage (E36) cited independently from Bing's own stats. `InIndex`
 climbing steadily (+207 over 9 days) — healthy trend, nothing broken. No action taken; nothing to
 act on until the lag clears.
+
+### E39 · 2026-09-06 — found the *cause* behind E34: all 9 hue families are published twice, at two indexed URLs with identical titles
+
+Swept a genuinely new angle after E38 (nothing else had checked whether the two hue URL shapes are
+duplicates). They are — and this is the second-order cause of the E34 route collision: the
+`colors/[hue]/` directory route exists at all because a **second, redundant hue-page implementation**
+was built at some point, unaware of the first.
+
+Both templates say so in their own header comments: `colors/[hue]/index.astro` (420 ln) — *"9 SEO
+landing pages targeting 'red color palettes', 'blue color combinations'"*; `colors/hue/[hue].astro`
+(467 ln) — *"hue-family landing pages (9 routes). Programmatic SEO hub for 'X color palettes' /
+'[hue] color combinations' queries"*. Same feature, same target queries, **byte-identical
+`<title>`**, both self-canonical, both in `sitemap-0.xml`. 18 indexed URLs where 9 belong.
+Measured rendered overlap: **Jaccard 0.688** — genuinely different content (design-guidance vs
+cultural-archive), same subject and title.
+
+**The traffic veto blocked the fix, and inverted my read twice — recording both misses:**
+1. Sampled `/colors/hue/blue/` alone, got `✅ OK` (0 entrances, 0 views, 0 GSC impressions), and
+   nearly concluded the whole `/colors/hue/*` set was orphaned. Ran all 9: **7 of 9 are `🔴 BLOCK`
+   with live traffic.** Only blue and purple are orphans. One sample was not the set.
+2. Every *proxy* signal pointed the wrong way. `/colors/hue/{hue}/` is the richer template (more
+   lines, ShareActions, collections cross-links, its own OG image) and the only one in
+   `sitemap-ai.xml` — yet `/colors/{hue}/` carries ~10x the pageviews (`/colors/blue/`: 5 entrances,
+   53 views, entry rank #111/1325). Rank by the measured outcome, never by template richness or
+   sitemap presence.
+
+Also worth noting: **neither variant appears anywhere in the Bing per-page feed** (139 rows against
+`limit=5000`, so untruncated; positive control `/colors/daidai/` at 17 impr *does* appear) — 18 URLs
+targeting "X color combinations" and not one surfaces. Consistent with the cannibalisation reading,
+on a site whose measured constraint is `InLinks=9` domain-wide (§E38).
+
+**Shipped nothing.** Both variants have live traffic, so noindex / de-sitemap / 301 / cross-canonical
+are all vetoed. The only survivor is differentiating the titles — a 9-18 page rewrite on trafficked
+pages, which needs its own deliberate pass with a SERP ownership check first (and explicitly *not*
+justified by Bing CTR, which `bing-ctr.mjs` reports CLICK-SELECTED/unavailable here). Filed with the
+full measurement as `mtpl97zgpdxt7e` rather than rushed at the tail of a long session — same call as
+E33→E34, which worked well.
