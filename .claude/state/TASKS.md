@@ -2457,3 +2457,71 @@ money path unaffected: /go/b/4861522471?c=book → 302 → https://colorcombinat
 **Measurement note:** `${#T}` in bash counts BYTES, and the em-dashes are 3 bytes each — the
 shell reports 86–91 where the character count is 82–87. Both are under the bound; the
 character count is the one the rule means.
+
+### E41 — swept every sitemap URL for dead links; exactly one, and it was the palettes index (2026-09-06)
+
+**Why this sweep.** Crawl budget is the scarce resource on this site: Bing `GetCrawlStats`
+reports `InLinks = 9` domain-wide, flat across the reporting window (§E38). A dead URL in a
+sitemap spends that budget on nothing.
+
+**Method + control.** Pulled `sitemap-index.xml` → `sitemap-0.xml` (1,528 locs) and
+`sitemap-ai.xml` (785 locs), deduped to 1,529 unique, appended a
+`this-page-cannot-exist-control-9z/` probe, and checked all 1,530 at concurrency 12.
+
+```
+1528  200
+   2  404   <- one is the control (fired correctly), one is real
+```
+
+The detector is proven in both directions: the control returned 404, and 1,528 real URLs
+returned 200. The one genuine dead URL: **`https://colorcombinations.org/palettes/`**.
+
+**What it was.** `sitemap-ai.xml.ts` line 186 pushes `/palettes/` at priority 0.7 as "the
+palettes index" — but `src/pages/palettes/` contains only `[slug].astro`. The index page was
+never built. The real one has always been **`/browse/`** ("Browse all palettes", 200, links
+all 378 children, already in *both* sitemaps).
+
+**Build the missing page? No — deliberately rejected.** A real `/palettes/` index would be a
+SECOND hub over the same 378 pages, which is precisely the duplicate-landing-page defect
+fixed one leg earlier (§E40: two indexed URLs per hue with identical titles). Adding one on
+purpose would be shipping the bug just removed.
+
+**Traffic veto, and an honest note about its verdict.** `check-safe-to-delete.mjs` returns
+**BLOCK** — 5 pageviews/30d, 0 entrances, entry rank #1105/1325. Its label reads "deleting or
+noindexing would cut a working page", and a direct HTTP check refutes that premise: the URL
+is a **404**, so those 5 views are 5 wasted visits, not a working page. The measurement is
+right; the inference the label draws does not apply to a URL with no page behind it.
+
+**So the fix removes nothing — it makes the URL work.** `public/_redirects` gains an
+**exact-match** `301 → /browse/` (never `/palettes/*`; the 378 children are healthy and must
+not be caught). Nothing is deleted, noindexed or de-sitemapped, so the class of harm the veto
+guards cannot occur; the 5 visits gain the real hub instead of a dead end.
+
+**Mechanism positive-controlled before writing a line.** `_redirects` is live here — the site
+has `functions/` but no `out/_worker.js`, so Pages advanced mode does not disable it — and the
+existing `/color-of-the-year-2026`, `/coty-2026` and `/sitemap.xml` rules all fire 301 today.
+This follows their own documented precedent: *catch a guessed/stray path rather than leave a
+searcher at a dead end.*
+
+**Verified live after `d6f2e4f`** (pipeline `success`, served responses):
+
+```
+/palettes/  301 → https://colorcombinations.org/browse/     /browse/ 200
+/palettes   301 → https://colorcombinations.org/browse/
+children untouched: kurenai-kon · akane-tokiwa · ao-shiro · asagi-shu  → 200 (4/4)
+no regression: hue titles still differentiated · /go/b/… → 302 → own-origin
+```
+
+**A false finding I caught before reporting it.** Mid-sweep I measured "378 `/palettes/*`
+pages are absent from the site's own search index" — 711 entries, 0 matches. Wrong: I keyed
+on `url`/`slug`, and the row shape is `{s,t,k,x}`. Re-measured on the real shape: **378
+Palette rows present**, exactly as `search-index.json.ts` builds them. Textbook
+`positive-control-before-absence` § *a row shape you guessed returns zero for everything* —
+the zero was my accessor, not the data. A second instrument failure the same hour: zsh globbed
+an unquoted `--include=*.astro`, so a `grep` reported `0` internal links while actually
+erroring out; quoting it and adding a must-be-non-zero control returned 13.
+
+**Residual, left alone on purpose.** `/palettes/` now 301s instead of 404ing, but it is still
+listed in `sitemap-ai.xml` — a sitemap ideally lists final URLs, and this one redirects to
+`/browse/`, which is already in the same file. Removing that entry is a *de-sitemap*, which
+the veto BLOCKed, so it is filed as its own card with the evidence rather than actioned here.
