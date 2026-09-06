@@ -30,30 +30,40 @@ const {
   </header>
 
   <ul class="design-tools__list" role="list">
-    {DESIGN_TOOLS.map((tool) => (
-      <li class="design-tools__item">
-        <p class="design-tools__category">{tool.category}</p>
-        <h3 class="design-tools__name">
-          <a
-            href={tool.url}
-            target="_blank"
-            rel={tool.affiliate ? "noopener sponsored" : "noopener"}
-            data-event={tool.affiliate ? "tool_affiliate_click" : "tool_click"}
-            data-tool={tool.name}
-          >
-            {tool.name}
-            <span class="design-tools__arrow" aria-hidden="true">↗</span>
-          </a>
-        </h3>
-        <p class="design-tools__desc">{tool.description}</p>
-        <p class="design-tools__why">{tool.why}</p>
-        {tool.affiliate && (
-          <p class="design-tools__affiliate-note">
-            <span aria-hidden="true">→</span> affiliate link — commission at no cost to you
-          </p>
-        )}
-      </li>
-    ))}
+    {DESIGN_TOOLS.map((tool) => {
+      /* A placeholder affiliate URL is not a live link — it 400s/403s
+         (verified 2026-09-06). Fall back to the real vendor URL until the
+         ID is activated, and never show the affiliate disclosure for a
+         link that isn't actually earning yet. */
+      const isPlaceholder = tool.url.includes("PLACEHOLDER");
+      const usingFallback = tool.affiliate && isPlaceholder && Boolean(tool.fallbackUrl);
+      const href = usingFallback ? (tool.fallbackUrl as string) : tool.url;
+      const showAffiliateNote = tool.affiliate && !usingFallback;
+      return (
+        <li class="design-tools__item">
+          <p class="design-tools__category">{tool.category}</p>
+          <h3 class="design-tools__name">
+            <a
+              href={href}
+              target="_blank"
+              rel={showAffiliateNote ? "noopener sponsored" : "noopener"}
+              data-event={showAffiliateNote ? "tool_affiliate_click" : "tool_click"}
+              data-tool={tool.name}
+            >
+              {tool.name}
+              <span class="design-tools__arrow" aria-hidden="true">↗</span>
+            </a>
+          </h3>
+          <p class="design-tools__desc">{tool.description}</p>
+          <p class="design-tools__why">{tool.why}</p>
+          {showAffiliateNote && (
+            <p class="design-tools__affiliate-note">
+              <span aria-hidden="true">→</span> affiliate link — commission at no cost to you
+            </p>
+          )}
+        </li>
+      );
+    })}
   </ul>
 </section>
 

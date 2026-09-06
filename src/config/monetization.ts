@@ -683,6 +683,15 @@ export interface DesignTool {
   affiliate: boolean;
   /** Commission structure for display (internal note). */
   commission?: string;
+  /**
+   * Real, working vendor URL to use INSTEAD of `url` while `url` is still a
+   * PLACEHOLDER (unactivated affiliate ID). Required whenever `url` contains
+   * "PLACEHOLDER" — a placeholder click-tracking URL is not a live link,
+   * it 400s/403s (verified 2026-09-06: prf.hn/click/camref:PLACEHOLDER_IMPACT_ADOBE
+   * returns HTTP 400). Rendering a broken link to real visitors is worse than
+   * rendering a real, non-monetized one until the ID is activated.
+   */
+  fallbackUrl?: string;
 }
 
 export const DESIGN_TOOLS: DesignTool[] = [
@@ -694,6 +703,7 @@ export const DESIGN_TOOLS: DesignTool[] = [
     url: "https://prf.hn/click/camref:PLACEHOLDER_IMPACT_ADOBE",
     affiliate: true,
     commission: "$30-100 per conversion (Impact.com)",
+    fallbackUrl: "https://www.adobe.com/creativecloud.html",
   },
   {
     name: "Figma",
@@ -711,6 +721,7 @@ export const DESIGN_TOOLS: DesignTool[] = [
     url: "https://www.canva.com/?ref=PLACEHOLDER_CANVA_REFERRAL",
     affiliate: true,
     commission: "$36 per pro signup",
+    fallbackUrl: "https://www.canva.com",
   },
   {
     name: "Framer",
@@ -720,6 +731,7 @@ export const DESIGN_TOOLS: DesignTool[] = [
     url: "https://www.framer.com/?via=PLACEHOLDER",
     affiliate: true,
     commission: "~$25 recurring",
+    fallbackUrl: "https://www.framer.com",
   },
   {
     name: "Tailwind UI",
@@ -729,6 +741,7 @@ export const DESIGN_TOOLS: DesignTool[] = [
     url: "https://tailwindui.com/?ref=PLACEHOLDER_TAILWIND_REFERRAL",
     affiliate: true,
     commission: "30% recurring",
+    fallbackUrl: "https://tailwindui.com",
   },
   {
     name: "Coolors",
