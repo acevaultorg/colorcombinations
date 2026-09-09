@@ -56,10 +56,17 @@ function loadTracker() {
   vm.runInContext(src, ctx);
   if (!handler) { console.error("FATAL: tracker registered no click handler"); process.exit(1); }
   // click() returns the shelf label the beacon reported, or null if not counted
-  const click = (href, dataset = {}) => {
+  const click = (href, dataset = {}, isTrusted = true) => {
     beacons.length = 0;
     const u = new URL(href, ORIGIN);
-    handler({ target: { closest: () => ({ href: u.href, host: u.host, pathname: u.pathname, dataset }) } });
+    // The production tracker intentionally rejects synthetic events with
+    // `isTrusted !== true`. This VM battery models a real browser click, so
+    // provide that browser-owned signal explicitly; otherwise the guard tests
+    // only its own incomplete fixture and false-reds every money path.
+    handler({
+      isTrusted,
+      target: { closest: () => ({ href: u.href, host: u.host, pathname: u.pathname, dataset }) },
+    });
     const b = beacons[0];
     return b ? decodeURIComponent((b.match(/[&?]f=([^&]*)/) || [, ""])[1]) : null;
   };
@@ -93,6 +100,14 @@ click("/go/b/4861522471", { book: "x" });
 ctx.document.cookie.startsWith("cc_g=")
   ? pass("gesture cookie cc_g minted on /go/ click")
   : fail("gesture cookie NOT minted — every /go/ link degrades to the interstitial hop");
+
+// The security half of the contract: programmatic clicks must neither count
+// nor mint the short-lived /go/ credential.
+ctx.document.cookie = "";
+const synthetic = click("/go/b/4861522471", { book: "x" }, false);
+synthetic === null && ctx.document.cookie === ""
+  ? pass("synthetic click rejected (no beacon and no gesture cookie)")
+  : fail("synthetic click was trusted — crawler traffic can contaminate Amazon attribution");
 
 // ── 2. build-derived: every shape in dist/ must be counted ──────────────────
 console.log("\nbeacon coverage — shapes found in dist/");
