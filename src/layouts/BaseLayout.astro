@@ -50,6 +50,11 @@ export interface Props {
    *  template. One stable class, stamped here, covers every section and every
    *  future template with no dashboard round-trip. */
   adContent?: boolean;
+  /** Force the provider's full-page block marker even when the route is not in
+   *  the central policy below. This is intentionally separate from adContent:
+   *  removing `.mv-content` only stops in-content placements, while adhesion,
+   *  interstitial, sidebar and video units may still load. */
+  blockAllAds?: boolean;
 }
 
 const {
@@ -67,6 +72,7 @@ const {
   author = "The Dictionary of Color Combinations editorial",
   bareTitle = false,
   adContent = false,
+  blockAllAds = false,
 } = Astro.props;
 
 // Default freshness anchors (matches detail-page JSON-LD).
@@ -107,6 +113,32 @@ const fullTitle =
     ? title
     : `${title} — ${siteName}`;
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).toString();
+
+// Full-page Journey exclusions — generated in the signed-in Mediavine portal
+// on 2026-09-10. The wrapper is deliberately sitewide, so withholding
+// `mv-content` is NOT sufficient: non-in-content units can still render. Keep
+// the concentrated Amazon-intent routes and non-content/legal surfaces free of
+// every ad unit. Prefix checks are segment-safe (`/shopper` must not match
+// `/shop`). `noIndex` closes future error/utility pages by default.
+const normalizedPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const fullPageAdBlockExact = new Set([
+  "/404",
+  "/about",
+  "/contact",
+  "/copyright",
+  "/privacy",
+  "/random",
+  "/terms",
+  "/gift-guide",
+  "/compare/wada-vol-1-vs-vol-2",
+]);
+const fullPageAdBlockPrefixes = ["/books", "/shop"];
+const policyBlocksAllAds =
+  fullPageAdBlockExact.has(normalizedPath) ||
+  fullPageAdBlockPrefixes.some(
+    (prefix) => normalizedPath === prefix || normalizedPath.startsWith(`${prefix}/`),
+  );
+const shouldBlockAllAds = blockAllAds || noIndex || policyBlocksAllAds;
 
 // Default OG image must be a raster: every social surface (FB / X / LinkedIn /
 // Slack / Discord / WhatsApp) and Pinterest refuse an SVG og:image and render a
@@ -374,6 +406,11 @@ const jsonLdArray = jsonLd
 
   </head>
   <body>
+    {/* Official provider-generated full-page exclusion. It must be present in
+        rendered HTML; selecting toggles in the portal alone changes nothing. */}
+    {shouldBlockAllAds && (
+      <div id="ad-management-config-settings" data-blocklist-all="1"></div>
+    )}
     {/* Event tracking — connects data-event attributes to the analytics sinks.
         DUAL-SINK (fixed 2026-07-23): previously fired to Plausible ONLY, which had
         been a dead sink since the subscription lapsed 2026-06-28 — every custom

@@ -139,6 +139,7 @@ deploy_cf_pages:
     - node -v
     - npm ci --no-audit --no-fund
     - npx astro build
+    - node scripts/verify-mediavine-exclusions.mjs
     # AFFILIATE LEAK GATE. This site routes every Amazon link through /go/
     # (Design-B gesture gate, affiliate-link-gate.md), so a raw tagged link in
     # static HTML is a leak. The CONTROL is the point: tagged=0 proves nothing
@@ -255,4 +256,3 @@ deploy_cf_pages:
     # this change since it needs a git-write credential this job does not yet
     # have configured.
     - node scripts/indexnow-ping.mjs || echo "IndexNow ping failed non-fatally — see script output above; does not block the deploy"
-

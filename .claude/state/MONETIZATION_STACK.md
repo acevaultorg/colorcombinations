@@ -15,7 +15,7 @@
 | 4 | Perplexity Publishers Program | pending_contact | — | $10-30 | - | Week 1 Tue: email `publishers@perplexity.ai` per `~/.claude/acepilot-19.7/templates/perplexity-publishers-email.md`. |
 | 5 | Ezoic Access Now | not_started | — | $50-150 | - | Post-AdSense parallel. +30-60% RPM uplift. Week 1 Tue operator signup. |
 | 6 | Affiliate (Impact.com, NOT Amazon per I-38) | not_started | — | $50-200 | - | Week 1 Tue: Impact.com signup + design/color-tool relevant program applications. |
-| 7 | Mediavine Journey | pending_application | — | $12-19 RPM × sessions | - | Week 1 Mon: apply per `~/.claude/acepilot-19.7/templates/mediavine-application-checklist.md`. Eligibility: ≥1,000 sessions/mo (2026 threshold). I-37 atomic swap. |
+| 7 | Mediavine Journey | active | 2026-09-04 | $12-19 RPM × sessions | $0.30 MTD Sep 1-8 | Approved and live. Preserve Amazon-intent exclusions and freeze provider settings through 2026-09-25; see correction below. |
 | 8 | TollBit | pending_application | — | $0.005/scrape × bot volume | - | Week 1 Tue: Tier-1 application. Requires CF Snippet deploy for onboarding verification. |
 | 9 | ProRata.ai Gist Answers | deferred_month_6 | — | $10 CPM floor | - | Defer per `rules/revenue-maximizer.md` Part 3 (Month 6+). |
 
@@ -70,3 +70,23 @@ Commit c39682b, deploy https://86a22f18.colorcombinations.pages.dev, live
 https://colorcombinations.org/gift-guide/. Both /go/b/ and /go/p/ link
 shapes verified live via byte-compare + pure-computation tokenFresh check
 (no real click manufactured on the shared Associates account).
+
+### Mediavine Journey activation and Amazon-intent protection — 2026-09-10
+
+Supersedes the stale `pending_application` status above. The signed-in portal
+confirms Journey is active (approved 2026-09-04); reported revenue was $0.30
+for 2026-09-01 through 2026-09-08, with 2026-09-09 still processing when
+checked. Decision: keep provider settings unchanged through the 2026-09-25
+learning window: PageSpeed on, density 62.5 (Optimal), Slidebar on,
+Event-Driven off, Universal Player Plus off.
+
+The provider wrapper remains sitewide on editorial pages. Whole-page ads are
+blocked in rendered HTML on `/books*`, `/shop*`, `/gift-guide*`, `/about`,
+`/compare/wada-vol-1-vs-vol-2`, legal/contact/404/utility pages, and future
+BaseLayout `noIndex` pages using the portal-generated
+`#ad-management-config-settings[data-blocklist-all="1"]` marker. This is a
+conversion-protection guardrail: `/shop*`, `/gift-guide*`, and `/books*`
+accounted for 92 of 265 measured AmazonClick events (34.7%) on only about 2.26%
+of pageviews. The build and CI scan rendered output so future route changes
+cannot silently remove the exclusions. Standalone noindex embed documents do
+not load the Journey wrapper and therefore do not need the provider marker.
