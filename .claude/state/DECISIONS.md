@@ -999,3 +999,21 @@ back to %s at all. Left as the next candidate, not built.
 **Verify:** all four fan-deck ASINs curl-confirmed live 2026-09-11 (200, real `productTitle`, no
 fabrication) with a 404 negative control on a synthetic ASIN proving the check itself works. No
 site files changed; this is a research-only entry.
+
+## Correction to the 2026-09-11 entry above (same session, minutes later)
+
+The entry above overstated "still open" by trusting the 2026-09-03 no-buy-block finding without
+re-checking the CURRENT live page. It is stale in one respect: `/colors-that-go-with/[color]/[context]/`
+(`[context].astro`) already ships `<PaintThisPalette>` — confirmed both in source (lines ~336-351,
+its own comment citing a 2026-08-29 zero-click measurement as the reason it was added) and live
+(`/colors-that-go-with/cloud-dancer/walls/` serves 14 `/go/` links, 2 of them `c=art-supplies`).
+A session after 09-03 shipped the fix 09-03 rejected in ASIN form — using a GENERIC "materials for a
+colour study" framing instead of a house-paint-specific one, so it needed no new ASINs and no
+mismatch claim. That closes the "zero CTA on the site's largest page class" problem.
+
+**What is still accurately open, and is the whole of what this session's diligence tested:** whether
+a REAL house-paint product (matching the literal "what paint do I buy for my bedroom" intent, not
+the generic art-supply reframe) can be added. The four fan decks + Samplize research above answers
+that: no, not yet — every full-catalogue candidate is low-stock, and no custom-color Amazon listing
+exists. So: page-level CTA gap = CLOSED (pre-existing, mis-stated above). House-paint-specific ASIN
+gap = genuinely open, diligenced, not closed.
