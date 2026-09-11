@@ -4656,3 +4656,71 @@ replacement (vault). All CI green; final pipeline `9d02d11f` success. Live spot-
 
 Scope saturated. Binding constraint is acquisition (9 inbound links vs a sibling's 983); all three of
 its levers are genuinely operator-gated and now prepared to the last inch with re-verified claims.
+
+## E76 — protect verified, one discovery-gap card advanced, decor-catalogue re-diligenced and closed with a self-correction
+
+Refuel leg, device4 lane. No regressions found; three genuine actions taken.
+
+### Protect (unchanged from E75, re-verified)
+Money path healthy: homepage 200 (no blanket redirect, so `/go/` 302s below are gate rejections,
+not canonicalisation — `affiliate-link-gate.md`), tokenless `/go/b/...` probe 302s to bare own-origin
+with zero tag leak in served HTML, `_worker.js` present, repo 0 ahead / 0 behind origin. Last 3
+GitLab CI pipelines (`18b0596`, `c17fee1`, `160549f`) all `success`. `verify-mediavine-exclusions.mjs`
+confirmed wired fail-closed into both `.gitlab-ci.yml` and `build-locked.sh` (not just present as a
+script) — the Journey-ads-on-affiliate-routes fix from the prior session is real, not aspirational.
+
+### Advanced: the Google discovery-gap card (`mtwipv7yl09gvn`)
+Bing side stayed `ErrorCode 17 ThrottleIP` on every retry this session (worker egress IP, shared
+fleet-wide, not resolvable from this lane) — left open, do not keep polling it, the card names the
+exact re-run command for whoever picks it up next. Did the part that doesn't need Bing to clear:
+direct IndexNow re-submission (bypassing the deploy pipeline's changed-only detection, since these
+pages haven't changed and would never surface there) of the 3 never-crawled-by-Google URLs —
+`/collections/y2k/`, `/trends/color-trends-2026/`, `/collections/bedroom/` — to all three IndexNow
+endpoints (Bing/Yandex/api.indexnow.org), all 200. Also checked and refuted the implied "orphan
+page" theory: `/collections/` already links to both (69 links, confirmed live) — depth-2 from
+home, same as every other collection, not zero-inbound.
+
+### Decor-catalogue gap: diligenced, then corrected in place
+The DECISIONS.md 2026-08-28/09-03 entries name a real, sizeable gap: `/colors-that-go-with/`
+(572-703 pages, largest programmatic surface, 10 of 12 contexts are house-paint intent) had no
+paint-matched product because the `ART_SUPPLIES` catalogue is watercolour/print/calibrate tools,
+not house paint, and a wrong ASIN is worse than none. Spent this leg actually testing it rather
+than re-stating it: live-verified (curl + browser UA, 200 + `productTitle` present, 404-on-fake
+control proving the check works) every plausible brand-agnostic candidate —
+Sherwin-Williams Professional Color Fan Deck, Benjamin Moore Color Preview / Collections fan decks,
+Sherwin Colors Collection Deck — **all four "Only 5-12 left"**, which is this exact catalogue's own
+standing exclusion rule. Samplize peel-and-stick samples are real and well-stocked but every Amazon
+listing is ONE pre-picked color (no custom-color / buyer-picks-the-shade option exists) — cannot
+serve 572 arbitrary palette pages without a per-color ASIN map this site has no way to build or
+keep current. **Confirms the gap is genuinely ASIN-blocked, not merely unexplored** — logged to
+DECISIONS.md so nobody re-runs this exact search expecting a different stock state.
+
+**Then self-corrected the same session.** Live-checked `/colors-that-go-with/cloud-dancer/walls/`
+mid-research (14 `/go/` links, 2 tagged `c=art-supplies`) and initially filed that as unrelated
+evidence rather than recognising what it meant. Re-reading `[context].astro` source showed the page
+already ships `<PaintThisPalette>` — a session after 09-03 shipped exactly the fix 09-03 rejected,
+but reframed generically ("materials for a colour study," not a house-paint claim) instead of via a
+mismatched ASIN, closing the "zero CTA on the site's biggest page class" problem without touching
+the catalogue. So the page-level gap is CLOSED (pre-existing, I mis-stated it as open); only the
+narrower "can we ALSO add a literal house-paint product" question is genuinely open, and this leg's
+diligence answers it: not yet. Appended a correction to the same DECISIONS.md entry rather than
+leaving the overstatement standing (`correction-style.md`).
+
+Also re-verified two more standing-scope items are already shipped, not gaps: the editorial
+"Start here if…" verdict framing (Wirecutter-pattern, tactic #3 of `AMAZON-CLICK-INCREASE-PLAYBOOK.md`)
+renders live on every paint-kit card (`paint-kit__dest-verdict`), and `/embed/` link-magnet demand
+was already measured at zero (E-prior, 69-row referrer pull, no embed hosts).
+
+### Ships this leg
+`250e59b` decor-catalogue diligence · `7d070db` correction to same. Both docs-only (`.claude/state/`),
+no code changed, no deploy triggered, nothing to verify-live beyond the commits landing (confirmed:
+`git log` on origin matches).
+
+### Standing position
+Unchanged from E75: acquisition is the binding constraint, its three levers (Wikipedia, press,
+Pinterest) are genuinely operator-gated and already prepared to the last inch. Added this session:
+one Bing-side measurement still pending an external throttle (card left open with its exact re-run
+command), one discovery gap partially closed (IndexNow resubmission), one real gap confirmed genuine
+rather than assumed (decor catalogue), zero new brain-doable acquisition levers found after checking
+every item in the standing basket-raise list. Scope remains saturated for further action until the
+throttle clears or the operator acts on a gated card.
