@@ -952,3 +952,50 @@ direction, but only because I re-ran it instead of writing it up.
 testing.** Run the command bare, or read `PIPESTATUS[0]`. This applies to every
 guard, gate and predeploy check the fleet has, since they are all exit-status
 contracts and all naturally get piped to `tail`/`head` when inspected.
+
+## 2026-09-11 — Decor-catalogue gap re-tested, confirmed still open: no safe ASIN clears the bar
+
+**Decision:** Do NOT add a house-paint product to `ART_SUPPLIES` / `/colors-that-go-with/` from
+this session's search. Re-confirms the 2026-09-03 finding (`/colors-that-go-with/` — 572 pages,
+1,000 pv, 10 of 12 contexts are house-paint intent, zero paint-matched CTA) rather than closing it.
+
+**What was tried:** a full live-verification pass (curl with a real browser UA — 200 + `productTitle`
+present on a real ASIN, 404 on a fabricated one as the control) on every plausible general-purpose,
+brand-agnostic candidate found by search:
+- Sherwin-Williams Professional Color Fan Deck (`B00KYJ2ZDC`) — **"Only 12 left" / "Only 5 left"**
+- Benjamin Moore Color Preview Fan Deck (`B07NDZRXHC`) — **"Only 5 left"**, and its price block is
+  polluted by a bundle/accessory section (€36–€2,844 spread) — the same shape as the excluded
+  $1,900 ColorChecker Studio
+- Benjamin Moore Collections Fan Deck (`B07N4XPCMD`) — **"Only 5 left"**
+- Sherwin-Williams Colors Collection Deck (`B01M254YD8`) — **"Only 5 left"**
+- Samplize peel-and-stick samples (Amazon) — real, well-priced ($6.95), in stock, but **every
+  listing is ONE specific pre-picked color** (Silver Lake, Beach Glass, Pale Oak, …). No
+  custom-color / buyer-picks-the-shade Amazon listing exists. A single-color ASIN cannot serve 572
+  pages spanning arbitrary palettes without either being wrong on most of them or requiring
+  a 500+-entry ASIN map this site has no reliable way to build/maintain (Samplize's Amazon catalog
+  is a thin, changing subset of their site catalog — no stable enumerable feed).
+- Generic paint-mixing-cup / stir-stick kits — real category, wrong intent (resin/craft mixing
+  supplies, not "which wall paint do I buy").
+
+**Rationale:** this site's own discipline (`ART_SUPPLIES` block comment, 2026-07-21 + 2026-08-28
+entries above) excludes any item reading "only N left" — low-stock third-party listings go dead and
+turn the shelf into a broken promise, which is worse than the current zero-CTA state. All four
+full-catalogue fan decks tested — the only category that could plausibly match ALL 572 pages
+without a fabricated per-color ASIN map — failed that test. This is not a stocking blip on one item;
+it is the category: professional paint fan decks are a niche B2B design-trade product on Amazon,
+sold thin and mostly third-party, not a mainstream stocked line the way Pantone/Calibrite tools are.
+
+**Open, still not done, and now DILIGENCED rather than merely noted:** the gap survives because no
+safe product exists yet, not because nobody looked. Do not re-run this exact search — it will
+return the same four fan decks and the same stock state absent a structural change. The two paths
+that *could* close it, neither attempted here: (a) a live PA-API/SiteStripe check for real-time
+stock on a rotating basis (unlikely to be worth the build for one page-type); (b) route
+`/colors-that-go-with/` readers to the matching `/colors/[slug]/` page instead of adding a new
+product — that page already carries a real, verified, well-stocked buy block. NOT shipped this
+session either: the cross-link would need per-page slug matching against `palettes.ts`/`collections.ts`
+and a UX call about whether a page whose whole point is "not %s, but its neighbours" should route
+back to %s at all. Left as the next candidate, not built.
+
+**Verify:** all four fan-deck ASINs curl-confirmed live 2026-09-11 (200, real `productTitle`, no
+fabrication) with a 404 negative control on a synthetic ASIN proving the check itself works. No
+site files changed; this is a research-only entry.
