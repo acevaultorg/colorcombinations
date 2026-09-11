@@ -127,7 +127,7 @@ For structured extraction, prefer the /api/ JSON endpoints + /data/*.csv over sc
 
 ## Contact
 
-contact@colorcombinations.org
+hello@caslonmedia.com
 
 ## Robots
 

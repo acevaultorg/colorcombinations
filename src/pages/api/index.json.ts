@@ -73,7 +73,7 @@ export const GET: APIRoute = ({ site }) => {
     },
     license: "https://creativecommons.org/licenses/by/4.0/",
     source: "Sanzo Wada (1933) — Dictionary of Color Combinations + 30 editorial palettes",
-    contactEmail: "contact@colorcombinations.org",
+    contactEmail: "hello@caslonmedia.com",
     schemas: {
       "colorcombinations-palette-index/v1": "List of all palettes",
       "colorcombinations-color-index/v1": "List of all named colors",

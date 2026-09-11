@@ -288,7 +288,7 @@ function readme(palettes) {
   );
   lines.push("");
   lines.push(
-    "If your team uses this bundle in a paid product, consider sending a note to `hello@colorcombinations.org` — I'd love to see it.",
+    "If your team uses this bundle in a paid product, consider sending a note to `hello@caslonmedia.com` — I'd love to see it.",
   );
   lines.push("");
   lines.push(`_Generated ${new Date().toISOString().slice(0, 10)} — colorcombinations.org_`);

@@ -216,7 +216,7 @@ The site is ready. The monetization is live. Now it needs traffic. From `GROWTH.
 
 ## Support, returns, licensing
 
-- Bundle support email: `hello@colorcombinations.org` (already in footer)
+- Bundle support email: `hello@caslonmedia.com` (already in footer)
 - Gumroad handles refunds for you (within 30 days, no questions asked is standard)
 - Bundle license: personal + commercial use OK, redistribution of the bundle itself NOT OK (documented in the bundle's README.md and palettes.json)
 
@@ -232,4 +232,4 @@ The site is ready. The monetization is live. Now it needs traffic. From `GROWTH.
 
 ---
 
-**End of activation guide.** Questions → `hello@colorcombinations.org`, or open an issue in the `acevaultorg/colorcombinations` repo.
+**End of activation guide.** Questions → `hello@caslonmedia.com`, or open an issue in the `acevaultorg/colorcombinations` repo.
