@@ -109,7 +109,15 @@ const mood0 = (ctx.favorMoods && ctx.favorMoods[0]) ? ctx.favorMoods[0] : "consi
 // ---- SEO ----
 const h1 = `Colors that go with ${color.name} for ${ctx.label}`;
 const title = `Colors That Go With ${color.name} for ${ctx.label.replace(/^(a|an) /, "")}`;
-const answer = `${color.name} (${color.hex}) — ${color.descriptor} — pairs best with ${partnerSentence}. ${ctx.tip} ${topFamilies[0] ?? "a warm neutral"}, drawn from ${matches.length} historically-grounded combinations below.`;
+/**
+ * The lede doubles as the page's VERDICT: it must state, in the reader's words, what this
+ * colour is best for in THIS context — not merely that it "pairs" with something. Phrased
+ * per-context off ctx.label ("an outfit", "a bedroom", …) so all 756 pages of this template
+ * read naturally; never hardcode one context's wording here. Same claim as before, stated as
+ * a recommendation the reader can act on. Single source for the visible <p class="answer">,
+ * the visible FAQ and the FAQPage schema below — keep it that way.
+ */
+const answer = `${color.name} (${color.hex}) — ${color.descriptor} — is best for ${ctx.label} with ${partnerSentence}. ${ctx.tip} ${topFamilies[0] ?? "a warm neutral"}, drawn from ${matches.length} historically-grounded combinations below.`;
 const description = `What colors go with ${color.name.toLowerCase()} for ${ctx.label}? ${color.name} pairs with ${partnerSentence}. ${matches.length} curated combinations from the 1933 Dictionary of Color Combinations, with hex codes.`;
 
 const canonical = `/colors-that-go-with/${color.slug}/${ctx.slug}/`;
