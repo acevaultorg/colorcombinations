@@ -5,6 +5,7 @@ import ColorHarmony from "@components/ColorHarmony.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
 import BundleCta from "@components/BundleCta.astro";
+import StickyBuyBar from "@components/StickyBuyBar.astro";
 import ShareActions from "@components/ShareActions.astro";
 import { FURTHER_READING, ART_SUPPLIES } from "@/config/monetization";
 import { allColors, colorBySlug, palettesForColor } from "@data/colors";
@@ -623,6 +624,19 @@ const jsonLd = [
   </section>
 
   <BundleCta variant="medium" />
+
+  {/* ============ STICKY BUY BAR (M2, RG-AMAZON-ORDER-UX-STANDARD) ============
+       Phone-only, appears after the first screen, mirrors the sidebar rail's
+       lead book (same bookOffset rotation). On a phone the rail sits below the
+       whole colour profile, so without this a reader who scrolls on has no way
+       back to a buy action. Hides while the rail itself is on screen.
+       Not on /collections/: that is a hub, and per the module spec hubs route
+       while the leaf converts. */}
+  <StickyBuyBar
+    book={FURTHER_READING[bookOffset]}
+    pageClass="color-sticky"
+    watch=".color-details__sidebar .further-reading"
+  />
 </BaseLayout>
 
 <script>
