@@ -1,0 +1,322 @@
+---
+/**
+ * StickyBuyBar — M2 of RG-AMAZON-ORDER-UX-STANDARD-20260917-R1 (the leaf
+ * sticky buy bar, readstacks pattern). Shipped 2026-09-18 under the chief's
+ * fleet order "the Amazon buy block is the top priority on every site", from
+ * the operator's own words that day: "best ux to let people go back to see the
+ * lenses, for example a sticky bar" · "also take scroll debt in account".
+ *
+ * WHAT IT IS. On a leaf page, once a phone reader has scrolled past the first
+ * screen, a 56px bar pinned to the bottom of the viewport carries the page's
+ * own lead book — the SAME book the in-page "Go deeper on colour" rail already
+ * shows — with a 44px "See on Amazon" button through the site's own /go/b/
+ * gate. The book is passed in by the page; this component never picks one.
+ *
+ * WHY THE SAME BOOK, not a new product decision: one element per test. Measured
+ * 2026-09-18 on the live page, the rail sits after the full prose and the
+ * contrast matrix, so a phone reader who scrolls to the footer has nothing to
+ * tap on the way back. The bar changes the REACHABILITY of the existing buy
+ * block, not WHICH product the page recommends — so a before/after read is
+ * about the bar. (The rotation across the FURTHER_READING inventory is the
+ * page's `bookOffset`, unchanged.)
+ *
+ * MEASUREMENT. The anchor carries data-from="sticky-bar", which
+ * /amazon-track.js maps to shelf "sticky" (beacon f=sticky · GA4 shelf:sticky
+ * · Clarity amazon_click_sticky), so the bar's clicks never blend into the
+ * "book" shelf. `?c=<pageClass>` rides to the gate as &ascsubtag=. Baseline
+ * before this shipped (GA4, complete pull, 30d to 2026-09-18): /palettes/ took
+ * 34 amazon_click on 2,294 non-Direct pageviews = 14.8 per 1k.
+ *
+ * BEHAVIOUR — every part progressive; without JS the bar is simply there:
+ *  - ≤960px only. Wider, `.palette-body__aside` is already position:sticky,
+ *    so the rail itself stays on screen and a bar would be a second copy.
+ *  - hidden until scrollY passes ~70% of one viewport, then shown; hidden
+ *    again whenever the in-page rail (`watch`) is on screen, so the same book
+ *    is never visible twice.
+ *  - hidden while the cookie notice (#cookie-banner) is open — both are
+ *    bottom-anchored.
+ *  - stacks ABOVE any other fixed bottom-edge element that is not ours (a
+ *    Journey adhesion ad unit): measured with elementsFromPoint at the bottom
+ *    edge, so it needs no vendor id and re-measures on every scroll.
+ *  - an in-flow spacer keeps the bar off the page's last content and means
+ *    showing/hiding it never shifts layout (zero CLS).
+ *
+ * COMPLIANCE (module-spec binding rules): "Affiliate link" sits inside the bar
+ * beside its only link · rel="sponsored nofollow noopener" · the tag is never
+ * in the HTML (the gate adds it per marketplace) · no price text · the title
+ * is the dataset's own · 56px bar, 44px button · self-hosted or Open Library
+ * cover with width/height set.
+ */
+import { AMAZON, bookCover, type CuratedBook } from "@/config/monetization";
+
+export interface Props {
+  /** The page's lead book — the one its in-page rail shows first. */
+  book: CuratedBook;
+  /** Short slug that rides to the gate as &ascsubtag= (e.g. "palette-sticky"). */
+  pageClass: string;
+  /** Selector of the in-page block that shows the same book; the bar hides while it is on screen. */
+  watch?: string;
+}
+
+const { book, pageClass, watch } = Astro.props;
+const href = book.amazonAsin ? AMAZON.link(book.amazonAsin, pageClass) : "";
+const cover = bookCover(book, "S");
+---
+
+{href && (
+  <>
+    <div class="sbb-spacer" aria-hidden="true"></div>
+    <aside
+      id="sticky-buy-bar"
+      class="sbb"
+      data-sbb-hidden
+      data-sbb-watch={watch}
+      aria-label="Book featured on this page"
+    >
+      <a
+        href={href}
+        rel="sponsored nofollow noopener"
+        target="_blank"
+        class="sbb__link"
+        data-event="amazon_click"
+        data-from="sticky-bar"
+        data-event-from="sticky-bar"
+        data-book={book.title}
+        aria-label={`${book.title} on Amazon`}
+      >
+        <img
+          class="sbb__thumb"
+          src={cover}
+          alt=""
+          width="32"
+          height="48"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="sbb__text">
+          <span class="sbb__title">{book.title}</span>
+          <span class="sbb__note">Amazon affiliate link</span>
+        </span>
+        <span class="sbb__btn">See on Amazon</span>
+      </a>
+    </aside>
+    <noscript>
+      <style>
+        /* No JS: the bar is simply there (progressive). */
+        .sbb[data-sbb-hidden] { transform: none !important; pointer-events: auto !important; }
+      </style>
+    </noscript>
+    <script is:inline>
+      (function () {
+        var bar = document.getElementById("sticky-buy-bar");
+        if (!bar || !window.matchMedia || !("IntersectionObserver" in window)) {
+          if (bar) bar.removeAttribute("data-sbb-hidden");
+          return;
+        }
+        var mq = window.matchMedia("(max-width: 960px)");
+        var railSel = bar.getAttribute("data-sbb-watch");
+        var rail = railSel ? document.querySelector(railSel) : null;
+        // #cookie-banner is rendered by BaseLayout AFTER <main>, i.e. after this
+        // script runs — so it is resolved lazily, never cached at parse time.
+        function getBanner() { return document.getElementById("cookie-banner"); }
+        var railVisible = false;
+        var passedFold = false;
+
+        // Height of any foreign fixed element sitting on the viewport's bottom
+        // edge (the Journey adhesion ad container #fixed_container_bottom, or
+        // any other vendor's). Vendor-agnostic: measured at the bottom edge, so
+        // it needs no id. Returns -1 when that element is taller than a normal
+        // adhesion unit (an expanded ad, an interstitial): then the bar hides
+        // rather than float a third of the way up the screen.
+        function otherFixedBottom() {
+          var h = 0;
+          try {
+            var banner = getBanner();
+            var els = document.elementsFromPoint(window.innerWidth / 2, window.innerHeight - 1);
+            for (var i = 0; i < els.length; i++) {
+              var n = els[i];
+              if (bar.contains(n) || (banner && banner.contains(n))) continue;
+              while (n && n !== document.body && n !== document.documentElement) {
+                if (getComputedStyle(n).position === "fixed") {
+                  var r = n.getBoundingClientRect();
+                  if (r.bottom >= window.innerHeight - 1 && r.height > 0) {
+                    if (r.height > 160) return -1;
+                    h = Math.max(h, Math.round(window.innerHeight - r.top));
+                  }
+                  break;
+                }
+                n = n.parentElement;
+              }
+            }
+          } catch (e) {}
+          return h;
+        }
+
+        // A full-screen overlay injected at body level (the Journey consent
+        // dialog #cmpwrapper, an interstitial, a modal) sits above the bar and
+        // would swallow its tap. Vendor-agnostic: any direct child of <body>
+        // other than the page chrome that covers most of the viewport.
+        function overlayOpen() {
+          try {
+            var kids = document.body.children;
+            for (var i = 0; i < kids.length; i++) {
+              var el = kids[i];
+              if (el === bar || /^(HEADER|MAIN|FOOTER|NAV|SCRIPT|STYLE|LINK|ASTRO-DEV-TOOLBAR)$/.test(el.tagName)) continue;
+              var cs = getComputedStyle(el);
+              if (cs.display === "none" || cs.visibility === "hidden" || cs.opacity === "0") continue;
+              // A shadow host (the consent dialog) measures 0 tall itself; its
+              // dialog lives in the shadow root's top-level children.
+              var boxes = [el];
+              if (el.shadowRoot) boxes = boxes.concat(Array.prototype.slice.call(el.shadowRoot.children));
+              for (var j = 0; j < boxes.length; j++) {
+                var r = boxes[j].getBoundingClientRect();
+                if (r.width >= window.innerWidth * 0.8 && r.height >= window.innerHeight * 0.4) return true;
+              }
+            }
+          } catch (e) {}
+          return false;
+        }
+
+        function apply() {
+          var banner = getBanner();
+          var bannerOpen = !!(banner && !banner.hidden);
+          var show = mq.matches && passedFold && !railVisible && !bannerOpen && !overlayOpen();
+          var offset = show ? otherFixedBottom() : 0;
+          if (show && offset >= 0) {
+            bar.style.bottom = offset + "px";
+            bar.removeAttribute("data-sbb-hidden");
+          } else {
+            bar.setAttribute("data-sbb-hidden", "");
+          }
+        }
+        function onScroll() {
+          passedFold = window.scrollY > window.innerHeight * 0.7;
+          apply();
+        }
+
+        if (rail) {
+          new IntersectionObserver(function (entries) {
+            railVisible = entries.some(function (x) { return x.isIntersecting; });
+            apply();
+          }, { threshold: 0 }).observe(rail);
+        }
+        if ("MutationObserver" in window) {
+          // Overlays (consent dialog, ad wrappers) are added/removed as body children.
+          new MutationObserver(apply).observe(document.body, { childList: true });
+          var watchBanner = function () {
+            var b = getBanner();
+            if (b) new MutationObserver(apply).observe(b, { attributes: true, attributeFilter: ["hidden"] });
+          };
+          if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", watchBanner);
+          else watchBanner();
+        }
+        var ticking = false;
+        window.addEventListener("scroll", function () {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(function () { ticking = false; onScroll(); });
+        }, { passive: true });
+        window.addEventListener("resize", apply);
+        if (mq.addEventListener) mq.addEventListener("change", apply);
+        // Ad units arrive after load: re-measure the bottom offset a few times.
+        setTimeout(apply, 2500);
+        setTimeout(apply, 6000);
+        onScroll();
+      })();
+    </script>
+  </>
+)}
+
+<style>
+  .sbb-spacer {
+    display: none;
+  }
+  .sbb {
+    display: none;
+  }
+
+  @media (max-width: 960px) {
+    .sbb-spacer {
+      display: block;
+      height: calc(56px + env(safe-area-inset-bottom, 0px));
+    }
+    .sbb {
+      display: block;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      padding: 0 12px env(safe-area-inset-bottom, 0px);
+      background: var(--color-bg-elevated, #fff);
+      border-top: 1px solid var(--color-border, #e5e5e5);
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+      transform: translateY(0);
+      transition: transform 200ms ease;
+    }
+    .sbb[data-sbb-hidden] {
+      transform: translateY(calc(100% + 8px));
+      pointer-events: none;
+    }
+    .sbb__link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 56px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .sbb__thumb {
+      flex: 0 0 32px;
+      width: 32px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 3px;
+      background: var(--color-border, #e5e5e5);
+    }
+    .sbb__text {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .sbb__title {
+      font-weight: 600;
+      font-size: 0.875rem;
+      line-height: 1.2;
+      color: var(--color-ink-900, #111);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sbb__note {
+      font-size: 0.6875rem;
+      line-height: 1.2;
+      color: var(--color-ink-500, #6b6b6b);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sbb__btn {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: 8px;
+      background: var(--color-ink-900, #111);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.875rem;
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sbb {
+      transition: none;
+    }
+  }
+</style>

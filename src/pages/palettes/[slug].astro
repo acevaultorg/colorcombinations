@@ -7,6 +7,7 @@ import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
 import ContrastMatrix from "@components/ContrastMatrix.astro";
 import ShareBar from "@components/ShareBar.astro";
+import StickyBuyBar from "@components/StickyBuyBar.astro";
 import { FURTHER_READING, ART_SUPPLIES } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
 import { commonColors, contexts, pairingPaths, redmean } from "@data/pairings";
@@ -739,6 +740,11 @@ const jsonLd = [
       </div>
     </section>
   )}
+  {/* ============ STICKY BUY BAR (M2, RG-AMAZON-ORDER-UX-STANDARD) ============
+       Phone-only, appears after the first screen, mirrors the aside's lead book
+       (same bookOffset rotation) so the reader always has a way back to the buy
+       block. Hides while `.palette-library` is on screen. */}
+  <StickyBuyBar book={FURTHER_READING[bookOffset]} pageClass="palette-sticky" watch=".palette-library" />
 </BaseLayout>
 
 <script>
