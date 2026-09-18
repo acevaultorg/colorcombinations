@@ -35,9 +35,12 @@
  *    is never visible twice.
  *  - hidden while the cookie notice (#cookie-banner) is open — both are
  *    bottom-anchored.
- *  - stacks ABOVE any other fixed bottom-edge element that is not ours (a
- *    Journey adhesion ad unit): measured with elementsFromPoint at the bottom
- *    edge, so it needs no vendor id and re-measures on every scroll.
+ *  - stacks ABOVE a foreign fixed bottom-edge element (the Journey adhesion
+ *    ad): the VISIBLE band is hit-tested upward from the bottom edge, so it
+ *    needs no vendor id and ignores transparent pointer-events:none wrappers;
+ *    re-measured at most once a second. Taller than 200px -> the bar hides.
+ *  - hidden while a tap-swallowing full-screen overlay is open (the Journey
+ *    consent dialog lives in #cmpwrapper's shadow root).
  *  - an in-flow spacer keeps the bar off the page's last content and means
  *    showing/hiding it never shifts layout (zero CLS).
  *
@@ -122,34 +125,57 @@ const cover = bookCover(book, "S");
         var railVisible = false;
         var passedFold = false;
 
-        // Height of any foreign fixed element sitting on the viewport's bottom
-        // edge (the Journey adhesion ad container #fixed_container_bottom, or
-        // any other vendor's). Vendor-agnostic: measured at the bottom edge, so
-        // it needs no id. Returns -1 when that element is taller than a normal
-        // adhesion unit (an expanded ad, an interstitial): then the bar hides
-        // rather than float a third of the way up the screen.
+        // VISIBLE height occupied at the viewport's bottom edge by a foreign fixed
+        // element (an ad adhesion unit), found by hit-testing upward from the
+        // bottom edge. Hit-testing, not the container's box: measured live
+        // 2026-09-18, Journey's #fixed_container_bottom is a 400px-tall
+        // TRANSPARENT, pointer-events:none wrapper around a 90px ad, so its box
+        // says 400 while the reader sees (and can tap through all but) 90.
+        // elementsFromPoint ignores pointer-events:none areas, so it reads what a
+        // finger would. Vendor-agnostic: needs no id. Returns -1 when the
+        // occupied band is taller than 200px (an expanded ad / interstitial):
+        // then the bar hides rather than float a third of the way up the screen.
+        function foreignFixedAt(x, y, banner) {
+          var els = document.elementsFromPoint(x, y);
+          for (var i = 0; i < els.length; i++) {
+            var n = els[i];
+            if (bar.contains(n)) continue; // look "through" our own bar
+            if (banner && banner.contains(n)) return false;
+            while (n && n !== document.body && n !== document.documentElement) {
+              if (getComputedStyle(n).position === "fixed") return true;
+              n = n.parentElement;
+            }
+            return false; // topmost non-bar element is ordinary page content
+          }
+          return false;
+        }
         function otherFixedBottom() {
-          var h = 0;
           try {
             var banner = getBanner();
-            var els = document.elementsFromPoint(window.innerWidth / 2, window.innerHeight - 1);
-            for (var i = 0; i < els.length; i++) {
-              var n = els[i];
-              if (bar.contains(n) || (banner && banner.contains(n))) continue;
-              while (n && n !== document.body && n !== document.documentElement) {
-                if (getComputedStyle(n).position === "fixed") {
-                  var r = n.getBoundingClientRect();
-                  if (r.bottom >= window.innerHeight - 1 && r.height > 0) {
-                    if (r.height > 160) return -1;
-                    h = Math.max(h, Math.round(window.innerHeight - r.top));
-                  }
-                  break;
-                }
-                n = n.parentElement;
-              }
+            var x = window.innerWidth / 2;
+            var ih = window.innerHeight;
+            if (!foreignFixedAt(x, ih - 1, banner)) return 0;
+            var top = ih - 1;
+            var y;
+            for (y = ih - 9; y >= ih - 248; y -= 8) { // coarse
+              if (foreignFixedAt(x, y, banner)) top = y; else break;
             }
+            if (ih - top > 200) return -1;
+            for (y = top - 1; y > top - 8; y--) { // refine to the pixel
+              if (foreignFixedAt(x, y, banner)) top = y; else break;
+            }
+            return ih - top;
           } catch (e) {}
-          return h;
+          return 0;
+        }
+        // Hit-testing is not free, so the offset is re-measured at most once a
+        // second (scroll frames reuse it); overlay/ad arrival forces a re-measure.
+        var offsetCache = 0;
+        var offsetAt = 0;
+        function bottomOffset(force) {
+          var now = Date.now();
+          if (force || now - offsetAt > 1000) { offsetCache = otherFixedBottom(); offsetAt = now; }
+          return offsetCache;
         }
 
         // A full-screen overlay injected at body level (the Journey consent
@@ -169,6 +195,10 @@ const cover = bookCover(book, "S");
               var boxes = [el];
               if (el.shadowRoot) boxes = boxes.concat(Array.prototype.slice.call(el.shadowRoot.children));
               for (var j = 0; j < boxes.length; j++) {
+                // pointer-events:none cannot swallow a tap, so it is not an
+                // overlay — Journey's 400px transparent ad wrapper is exactly
+                // that (measured live 2026-09-18) and must not hide the bar.
+                if (getComputedStyle(boxes[j]).pointerEvents === "none") continue;
                 var r = boxes[j].getBoundingClientRect();
                 if (r.width >= window.innerWidth * 0.8 && r.height >= window.innerHeight * 0.4) return true;
               }
@@ -177,11 +207,11 @@ const cover = bookCover(book, "S");
           return false;
         }
 
-        function apply() {
+        function apply(force) {
           var banner = getBanner();
           var bannerOpen = !!(banner && !banner.hidden);
           var show = mq.matches && passedFold && !railVisible && !bannerOpen && !overlayOpen();
-          var offset = show ? otherFixedBottom() : 0;
+          var offset = show ? bottomOffset(force === true) : 0;
           if (show && offset >= 0) {
             bar.style.bottom = offset + "px";
             bar.removeAttribute("data-sbb-hidden");
@@ -202,7 +232,7 @@ const cover = bookCover(book, "S");
         }
         if ("MutationObserver" in window) {
           // Overlays (consent dialog, ad wrappers) are added/removed as body children.
-          new MutationObserver(apply).observe(document.body, { childList: true });
+          new MutationObserver(function () { apply(true); }).observe(document.body, { childList: true });
           var watchBanner = function () {
             var b = getBanner();
             if (b) new MutationObserver(apply).observe(b, { attributes: true, attributeFilter: ["hidden"] });
@@ -216,11 +246,11 @@ const cover = bookCover(book, "S");
           ticking = true;
           requestAnimationFrame(function () { ticking = false; onScroll(); });
         }, { passive: true });
-        window.addEventListener("resize", apply);
+        window.addEventListener("resize", function () { apply(true); });
         if (mq.addEventListener) mq.addEventListener("change", apply);
         // Ad units arrive after load: re-measure the bottom offset a few times.
-        setTimeout(apply, 2500);
-        setTimeout(apply, 6000);
+        setTimeout(function () { apply(true); }, 2500);
+        setTimeout(function () { apply(true); }, 6000);
         onScroll();
       })();
     </script>
