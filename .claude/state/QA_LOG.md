@@ -139,3 +139,13 @@ Ran `node scripts/money-page-scan.mjs colorcombinations.org` (fleet-dashboard ca
 This is a CLS/CWV risk per fleet-images-standard.md (sized images are a standing requirement). Not evaluated here whether it's a template-wide defect or per-page; needs a build.mjs / template read to confirm scope before fixing (per fix-the-generator-not-generated-output doctrine -- if it's template-wide, one fix in the image-render helper fixes all instances rather than page-by-page).
 
 **Positive control:** the money-path gate and CTA presence checks on the SAME pages passed cleanly, confirming this scanner correctly discriminates pass/fail rather than flagging everything.
+
+### VERIFY (cycle 3, step 3/5, 2026-09-19) — skeptic re-check of the SCAN image-sizing finding
+
+Independent method: read the source (not re-run the scanner). Confirmed root cause and severity honestly restated.
+
+**CONFIRMED, root cause found, correctly scoped:** `src/components/FurtherReading.astro` renders `<img src={coverUrl} ... loading="lazy" decoding="async" data-cover-img onerror=... onload=...>` with NO width/height attributes, and this ONE shared component is imported by **40 of ~45 page templates** (home, all /learn/, /colors/, /colors-that-go-with/, /collections/, /compare/, /trends/, /shop/, /glossary/, /material-design/, /accessibility/, /palettes/, /books/, /paintings/) -- matching the scanner's flagged page list exactly. This is a single-root-cause template defect, not 34 independent page bugs.
+
+**Control confirming the fix is straightforward:** two OTHER image call sites in this codebase (`paintings/index.astro:85`, `paintings/[slug].astro:127`, `books/index.astro:92`, `books/[slug].astro:146`) DO set width (some with a `?? 900` fallback), proving the pattern for a correct fix already exists in-repo -- this is not a missing capability, just one component that was never updated.
+
+**Severity restated honestly:** this is NOT a P0/P1. It does not touch the money path, CTA compliance, or affiliate gate (all separately verified PASS in the SCAN step). It is a CWV/CLS risk (fleet-images-standard.md) affecting book-cover thumbnails specifically -- correctly P2. Not filing as urgent; flagging as a scoped, cheap, one-component fix for a future BUILD leg (add explicit width/height or aspect-ratio CSS to FurtherReading.astro's <img>, verify against the paintings/books pattern already in the codebase).
