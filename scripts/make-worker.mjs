@@ -29,7 +29,8 @@
  * load-bearing for the same reason: any throw falls back to ASSETS, so a bug in
  * the gate can degrade the buy path but can never take the site down.
  */
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 
 const OUT = "dist/_worker.js";
 const SRC = {
@@ -118,4 +119,17 @@ export default {
   },
 };
 `);
-console.log(`make-worker: ${OUT} written (${readFileSync(OUT).length} bytes)`);
+{
+  // .mjs forces module parsing; `node --check` on a .js file parses as CommonJS and passes broken output.
+  const tmp = `${OUT}.parsecheck.mjs`;
+  writeFileSync(tmp, readFileSync(OUT));
+  const r = spawnSync(process.execPath, ["--check", tmp], { encoding: "utf8" });
+  rmSync(tmp, { force: true });
+  if (r.status !== 0) {
+    rmSync(OUT, { force: true });
+    console.error("make-worker: EMITTED WORKER DOES NOT PARSE AS A MODULE — refusing.\n" +
+      (r.stderr || "").split("\n").slice(0, 6).join("\n"));
+    process.exit(1);
+  }
+}
+console.log(`make-worker: ${OUT} written (${readFileSync(OUT).length} bytes), parses as a module`);
