@@ -56,26 +56,20 @@ const keywords = [
   "design inspiration",
 ];
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: title,
-  url: Astro.site?.toString() ?? "https://colorcombinations.org",
-  description,
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${Astro.site}browse?q={search_term_string}`,
-    },
-    "query-input": "required name=search_term_string",
-  },
-};
+// NO WebSite schema here. BaseLayout already emits the canonical one for every page
+// (@id, publisher -> #organization, inLanguage, and the /browse/ SearchAction target with
+// its trailing slash). This page used to pass a SECOND, thinner top-level WebSite block,
+// so the homepage shipped two competing declarations with two different site names
+// ("The Dictionary of Color Combinations" vs "Sanzo Wada's Dictionary of Color
+// Combinations") and a SearchAction target that 301s. An entity extractor could not tell
+// which name was canonical — on the one site whose measured strength IS book-entity
+// citation share. Pages that legitimately need site context nest it instead, as a WebPage
+// with isPartOf (see privacy.astro); a second top-level WebSite is always a duplicate.
 ---
 
 <BaseLayout
   adContent
-  bareTitle title={title} description={description} keywords={keywords} image="/og/index.png" jsonLd={jsonLd}>
+  bareTitle title={title} description={description} keywords={keywords} image="/og/index.png">
   {/* ==================== HERO ==================== */}
   <section class="hero section">
     <div class="container-wide hero__inner">
