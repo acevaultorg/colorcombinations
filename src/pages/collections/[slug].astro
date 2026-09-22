@@ -102,6 +102,44 @@ const AUTHOR = {
   sameAs: ["https://paulodevries.com/", "https://www.linkedin.com/in/paulomichaeldevries"],
 };
 
+/**
+ * FAQ — SINGLE SOURCE for both the FAQPage schema below AND the visible <section>
+ * at the bottom of this page. They must not drift apart.
+ *
+ * Why (2026-09-22): this template shipped FAQPage JSON-LD that rendered NOWHERE —
+ * measured live on 5 non-adjacent collections (autumn, branding, websites, summer,
+ * green), 4/4 questions absent from the rendered HTML on every one, while
+ * /palettes/[slug] (4/4) and /trends/color-trends-2026 (6/6) rendered theirs
+ * correctly. Same defect and same remedy as the 2026-09-06 §E46/§E47/§E48 pass,
+ * which measured 1,364 of 1,529 crawled pages shipping unrendered FAQPage and
+ * fixed /palettes/[slug] + /colors/[slug] (82922e1) — this template was simply
+ * never reached by it.
+ *
+ * Rendering rather than deleting, per that pass's recorded decision: FAQ rich
+ * results were deprecated 2026-05-07, so the schema's only remaining purpose is
+ * AI extraction, and AI extractors read RENDERED content. The answers here are
+ * substantive and computed per collection (count, curation basis, licence,
+ * provenance), so they earn their place as visible copy.
+ */
+const collectionFaq: { q: string; a: string }[] = [
+  {
+    q: `What is in the "${collection.title}" collection?`,
+    a: `${collection.title} is a curated collection of ${total} historical color palettes from Sanzo Wada's "A Dictionary of Color Combinations" (1933). ${collection.tagline}`,
+  },
+  {
+    q: `How was the "${collection.title}" collection curated?`,
+    a: `Editorial curation by colorcombinations.org. ${description} Palettes are grouped by thematic resonance — mood, era, or visual language — not algorithmic similarity.`,
+  },
+  {
+    q: `Can I embed or share the "${collection.title}" collection?`,
+    a: `Yes. Use the embed iframe (560×320) shown on the page for blogs, Notion pages, or design reviews. Each embedded palette links back to its full detail page. Share image (1200×630) auto-generated per collection. License: CC BY 4.0.`,
+  },
+  {
+    q: `Where does the "${collection.title}" source material come from?`,
+    a: `Source: Sanzo Wada, "A Dictionary of Color Combinations" (1933, Seigensha Art Publishing 2010 reprint). The Wada catalog is in the public domain. Curation, descriptions, and groupings here are CC BY 4.0 licensed.`,
+  },
+];
+
 const jsonLd = [
   AUTHOR,
   {
@@ -156,44 +194,18 @@ const jsonLd = [
     ],
   },
   // FAQPage + Speakable per rules/seo-geo-mastery.md Part 14.
+  // mainEntity is derived from `collectionFaq` — the SAME array the visible
+  // <section> at the bottom of this page renders, so the markup matches the
+  // rendered content by construction and cannot silently drift (§E46).
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "@id": `${new URL(`/collections/${collection.slug}`, Astro.site).toString()}#faq`,
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `What is in the "${collection.title}" collection?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `${collection.title} is a curated collection of ${total} historical color palettes from Sanzo Wada's "A Dictionary of Color Combinations" (1933). ${collection.tagline}`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `How was the "${collection.title}" collection curated?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Editorial curation by colorcombinations.org. ${description} Palettes are grouped by thematic resonance — mood, era, or visual language — not algorithmic similarity.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Can I embed or share the "${collection.title}" collection?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Yes. Use the embed iframe (560×320) shown on the page for blogs, Notion pages, or design reviews. Each embedded palette links back to its full detail page. Share image (1200×630) auto-generated per collection. License: CC BY 4.0.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Where does the "${collection.title}" source material come from?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Source: Sanzo Wada, "A Dictionary of Color Combinations" (1933, Seigensha Art Publishing 2010 reprint). The Wada catalog is in the public domain. Curation, descriptions, and groupings here are CC BY 4.0 licensed.`,
-        },
-      },
-    ],
+    mainEntity: collectionFaq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
   },
   {
     "@context": "https://schema.org",
@@ -405,6 +417,23 @@ const jsonLd = [
     />
   </section>
 
+  {/* FAQ — renders `collectionFaq`, the SAME array that feeds the FAQPage schema in
+       the frontmatter. Visible text matches the schema by construction; never build
+       one without the other (§E46). Placed last so it pushes no CTA further down. */}
+  <section class="section collection-faq-section" aria-labelledby="collection-faq-heading">
+    <div class="container-narrow">
+      <h2 id="collection-faq-heading" class="collection-faq__title">Questions about {collection.title}</h2>
+      <dl class="collection-faq__list">
+        {collectionFaq.map((f) => (
+          <div class="collection-faq__item">
+            <dt class="collection-faq__q">{f.q}</dt>
+            <dd class="collection-faq__a">{f.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
   {/* The studio shelf used to render here, at the page bottom. It now sits
       directly after the palette grid — see the rationale at that call site. */}
 </BaseLayout>
@@ -429,6 +458,17 @@ const jsonLd = [
 </script>
 
 <style>
+  /* FAQ block — mirrors the verified `.palette-faq__*` rules on /palettes/[slug]
+     (§E48) so the two surfaces read identically. Static content at the page
+     bottom: no JS, no lazy load, nothing above it moves, so it contributes zero
+     CLS (the ads-density freeze RG-MV-COLOR-EVENT-DRIVEN-20260926 requires
+     p75 CLS <= 0.10 preserved). Touches no .mv-content and no ad slot. */
+  .collection-faq__title { font-size: 1.05rem; font-weight: 600; margin: 0 0 0.9rem; color: var(--color-ink-900, #1a1714); }
+  .collection-faq__list { margin: 0; }
+  .collection-faq__item + .collection-faq__item { margin-top: 0.9rem; }
+  .collection-faq__q { font-weight: 600; font-size: 0.95rem; color: var(--color-ink-900, #1a1714); }
+  .collection-faq__a { margin: 0.25rem 0 0; font-size: 0.9rem; line-height: 1.55; color: var(--color-ink-500, #8a8378); }
+
   /* Studio shelf at peak intent. It previously sat last on the page, where the
      surrounding sections supplied their own padding; mid-flow between the
      palette grid and the embed section it needs its own. Matches the
