@@ -9,6 +9,8 @@
  * landing page" — strong signal for Knowledge-Graph eligibility.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import { COLOR_REFERENCE_LIBRARY } from "@/config/monetization";
 import { allPalettes } from "@/data/palettes";
 import { allColors } from "@/data/colors";
 import { collections } from "@/data/collections";
@@ -209,6 +211,19 @@ const jsonLd = [
         Questions or partnership inquiries:
         <a href="mailto:hello@caslonmedia.com">hello@caslonmedia.com</a>.
       </p>
+    </div>
+  </section>
+
+  <section class="section data-section">
+    <div class="container-narrow">
+      <FurtherReading
+        pageClass="data-hub"
+        books={COLOR_REFERENCE_LIBRARY}
+        variant="compact"
+        limit={2}
+        title="The source book"
+        intro="This entire dataset is a digitisation of Sanzo Wada's 1933 dictionary. The printed original — both volumes."
+      />
     </div>
   </section>
 </BaseLayout>

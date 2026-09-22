@@ -10,6 +10,8 @@
  * /random today", returning visitors who want a fresh palette.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import { COLOR_REFERENCE_LIBRARY } from "@/config/monetization";
 import { allPalettes } from "@data/palettes";
 
 const palettes = allPalettes();
@@ -74,6 +76,17 @@ const jsonLd = [
             </li>
           ))}
         </ul>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container-narrow">
+        <FurtherReading
+          pageClass="random-noscript"
+          books={COLOR_REFERENCE_LIBRARY}
+          variant="compact"
+          limit={2}
+          title="The printed original"
+        />
       </div>
     </section>
   </noscript>

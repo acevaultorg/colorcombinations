@@ -10,6 +10,8 @@
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
 import EmailCapture from "@components/EmailCapture.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import { COLOR_REFERENCE_LIBRARY } from "@/config/monetization";
 import { wadaPalettes } from "@/data/wada-palettes";
 
 const total = wadaPalettes.length;
@@ -425,6 +427,17 @@ const lastVerified = modified.slice(0, 10);
       <a class="underline" href="/embed/contrast-checker">contrast checker</a>.
     </p>
   </article>
+
+  <div class="section">
+    <FurtherReading
+      pageClass="data-wada-contrast"
+      books={COLOR_REFERENCE_LIBRARY}
+      variant="compact"
+      limit={2}
+      title="The book behind this study"
+      intro="Every contrast figure above is computed from the community reconstruction of Wada's 1933 dictionary. The printed original — both volumes."
+    />
+  </div>
 
   <EmailCapture
     class="section"
