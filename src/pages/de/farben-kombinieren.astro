@@ -1,0 +1,142 @@
+---
+/**
+ * /de/farben-kombinieren/ — German demand probe (2026-09-23, Subchief 6, card mue90aq383zqez).
+ *
+ * WHY: Bing DE "farben kombinieren" = 1,208 broad impressions/week vs 392 for the English
+ * head term "color combinations" (GetKeywordStats, 25 weeks to 2026-09-19). One page, read on
+ * day 30 before any German section is built. Same data as /colors-that-go-with/: every
+ * palette is a real plate from Wada's 1933 archive, matched by perceptual distance
+ * (pairings.ts). Only the colour NAMES and the prose are German; nothing is invented.
+ * hreflang pairs this page with /colors-that-go-with/ (both directions).
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { commonColorBySlug, palettesFor, type PairingContext } from "@data/pairings";
+import { AMAZON } from "@/config/monetization";
+
+// Common German names for the site's reference colours (same slugs + hexes as the English hub).
+const DE: [string, string][] = [
+  ["gray", "Grau"], ["beige", "Beige"], ["navy", "Marineblau"], ["sage-green", "Salbeigrün"],
+  ["terracotta", "Terrakotta"], ["olive-green", "Olivgrün"], ["burgundy", "Bordeauxrot"],
+  ["charcoal-grey", "Anthrazit"], ["dusty-rose", "Altrosa"], ["mustard", "Senfgelb"],
+  ["teal", "Petrol"], ["cream", "Creme"], ["taupe", "Taupe"], ["mauve", "Mauve"],
+  ["blue", "Blau"], ["green", "Grün"], ["red", "Rot"], ["yellow", "Gelb"], ["orange", "Orange"],
+  ["pink", "Rosa"], ["purple", "Lila"], ["brown", "Braun"], ["black", "Schwarz"], ["white", "Weiß"],
+  ["turquoise", "Türkis"], ["mint", "Mintgrün"], ["lavender", "Lavendel"], ["coral", "Koralle"],
+  ["emerald-green", "Smaragdgrün"], ["forest-green", "Tannengrün"], ["peach", "Pfirsich"],
+  ["sky-blue", "Himmelblau"], ["gold", "Gold"], ["khaki", "Khaki"], ["rust", "Rostrot"],
+  ["plum", "Pflaume"], ["magenta", "Magenta"], ["maroon", "Rotbraun"], ["tan", "Hellbraun"],
+  ["blush", "Zartrosa"],
+];
+
+// Neutral lens: rank purely by how closely the plate contains the colour.
+const neutral: PairingContext = { slug: "de", label: "", lens: "", favorMoods: [], tone: "any", tip: "" };
+
+const colours = DE.map(([slug, name]) => {
+  const c = commonColorBySlug(slug);
+  if (!c) return null;
+  const matches = palettesFor(c.hex, neutral).slice(0, 3);
+  return { slug, name, hex: c.hex, matches };
+}).filter((c): c is NonNullable<typeof c> => !!c && c.matches.length >= 2);
+
+const bookHref = AMAZON.link("4861522471", "de-farben");
+const title = "Farben kombinieren: Welche Farben passen zusammen?";
+const description =
+  "Welche Farben passen zu Grau, Salbeigrün oder Terrakotta? Wähle eine Farbe und sieh echte Kombinationen aus Sanzo Wadas Farbwörterbuch von 1933, mit Hex-Codes zum Kopieren.";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: title,
+  inLanguage: "de",
+  url: "https://colorcombinations.org/de/farben-kombinieren/",
+};
+const alternates = [
+  { hreflang: "de", href: "/de/farben-kombinieren/" },
+  { hreflang: "en", href: "/colors-that-go-with/" },
+  { hreflang: "x-default", href: "/colors-that-go-with/" },
+];
+---
+
+<BaseLayout title={title} description={description} canonical="/de/farben-kombinieren/" jsonLd={jsonLd} lang="de" alternates={alternates} adContent>
+  <main class="mx-auto max-w-4xl px-5 py-10">
+    <header class="mb-6">
+      <h1 class="text-3xl font-semibold tracking-tight text-stone-900">Farben kombinieren: Welche Farben passen zusammen?</h1>
+      <p class="mt-3 max-w-2xl text-stone-600">
+        Wähle unten eine Farbe. Du siehst dann Kombinationen, die sich schon bewährt haben: Sie stammen aus Sanzo Wadas
+        <em>Dictionary of Color Combinations</em>, 1933 in Tokio erschienen und bis heute ein Nachschlagewerk für Gestalter.
+        Zu jeder Palette stehen die Hex-Codes dabei, damit du sie direkt in Canva, Figma oder im Baumarkt beim Farbmischen nutzen kannst.
+      </p>
+      <p class="mt-2 text-sm text-stone-500"><a href="/colors-that-go-with/" hreflang="en" class="underline">English version</a></p>
+    </header>
+
+    <section class="mb-8 rounded-xl border border-stone-200 p-4">
+      <label for="de-filter" class="text-sm font-medium text-stone-700">Farbe suchen</label>
+      <input id="de-filter" type="search" placeholder="z. B. Grau, Petrol, Altrosa" autocomplete="off"
+        class="mt-1 block w-full rounded-lg border border-stone-300 px-3 text-base" style="min-height:44px" />
+      <div id="de-chips" class="mt-3 flex flex-wrap gap-2">
+        {colours.map((c) => (
+          <a href={`#${c.slug}`} data-name={c.name.toLowerCase()}
+            class="inline-flex items-center gap-2 rounded-lg border border-stone-200 px-3 text-sm text-stone-800 hover:border-stone-400"
+            style="min-height:44px">
+            <span class="inline-block h-4 w-4 rounded ring-1 ring-black/10" style={`background:${c.hex}`}></span>{c.name}
+          </a>
+        ))}
+      </div>
+      <p id="de-none" class="mt-2 hidden text-sm text-stone-500">Diese Farbe haben wir noch nicht. Probier einen verwandten Ton, etwa Grau statt Silber.</p>
+    </section>
+
+    <section class="mb-10 max-w-2xl text-stone-700">
+      <h2 class="mb-2 text-xl font-semibold text-stone-900">Drei Faustregeln</h2>
+      <p class="mb-2">Lass eine Farbe führen und gib den anderen Nebenrollen. Eine grobe Aufteilung von 60, 30 und 10 Prozent wirkt fast immer ruhig.</p>
+      <p class="mb-2">Wenn zwei Farben sich beißen, hilft oft ein Neutralton dazwischen: Creme, ein warmes Grau oder Beige.</p>
+      <p>Farben, die sich im Farbkreis gegenüberliegen, wirken zusammen lebendig. Nachbarn im Farbkreis wirken harmonisch und etwas zurückhaltender.</p>
+    </section>
+
+    <div class="space-y-10">
+      {colours.map((c) => (
+        <section id={c.slug} class="scroll-mt-20">
+          <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold text-stone-900">
+            <span class="inline-block h-5 w-5 rounded-md ring-1 ring-black/10" style={`background:${c.hex}`}></span>
+            Was passt zu {c.name}?
+          </h2>
+          <div class="grid gap-3 sm:grid-cols-3">
+            {c.matches.map((m) => (
+              <a href={`/palettes/${m.palette.slug}/`} class="block rounded-xl border border-stone-200 p-3 hover:border-stone-400">
+                <div class="flex h-12 overflow-hidden rounded-lg ring-1 ring-black/5">
+                  {[m.matchHex, ...m.partners].map((h) => <span class="flex-1" style={`background:${h}`}></span>)}
+                </div>
+                <p class="mt-2 font-mono text-xs text-stone-600">{[m.matchHex, ...m.partners].map((h) => h.toUpperCase()).join(" · ")}</p>
+                <p class="mt-1 text-xs text-stone-500">Tafel „{m.palette.title}“ (Wada, 1933)</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <section class="mt-12 rounded-xl border border-stone-200 p-5">
+      <h2 class="text-lg font-semibold text-stone-900">Das Buch dahinter</h2>
+      <p class="mt-2 max-w-2xl text-stone-700">
+        Alle Paletten auf dieser Seite stammen aus Sanzo Wadas Farbwörterbuch. Die Neuausgabe von Seigensha enthält alle 348 Kombinationen
+        mit Farbmustern. Die Texte sind auf Englisch und Japanisch.
+      </p>
+      <a href={bookHref} rel="sponsored nofollow noopener" target="_blank" class="btn btn-primary mt-3 inline-flex"
+        data-event="amazon_click" data-book="A Dictionary of Color Combinations" data-surface="de-farben">Bei Amazon ansehen</a>
+      <p class="mt-2 text-xs text-stone-500">Als Amazon-Partner verdienen wir an qualifizierten Verkäufen.</p>
+    </section>
+  </main>
+  <script>
+    const input = document.getElementById("de-filter") as HTMLInputElement | null;
+    const chips = Array.from(document.querySelectorAll<HTMLAnchorElement>("#de-chips a"));
+    const none = document.getElementById("de-none");
+    input?.addEventListener("input", () => {
+      const q = input.value.trim().toLowerCase();
+      let shown = 0;
+      for (const a of chips) {
+        const hit = !q || (a.dataset.name || "").includes(q);
+        a.style.display = hit ? "" : "none";
+        if (hit) shown++;
+      }
+      none?.classList.toggle("hidden", shown > 0);
+    });
+  </script>
+</BaseLayout>

@@ -55,6 +55,10 @@ export interface Props {
    *  removing `.mv-content` only stops in-content placements, while adhesion,
    *  interstitial, sidebar and video units may still load. */
   blockAllAds?: boolean;
+  /** Page language for <html lang>. Defaults to "en"; the /de/ probe passes "de". */
+  lang?: string;
+  /** hreflang alternates, e.g. [{ hreflang: "de", href: "/de/farben-kombinieren/" }]. Paths are made absolute. */
+  alternates?: { hreflang: string; href: string }[];
 }
 
 const {
@@ -73,6 +77,8 @@ const {
   bareTitle = false,
   adContent = false,
   blockAllAds = false,
+  lang = "en",
+  alternates = [],
 } = Astro.props;
 
 // Default freshness anchors (matches detail-page JSON-LD).
@@ -217,7 +223,7 @@ const jsonLdArray = jsonLd
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -237,6 +243,7 @@ const jsonLdArray = jsonLd
     {noIndex && <meta name="robots" content="noindex, nofollow" />}
 
     <link rel="canonical" href={canonicalUrl} />
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={new URL(alt.href, Astro.site).toString()} />)}
 
     <!-- Icons & manifest -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
