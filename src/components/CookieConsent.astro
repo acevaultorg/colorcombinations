@@ -40,29 +40,34 @@
   // ONE CONSENT SURFACE (2026-09-23): where the ad CMP applies (EU/UK: TCF
   // gdprApplies === true) it already covers the phone screen, and this notice
   // stacked underneath it. So this notice is shown only where the CMP does not
-  // apply, or where no CMP loads at all within ~4s. Its content is repeated on
+  // apply, or where no CMP answers within ~12s. Its content is repeated on
   // /privacy, which the footer links on every page.
   function show() {
     var banner = document.getElementById('cookie-banner');
     if (banner && !localStorage.getItem(STORAGE_KEY)) banner.hidden = false;
   }
+  // Poll the TCF 'ping' command rather than addEventListener: the Mediavine
+  // stub exists before consentmanager loads and does not replay listeners
+  // queued on it (measured 2026-09-23: the listener never fired, so a 6s
+  // fallback showed the notice under the CMP). 'ping' answers on the stub and
+  // on the real CMP; gdprApplies is decided once cmpLoaded is true.
   if (!status) {
-    var tries = 0;
-    (function waitForCmp() {
+    var tries = 0, decided = false;
+    (function poll() {
       if (typeof window.__tcfapi === 'function') {
-        var decided = false;
-        window.__tcfapi('addEventListener', 2, function (tc, ok) {
-          if (decided || !ok || !tc) return;
-          if (typeof tc.gdprApplies !== 'boolean') return;
-          decided = true;
-          if (!tc.gdprApplies) show();
-        });
-        // A CMP stub that never answers must not hide the notice forever.
-        setTimeout(function () { if (!decided) { decided = true; show(); } }, 6000);
-        return;
+        try {
+          window.__tcfapi('ping', 2, function (p) {
+            if (decided || !p || !p.cmpLoaded || typeof p.gdprApplies !== 'boolean') return;
+            decided = true;
+            if (!p.gdprApplies) show();
+          });
+        } catch (e) {}
       }
-      if (++tries < 16) return setTimeout(waitForCmp, 250);
-      show();
+      setTimeout(function () {
+        if (decided) return;
+        if (++tries < 40) return poll();   // ~12s at 300ms
+        show();                            // no CMP answered: show the notice
+      }, 300);
     })();
   }
 
