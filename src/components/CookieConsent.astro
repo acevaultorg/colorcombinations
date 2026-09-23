@@ -37,12 +37,33 @@
   var STORAGE_KEY = 'cc_status';
   var status = localStorage.getItem(STORAGE_KEY);
 
+  // ONE CONSENT SURFACE (2026-09-23): where the ad CMP applies (EU/UK: TCF
+  // gdprApplies === true) it already covers the phone screen, and this notice
+  // stacked underneath it. So this notice is shown only where the CMP does not
+  // apply, or where no CMP loads at all within ~4s. Its content is repeated on
+  // /privacy, which the footer links on every page.
+  function show() {
+    var banner = document.getElementById('cookie-banner');
+    if (banner && !localStorage.getItem(STORAGE_KEY)) banner.hidden = false;
+  }
   if (!status) {
-    // Show after a brief delay so it doesn't flash during page load
-    setTimeout(function () {
-      var banner = document.getElementById('cookie-banner');
-      if (banner) banner.hidden = false;
-    }, 800);
+    var tries = 0;
+    (function waitForCmp() {
+      if (typeof window.__tcfapi === 'function') {
+        var decided = false;
+        window.__tcfapi('addEventListener', 2, function (tc, ok) {
+          if (decided || !ok || !tc) return;
+          if (typeof tc.gdprApplies !== 'boolean') return;
+          decided = true;
+          if (!tc.gdprApplies) show();
+        });
+        // A CMP stub that never answers must not hide the notice forever.
+        setTimeout(function () { if (!decided) { decided = true; show(); } }, 6000);
+        return;
+      }
+      if (++tries < 16) return setTimeout(waitForCmp, 250);
+      show();
+    })();
   }
 
   function dismiss() {

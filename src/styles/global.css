@@ -191,6 +191,18 @@
     padding-inline: var(--spacing-page);
   }
 
+  /* .container-narrow was used on ~30 pages (home shelves, /color-psychology,
+     /tools/*, /trends/*, /collections/*) but defined only inside 9 pages' own
+     <style> blocks, so everywhere else it rendered flush against the left edge
+     at desktop widths (2026-09-23 design pass). Same values as those local
+     definitions, which still win where present. */
+  .container-narrow {
+    width: 100%;
+    max-width: 64rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
   /* Section spacing */
   .section {
     padding-block: var(--spacing-section);
