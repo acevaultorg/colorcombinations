@@ -12,7 +12,7 @@
  * ZERO FABRICATION, and it constrains the design in two specific ways:
  *
  * 1. No invented hexes. Paint colours do not map to one exact sRGB value, and
- *    for two of the three picks below no hex has been published anywhere I
+ *    for most of the picks below (all but Behr) no hex has been published anywhere I
  *    could source. So a card NEVER claims to show you the brand's colour. It
  *    shows the closest colour in THIS archive — labelled as exactly that — and
  *    links to the brand's own page as the authoritative reference. The one
@@ -41,12 +41,12 @@ import FurtherReading from "@components/FurtherReading.astro";
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/color-trends-2027/";
 const PUBLISHED = "2026-09-06T00:00:00Z";
-// Verified 2026-09-06 against each brand's own announcement plus Forbes, HGTV,
+// Verified 2026-09-24 (first pass 2026-09-06) against each brand's own announcement plus Forbes, HGTV,
 // Young House Love and PR Newswire. Bump when the picks are re-checked or a new
 // authority announces — never automatically. (Same rule as the 2026 page; there
 // dateModified used to be the build clock, which asserted a content change on
 // every deploy. Fixed 2026-09-06, commit 75dcb84.)
-const VERIFIED = "2026-09-06";
+const VERIFIED = "2026-09-24";
 const MODIFIED = `${VERIFIED}T00:00:00Z`;
 
 const AUTHOR = {
@@ -116,6 +116,66 @@ const PICKS: Pick[] = [
     sourcedHex: "#5E5C50",
     match: { slug: "olive-green", name: "Olive Green", hex: "#708238" },
   },
+  {
+    brand: "Graham & Brown",
+    name: "Rose Earth",
+    code: "—",
+    family: "Warm dusty pink with clay undertones",
+    blurb:
+      "A warm, grounded pink with soft clay and muted brown undertones, inspired by natural mineral pigments — Graham & Brown frames it as a wish for homes that feel reassuring and connected to the natural world.",
+    url: "https://www.grahambrown.com/row/product/rose-earth-paint/147315-master/",
+    announced: "early September 2026",
+    sourcedHex: null,
+    match: { slug: "cameo-pink", name: "Cameo Pink", hex: "#E0B3B6" },
+  },
+  {
+    brand: "Dulux",
+    name: "Soulful Sage",
+    code: "—",
+    family: "Soft, silvery grey-green",
+    blurb:
+      "A soft, radiant green that Dulux presents as a calm, nature-linked answer to information overload — a flexible foundation for warmer or cooler schemes.",
+    url: "https://www.dulux.co.uk/en/dulux-colour-of-the-year-2027",
+    announced: "8 September 2026",
+    sourcedHex: null,
+    match: { slug: "pistachio-green", name: "Pistachio Green", hex: "#648F7B" },
+  },
+  {
+    brand: "Glidden",
+    name: "Artifact",
+    code: "PPG10-16",
+    family: "Calm, smoky aqua blue",
+    blurb:
+      "Glidden calls it a calm, fresh aqua that feels like a reset for the whole space — a livable mid-tone meant to refresh a room rather than renovate it. Press coverage reads it as a smoky blue.",
+    url: "https://www.glidden.com/2027-color-of-the-year",
+    announced: "mid-September 2026",
+    sourcedHex: null,
+    match: { slug: "artemesia-green", name: "Artemesia Green", hex: "#709390" },
+  },
+  {
+    brand: "Sherwin-Williams",
+    name: "Celery",
+    code: "SW 6421",
+    family: "Soft, muted green with yellow undertones",
+    blurb:
+      "Named jointly with HGTV Home by Sherwin-Williams: a soft, muted green with subtle yellow undertones, meant to bring a light and airy presence to interiors. It is drawn from the brand's Rewild forecast.",
+    url: "https://www.sherwin-williams.com/en-us/color/color-of-the-year/2027",
+    announced: "15 September 2026",
+    sourcedHex: null,
+    match: { slug: "cobalt-green", name: "Cobalt Green", hex: "#96D1AA" },
+  },
+  {
+    brand: "WGSN + Coloro",
+    name: "Luminous Blue",
+    code: "—",
+    family: "Luminous lapis-to-cobalt blue",
+    blurb:
+      "The trend forecasters' pick, named well ahead of the paint brands. WGSN compares it to lapis lazuli and to cobalt, the key ingredient of the lithium-ion batteries behind the energy transition.",
+    url: "https://www.wgsn.com/en/blog/colour-year-2027-luminous-blue",
+    announced: "2 June 2025",
+    sourcedHex: null,
+    match: { slug: "deep-lyons-blue", name: "Deep Lyons Blue", hex: "#1C4286" },
+  },
 ];
 
 // Authorities whose 2027 pick has NOT been announced at the verified date.
@@ -123,39 +183,35 @@ const PICKS: Pick[] = [
 const PENDING = [
   { brand: "Pantone", note: "Announces in the first week of December, and is the one the rest of the industry reacts to." },
   { brand: "Benjamin Moore", note: "Announced its 2026 pick (Silhouette AF-655) in mid-October 2025." },
-  { brand: "Sherwin-Williams", note: "Colour of the Year is drawn from the Rewild forecast below; announced separately, typically autumn." },
-  { brand: "Glidden", note: "Typically announces in the autumn." },
-  { brand: "Dulux", note: "Announces a ColourFutures pick, usually in September." },
   { brand: "Dunn-Edwards", note: "Announced its 2026 pick in the autumn." },
-  { brand: "Graham & Brown", note: "Announces in the autumn." },
 ];
 
 const faq = [
   {
     q: "What is the 2027 Color of the Year?",
-    a: "There is no single one. Each authority names its own. As of 6 September 2026 three have announced for 2027: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; and Behr's Grounded (T27-01), a mossy olive with brown undertones. Pantone — the most-cited of them — announces in the first week of December.",
+    a: "There is no single one. Each authority names its own. As of 24 September 2026 eight have been named: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; Behr's Grounded (T27-01), a mossy olive; Graham & Brown's Rose Earth, a dusty clay pink; Dulux's Soulful Sage, a soft silvery green; Glidden's Artifact (PPG10-16), a calm smoky aqua; Sherwin-Williams' Celery (SW 6421), a soft yellow-green; and WGSN and Coloro's Luminous Blue. Pantone — the most-cited of them — announces in the first week of December.",
   },
   {
     q: "Is Sherwin-Williams' Rewild the 2027 Color of the Year?",
-    a: "No. Rewild is Sherwin-Williams' 2027 Colormix Trend Forecast — a 48-hue collection organised into three stories, Revive, Reignite and Reconnect. Sherwin-Williams' own announcement describes the forecast as the foundation that informs its upcoming Color of the Year, which is a separate, single-colour announcement. Several roundups have conflated the two.",
+    a: "No. Rewild is Sherwin-Williams' 2027 Colormix Trend Forecast — a 48-hue collection organised into three stories, Revive, Reignite and Reconnect. Sherwin-Williams' own announcement described the forecast as the foundation for its Color of the Year, which was announced separately on 15 September 2026: Celery (SW 6421). Several roundups conflated the two.",
   },
   {
     q: "When are the rest of the 2027 colours announced?",
-    a: "The season runs from roughly late July to early December. Valspar opened it on 5 August 2026 and Pantone traditionally closes it in the first week of December. Benjamin Moore, Sherwin-Williams, Glidden, Dulux and others fall in between, mostly across September to November.",
+    a: "The season runs from roughly late July to early December. Valspar opened it on 5 August 2026 and Pantone traditionally closes it in the first week of December. Graham & Brown, Dulux, Glidden and Sherwin-Williams followed in September; Benjamin Moore and Dunn-Edwards typically announce in the autumn.",
   },
   {
     q: "Why does this page not show the exact paint colour?",
-    a: "Because publishing a hex we cannot source would be inventing it. Paint colours do not map to a single exact sRGB value, and for two of the three 2027 picks no hex has been published. Each card therefore shows the closest colour in this archive — labelled as that, with its own hex — and links to the brand's page as the authoritative reference.",
+    a: "Because publishing a hex we cannot source would be inventing it. Paint colours do not map to a single exact sRGB value, and for most 2027 picks no hex has been published. Each card therefore shows the closest colour in this archive — labelled as that, with its own hex — and links to the brand's page as the authoritative reference.",
   },
   {
     q: "What is the emerging 2027 direction?",
-    a: "Too early to call with three picks, and worth saying so. What is visible: all three are mid-tone and unmistakably earth-referenced — olive, terracotta-orange, and a blue with warm undertones — which continues rather than breaks the grounded, tactile half of the 2026 split. Whether that holds depends on Pantone in December.",
+    a: "Eight picks in, two families dominate: soft greens (Behr's olive, Dulux's silvery sage, Sherwin-Williams' celery) and blues (Valspar's grayed blue, Glidden's smoky aqua, WGSN and Coloro's luminous blue), with warm earth from Dutch Boy's orange and Graham & Brown's clay pink. Most are softened, nature-referenced colours rather than clean brights. Pantone in December is the one that sets the headline.",
   },
 ];
 
 const title = "The 2027 Colors of the Year — Every Pick Announced So Far";
 const description =
-  "Every 2027 Color of the Year announced so far, side by side: Valspar Cottage Door, Dutch Boy Deep Rooted and Behr Grounded — plus who has not announced yet and when they are expected. Verified 6 September 2026.";
+  "All 8 Colors of the Year for 2027 so far, side by side: Sherwin-Williams Celery, Dulux Soulful Sage, Glidden Artifact, Behr Grounded, Valspar Cottage Door and more — plus who is still to come. Verified 24 September 2026.";
 
 const jsonLd = [
   AUTHOR,
@@ -177,7 +233,7 @@ const jsonLd = [
     "@type": "ItemList",
     name: "2027 Colors of the Year announced so far",
     description:
-      "Official 2027 Color of the Year selections announced as of 6 September 2026. The season is ongoing.",
+      "Official 2027 Color of the Year selections announced as of 24 September 2026. The season is ongoing.",
     numberOfItems: PICKS.length,
     itemListElement: PICKS.map((p, i) => ({
       "@type": "ListItem",
@@ -233,13 +289,13 @@ const jsonLd = [
       <h1 class="display-hero text-balance">The 2027 Colors of the Year</h1>
       <p class="coty-hero__lede">
         The 2027 season opened on 5 August 2026 and closes with Pantone in
-        December. <strong>Three authorities have announced so far</strong> — and
-        all three are mid-tone and earth-referenced. Here is every pick to date,
-        what each brand actually said, and who is still to come.
+        December. <strong>{PICKS.length} have been named so far</strong>, mostly soft
+        greens and blues. Here is every pick to date, what each brand actually
+        said, and who is still to come.
       </p>
       <p class="coty-hero__meta">
         By <a class="coty-hero__byline" href="/about/" rel="author">Paulo de Vries</a>
-        · Last verified <time datetime={VERIFIED}>6 September 2026</time>
+        · Last verified <time datetime={VERIFIED}>24 September 2026</time>
         · {PICKS.length} announced · {PENDING.length} still to come · sources cited below
       </p>
     </header>
@@ -297,8 +353,8 @@ const jsonLd = [
         Trend Forecast: 48 hues organised into three stories — Revive, Reignite
         and Reconnect. Sherwin-Williams' own announcement describes the forecast
         as the foundation informing its Color of the Year and Colors of the Month
-        programmes. In other words the single 2027 colour is drawn <em>from</em>
-        Rewild and has not been named yet.
+        programmes. The single 2027 colour drawn <em>from</em> Rewild was named
+        separately on 15 September 2026: Celery (SW 6421), listed above.
       </p>
       <p>
         The distinction matters if you are specifying paint: a forecast is a
@@ -307,8 +363,8 @@ const jsonLd = [
 
       <h2 id="pending">Still to come</h2>
       <p>
-        Seven authorities tracked here have not announced a 2027 pick as of
-        {" "}<time datetime={VERIFIED}>6 September 2026</time>. Timing notes below
+        {PENDING.length} authorities tracked here have not announced a 2027 pick as of
+        {" "}<time datetime={VERIFIED}>24 September 2026</time>. Timing notes below
         are each brand's historical pattern, not a claim about this year.
       </p>
       <ul class="coty-pending" role="list">
@@ -319,22 +375,24 @@ const jsonLd = [
         ))}
       </ul>
 
-      <h2 id="direction">What the first three suggest</h2>
+      <h2 id="direction">What the first eight suggest</h2>
       <p>
-        Three picks is not a trend, and it would be easy to over-read them. What
-        can be said honestly: all three are <strong>mid-tone</strong> rather than
-        the very light or very dark ends, and all three are earth-referenced — a
-        mossy olive, an earthy orange, and a blue that its own maker describes as
-        carrying warm undertones. None is a clean, cool, bright hue.
+        On 6 September, with three picks in, this page said all of them were
+        mid-tone and earth-referenced. Five more have landed since, and they
+        widen the picture rather than confirm it. Two families now dominate:
+        <strong>soft greens</strong> (Behr's mossy olive, Dulux's silvery sage,
+        Sherwin-Williams' light celery) and <strong>blues</strong> (Valspar's grayed
+        mid-tone, Glidden's smoky aqua, WGSN and Coloro's luminous blue). Warm
+        earth is still there in Dutch Boy's orange and Graham & Brown's clay pink.
       </p>
       <p>
-        That continues one half of the 2026 story rather than reversing it. The
-        2026 field split into serene weightless light (Pantone's Cloud Dancer) and
-        grounded tactile earth (Benjamin Moore's Silhouette, Behr's Hidden Gem).
-        So far 2027 is reading as the grounded half, without the light one. See
-        <a href="/trends/color-trends-2026/"> the full 2026 set</a> for the
-        comparison — and check back after Pantone announces in December, which is
-        the pick most likely to decide whether that holds.
+        What they share is restraint: most are softened, nature-referenced colours
+        rather than clean brights, and two of them (Celery and Soulful Sage) sit
+        at the light end, which the first three did not. Compared with
+        <a href="/trends/color-trends-2026/"> the 2026 set</a>, the move is from
+        browns and warm neutrals toward green and blue. Pantone announces in the
+        first week of December, and that is the pick the rest of the industry
+        tends to be measured against.
       </p>
 
       <h2 id="faq">Common questions</h2>
@@ -369,6 +427,25 @@ const jsonLd = [
         <li>
           Sherwin-Williams — <a href="https://www.sherwin-williams.com/en-us/color/color-collections/colormix-forecast/2027" rel="nofollow noopener" target="_blank">Colormix Forecast 2027: Rewild</a>,
           and the PR Newswire announcement, <a href="https://www.prnewswire.com/news-releases/sherwin-williams-introduces-its-2027-colormix-trend-forecast-rewild-302838414.html" rel="nofollow noopener" target="_blank">30 July 2026</a>.
+        </li>
+        <li>
+          Graham &amp; Brown — <a href="https://www.grahambrown.com/row/product/rose-earth-paint/147315-master/" rel="nofollow noopener" target="_blank">Rose Earth</a>,
+          and Ideal Home, <a href="https://www.idealhome.co.uk/all-rooms/graham-and-brown-colour-of-the-year-2027-rose-earth" rel="nofollow noopener" target="_blank">“The Graham &amp; Brown colour of the year 2027 is here”</a> (3 September 2026).
+        </li>
+        <li>
+          Dulux — <a href="https://www.dulux.co.uk/en/dulux-colour-of-the-year-2027" rel="nofollow noopener" target="_blank">Colour of the Year 2027: Soulful Sage</a>,
+          and Dezeen, <a href="https://www.dezeen.com/2026/09/08/sage-green-colour-year-2027-dulux/" rel="nofollow noopener" target="_blank">“Dulux reveals Soulful Sage as Colour of the Year 2027”</a> (8 September 2026).
+        </li>
+        <li>
+          Glidden — <a href="https://www.glidden.com/2027-color-of-the-year" rel="nofollow noopener" target="_blank">2027 Color of the Year: Artifact</a>,
+          and Apartment Therapy, <a href="https://www.apartmenttherapy.com/glidden-color-of-the-year-2027-37690420" rel="nofollow noopener" target="_blank">“Glidden’s 2027 Color of the Year Is Artifact”</a> (14 September 2026).
+        </li>
+        <li>
+          Sherwin-Williams Celery — <a href="https://www.sherwin-williams.com/en-us/color/color-of-the-year/2027" rel="nofollow noopener" target="_blank">Color of the Year 2027, Celery SW 6421</a>,
+          and the PR Newswire announcement, <a href="https://www.prnewswire.com/news-releases/sherwin-williams-and-hgtv-home-by-sherwin-williams-unite-to-name-celery-as-their-2027-color-of-the-year-302878273.html" rel="nofollow noopener" target="_blank">15 September 2026</a>.
+        </li>
+        <li>
+          WGSN + Coloro — <a href="https://www.wgsn.com/en/blog/colour-year-2027-luminous-blue" rel="nofollow noopener" target="_blank">“Colour of the Year 2027: Luminous Blue”</a> (2 June 2025).
         </li>
         <li>
           Season tracking cross-checked against Young House Love,
