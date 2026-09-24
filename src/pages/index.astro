@@ -86,7 +86,7 @@ import AskAmili from '../components/AskAmili.astro';
       <ul class="hero__plates" aria-label="Three plates from the dictionary">
         {heroPlates.map((p) => (
           <li>
-            <a href={`/palettes/${p.slug}`} class="hero__plate">
+            <a href={`/palettes/${p.slug}/`} class="hero__plate">
               <span class="hero__plate-swatches" aria-hidden="true">
                 {p.colors.map((c) => <span style={`background:${c.hex}`} />)}
               </span>
@@ -100,7 +100,7 @@ import AskAmili from '../components/AskAmili.astro';
       </p>
       <AskAmili />
       <div class="hero__cta">
-        <a href="/browse" class="btn btn-primary">Browse all {totalCount} combinations</a>
+        <a href="/browse/" class="btn btn-primary">Browse all {totalCount} combinations</a>
         <a href="#featured" class="btn btn-secondary">See editorial picks</a>
       </div>
       <p class="hero__source-book">
@@ -159,13 +159,13 @@ import AskAmili from '../components/AskAmili.astro';
       </div>
 
       <div class="featured__footer">
-        <a href="/browse" class="btn btn-secondary">See all {totalCount} combinations →</a>
+        <a href="/browse/" class="btn btn-secondary">See all {totalCount} combinations →</a>
         {/* Routing, not persuasion: /shop turns entrances into affiliate clicks ~100x
             better than this page (2.06 vs 0.019 per entrance, 30d), yet only ~1.5% of
             home entrances reached it — every other /shop link sat below 64% of the
             document. Wada's own volumes are this archive's subject, so surfacing them
             beside "see all combinations" is editorial routing, not an upsell. */}
-        <a href="/shop" class="btn btn-secondary">The books behind the archive →</a>
+        <a href="/shop/" class="btn btn-secondary">The books behind the archive →</a>
       </div>
     </div>
   </section>
@@ -200,7 +200,7 @@ import AskAmili from '../components/AskAmili.astro';
       </ul>
 
       <div class="themes__footer">
-        <a href="/collections" class="btn btn-secondary">All 17 collections →</a>
+        <a href="/collections/" class="btn btn-secondary">All 17 collections →</a>
       </div>
     </div>
   </section>
@@ -247,7 +247,7 @@ import AskAmili from '../components/AskAmili.astro';
       </header>
       <ul class="learn-feature__list" role="list">
         <li>
-          <a href="/trends/color-trends-2026" class="learn-feature__card">
+          <a href="/trends/color-trends-2026/" class="learn-feature__card">
             <p class="learn-feature__eyebrow">Color Report · 2026</p>
             <h3 class="learn-feature__title">Every 2026 Color of the Year</h3>
             <p class="learn-feature__desc">

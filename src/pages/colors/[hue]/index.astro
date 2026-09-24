@@ -163,7 +163,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/
         <ol>
           <li><a href="/">Home</a></li>
           <li aria-hidden="true">›</li>
-          <li><a href="/colors">Colors</a></li>
+          <li><a href="/colors/">Colors</a></li>
           <li aria-hidden="true">›</li>
           <li aria-current="page">{title}</li>
         </ol>
@@ -188,7 +188,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/
             const textColor = bestTextColorOn(c.hex as any);
             return (
               <li role="listitem">
-                <a href={`/colors/${c.slug}`} class="hue-color-card" style={`background:${c.hex}`} data-text={textColor}>
+                <a href={`/colors/${c.slug}/`} class="hue-color-card" style={`background:${c.hex}`} data-text={textColor}>
                   <span class="hue-color-card__name">{c.name}</span>
                   {c.nameJa && <span class="hue-color-card__ja">{c.nameJa}</span>}
                   <span class="hue-color-card__hex">{c.hex}</span>
@@ -231,7 +231,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/
 
         {hPalettes.length > 48 && (
           <div class="hue-palettes__more">
-            <a href={`/browse?hue=${hue}`} class="btn btn-secondary">
+            <a href={`/browse/?hue=${hue}/`} class="btn btn-secondary">
               See all {hPalettes.length} {hue} combinations →
             </a>
           </div>
@@ -253,7 +253,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/
           const hColors = hueGroups.get(h) ?? [];
           return (
             <li>
-              <a href={`/colors/${h}`} class="hue-nav__item">
+              <a href={`/colors/${h}/`} class="hue-nav__item">
                 <span class="hue-nav__dot" style={`background:${m.accentHex}`} aria-hidden="true"></span>
                 <span class="hue-nav__label">{h.charAt(0).toUpperCase() + h.slice(1)}</span>
                 <span class="hue-nav__sub">{hColors.length} colors</span>

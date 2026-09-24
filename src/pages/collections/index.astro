@@ -71,7 +71,7 @@ const jsonLd = [
       <ul class="collections-list" role="list">
         {collectionData.map(({ collection, preview, total }) => (
           <li class="collection-card">
-            <a href={`/collections/${collection.slug}`} class="collection-card__link" aria-label={`${collection.title} — ${total} palettes`}>
+            <a href={`/collections/${collection.slug}/`} class="collection-card__link" aria-label={`${collection.title} — ${total} palettes`}>
               <div class="collection-card__swatches" aria-hidden="true">
                 {preview.map((p) => (
                   <div class="collection-card__mini">

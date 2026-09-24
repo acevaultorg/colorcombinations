@@ -220,7 +220,7 @@ const jsonLd = [
         <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-stone-500">Computed partners</h2>
         <div class="space-y-2">
           {theory.map((t) => (
-            <a href={`/tools/palette-from-color?hex=${encodeURIComponent(t.hex.replace("#", ""))}`} class="flex items-center gap-2 text-sm text-stone-700 hover:underline">
+            <a href={`/tools/palette-from-color/?hex=${encodeURIComponent(t.hex.replace("#", ""))}/`} class="flex items-center gap-2 text-sm text-stone-700 hover:underline">
               <span class="inline-block h-5 w-5 shrink-0 rounded ring-1 ring-black/10" style={`background:${t.hex}`}></span>
               <span>{t.role}</span>
               <span class="ml-auto font-mono text-xs text-stone-400">{t.hex}</span>

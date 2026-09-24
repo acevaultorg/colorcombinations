@@ -231,7 +231,7 @@ const jsonLd = [
     <ol>
       <li><a href="/">Home</a></li>
       <li aria-hidden="true">›</li>
-      <li><a href="/collections">Collections</a></li>
+      <li><a href="/collections/">Collections</a></li>
       <li aria-hidden="true">›</li>
       <li aria-current="page">{collection.title}</li>
     </ol>
@@ -388,7 +388,7 @@ const jsonLd = [
           .slice(0, 4)
           .map((c) => (
             <li>
-              <a href={`/collections/${c.slug}`} class="collection-related__link">
+              <a href={`/collections/${c.slug}/`} class="collection-related__link">
                 <span
                   class="collection-related__dot"
                   style={`background-color:${c.accentHex}`}

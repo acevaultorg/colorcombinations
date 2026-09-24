@@ -12,7 +12,7 @@ const Tag = headingLevel;
 ---
 
 <article class="plate palette-card">
-  <a href={`/palettes/${palette.slug}`} class="palette-card__link" aria-label={`View ${palette.title} palette`}>
+  <a href={`/palettes/${palette.slug}/`} class="palette-card__link" aria-label={`View ${palette.title} palette`}>
     <div class="palette-card__swatches" role="img" aria-label={`${palette.colors.length} color palette`}>
       {palette.colors.map((color) => (
         <span
