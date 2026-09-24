@@ -37,3 +37,4 @@ astro check
 astro build
 node scripts/verify-mediavine-exclusions.mjs
 node scripts/make-worker.mjs
+node scripts/build-amili-index.mjs

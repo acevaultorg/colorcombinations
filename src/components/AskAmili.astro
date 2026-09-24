@@ -1,0 +1,20 @@
+---
+// Ask Amili bar (fleet embed, TaskPeace public/ask/amili-ask.js; card mufqju47ezjwis, 2026-09-24).
+// Answers come only from this site's own pages via /amili-index.json (built by
+// scripts/build-amili-index.mjs after astro build). Questions go to taskpeace.com/ask/log
+// anonymously (no cookie, no id) — stated on /privacy. The amili:ask listener forwards each
+// logged question to this site's own GA4 as `amili_ask`, the measure for the 3-week read.
+---
+<div data-amili-ask style="margin:18px 0"></div>
+<script is:inline src="https://taskpeace.com/ask/amili-ask.js" data-site="colorcombinations.org" defer></script>
+<script is:inline>
+  if (!window.__amiliAskGA) {
+    window.__amiliAskGA = 1;
+    document.addEventListener('amili:ask', function (e) {
+      try {
+        var d = e.detail || {};
+        if (window.gtag) gtag('event', 'amili_ask', { search_term: String(d.query || '').slice(0, 100), results: d.resultCount, clicked: !!d.clicked });
+      } catch (x) {}
+    });
+  }
+</script>

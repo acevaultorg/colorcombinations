@@ -67,6 +67,7 @@ const keywords = [
 // which name was canonical — on the one site whose measured strength IS book-entity
 // citation share. Pages that legitimately need site context nest it instead, as a WebPage
 // with isPartOf (see privacy.astro); a second top-level WebSite is always a duplicate.
+import AskAmili from '../components/AskAmili.astro';
 ---
 
 <BaseLayout
@@ -97,6 +98,7 @@ const keywords = [
       <p class="hero__lede">
         The complete catalog of Sanzo Wada's 1933 <em>Dictionary of Color Combinations</em> — every plate, every hex value, every pairing — plus {totalCount - wadaCount} editorial deep-dives rooted in traditional Japanese shikisai. Free to browse, copy, and export.
       </p>
+      <AskAmili />
       <div class="hero__cta">
         <a href="/browse" class="btn btn-primary">Browse all {totalCount} combinations</a>
         <a href="#featured" class="btn btn-secondary">See editorial picks</a>
