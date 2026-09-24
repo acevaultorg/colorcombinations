@@ -34,7 +34,7 @@ const links = [
         {links.map(({ href, label }) => (
           <li>
             <a
-              href={href}
+              href={`${href}/`}
               class={`site-header__link ${isActive(href) ? "is-active" : ""}`}
               aria-current={isActive(href) ? "page" : undefined}
             >
