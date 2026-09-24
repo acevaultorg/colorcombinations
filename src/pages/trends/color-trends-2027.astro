@@ -36,6 +36,7 @@
  * entries there and repoint these cards.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 
 const siteUrl = "https://colorcombinations.org/";
@@ -287,6 +288,7 @@ const jsonLd = [
     <header class="coty-hero container-narrow">
       <p class="eyebrow">Color Report · 2027 · in progress</p>
       <h1 class="display-hero text-balance">The 2027 Colors of the Year</h1>
+      <AskAmili />
       <p class="coty-hero__lede">
         The 2027 season opened on 5 August 2026 and closes with Pantone in
         December. <strong>{PICKS.length} have been named so far</strong>, mostly soft

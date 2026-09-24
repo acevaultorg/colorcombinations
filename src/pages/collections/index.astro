@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import { collections, paletteSetForCollection } from "@/data/collections";
 
@@ -58,6 +59,7 @@ const jsonLd = [
     <div class="container-wide collections-hero__inner">
       <p class="eyebrow">Curated groupings</p>
       <h1 class="display-hero text-balance">Collections.</h1>
+      <AskAmili />
       <p class="collections-hero__lede">
         {collections.length} curated groupings — browse by use case, season, hue family, or tradition. Every collection pairs an editorial shortlist with every matching plate from the full Wada catalog.
       </p>

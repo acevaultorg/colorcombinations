@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import ShelfCallout from "@components/ShelfCallout.astro";
 import { allColors, colorsByHue, type ColorEntry } from "@data/colors";
@@ -78,6 +79,7 @@ const jsonLd = [
     <div class="container-wide colors-hero__inner">
       <p class="eyebrow">{total} named colors · {wadaTotal} from Wada's dictionary · {editorialTotal} editorial</p>
       <h1 class="display-hero text-balance">Color Dictionary.</h1>
+      <AskAmili />
       <p class="colors-hero__lede">
         Every named color in the archive — the {wadaTotal} colors Sanzo Wada used across the 348
         plates of his 1933 <em>Dictionary of Color Combinations</em> (Seigensha Art Publishing 2010

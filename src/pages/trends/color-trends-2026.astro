@@ -15,6 +15,7 @@
  * Confirmed exact hexes: Pantone Cloud Dancer #F0EEE9, BM Silhouette #57504c.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
 
@@ -239,6 +240,7 @@ const grid = PICKS.slice(2);
     <header class="coty-hero container-narrow">
       <p class="eyebrow">Color Report · 2026</p>
       <h1 class="display-hero text-balance">The 2026 Colors of the Year</h1>
+      <AskAmili />
       <p class="coty-hero__lede">
         Every major authority names its own Color of the Year — and for 2026
         they split into two camps that tell one story: <strong>serene, weightless
