@@ -97,6 +97,23 @@ async function pre() {
   // harvest hole that was generating tagged clicks against the shared account.
   check(w.includes("cc_g=") && w.includes("tokenFresh"), "gesture-token gate present (cc_g + tokenFresh)");
 
+  // The Prime BOUNTY URL, asserted in the ARTIFACT (2026-09-24, ported from cabinpets
+  // dbacc572). A tokenless live probe of /go/prime bounces home whether the bounty target
+  // is intact, rebuilt or deleted -- the three are byte-identical from outside, and the only
+  // live test that could tell them apart would mint a real affiliate click on the shared
+  // account. A SiteStripe bounty URL must be served VERBATIM: a rebuilt one (lost linkId,
+  // doubled tag=) still redirects perfectly and pays $0. So check the exact string here.
+  {
+    const PRIME_LINK_ID = "ce478672978b2ae0d059c64c9d3641f5";
+    const targets = [...w.matchAll(/"(https:\/\/www\.amazon\.com\/amazonprime\?[^"]*)"/g)].map((m) => m[1]);
+    check(targets.length === 1, `exactly one /go/prime bounty target in the worker (found ${targets.length})`);
+    for (const u of targets) {
+      check(u.includes(`linkId=${PRIME_LINK_ID}`), `Prime bounty keeps its SiteStripe linkId (a rebuilt bounty URL pays $0): ${u.slice(0, 90)}`);
+      check((u.match(/[?&]tag=/g) || []).length === 1 && u.includes("tag=colorcombinations-20"), "Prime bounty carries exactly one tag=, and it is colorcombinations-20");
+      check(u.includes("linkCode=ll2"), "Prime bounty keeps linkCode=ll2 (SiteStripe-issued, bounty-eligible)");
+    }
+  }
+
   // Tags + EU routing. This site is the fleet's only material non-US earner.
   check(w.includes("colorcombinations-20"), "own Associates tag present (US/global path)");
   check(w.includes("caslonmedia-21"), "EU OneLink tag present — non-US earnings depend on it");
