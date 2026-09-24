@@ -66,6 +66,9 @@ const year = new Date().getFullYear();
     <div class="container-wide site-footer__meta-inner">
       <p>&copy; {year} The Dictionary of Color Combinations. Inspired by Sanzo Wada's 1933 tradition.</p>
       <p>Published by <a href="https://caslonmedia.com/" rel="publisher">Caslon Media</a>.</p>
+      {/* Brand spread (BRAND-SPREAD.md in the amili-ai repo, 2026-09-24): one line, footer edge only,
+          nofollow so a fleet-wide link to one domain is attribution, not a link scheme. */}
+      <p class="made-with">Made with <a class="amili-mark" href="https://amili.ai/?utm_source=colorcombinations.org&amp;utm_medium=footer&amp;utm_campaign=brand-spread" rel="nofollow noopener" target="_blank" aria-label="Amili">amili<span class="amili-mark-dot" aria-hidden="true"></span></a></p>
       <nav class="site-footer__legal" aria-label="Legal links">
         <a href="/methodology">Methodology</a>
         <a href="/privacy">Privacy Policy</a>
@@ -189,6 +192,12 @@ const year = new Date().getFullYear();
     }
   }
 
+  /* amili-mark v1, still (the dot breathes only where Amili is live) */
+  .made-with { display: inline-flex; align-items: baseline; gap: .35em; }
+  .made-with .amili-mark { display: inline-flex; align-items: flex-start; gap: .12em; font-family: "Iowan Old Style", Charter, Georgia, "Times New Roman", serif; font-weight: 600; color: inherit; text-decoration: none; min-height: 24px; }
+  .made-with .amili-mark:hover { text-decoration: underline; }
+  .made-with .amili-mark-dot { flex: 0 0 auto; width: .28em; height: .28em; margin-top: .12em; border-radius: 999px; background: #2F5D50; }
+  @media (prefers-color-scheme: dark) { .made-with .amili-mark-dot { background: #7FB3A1; } }
   .site-footer__legal {
     display: flex;
     align-items: center;
