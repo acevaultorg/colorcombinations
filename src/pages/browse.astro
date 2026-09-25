@@ -301,6 +301,24 @@ const jsonLd = [
         applyFilters();
       });
     });
+
+    // Read ?q=, ?hue=, ?era=, ?mood= on load (2026-09-25). Search landings (/browse/?q=Blue) and the
+    // hue pages' "Browse all N <hue> palettes" links (/browse/?hue=orange/) arrive with these params,
+    // but nothing read them, so every such visit showed all palettes unfiltered. A trailing "/" is
+    // stripped (the hue links end in "/"); a select value that isn't a real option is ignored.
+    const params = new URLSearchParams(location.search);
+    let fromUrl = false;
+    (["q", "era", "hue", "mood"] as const).forEach((k) => {
+      const v = (params.get(k) ?? "").replace(/\/+$/, "").trim();
+      if (!v) return;
+      const el = document.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-browse-filter="${k}"]`);
+      if (!el) return;
+      if (el instanceof HTMLSelectElement && !Array.from(el.options).some((o) => o.value === v)) return;
+      el.value = v;
+      state[k] = v;
+      fromUrl = true;
+    });
+    if (fromUrl) applyFilters();
   }
 </script>
 
