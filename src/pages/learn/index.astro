@@ -8,6 +8,7 @@
  * Knowledge-Graph-eligible.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 
 const title = "Learn";
 const description =
@@ -257,6 +258,18 @@ const jsonLd = [
         <a href="/#newsletter">newsletter</a> to get them as they ship.
       </p>
     </div>
+  </section>
+
+  {/* Zero-CTA hub shelf (2026-09-25, card muh0x9j6pjkquk): this hub had ~47 human-channel
+      views/30d and no Amazon link at all. Own pageClass so the fleet-aggregate read can separate it. */}
+  <section class="container-narrow">
+    <PaintThisPalette
+      title="Put the theory on paper"
+      intro="Colour theory sticks once you mix it by hand. These are the materials a colour study actually gets made with."
+      limit={4}
+      offset={4}
+      pageClass="hub-learn"
+    />
   </section>
 </BaseLayout>
 

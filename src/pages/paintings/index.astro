@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 import { allPaintings } from "@data/paintings";
 import { sharePct } from "@/lib/painting";
 import sizes from "@data/painting-image-sizes.json";
@@ -101,6 +102,18 @@ const jsonLd = {
       </li>
     ))}
   </ul>
+
+  {/* Zero-CTA hub shelf (2026-09-25, card muh0x9j6pjkquk): this hub had ~120 human-channel
+      views/30d and no Amazon link at all. Own pageClass so the fleet-aggregate read can separate it. */}
+  <section class="container-narrow">
+    <PaintThisPalette
+      title="Paint one yourself"
+      intro="The palettes above came from oil and tempera. These are the materials a copy study is actually made with."
+      limit={4}
+      offset={5}
+      pageClass="hub-paintings"
+    />
+  </section>
 
   <section class="tail">
     <h2>Palettes elsewhere on the site</h2>

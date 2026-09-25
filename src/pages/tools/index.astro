@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 
 const title = "Tools";
 const description =
@@ -147,6 +148,18 @@ const jsonLd = [
         ))}
       </ul>
     </div>
+  </section>
+
+  {/* Zero-CTA hub shelf (2026-09-25, card muh0x9j6pjkquk): this hub had ~127 human-channel
+      views/30d and no Amazon link at all. Own pageClass so the fleet-aggregate read can separate it. */}
+  <section class="container-narrow">
+    <PaintThisPalette
+      title="Off the screen"
+      intro="A palette is a set of decisions until someone mixes it. These are the materials a colour study actually gets made with."
+      limit={4}
+      offset={0}
+      pageClass="hub-tools"
+    />
   </section>
 
   <section class="tools-note section">
