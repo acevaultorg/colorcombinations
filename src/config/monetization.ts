@@ -93,7 +93,7 @@ export const BUNDLE = {
     "Figma design tokens (W3C-spec JSON, drag into any file)",
     "Tailwind v4 + v3 configs — drop into any project",
     "CSS custom properties — every plate, one stylesheet",
-    "378 museum SVG plates — print-ready at any size",
+    "378 SVG plates (348 Wada + 30 editorial) — print-ready at any size",
     "Full JSON — colors, names, eras, moods, dominant hues",
   ],
 
