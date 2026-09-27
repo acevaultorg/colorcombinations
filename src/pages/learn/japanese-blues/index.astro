@@ -1,0 +1,442 @@
+---
+/**
+ * /learn/japanese-blues/ — Japanese colour series, sibling of /learn/japanese-blues/.
+ * Every colour name, kanji and hex comes from the site's own colour data
+ * (src/data/colors.ts via the palettes); palettes linked are real /palettes/ slugs.
+ * Added 2026-09-28 (card mukgyvplzb3u1j).
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import ShareActions from "@components/ShareActions.astro";
+
+const title = "Japanese Blues: Ai, Kon, Hanada, Asagi, Ruri, Gunjō";
+const description =
+  "Why Japanese has a name for each step of the indigo vat (ai, kon, hanada, asagi) and two more for blues that come from stone (ruri and gunjō). The dyes, what each blue signals, and a working palette per blue.";
+
+const keywords = [
+  "japanese blue colors",
+  "japanese indigo colors",
+  "ai indigo color",
+  "kon navy japanese",
+  "hanada color",
+  "asagi color",
+  "ruri lapis blue",
+  "gunjo ultramarine",
+  "traditional japanese blues",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-09-28T00:00:00Z";
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and
+ * the data it renders, NOT the build clock. See src/lib/contentDate.ts. */
+const BUILD_DATE = contentDate("src/pages/learn/japanese-blues/index.astro");
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/japanese-blues/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Color theory",
+    wordCount: 877,
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Japanese Blues" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  adContent
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/learn/japanese-blues.png"
+  type="article"
+  modifiedTime={BUILD_DATE}
+  jsonAlternate="/api/learn/japanese-blues.json"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Japanese Blues</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Color theory · Long read</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          Most of the named Japanese blues are one dye, indigo, stopped at a different depth. Two are not: they are ground from stone. Here's how to tell them apart, and which to reach for when the brief asks for "a Japanese blue."
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/learn/japanese-blues.png", Astro.site).toString()}
+          description={description}
+          heading="Share this article"
+          download={{
+            kind: "page",
+            slug: "learn-japanese-blues",
+            title,
+            subtitle: "Ai, kon, hanada, asagi, ruri, gunjō: one indigo vat, two stones.",
+            eyebrow: "Color theory · Long read",
+            accentHex: "#1C3D5A",
+          }}
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        English has navy, denim, sky and teal. Japanese colour names divide
+        blue by <em>process</em>: how many times the cloth went into the
+        indigo vat, or which stone was ground to make the paint. That is
+        why a list of traditional Japanese blues looks long and oddly
+        specific. Most of it is one dye read at different depths.
+      </p>
+
+      <h2 id="indigo-ladder">The indigo ladder</h2>
+
+      <p>
+        Indigo does not stain cloth in one bath. The fabric goes in, comes
+        out green, turns blue as it meets the air, and goes back in. Each
+        dip darkens it. Dyers named the stops along the way, and the
+        10th-century court rulebook, the <em>Engishiki</em>, already grades
+        hanada into deep, middle and pale versions by how much dye and how
+        many dips they take. Read the four indigo names below as one scale,
+        palest last.
+      </p>
+
+      <h2 id="ai">
+        <a href="/colors/ai/"><span lang="ja">藍</span> Ai</a> — indigo itself
+      </h2>
+
+      <p>
+        Ai is both the plant and the colour: the true indigo blue dyed from
+        the leaves of <em>Polygonum tinctorium</em>. The leaves are composted
+        into <em>sukumo</em> and fermented in a living vat, and by the Edo
+        period Awa province (today's Tokushima) had built its economy on
+        producing it. Ai became the everyday blue of the whole country:
+        work jackets, shop curtains (<em>noren</em>), futon covers, festival
+        coats. It reads <em>ordinary Japan</em> in the best sense: closer to
+        denim than to ultramarine, with a slight green undertone that
+        synthetic blues lack.
+      </p>
+
+      <p>
+        Working palettes: <a href="/palettes/ukon-ai/">Turmeric &amp; Indigo</a> (the
+        warm-yellow and indigo of folk textiles) and
+        <a href="/palettes/fuji-ai/">Wisteria &amp; Indigo</a> (a softer, court-leaning pair).
+      </p>
+
+      <h2 id="kon">
+        <a href="/colors/kon/"><span lang="ja">紺</span> Kon</a> — the deepest indigo
+      </h2>
+
+      <p>
+        Kon is indigo taken as far as it goes: dipped and dipped again
+        until the cloth is nearly black. It was so central to the trade
+        that an indigo dyer's shop was simply a <em>kon-ya</em>, and a
+        proverb about the dyer who wears undyed white trousers, too busy
+        dyeing everyone else's, is the Japanese version of the cobbler's
+        children. Kon reads <em>weighty and dependable</em>, the navy of the
+        tradition, but with more depth than a flat corporate navy.
+      </p>
+
+      <p>
+        Working palettes: <a href="/palettes/kurenai-kon/">Crimson &amp; Navy</a> (the
+        formal court pairing, see the <a href="/learn/japanese-reds/#kurenai">Four Reds</a>)
+        and <a href="/palettes/kon-kinari/">Deep Indigo &amp; Cream</a> (workwear indigo on
+        undyed cloth).
+      </p>
+
+      <h2 id="hanada">
+        <a href="/colors/hanada/"><span lang="ja">縹</span> Hanada</a> — the middle blue
+      </h2>
+
+      <p>
+        Hanada is the mid-point of the vat: paler than kon, deeper than
+        asagi, a clear blue that sits between sky and blue-grey. It is one
+        of the oldest names on the list and appears through court dress,
+        summer kimono and shop curtains. In a palette it behaves as a quiet
+        cool axis rather than an accent, which is why it turns up so often
+        in <a href="/learn/japandi-color-theory/">Japandi</a> work.
+      </p>
+
+      <p>
+        Working palette: <a href="/palettes/hanada-gin/">Indigo Blue &amp; Silver</a>: hanada
+        against silver grey and unbleached white.
+      </p>
+
+      <h2 id="asagi">
+        <a href="/colors/asagi/"><span lang="ja">浅葱</span> Asagi</a> — the palest indigo
+      </h2>
+
+      <p>
+        Asagi, literally "pale leek green," is a light blue-green: the first
+        colour the cloth holds after a short dip. It has enough green to
+        feel fresh and enough blue to feel bright. Its best-known use is the
+        asagi haori, with white saw-tooth trim, worn by the Shinsengumi
+        police in 1860s Kyoto. In design it works for summer, hospitality
+        and wellness: a cool that does not feel cold.
+      </p>
+
+      <p>
+        Working palettes: <a href="/palettes/asagi-shu/">Pale Blue &amp; Vermillion</a>
+        (asagi lit by shrine red) and
+        <a href="/palettes/ominaeshi-asagi/">Valerian Yellow &amp; Pale Blue</a>.
+      </p>
+
+      <h2 id="stone-blues">The stone blues: ruri and gunjō</h2>
+
+      <p>
+        <a href="/colors/ruri/"><span lang="ja">瑠璃</span> Ruri</a> is the blue of lapis lazuli, named after the
+        stone rather than a dye. It carries Buddhist weight: the healing
+        Buddha Yakushi presides over an eastern paradise of lapis. Ruri is
+        a jewel blue, saturated and slightly cool, for work that should
+        feel <em>precious</em> rather than useful. Working palette:
+        <a href="/palettes/ruri-gofun/">Lapis &amp; Chalk</a>, lapis against shell-white with
+        a touch of gold.
+      </p>
+
+      <p>
+        <a href="/colors/gunj/"><span lang="ja">群青</span> Gunjō</a> is the painter's blue: ground azurite, one
+        of the mineral pigments of Japanese painting. The grind sets the
+        shade (coarse grains read deep, fine grains pale), so painters kept
+        several gunjō at once. The most famous gunjō in Japanese art is
+        probably Ogata Kōrin's <em>Irises</em> screens, azurite flowers and
+        malachite leaves on gold leaf. Working palette:
+        <a href="/palettes/gunjo-gofun/">Ultramarine &amp; Chalk White</a>, which keeps the
+        gold.
+      </p>
+
+      <h2 id="pale-blues">The palest: mizu-iro and sora</h2>
+
+      <p>
+        Below asagi the names stop being about dye and start describing
+        things: <a href="/colors/mizu-iro/"><span lang="ja">水色</span> Mizu-iro</a> is "water colour," a pale clear
+        blue, and <a href="/colors/sora/"><span lang="ja">空</span> Sora</a> is sky. Both are everyday words
+        rather than craft terms. Working palettes:
+        <a href="/palettes/nadeshiko-mizu/">Pink Dianthus &amp; Water</a> and
+        <a href="/palettes/sora-shu/">Sky Blue &amp; Vermillion</a>.
+      </p>
+
+      <h2 id="how-to-pick">How to pick the right blue for a brief</h2>
+
+      <ol>
+        <li>
+          <strong>Textile or painting?</strong> Anything that should feel
+          woven, worn or handmade wants indigo (ai, kon, hanada, asagi). A
+          brief that should feel painted, gilded or precious wants a stone
+          blue (ruri, gunjō).
+        </li>
+        <li>
+          <strong>How deep?</strong> Pick the depth first, then the name:
+          kon for authority, ai for everyday warmth, hanada for a calm
+          background, asagi for freshness.
+        </li>
+        <li>
+          <strong>Is there gold in the palette?</strong> Gold asks for ruri or
+          gunjō; indigo against gold tends to look like a uniform.
+        </li>
+        <li>
+          <strong>What is the warm partner?</strong> Indigo's classic
+          partners are undyed cream, turmeric yellow and crimson. Asagi and
+          sora take vermilion.
+        </li>
+      </ol>
+
+      <p>
+        For more, the <a href="/collections/japanese/">Japanese collection</a>
+        gathers the tradition's palettes, and the
+        <a href="/collections/indigo/">indigo</a> and
+        <a href="/collections/navy/">navy</a> collections show the deep end
+        at work. The companion pieces cover
+        <a href="/learn/japanese-reds/">the four reds</a>,
+        <a href="/learn/japanese-greens/">the greens</a> and
+        <a href="/learn/japanese-purples/">the purples</a>; every name is also
+        in the <a href="/learn/japanese-color-glossary/">glossary</a>. Each
+        colour page lists every palette that uses it, with contrast against
+        white and black already calculated.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      {/* Books, 2026-09-03. These 11 /learn/ essays carried BundleCta (the
+          site's own bundle) and NO Amazon path at all — a reader who finished
+          the piece had no way to click through. 263 pv/30d across the cluster
+          at 20.2 pv/path, the best-engaged multi-page surface after the
+          indexes. Books, not instruments: 109 of 112 position-labelled beacon
+          clicks on this site are books, and recommending a $270 colorimeter to
+          someone reading about Japanese reds would be padding.
+          Placed BEFORE the nav/bundle exit for the reason measured on
+          /collections/ — a commercial block below an exit link is unseen by
+          everyone who takes the exit. */}
+      <FurtherReading
+        pageClass="learn"
+        title="Go deeper on Japanese blues"
+        intro="The books behind this piece — colour theory, history and reference that designers keep close."
+        limit={4}
+        offset={11}
+      />
+
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--color-ink-300);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .article-hero__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+    max-width: 56ch;
+  }
+
+  .article-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .article-body p {
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .article-body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    line-height: 1.2;
+    margin: 2.5rem 0 1rem;
+    max-width: 28ch;
+  }
+
+  .article-body h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .article-body h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-body li {
+    margin-bottom: 0.75rem;
+  }
+
+  .article-body p a,
+  .article-body li a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .article-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .article-body strong {
+    color: var(--color-ink-900);
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>

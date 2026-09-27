@@ -40,6 +40,30 @@ const PILLARS: ReadonlyArray<PillarSpec> = [
     swatches: ["#9A2A2A", "#C04B3A", "#D9523B", "#7C2A1F"],
   },
   {
+    slug: "japanese-blues",
+    title: "Japanese Blues",
+    subtitle: "Ai, Kon, Hanada, Asagi, Ruri, Gunjō",
+    blurb:
+      "One indigo vat read at four depths, and two blues ground from stone.",
+    swatches: ["#1B2A4E", "#1C3D5A", "#3C6E8F", "#6B9BB0"],
+  },
+  {
+    slug: "japanese-greens",
+    title: "Japanese Greens",
+    subtitle: "Tokiwa, Matsuba, Moegi, Wakatake, Matcha, Seiji",
+    blurb:
+      "Named after what is green: evergreen pine, new shoots, tea and glaze.",
+    swatches: ["#344E3D", "#4C5D3F", "#A7C957", "#8DB6A5"],
+  },
+  {
+    slug: "japanese-purples",
+    title: "Japanese Purples",
+    subtitle: "Murasaki, Edo-murasaki, Kikyō, Fuji",
+    blurb:
+      "The top court rank, the city's fashion purple, and two flowers.",
+    swatches: ["#7A4E8F", "#5E4A8C", "#5B4B8A", "#B5A6C9"],
+  },
+  {
     slug: "wabi-sabi-color-theory",
     title: "Wabi-Sabi Color Theory",
     subtitle: "The beauty of things that have aged",

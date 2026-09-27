@@ -375,6 +375,24 @@ const jsonLd = [
     </section>
   )}
 
+  {/* Japanese colour series — only on /collections/japanese/ (1,700 Bing AI
+      citations/30d, the site's strongest Japanese-colour page). Added
+      2026-09-28 with the blues/greens/purples siblings of /learn/japanese-reds/. */}
+  {collection.slug === "japanese" && (
+    <section class="collection-series section">
+      <div class="container-wide">
+        <p class="collection-pillar__eyebrow">The named Japanese colours</p>
+        <ul class="collection-series__list">
+          <li><a href="/learn/japanese-reds/">The Four Reds: kurenai, akane, shu, entan</a></li>
+          <li><a href="/learn/japanese-blues/">Japanese Blues: ai, kon, hanada, asagi, ruri, gunjō</a></li>
+          <li><a href="/learn/japanese-greens/">Japanese Greens: tokiwa, moegi, wakatake, matcha, seiji</a></li>
+          <li><a href="/learn/japanese-purples/">Japanese Purples: murasaki, edo-murasaki, kikyō, fuji</a></li>
+          <li><a href="/learn/japanese-color-glossary/">Japanese Color Glossary: 20 traditional names</a></li>
+        </ul>
+      </div>
+    </section>
+  )}
+
   {/* Other collections — cross-linking for SEO + navigation */}
   <section class="collection-related section">
     <div class="container-wide">
@@ -738,6 +756,33 @@ const jsonLd = [
   }
 
   .collection-pillar__link:hover .collection-pillar__title {
+    color: var(--color-accent-700);
+  }
+
+  .collection-series {
+    border-top: 1px solid var(--color-border);
+    padding: 2rem 0;
+  }
+
+  .collection-series__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .collection-series__list a {
+    display: inline-block;
+    padding: 0.625rem 0;
+    min-height: 44px;
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-size: 1.0625rem;
+  }
+
+  .collection-series__list a:hover {
     color: var(--color-accent-700);
   }
 

@@ -54,6 +54,33 @@ const LEARN_ARTICLES: ReadonlyArray<{
     categories: ["Reds", "Pigments", "Heian"],
   },
   {
+    slug: "japanese-blues",
+    title: "Japanese Blues: Ai, Kon, Hanada, Asagi, Ruri, Gunjō",
+    pubDate: new Date(Date.UTC(2026, 8, 28, 9, 0, 0)),
+    description:
+      "Why Japanese has a name for each step of the indigo vat (ai, kon, hanada, asagi) and two more for blues that come from stone (ruri and gunjō). The dyes, what each blue signals, and a working palette per blue.",
+    body: "<p>Most named Japanese blues are one dye, indigo, stopped at different depths: ai, kon, hanada, asagi. Two come from stone instead: ruri (lapis) and gunjō (azurite). A working palette per blue and a four-question framework for picking one.</p>",
+    categories: ["Blues", "Indigo", "Pigments"],
+  },
+  {
+    slug: "japanese-greens",
+    title: "Japanese Greens: Tokiwa, Matsuba, Moegi, Wakatake, Matcha, Seiji",
+    pubDate: new Date(Date.UTC(2026, 8, 28, 9, 0, 0)),
+    description:
+      "How Japanese names green by what it grows on: evergreen pine (tokiwa, matsuba), new shoots and young bamboo (moegi, wakatake), tea (matcha) and glaze (seiji). What each green signals, and a working palette per green.",
+    body: "<p>Japanese names its greens after the green thing: evergreen pine (tokiwa, matsuba), new shoots and young bamboo (moegi, wakatake), tea (matcha) and celadon glaze (seiji). A working palette per green and a four-question framework.</p>",
+    categories: ["Greens", "Pigments", "Japanese"],
+  },
+  {
+    slug: "japanese-purples",
+    title: "Japanese Purples: Murasaki, Edo-murasaki, Kikyō, Fuji",
+    pubDate: new Date(Date.UTC(2026, 8, 28, 9, 0, 0)),
+    description:
+      "Why purple was the top court rank in Japan, how Edo's bluish purple differs from classical murasaki, and the two flower purples, kikyō and fuji. What each signals, and a working palette per purple.",
+    body: "<p>Purple marked the top court rank in Japan from 603 and stayed among the forbidden colours. Murasaki (court), edo-murasaki (city fashion), kikyō (bellflower) and fuji (wisteria), with a working palette each.</p>",
+    categories: ["Purples", "Heian", "Imperial"],
+  },
+  {
     slug: "wabi-sabi-color-theory",
     title: "Wabi-Sabi Color Theory: The Beauty of Things That Have Aged",
     pubDate: new Date(Date.UTC(2026, 3, 25, 9, 0, 0)),

@@ -1,0 +1,381 @@
+---
+/**
+ * /learn/japanese-purples/ — Japanese colour series, sibling of /learn/japanese-purples/.
+ * Every colour name, kanji and hex comes from the site's own colour data
+ * (src/data/colors.ts via the palettes); palettes linked are real /palettes/ slugs.
+ * Added 2026-09-28 (card mukgyvplzb3u1j).
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import ShareActions from "@components/ShareActions.astro";
+
+const title = "Japanese Purples: Murasaki, Edo-murasaki, Kikyō, Fuji";
+const description =
+  "Why purple was the top court rank in Japan, how Edo's bluish purple differs from classical murasaki, and the two flower purples, kikyō and fuji. What each signals, and a working palette per purple.";
+
+const keywords = [
+  "japanese purple colors",
+  "murasaki color",
+  "edo murasaki",
+  "kikyo color",
+  "fuji wisteria color",
+  "traditional japanese purple",
+  "kinjiki purple",
+  "japanese royal purple",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-09-28T00:00:00Z";
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and
+ * the data it renders, NOT the build clock. See src/lib/contentDate.ts. */
+const BUILD_DATE = contentDate("src/pages/learn/japanese-purples/index.astro");
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/japanese-purples/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Color theory",
+    wordCount: 464,
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Japanese Purples" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  adContent
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/learn/japanese-purples.png"
+  type="article"
+  modifiedTime={BUILD_DATE}
+  jsonAlternate="/api/learn/japanese-purples.json"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Japanese Purples</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Color theory · Long read</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          Purple was the highest colour in Japan for a thousand years, then became the city's favourite fashion colour, and two flowers gave it softer names. Here's how to tell the four apart, and which to reach for when the brief asks for "a Japanese purple."
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/learn/japanese-purples.png", Astro.site).toString()}
+          description={description}
+          heading="Share this article"
+          download={{
+            kind: "page",
+            slug: "learn-japanese-purples",
+            title,
+            subtitle: "Murasaki, edo-murasaki, kikyō, fuji: rank, city, and two flowers.",
+            eyebrow: "Color theory · Long read",
+            accentHex: "#7A4E8F",
+          }}
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        Most traditions treat purple as a luxury. Japan wrote it into law.
+        When Prince Shōtoku set up the twelve cap ranks of court in 603,
+        purple marked the top rank, and for centuries after the deepest
+        purples stayed among the <em>kinjiki</em>, the colours ordinary people
+        were forbidden to wear. The four names below run from that court
+        purple to the flowers that gave the colour its gentler forms.
+      </p>
+
+      <h2 id="murasaki">
+        <a href="/colors/murasaki/"><span lang="ja">紫</span> Murasaki</a> — the court purple
+      </h2>
+
+      <p>
+        Murasaki is dyed from the roots of the gromwell plant
+        (<em>Lithospermum erythrorhizon</em>, itself called murasaki). The
+        dye was slow and expensive, which is exactly why it signalled rank.
+        The name runs through classical literature: the heroine of
+        <em>The Tale of Genji</em> is Murasaki, and its author is remembered
+        by the same name. Murasaki reads <em>serious, old and a little
+        spiritual</em>, never playful.
+      </p>
+
+      <p>
+        Working palette: <a href="/palettes/murasaki-gin/">Royal Purple &amp; Silver</a>:
+        purple, silver and ink, the formal register.
+      </p>
+
+      <h2 id="edo-murasaki">
+        <a href="/colors/edo-murasaki/"><span lang="ja">江戸紫</span> Edo-murasaki</a> — the city purple
+      </h2>
+
+      <p>
+        Edo-murasaki is the bluer purple that became fashionable in Edo
+        (Tokyo) and was set against the redder "Kyoto purple" of the old
+        capital. Its best-known wearer is fictional: the kabuki hero
+        Sukeroku ties his hair with an edo-murasaki headband. The colour
+        reads <em>urban, stylish and confident</em>, purple with its court
+        robes swapped for street clothes.
+      </p>
+
+      <p>
+        Working palette: <a href="/palettes/edo-murasaki-nezumi/">Edo Purple &amp; Mouse Grey</a>,
+        which pairs it with the greys Edo fashion loved.
+      </p>
+
+      <h2 id="kikyo">
+        <a href="/colors/kiky/"><span lang="ja">桔梗</span> Kikyō</a> — bellflower
+      </h2>
+
+      <p>
+        Kikyō is the blue-violet of the Chinese bellflower, counted among the
+        seven flowers of autumn. It is darker and bluer than wisteria and
+        reads <em>cool, clear and a little austere</em>, the purple for an
+        autumn palette or a brand that wants violet without sweetness.
+      </p>
+
+      <p>
+        Working palette: <a href="/palettes/kikyo-sumi/">Bellflower &amp; Ink</a>.
+      </p>
+
+      <h2 id="fuji">
+        <a href="/colors/fuji/"><span lang="ja">藤</span> Fuji</a> — wisteria
+      </h2>
+
+      <p>
+        Fuji is the pale lilac of wisteria, which blooms in late spring. The
+        flower gave its name to the Fujiwara, "wisteria field," the family
+        that ran the Heian court, so even this soft purple has rank behind
+        it. In design fuji is the approachable purple: light, floral, and
+        easy to pair.
+      </p>
+
+      <p>
+        Working palette: <a href="/palettes/fuji-ai/">Wisteria &amp; Indigo</a>, wisteria over
+        indigo and shell-white.
+      </p>
+
+      <h2 id="how-to-pick">How to pick the right purple for a brief</h2>
+
+      <ol>
+        <li>
+          <strong>Authority or style?</strong> Authority, heritage and
+          ceremony want murasaki. Fashion and city confidence want
+          edo-murasaki.
+        </li>
+        <li>
+          <strong>Dark or light?</strong> The two dyed purples are deep. The
+          flower purples split: kikyō stays mid-dark and cool, fuji is pale.
+        </li>
+        <li>
+          <strong>Which season?</strong> Fuji is late spring; kikyō is
+          autumn.
+        </li>
+        <li>
+          <strong>What is the neutral?</strong> Silver and ink suit murasaki,
+          mouse grey suits edo-murasaki, indigo and white suit fuji.
+        </li>
+      </ol>
+
+      <p>
+        For more, the <a href="/collections/japanese/">Japanese collection</a>
+        gathers the tradition's palettes, the
+        <a href="/collections/purple/">purple collection</a> shows purple in
+        modern use, and <a href="/learn/heian-court-color-theory/">Heian Court
+        Color Theory</a> explains the rank system in full. The companion
+        pieces cover <a href="/learn/japanese-reds/">the four reds</a>,
+        <a href="/learn/japanese-blues/">the blues</a> and
+        <a href="/learn/japanese-greens/">the greens</a>; the
+        <a href="/learn/japanese-color-glossary/">glossary</a> has the full
+        list of names.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      {/* Books, 2026-09-03. These 11 /learn/ essays carried BundleCta (the
+          site's own bundle) and NO Amazon path at all — a reader who finished
+          the piece had no way to click through. 263 pv/30d across the cluster
+          at 20.2 pv/path, the best-engaged multi-page surface after the
+          indexes. Books, not instruments: 109 of 112 position-labelled beacon
+          clicks on this site are books, and recommending a $270 colorimeter to
+          someone reading about Japanese reds would be padding.
+          Placed BEFORE the nav/bundle exit for the reason measured on
+          /collections/ — a commercial block below an exit link is unseen by
+          everyone who takes the exit. */}
+      <FurtherReading
+        pageClass="learn"
+        title="Go deeper on Japanese purples"
+        intro="The books behind this piece — colour theory, history and reference that designers keep close."
+        limit={4}
+        offset={13}
+      />
+
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--color-ink-300);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .article-hero__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+    max-width: 56ch;
+  }
+
+  .article-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .article-body p {
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .article-body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    line-height: 1.2;
+    margin: 2.5rem 0 1rem;
+    max-width: 28ch;
+  }
+
+  .article-body h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .article-body h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-body li {
+    margin-bottom: 0.75rem;
+  }
+
+  .article-body p a,
+  .article-body li a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .article-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .article-body strong {
+    color: var(--color-ink-900);
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>

@@ -1,0 +1,392 @@
+---
+/**
+ * /learn/japanese-greens/ — Japanese colour series, sibling of /learn/japanese-greens/.
+ * Every colour name, kanji and hex comes from the site's own colour data
+ * (src/data/colors.ts via the palettes); palettes linked are real /palettes/ slugs.
+ * Added 2026-09-28 (card mukgyvplzb3u1j).
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BundleCta from "@components/BundleCta.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import ShareActions from "@components/ShareActions.astro";
+
+const title = "Japanese Greens: Tokiwa, Matsuba, Moegi, Wakatake, Matcha, Seiji";
+const description =
+  "How Japanese names green by what it grows on: evergreen pine (tokiwa, matsuba), new shoots and young bamboo (moegi, wakatake), tea (matcha) and glaze (seiji). What each green signals, and a working palette per green.";
+
+const keywords = [
+  "japanese green colors",
+  "traditional japanese greens",
+  "tokiwa color",
+  "moegi color",
+  "wakatake color",
+  "matcha green color",
+  "seiji celadon",
+  "matsuba pine green",
+];
+
+const SITE_FIRST_PUBLISHED = "2026-09-28T00:00:00Z";
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and
+ * the data it renders, NOT the build clock. See src/lib/contentDate.ts. */
+const BUILD_DATE = contentDate("src/pages/learn/japanese-greens/index.astro");
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/japanese-greens/`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Color theory",
+    wordCount: 563,
+    author: {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "The Dictionary of Color Combinations",
+    },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    isBasedOn: {
+      "@type": "Book",
+      name: "A Dictionary of Color Combinations",
+      author: { "@id": `${siteUrl}#person-sanzo-wada` },
+      datePublished: "1933",
+      publisher: "Seigensha Art Publishing (2010 reprint)",
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Japanese Greens" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  adContent
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/learn/japanese-greens.png"
+  type="article"
+  modifiedTime={BUILD_DATE}
+  jsonAlternate="/api/learn/japanese-greens.json"
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Japanese Greens</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Color theory · Long read</p>
+        <h1 class="display-hero text-balance">{title}</h1>
+        <p class="article-hero__lede">
+          Japanese names its greens after the thing that is green: a pine that never changes, a shoot that just broke ground, a bowl of tea, a celadon glaze. Here's what each one signals, and which to reach for when the brief asks for "a Japanese green."
+        </p>
+        <ShareActions
+          title={title}
+          url={articleUrl}
+          image={new URL("/og/learn/japanese-greens.png", Astro.site).toString()}
+          description={description}
+          heading="Share this article"
+          download={{
+            kind: "page",
+            slug: "learn-japanese-greens",
+            title,
+            subtitle: "Tokiwa, matsuba, moegi, wakatake, matcha, seiji: evergreen, new growth, tea and glaze.",
+            eyebrow: "Color theory · Long read",
+            accentHex: "#344E3D",
+          }}
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <p>
+        Older Japanese did not always separate green from blue. The word
+        <em>ao</em> covered both, which is why a green traffic light is still
+        called <em>ao</em> today (the site's <a href="/colors/ao/"><span lang="ja">青</span> Ao</a> is exactly that
+        in-between blue-green). The names that did split green off are
+        concrete: each one points at a plant, a drink or a glaze. Group
+        them that way and they are easy to choose between.
+      </p>
+
+      <h2 id="evergreen">The evergreens: tokiwa and matsuba</h2>
+
+      <p>
+        <a href="/colors/tokiwa/"><span lang="ja">常磐</span> Tokiwa</a> means "eternal rock," and as a colour it is
+        the deep green of trees that keep their needles through winter. The
+        word carries <em>permanence</em> more than nature: it is the green of
+        a temple cypress or a family crest. In folk textiles it is the
+        standard partner for madder red, the Japanese "red and green"
+        without the Christmas associations.
+      </p>
+
+      <p>
+        <a href="/colors/matsuba/"><span lang="ja">松葉</span> Matsuba</a>, "pine needle," is the darker, greyer
+        cousin. Pine stands for long life and appears in New Year
+        decorations; the colour reads quiet, old and steady.
+      </p>
+
+      <p>
+        Working palettes: <a href="/palettes/akane-tokiwa/">Madder Red &amp; Evergreen</a> and
+        <a href="/palettes/enji-matsuba/">Crimson Lake &amp; Pine</a>.
+      </p>
+
+      <h2 id="new-growth">New growth: moegi and wakatake</h2>
+
+      <p>
+        <a href="/colors/moegi/"><span lang="ja">萌黄</span> Moegi</a> is the yellow-green of a shoot just breaking
+        the soil. In court and warrior culture it was a young person's
+        colour; armour laced in moegi cord belongs to the young fighters of
+        the war tales. It is the brightest traditional green and reads
+        <em>fresh, early, and a little bold</em>.
+      </p>
+
+      <p>
+        <a href="/colors/wakatake/"><span lang="ja">若竹</span> Wakatake</a>, "young bamboo," is softer and a
+        touch bluer: the pale green of a new culm before it hardens. Where
+        moegi is spring energy, wakatake is spring calm.
+      </p>
+
+      <p>
+        Working palettes: <a href="/palettes/moegi-sumi/">Spring Green &amp; Ink</a> (moegi
+        at full strength against black) and
+        <a href="/palettes/sakura-wakatake/">Cherry Blossom &amp; Young Bamboo</a>, the
+        spring pairing.
+      </p>
+
+      <h2 id="tea-and-glaze">Tea and glaze: matcha and seiji</h2>
+
+      <p>
+        <a href="/colors/matcha/"><span lang="ja">抹茶</span> Matcha</a> is the colour of powdered green tea, the
+        tea whisked in the tea ceremony: a muted yellow-green that reads
+        natural and edible. It has become one of the most used Japanese
+        colour names outside Japan, mostly through food and packaging.
+      </p>
+
+      <p>
+        <a href="/colors/seiji/"><span lang="ja">青磁</span> Seiji</a> is celadon, the grey-green of iron-bearing
+        glaze fired on ceramics. Tea and incense objects made the colour
+        stand for <em>quiet refinement</em>, and it is the green that
+        stops reading as "nature" and starts reading as "object."
+      </p>
+
+      <p>
+        Working palettes: <a href="/palettes/matcha-kinari/">Matcha &amp; Raw Silk</a> and
+        <a href="/palettes/seiji-kinari/">Celadon &amp; Unbleached</a>.
+      </p>
+
+      <h2 id="painted-green">A note on painted green</h2>
+
+      <p>
+        Painters got their greens from stone: malachite, ground the same way
+        as the azurite in the
+        <a href="/learn/japanese-blues/#stone-blues">stone blues</a>. That is
+        the green of the leaves in Ogata Kōrin's <em>Irises</em> screens.
+        The textile and tea names above are the ones that became everyday
+        colour words, so they are the ones you will meet in a palette.
+      </p>
+
+      <h2 id="how-to-pick">How to pick the right green for a brief</h2>
+
+      <ol>
+        <li>
+          <strong>Permanent or new?</strong> A brand that sells trust and
+          time wants tokiwa or matsuba. One that sells a fresh start wants
+          moegi or wakatake.
+        </li>
+        <li>
+          <strong>Nature or object?</strong> Plant greens (moegi, wakatake,
+          tokiwa) read outdoors. Seiji reads as a crafted thing; matcha sits
+          between the two.
+        </li>
+        <li>
+          <strong>What is the red?</strong> Madder and crimson want the deep
+          evergreens. Cherry pink wants wakatake.
+        </li>
+        <li>
+          <strong>How loud?</strong> Moegi against black is the only really
+          loud pair here. Everything else works on cream or unbleached
+          white.
+        </li>
+      </ol>
+
+      <p>
+        For more, the <a href="/collections/japanese/">Japanese collection</a>
+        gathers the tradition's palettes, and the
+        <a href="/collections/green/">green</a>,
+        <a href="/collections/sage/">sage</a> and
+        <a href="/collections/forest/">forest</a> collections show these
+        greens in modern use. The companion pieces cover
+        <a href="/learn/japanese-reds/">the four reds</a>,
+        <a href="/learn/japanese-blues/">the blues</a> and
+        <a href="/learn/japanese-purples/">the purples</a>; the
+        <a href="/learn/japanese-color-glossary/">glossary</a> has the full
+        list of names.
+      </p>
+
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      {/* Books, 2026-09-03. These 11 /learn/ essays carried BundleCta (the
+          site's own bundle) and NO Amazon path at all — a reader who finished
+          the piece had no way to click through. 263 pv/30d across the cluster
+          at 20.2 pv/path, the best-engaged multi-page surface after the
+          indexes. Books, not instruments: 109 of 112 position-labelled beacon
+          clicks on this site are books, and recommending a $270 colorimeter to
+          someone reading about Japanese reds would be padding.
+          Placed BEFORE the nav/bundle exit for the reason measured on
+          /collections/ — a commercial block below an exit link is unseen by
+          everyone who takes the exit. */}
+      <FurtherReading
+        pageClass="learn"
+        title="Go deeper on Japanese greens"
+        intro="The books behind this piece — colour theory, history and reference that designers keep close."
+        limit={4}
+        offset={12}
+      />
+
+
+      <BundleCta variant="medium" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-ink-500);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--color-ink-300);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .article-hero__lede {
+    font-size: 1.125rem;
+    color: var(--color-ink-700);
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+    max-width: 56ch;
+  }
+
+  .article-body {
+    padding: 1.5rem 1.5rem 4rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-ink-800);
+    max-width: 64rem;
+  }
+
+  .article-body p {
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .article-body h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.75vw + 1rem, 1.875rem);
+    line-height: 1.2;
+    margin: 2.5rem 0 1rem;
+    max-width: 28ch;
+  }
+
+  .article-body h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .article-body h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-body li {
+    margin-bottom: 0.75rem;
+  }
+
+  .article-body p a,
+  .article-body li a {
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .article-body a:hover {
+    color: var(--color-accent-700);
+  }
+
+  .article-body strong {
+    color: var(--color-ink-900);
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  .article-end {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-ink-500);
+    font-size: 0.9375rem;
+  }
+</style>
