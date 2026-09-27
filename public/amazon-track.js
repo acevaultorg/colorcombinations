@@ -1,6 +1,21 @@
 /* 2026-09-27: carry the three hub shelf labels into the existing page-class
    dimension. Keep historical f=book/tool/prime/sticky unchanged. These are raw
-   per-class clicks; the fleet stores bot classification separately, not jointly. */
+   per-class clicks; the fleet stores bot classification separately, not jointly.
+   ~~Whitelisted /^hub-(tools|paintings|learn)$/.~~ (SUPERSEDED 2026-09-28 — that
+   enumeration carried p= on 24 of this site's 43,527 affiliate links, 0.055%,
+   because the three hub index pages hold 8 links each while the real surfaces are
+   c=colors-that-go-with (24,948 links / 756 pages), c=color (6,732), c=art-supplies
+   (3,612), c=palette-destination (2,268) — 43 distinct classes in dist/, measured
+   2026-09-28 over 2,189 built HTML files. So `page_class` in GA4 and `p=` on the
+   first-party beacon were both dark for 99.945% of clicks, which is the same
+   "no per-page split" the fleet feed still flags for this site. Replaced with a
+   FORMAT test, which is this file's own hard-won doctrine three paragraphs down:
+   enumeration of /go/ shapes failed three times here (2026-08-11, 2026-08-26,
+   2026-09-02) before isGo became structural, and the note ends "do not go back to
+   enumerating". A format test covers all 43 classes today and any class shipped
+   later with no edit here, while still refusing anything malformed — uppercase, a
+   dot, a slash, whitespace, an empty value, or over 40 chars. Cardinality stays
+   bounded by the template set, and the value is still encodeURIComponent'd.) */
 /* Amazon/Audible affiliate-click measurement — global capture-phase delegated listener.
    Fleet dual-sink standard (retrofit 2026-07-19): on any Amazon/Audible link click fires
    Clarity amazon_click + GA4 amazon_click (the fleet metrics dashboard reads GA4) + the
@@ -111,4 +126,4 @@
    argued for deleting a working surface. Prefer the loud one. If you ever add a
    non-affiliate /go/ route, exclude it here explicitly — do not go back to
    enumerating the affiliate ones. */
-(function(){var B='https://fleet.promptprio.com/c?s=colorcombinations.org';function t(e){try{if(!e.isTrusted)return;var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.href||'';var isGo=false;try{isGo=a.host===location.host&&!!a.pathname&&a.pathname.indexOf('/go/')===0;if(isGo){document.cookie='cc_g='+Date.now().toString(36)+'; Path=/; Max-Age=600; SameSite=Lax; Secure';}}catch(g){}if(!isGo&&!/amazon\.|amzn\.to|amzn\.eu/i.test(h))return;var m=h.match(/\/(?:dp|gp\/product|gp\/aw\/d|go\/[bp])\/([A-Z0-9]{10})/i);var asin=m?m[1].toUpperCase():'';var pageClass='';try{var c=new URL(h,location.href).searchParams.get('c');if(/^hub-(tools|paintings|learn)$/.test(c||''))pageClass=c;}catch(ignore){}var dest=/amzn\.to|audible/i.test(h)?'audible':'amazon';var shelf=a.dataset.from==='prime-bounty'?'prime':(a.dataset.from==='sticky-bar'?'sticky':(a.dataset.tool?'tool':(a.dataset.book?'book':'')));if(window.clarity){window.clarity('event','amazon_click');if(shelf){window.clarity('event','amazon_click_'+shelf);window.clarity('set','amazon_shelf',shelf);}}if(window.gtag)window.gtag('event','amazon_click',{page:location.pathname,asin:asin,dest:dest,shelf:shelf,page_class:pageClass});if(navigator.sendBeacon)navigator.sendBeacon(B+'&f='+encodeURIComponent(shelf||'untagged')+(pageClass?'&p='+encodeURIComponent(pageClass):'')+(window.__FLEET_AGENT__?'&a=1':''));}catch(x){}}document.addEventListener('click',t,true);document.addEventListener('auxclick',function(e){if(e.button===1)t(e);},true);})();
+(function(){var B='https://fleet.promptprio.com/c?s=colorcombinations.org';function t(e){try{if(!e.isTrusted)return;var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.href||'';var isGo=false;try{isGo=a.host===location.host&&!!a.pathname&&a.pathname.indexOf('/go/')===0;if(isGo){document.cookie='cc_g='+Date.now().toString(36)+'; Path=/; Max-Age=600; SameSite=Lax; Secure';}}catch(g){}if(!isGo&&!/amazon\.|amzn\.to|amzn\.eu/i.test(h))return;var m=h.match(/\/(?:dp|gp\/product|gp\/aw\/d|go\/[bp])\/([A-Z0-9]{10})/i);var asin=m?m[1].toUpperCase():'';var pageClass='';try{var c=new URL(h,location.href).searchParams.get('c');if(/^[a-z0-9][a-z0-9-]{0,39}$/.test(c||''))pageClass=c;}catch(ignore){}var dest=/amzn\.to|audible/i.test(h)?'audible':'amazon';var shelf=a.dataset.from==='prime-bounty'?'prime':(a.dataset.from==='sticky-bar'?'sticky':(a.dataset.tool?'tool':(a.dataset.book?'book':'')));if(window.clarity){window.clarity('event','amazon_click');if(shelf){window.clarity('event','amazon_click_'+shelf);window.clarity('set','amazon_shelf',shelf);}}if(window.gtag)window.gtag('event','amazon_click',{page:location.pathname,asin:asin,dest:dest,shelf:shelf,page_class:pageClass});if(navigator.sendBeacon)navigator.sendBeacon(B+'&f='+encodeURIComponent(shelf||'untagged')+(pageClass?'&p='+encodeURIComponent(pageClass):'')+(window.__FLEET_AGENT__?'&a=1':''));}catch(x){}}document.addEventListener('click',t,true);document.addEventListener('auxclick',function(e){if(e.button===1)t(e);},true);})();
