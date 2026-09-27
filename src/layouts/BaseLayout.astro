@@ -522,7 +522,19 @@ const jsonLdArray = jsonLd
       function norm(s){return (s||"").toLowerCase().replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim()}
       function esc(s){return (s||"").replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
       function scrub(s){return s.replace(/\S+@\S+/g,"").replace(/\d{6,}/g,"").slice(0,60).trim()}
-      function srch(raw){var qn=norm(raw);if(!qn||!idx)return[];var tk=qn.split(" "),o=[];for(var i=0;i<idx.length;i++){var e=idx[i],tn=norm(e.t),hay=norm(e.t+" "+(e.x||"")),sc=0;if(tn.indexOf(qn)===0)sc=100;else if(tn.indexOf(qn)>=0)sc=70;else if(hay.indexOf(qn)>=0)sc=40;else{var all=1;for(var k=0;k<tk.length;k++)if(hay.indexOf(tk[k])<0){all=0;break}if(all)sc=20}if(sc)o.push([sc,e])}o.sort(function(a,b){return b[0]-a[0]||a[1].t.length-b[1].t.length});return o.slice(0,8).map(function(x){return x[1]})}
+      function strict(raw){var qn=norm(raw);if(!qn||!idx)return[];var tk=qn.split(" "),o=[];for(var i=0;i<idx.length;i++){var e=idx[i],tn=norm(e.t),hay=norm(e.t+" "+(e.x||"")),sc=0;if(tn.indexOf(qn)===0)sc=100;else if(tn.indexOf(qn)>=0)sc=70;else if(hay.indexOf(qn)>=0)sc=40;else{var all=1;for(var k=0;k<tk.length;k++)if(hay.indexOf(tk[k])<0){all=0;break}if(all)sc=20}if(sc)o.push([sc,e])}o.sort(function(a,b){return b[0]-a[0]||a[1].t.length-b[1].t.length});return o.slice(0,8).map(function(x){return x[1]})}
+      // Retry misses using colour-name spelling only: "lightbrown" is the
+      // adjacent words "Light Brown" in an actual Color entry, not a guessed
+      // colour. Preserve every successful query's ordering and require ALL
+      // remaining words. Separate colours existing does not prove a palette
+      // contains their combination; genuine misses keep the partial-match UI.
+      var JOINED=null;
+      function combinationQuery(raw){
+        if(!JOINED){JOINED={};(idx||[]).forEach(function(e){if(e.k!=="Color")return;var w=norm(e.t).split(" ");for(var i=0;i<w.length-1;i++){var key=w[i]+w[i+1],value=w[i]+" "+w[i+1];if(!(key in JOINED))JOINED[key]=value;else if(JOINED[key]!==value)JOINED[key]=key}})}
+        var words=norm(raw).split(" ").filter(function(w){return w!=="and"}).map(function(w){return JOINED[w]||w});
+        return words.length>1?words.join(" "):norm(raw);
+      }
+      function srch(raw){var found=strict(raw);if(found.length||!idx)return found;var combined=combinationQuery(raw);return combined!==norm(raw)?strict(combined):found}
       /* Loose fallback (2026-07-23): strict srch() requires EVERY token to match,
          so "sunset orange" returned nothing even though orange palettes exist —
          a dead end is a conversion leak. Score by ANY token hit (whole-word or
