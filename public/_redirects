@@ -56,3 +56,7 @@
 # defect fixed one leg earlier in E40.
 /palettes/ /browse/ 301
 /palettes /browse/ 301
+
+# Recover the observed uppercase spelling of the existing trends article.
+/TRENDS/COLOR-TRENDS-2026/ /trends/color-trends-2026/ 301
+/TRENDS/COLOR-TRENDS-2026 /trends/color-trends-2026/ 301

@@ -1,4 +1,5 @@
 ---
+import FurtherReading from "@components/FurtherReading.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { PAIRS, FORMATS, type Pair } from "@/data/converterPairs";
 
@@ -163,6 +164,8 @@ const CONTENT_MODIFIED = contentDate("src/pages/tools/color-converter/[pair].ast
       )}
     </div>
   </section>
+  <p>Paid links below. As an Amazon Associate we earn from qualifying purchases.</p>
+  <FurtherReading limit={2} title="Colour references for your next project" intro="Compare the original references behind this archive. Check the contents, edition and format before choosing a book." pageClass="color-converter" />
 </BaseLayout>
 
 <script>

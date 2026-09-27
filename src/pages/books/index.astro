@@ -2,18 +2,11 @@
 /**
  * /books — the shelf.
  *
- * The hub half of the books surface: it routes to the per-book pages rather
- * than straight out to Amazon. Hubs acquire, entity pages convert — sending a
- * browsing reader to a retailer before they know which book they want is how a
- * click gets spent on the wrong page.
- *
- * The existing FurtherReading component (on /about, /shop and the palette
- * sidebar) is deliberately untouched: those placements are inside a running
- * 28-day measurement window comparing the book shelf against the art-supply
- * shelf. This route is additive, so it doesn't disturb that reading.
+ * Readers can inspect each book's background or compare its available edition
+ * on Amazon directly from this shelf. Disclosure precedes the purchase links.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { FURTHER_READING, bookCover } from "@/config/monetization";
+import { AMAZON, FURTHER_READING, bookCover } from "@/config/monetization";
 
 const title = "The shelf — books on colour";
 const description =
@@ -64,13 +57,14 @@ const jsonLd = {
       <p class="eyebrow">Library</p>
       <h1 class="text-balance">The shelf</h1>
       <p class="shelf__intro">
-        Eleven books on colour — the two Wada dictionaries this archive is built
+        {FURTHER_READING.length} books on colour — the two Wada dictionaries this archive is built
         from, and the references that sit next to them on a working desk. Each
         has its own page explaining what it's for and, where it applies, what
         this archive already holds free.
       </p>
     </header>
 
+    <p class="shelf__disclosure">Paid links. As an Amazon Associate we earn from qualifying purchases, at no extra cost to you. Check the edition and format before ordering.</p>
     <ul class="shelf__list" role="list">
       {FURTHER_READING.map((book) => {
         const coverUrl = bookCover(book, "M");
@@ -107,19 +101,21 @@ const jsonLd = {
                 <span class="shelf__note">{book.note}</span>
               </span>
             </a>
+            <a href={AMAZON.link(book.amazonAsin, "book")} class="shelf__buy" target="_blank" rel="sponsored nofollow noopener">Find {book.title} on Amazon →</a>
           </li>
         );
       })}
     </ul>
 
     <p class="shelf__disclosure">
-      Book pages carry Amazon Associates affiliate links. Your price is
+      This shelf and its book pages carry Amazon Associates affiliate links. Your price is
       unchanged; as an Amazon Associate we earn from qualifying purchases.
     </p>
   </div>
 </BaseLayout>
 
 <style>
+  .shelf__buy { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem 0; text-decoration: underline; }
   .shelf {
     max-width: var(--content-width, 72rem);
     margin-inline: auto;
