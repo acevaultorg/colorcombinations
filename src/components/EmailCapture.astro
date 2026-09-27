@@ -23,21 +23,22 @@ const {
   provider = "kv",
   action = "/api/subscribe",
   source = "homepage",
-  heading = "One palette a week. No spam, ever.",
-  lede = "Every Sunday: one combination, one era, one short story. Unsubscribe any time.",
-  cta = "Subscribe",
+  heading = "New palette sets, when they’re ready.",
+  lede = "Join the interest list for palette sets and stories from the archive. Emails haven’t started yet.",
+  cta = "Join the list",
   note = "Free. No credit card. Archive stays readable forever.",
   class: extraClass,
 } = Astro.props;
 
 // Method is POST for all providers; provider-specific params can be extended.
 const method = "post";
+const inputId = `email-capture-${source.replace(/[^a-z0-9-]/gi, "-")}`;
 ---
 
 <section class={`email-capture ${extraClass ?? ""}`} id="newsletter">
   <div class="container-page">
     <div class="email-capture__inner">
-      <p class="eyebrow">Newsletter</p>
+      <p class="eyebrow">Email updates</p>
       <h2 class="text-balance">{heading}</h2>
       <p class="email-capture__lede">{lede}</p>
 
@@ -49,15 +50,19 @@ const method = "post";
         data-source={source}
         novalidate
       >
-        <label class="sr-only" for="email-capture-input">Email address</label>
+        <label class="sr-only" for={inputId}>Email address</label>
         <input
           type="email"
-          id="email-capture-input"
+          id={inputId}
           name="email"
           required
           autocomplete="email"
           placeholder="your@email.com"
         />
+        <label class="email-capture__consent">
+          <input type="checkbox" name="consent" required />
+          <span>I agree to receive the email updates described above. I can ask to leave at any time. <a href="/privacy/#email-updates">Privacy and deletion</a>.</span>
+        </label>
         <button type="submit" class="btn btn-primary">{cta}</button>
       </form>
 
@@ -73,6 +78,7 @@ const method = "post";
   document.querySelectorAll<HTMLFormElement>(".email-capture__form").forEach((form) => {
     const status = form.parentElement?.querySelector<HTMLParagraphElement>(".email-capture__status");
     const input = form.querySelector<HTMLInputElement>('input[type="email"]');
+    const consent = form.querySelector<HTMLInputElement>('input[name="consent"]');
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     const source = form.getAttribute("data-source") || "unknown";
 
@@ -83,37 +89,22 @@ const method = "post";
         input?.focus();
         return;
       }
+      if (!consent?.checked) {
+        if (status) status.textContent = "Please tick the email consent box.";
+        consent?.focus();
+        return;
+      }
       if (button) button.disabled = true;
       if (status) status.textContent = "Subscribing…";
       try {
         const res = await fetch(form.action, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: input.value.trim(), source, ref: location.pathname }),
+          body: JSON.stringify({ email: input.value.trim(), source, ref: location.pathname, consent: true }),
         });
         const data = await res.json().catch(() => ({}));
-        if (res.ok && data.ok) {
-          /* INSTRUMENTATION (2026-09-06) — this form is the site's only engineered
-           * return-loop and it fired NO analytics: zero gtag/clarity/plausible calls
-           * anywhere in this component, so "does anyone subscribe?" was unanswerable
-           * from any dashboard (verified: none of the 26 GA4 event names on this
-           * property was subscribe-related). Forward-only — it cannot recover history.
-           *
-           * `pending_no_binding` is the important one. /api/subscribe deliberately
-           * fails OPEN: if the SUBSCRIBERS KV binding is missing it still returns
-           * {ok:true, pending:true} "so the form never *looks* broken". That means a
-           * lost binding silently discards every signup while showing the user a
-           * success message — a state indistinguishable from working, from outside.
-           * Emitting it as its own outcome is what makes that detectable at all.
-           * (Binding verified present on production + preview 2026-09-06.)
-           *
-           * window is untyped here because this is a bundled <script>, not the
-           * is:inline one FeedbackWidget.astro uses — hence the local shape. */
-          const outcome = data.pending
-            ? "pending_no_binding"
-            : data.status === "already_subscribed"
-              ? "already"
-              : "new";
+        if (res.ok && data.ok && !data.pending && ["subscribed", "already_subscribed"].includes(data.status)) {
+          const outcome = data.status === "already_subscribed" ? "already" : "new";
           const w = window as unknown as {
             gtag?: (...args: unknown[]) => void;
             clarity?: (...args: unknown[]) => void;
@@ -127,8 +118,8 @@ const method = "post";
           if (status)
             status.textContent =
               data.status === "already_subscribed"
-                ? "✓ You're already on the list."
-                : "✓ You're in — the next one lands in your inbox.";
+                ? "You’re already on this list."
+                : "Your interest is saved. We haven’t started sending these emails yet.";
           form.reset();
         } else {
           if (status) status.textContent = data.error || "Something went wrong. Try again in a moment.";
@@ -165,11 +156,24 @@ const method = "post";
 
   .email-capture__form {
     display: flex;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 0.75rem;
     max-width: 28rem;
     margin: 0 auto 1rem;
   }
 
+  .email-capture__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    padding-block: 0.5rem;
+    min-height: 44px;
+  }
+  .email-capture__consent input { width: 20px; height: 20px; flex: 0 0 20px; margin-top: 2px; }
+  .email-capture__consent a { text-decoration: underline; }
   .email-capture__form input[type="email"] {
     flex: 1;
     padding: 0.75rem 1rem;
