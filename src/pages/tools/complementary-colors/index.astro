@@ -1,0 +1,173 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PaintThisPalette from '@components/PaintThisPalette.astro';
+const title = 'Complementary Colors — Color Wheel & HEX Pair Finder';
+const description = 'Find complementary colors with an interactive RGB color wheel. Enter a HEX color, see its opposite hue, and copy the pair for your next design.';
+const jsonLd = [{
+  '@context': 'https://schema.org', '@type': 'SoftwareApplication',
+  name: 'Complementary Color Wheel', description, applicationCategory: 'DesignApplication',
+  operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  url: 'https://colorcombinations.org/tools/complementary-colors/',
+}, {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://colorcombinations.org/' },
+    { '@type': 'ListItem', position: 2, name: 'Tools', item: 'https://colorcombinations.org/tools/' },
+    { '@type': 'ListItem', position: 3, name: 'Complementary Colors' },
+  ],
+}];
+---
+<BaseLayout title={title} description={description} jsonLd={jsonLd} adContent>
+  <div class="container-wide complement-page">
+    <header>
+      <p class="eyebrow"><a href="/tools/">Tools</a> / Complementary colors</p>
+      <h1>Find your color’s other half.</h1>
+      <p class="lede">Complementary colors sit opposite each other on the color wheel. Start with a color, then explore its partner.</p>
+    </header>
+    <section class="workspace" aria-label="Complementary color calculator">
+      <div class="controls">
+        <label for="hex-color">Your HEX color</label>
+        <div class="input-row">
+          <input type="color" id="color-picker" value="#3B6EA8" aria-label="Choose a color" />
+          <input id="hex-color" value="#3B6EA8" maxlength="7" spellcheck="false" autocapitalize="off" aria-describedby="hex-help input-error" />
+        </div>
+        <p id="hex-help" class="hint">Use 3 or 6 HEX digits, with or without #.</p>
+        <p id="input-error" class="error" aria-live="polite"></p>
+        <label for="hue">Hue <output id="hue-value" for="hue">212°</output></label>
+        <input type="range" id="hue" min="0" max="359" value="212" />
+        <p class="hint">Move the slider or tap the wheel. The wheel shows fully saturated hues; your pair keeps your color’s saturation and lightness.</p>
+        <div class="wheel" id="color-wheel" aria-hidden="true">
+          <div class="wheel-core">180°<small>apart</small></div>
+          <span class="marker" id="seed-marker">1</span><span class="marker" id="opposite-marker">2</span>
+        </div>
+      </div>
+      <div class="results">
+        <h2>Your complementary pair</h2>
+        <div class="pair">
+          <div class="color-card"><div id="seed-swatch" class="swatch" style="background:#3B6EA8"></div><p>1 · Your color</p><code id="seed-code">#3B6EA8</code><button id="copy-seed" type="button">Copy color</button></div>
+          <div class="color-card"><div id="opposite-swatch" class="swatch" style="background:#A8753B"></div><p>2 · Complement</p><code id="opposite-code">#A8753B</code><button id="copy-opposite" type="button">Copy complement</button></div>
+        </div>
+        <p id="pair-detail" aria-live="polite">Opposite hues, with the same saturation and lightness.</p>
+        <div class="actions"><button id="copy-pair" type="button">Copy HEX pair</button><button id="copy-link" type="button">Copy link</button></div>
+        <p id="copy-status" role="status"></p>
+        <p class="hint">A complementary pair is not automatically readable as text. <a id="contrast-link" href="/tools/contrast-checker/">Check contrast before using it.</a></p>
+        <noscript><p>Enable JavaScript to change the colors. The example above pairs #3B6EA8 with #A8753B.</p></noscript>
+      </div>
+    </section>
+    <section class="explanation">
+      <h2>What are complementary colors?</h2>
+      <p>They are hues separated by half a turn on a color wheel. This tool uses the digital RGB/HSL wheel: red pairs with cyan, green with magenta, and blue with yellow. It adds 180° to the hue and keeps saturation and lightness unchanged.</p>
+      <p>For example, #FF0000 pairs with #00FFFF. A softer red produces a softer cyan. Grey, white and black have no distinct hue, so rotating their hue leaves them unchanged.</p>
+      <h2>Why does a painter’s wheel look different?</h2>
+      <p>A traditional red–yellow–blue wheel commonly pairs red with green, blue with orange, and yellow with purple. This calculator is for screen colors, not a pigment-mixing recipe. Paint results depend on the pigments and the material: test a small swatch before mixing a full batch.</p>
+      <h2>How to use the pair</h2>
+      <p>Try one color across a large area and its complement as a smaller accent. Add a neutral for breathing room. For text and controls, use the <a href="/tools/contrast-checker/">contrast checker</a>; opposite hues alone do not guarantee sufficient contrast.</p>
+      <p>Want combinations chosen by an artist? Explore the <a href="/tools/palette-from-color/">Wada palette finder</a>, or browse <a href="/colors-that-go-with/">colors that go together</a>.</p>
+    </section>
+    <PaintThisPalette title="Take the pair to paper" intro="Use your screen palette as a starting point for a color study, then test the pigments on paper." limit={4} pageClass="tool-complementary-colors" />
+  </div>
+</BaseLayout>
+<script>
+  import { hexToRgb, rgbToHex, rgbToHsl, hslToRgb } from '@/lib/colorConvert';
+  const hex = document.querySelector<HTMLInputElement>('#hex-color')!;
+  const picker = document.querySelector<HTMLInputElement>('#color-picker')!;
+  const hue = document.querySelector<HTMLInputElement>('#hue')!;
+  const error = document.querySelector<HTMLElement>('#input-error')!;
+  const status = document.querySelector<HTMLElement>('#copy-status')!;
+  let seed = '#3B6EA8', complement = '#A8753B';
+  function render(value: string, syncInput = true) {
+    const rgb = hexToRgb(value);
+    if (!rgb) {
+      hex.setAttribute('aria-invalid', 'true');
+      error.textContent = 'Enter a valid color, such as #36A or #3366AA. The last valid pair is still shown.';
+      return;
+    }
+    error.textContent = ''; hex.removeAttribute('aria-invalid'); status.textContent = '';
+    seed = rgbToHex(rgb);
+    // An HSL half-turn reflects each channel around min + max, without hue rounding.
+    const sum = Math.max(rgb.r, rgb.g, rgb.b) + Math.min(rgb.r, rgb.g, rgb.b);
+    complement = rgbToHex({ r: sum - rgb.r, g: sum - rgb.g, b: sum - rgb.b });
+    const hsl = rgbToHsl(rgb);
+    if (syncInput) hex.value = seed;
+    picker.value = seed; hue.value = String(Math.round(hsl.h) % 360); hue.disabled = hsl.s === 0;
+    document.querySelector('#hue-value')!.textContent = `${Math.round(hsl.h) % 360}°`;
+    for (const [prefix, color] of [['seed', seed], ['opposite', complement]]) {
+      document.querySelector<HTMLElement>(`#${prefix}-swatch`)!.style.backgroundColor = color;
+      document.querySelector(`#${prefix}-code`)!.textContent = color;
+    }
+    for (const [id, angle] of [['seed-marker', hsl.h], ['opposite-marker', (hsl.h + 180) % 360]] as const) {
+      const marker = document.getElementById(id)!;
+      const radians = (angle - 90) * Math.PI / 180;
+      marker.style.left = `${50 + 39 * Math.cos(radians)}%`;
+      marker.style.top = `${50 + 39 * Math.sin(radians)}%`;
+      marker.hidden = hsl.s === 0;
+    }
+    document.querySelector('#pair-detail')!.textContent = hsl.s === 0
+      ? 'This is a neutral: it has no distinct hue. Its HSL complement is the same color. Pick a chromatic color to explore opposite hues.'
+      : `Hue ${hsl.h}° → ${Math.round(((hsl.h + 180) % 360) * 10) / 10}°. Saturation ${hsl.s}%, lightness ${hsl.l}%.`;
+  }
+  function setHue(value: number) {
+    const hsl = rgbToHsl(hexToRgb(seed)!);
+    // A hue adjustment cannot add color to a neutral; the picker can.
+    render(rgbToHex(hslToRgb({ ...hsl, h: value })));
+  }
+  hex.addEventListener('input', () => render(hex.value, false));
+  hex.addEventListener('change', () => render(hex.value));
+  picker.addEventListener('input', () => render(picker.value));
+  hue.addEventListener('input', () => setHue(Number(hue.value)));
+  document.querySelector('#color-wheel')!.addEventListener('pointerdown', (event) => {
+    const e = event as PointerEvent;
+    const bounds = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    setHue((Math.atan2(e.clientY - bounds.top - bounds.height / 2, e.clientX - bounds.left - bounds.width / 2) * 180 / Math.PI + 450) % 360);
+  });
+  async function copy(value: string, message: string) {
+    try { await navigator.clipboard.writeText(value); status.textContent = message; }
+    catch { status.textContent = `Copy unavailable. Select and copy: ${value}`; }
+  }
+  document.querySelector('#copy-seed')!.addEventListener('click', () => copy(seed, 'Color copied.'));
+  document.querySelector('#copy-opposite')!.addEventListener('click', () => copy(complement, 'Complement copied.'));
+  document.querySelector('#copy-pair')!.addEventListener('click', () => copy(`${seed}, ${complement}`, 'HEX pair copied.'));
+  document.querySelector('#copy-link')!.addEventListener('click', () => {
+    const url = new URL(window.location.href); url.search = ''; url.hash = ''; url.searchParams.set('hex', seed.slice(1));
+    copy(url.toString(), 'Link copied.');
+  });
+  const initial = new URLSearchParams(window.location.search).get('hex');
+  if (initial && hexToRgb(initial)) render(initial); else render(seed);
+</script>
+<style>
+  .complement-page { padding-block: 3rem; }
+  header { max-width: 48rem; margin-bottom: 2rem; }
+  h1 { font-family: var(--font-serif); font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.12; margin-block: 1rem; }
+  .lede { font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.6; }
+  .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 2.5rem; padding: 2rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-elevated); }
+  label { display: block; font-weight: 600; margin-bottom: .65rem; }
+  output { float: right; font-variant-numeric: tabular-nums; }
+  .input-row { display: flex; gap: .75rem; }
+  input { min-width: 0; }
+  #hex-color { width: 100%; border: 1px solid var(--color-border); padding: .7rem; font-family: monospace; border-radius: var(--radius-sm); background: var(--color-bg); }
+  #color-picker { width: 3.5rem; height: 3rem; flex-shrink: 0; cursor: pointer; }
+  #hue { width: 100%; min-height: 2rem; accent-color: var(--color-ink-900); }
+  .hint { font-size: .875rem; line-height: 1.5; margin-block: .75rem; color: var(--color-ink-700); }
+  .error { color: #9A2A2A; font-size: .875rem; min-height: 1.3rem; margin-block: .5rem; }
+  .wheel { position: relative; width: min(100%, 15rem); aspect-ratio: 1; border-radius: 50%; margin: 1.5rem auto 0; background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red); cursor: crosshair; }
+  .wheel-core { position: absolute; inset: 23%; border-radius: 50%; background: var(--color-bg-elevated, #FAF7EF); display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 2rem; }
+  .wheel-core small { font: .8rem var(--font-sans); }
+  .marker { position: absolute; transform: translate(-50%, -50%); width: 1.9rem; height: 1.9rem; border: 2px solid white; border-radius: 50%; background: #141414; color: white; text-align: center; line-height: 1.65rem; box-shadow: 0 0 0 1px #141414; }
+  .marker[hidden] { display: none; }
+  h2 { font-family: var(--font-serif); font-size: 1.7rem; line-height: 1.25; margin-bottom: 1rem; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .color-card { min-width: 0; }
+  .swatch { height: 10rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border); }
+  .color-card p { margin-block: .7rem .2rem; font-size: .875rem; }
+  code { display: block; font-size: 1.25rem; margin-bottom: .75rem; }
+  button { min-height: 44px; border: 1px solid var(--color-ink-700); border-radius: var(--radius-sm); padding: .6rem .85rem; background: transparent; cursor: pointer; font-size: .875rem; }
+  button:hover { background: var(--color-bg); }
+  button:focus-visible, input:focus-visible { outline: 3px solid #3B6EA8; outline-offset: 3px; }
+  .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  #pair-detail { margin-block: 1.25rem; line-height: 1.6; }
+  #copy-status { min-height: 1.5rem; margin-top: .75rem; overflow-wrap: anywhere; }
+  .explanation { max-width: 46rem; margin-block: 3rem; }
+  .explanation h2 { margin-top: 2rem; }
+  .explanation p { line-height: 1.75; margin-block: 1rem; }
+  a { text-decoration: underline; text-underline-offset: .2em; }
+  @media (max-width: 720px) { .workspace { grid-template-columns: 1fr; padding: 1.1rem; gap: 2rem; } .pair { gap: .75rem; } .swatch { height: 8rem; } .color-card button { width: 100%; padding-inline: .4rem; } }
+</style>

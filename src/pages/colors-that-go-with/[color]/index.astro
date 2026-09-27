@@ -199,6 +199,7 @@ const jsonLd = [
       </div>
       <p class="mt-4 max-w-2xl text-stone-700">{answer}</p>
       <AskAmili />
+      <p class="mt-4 text-sm"><a class="underline" href={`/tools/complementary-colors/?hex=${color.hex.slice(1)}`}>Find {color.name.toLowerCase()}’s complementary color on the color wheel →</a></p>
     </header>
 
     <ShareBar title={h1} url={shareUrl} tweetText={shareTweetText} pinterestMedia={sharePinterestMedia} />
