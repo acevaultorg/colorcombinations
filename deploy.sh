@@ -57,8 +57,6 @@ node scripts/amazon-tracking-guard.mjs
 node scripts/verify-deploy-integrity.mjs --pre
 # Replays every built /go/ href through the gate's tokened branch (functions + dist/_worker.js) offline, like a real click (card mukyo88cc41xy0).
 node scripts/verify-gate-offline.mjs || { echo "OFFLINE GATE CHECK FAILED" >&2; exit 7; }
-# Replays every built /go/ href through functions/ + dist/_worker.js with a real click's headers and token (card mukyo88cc41xy0).
-node scripts/verify-gate-offline.mjs || { echo "OFFLINE GATE CHECK FAILED" >&2; exit 7; }
 : "${CF_PAGES_TOKEN:?CF_PAGES_TOKEN required for a Pages deploy}"
 CF_BATCH_MB=6 python3 scripts/cf-pages-chunked-deploy.py
 node scripts/verify-deploy-integrity.mjs --post
