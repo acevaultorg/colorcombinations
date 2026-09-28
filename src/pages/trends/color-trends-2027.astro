@@ -38,6 +38,16 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import { pairingPaths } from "@data/pairings";
+
+// A pick's "what goes with" link targets /colors-that-go-with/<slug>/walls/ only when that
+// page is actually built (pairingPaths applies MIN_PALETTES). Archive-only colours such as
+// Cameo Pink have no pairing pages, so they link to their /colors/<slug>/ archive page.
+// Measured 2026-09-28: 5 of 8 CTAs here were live 404s after 33efcb2 added picks without
+// this check.
+const builtPairings = new Set(pairingPaths().map((x) => `${x.color}/${x.context}`));
+const pickHref = (slug: string) =>
+  builtPairings.has(`${slug}/walls`) ? `/colors-that-go-with/${slug}/walls/` : `/colors/${slug}/`;
 
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/color-trends-2027/";
@@ -336,7 +346,7 @@ const jsonLd = [
                   : ` No hex has been published for ${p.name} yet.`}
               </p>
               <p class="coty-pick__links">
-                <a class="coty-pick__cta" href={`/colors-that-go-with/${p.match.slug}/walls/`}>
+                <a class="coty-pick__cta" href={pickHref(p.match.slug)}>
                   What goes with {p.match.name.toLowerCase()} →
                 </a>
                 <a class="coty-pick__ref" href={p.url} rel="nofollow noopener" target="_blank">
