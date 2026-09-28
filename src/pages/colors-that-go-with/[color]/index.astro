@@ -169,6 +169,21 @@ const jsonLd = [
       { "@type": "ListItem", position: 3, name: color.name, item: `https://colorcombinations.org${canonical}` },
     ],
   },
+  // ItemList of the per-setting guides this hub visibly links (the "{color} by
+  // setting" grid below) — same order, same names, same URLs, so the schema
+  // never claims an item the page does not show.
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${color.name} by setting`,
+    numberOfItems: settings.length,
+    itemListElement: settings.map(({ ctx }, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://colorcombinations.org/colors-that-go-with/${color.slug}/${ctx.slug}/`,
+      name: `${color.name} for ${ctx.label}`,
+    })),
+  },
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
