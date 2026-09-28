@@ -25,6 +25,19 @@ if (!collection) {
 const palettes = paletteSetForCollection(collection);
 const total = palettes.length;
 
+/* "Other collections" = the two neighbours on each side in collections.ts
+ * (wrapping), not the first 4 of the list. 2026-09-28, queue-g: the old
+ * `.filter(≠self).slice(0, 4)` sent all 68 sibling links to websites/branding/
+ * autumn/spring, so 50+ collections were linked only from /collections/ —
+ * including the ones Bing actually shows (y2k 848 impr, art-deco 281, gothic
+ * 213, art-nouveau 161; 113d to 2026-09-25). Neighbours in the list are
+ * thematically close (the aesthetic collections sit together), and every
+ * collection now gets exactly 4 sibling links in. */
+const selfIndex = collections.findIndex((c) => c.slug === collection.slug);
+const relatedCollections = [-2, -1, 1, 2]
+  .map((d) => collections[(selfIndex + d + collections.length) % collections.length])
+  .filter((c, i, arr) => c.slug !== collection.slug && arr.findIndex((x) => x.slug === c.slug) === i);
+
 /**
  * Sample up to 6 representative hexes for the share-card canvas. Walk
  * through the first ~3 palettes pulling 2 colors each so the strip
@@ -401,10 +414,7 @@ const jsonLd = [
         <h2>Other collections</h2>
       </header>
       <ul class="collection-related__list" role="list">
-        {collections
-          .filter((c) => c.slug !== collection.slug)
-          .slice(0, 4)
-          .map((c) => (
+        {relatedCollections.map((c) => (
             <li>
               <a href={`/collections/${c.slug}/`} class="collection-related__link">
                 <span
