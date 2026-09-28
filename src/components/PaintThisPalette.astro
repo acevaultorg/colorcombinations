@@ -288,10 +288,12 @@ const destinations = DESTINATIONS.map((d) => {
     </a>
     <p class="paint-kit__prime-disclosure">{PRIME_BOUNTY.disclosure}</p>
   </aside>
-  {/* Prime Big Deal Days 2026 (6-7 Oct, aboutamazon.com): same link, wording only, from
-      1 Oct 00:00 PDT to 8 Oct 00:00 PDT, then it reverts by itself. Ported from fitmylens
-      d74437a26c. is:inline keeps it next to the aside so currentScript works. Card mug5wgo5g1pnec. */}
-  <script is:inline>(function(){try{var n=Date.now();if(n<Date.UTC(2026,9,1,7)||n>=Date.UTC(2026,9,8,7))return;var b=document.currentScript&&document.currentScript.previousElementSibling;var t=b&&b.querySelector('[data-pbdd=t]');if(!t)return;t.textContent="Prime Big Deal Days runs 6 and 7 October, and the deals are for Prime members. You can start a free 30-day trial if you're eligible; it also includes fast free delivery and free returns.";}catch(e){}})();</script>
+  {/* Seasonal Prime wording (same link, wording only; reverts by itself). Windows are [start,end) UTC,
+      07:00/08:00Z = midnight US Pacific. PBDD 6-7 Oct (aboutamazon.com; card mug5wgo5g1pnec, ported from
+      fitmylens d74437a26c). Q4 2026 (card mulb44qo2p28lh): Black Friday 27 Nov / Cyber Monday 30 Nov, then
+      December — calendar facts only, no prices, no deal claims. is:inline keeps it next to the aside so
+      currentScript works. */}
+  <script is:inline>(function(){try{var n=Date.now(),W=[[Date.UTC(2026,9,1,7),Date.UTC(2026,9,8,7),"Prime Big Deal Days runs 6 and 7 October, and the deals are for Prime members. You can start a free 30-day trial if you're eligible; it also includes fast free delivery and free returns."],[Date.UTC(2026,10,9,8),Date.UTC(2026,11,1,8),"Black Friday is 27 November and Cyber Monday is the 30th. If you're eligible, a free 30-day Prime trial includes fast free delivery and free returns."],[Date.UTC(2026,11,1,8),Date.UTC(2026,11,21,8),"Painting before the holidays? If you're eligible, a free 30-day Prime trial includes fast free delivery, so supplies arrive in days."]],w=null;for(var k=0;k<W.length;k++)if(n>=W[k][0]&&n<W[k][1])w=W[k];if(!w)return;var b=document.currentScript&&document.currentScript.previousElementSibling;var t=b&&b.querySelector('[data-pbdd=t]');if(!t)return;t.textContent=w[2];}catch(e){}})();</script>
 
   <p class="paint-kit__disclosure">
     Amazon Associates affiliate links — your price is unchanged and a small
