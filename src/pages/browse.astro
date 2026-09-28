@@ -6,6 +6,7 @@ import PaintThisPalette from "@components/PaintThisPalette.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import ShelfCallout from "@components/ShelfCallout.astro";
 import { allPalettes } from "@data/palettes";
+import { AMAZON } from "@/config/monetization";
 
 const palettes = allPalettes();
 const total = palettes.length;
@@ -61,6 +62,14 @@ const jsonLd = [
     })),
   },
 ];
+
+// Browse-hero source-book line (2026-09-28, card mug5wgo5g1pnec lever 3). /browse/ is the
+// site's second-busiest page (~1,636 visits/30d) at ~1.4 Amazon clicks per 100 visits, and
+// every buy link sat at ~95% of a 620 KB page (after all 378 cards); Clarity measured a 27%
+// median scroll depth here. The homepage carries this exact line at ~6% of the page and
+// converts ~5 per 100. Same book, same gated link helper, page class "browse".
+const sourceBookAmazonUrl = AMAZON.link("4861522471", "browse");
+const sourceBookShowDisclosure = AMAZON.isLive;
 ---
 
 <BaseLayout title={title} description={description} image="/og/browse.png" jsonLd={jsonLd} adContent>
@@ -77,6 +86,22 @@ const jsonLd = [
         Looking for something specific? See <a href="/trends/color-trends-2026/">every 2026 Color of the Year</a> — Pantone, Benjamin Moore, Behr and more, side by side. The <a href="/trends/color-trends-2027/">2027 Colors of the Year announced so far</a> are here too.
       </p>
       <AskAmili />
+      <p class="browse-hero__source-book">
+        <img class="browse-hero__book-cover" src="/book-covers/wada-vol-1.jpg" alt="Cover of A Dictionary of Color Combinations, Vol. 1 (Seigensha)" width="48" height="66" loading="lazy" decoding="async" />
+        The 348 Wada plates come from one book.
+        <a
+          href={sourceBookAmazonUrl}
+          rel="sponsored nofollow noopener"
+          target="_blank"
+          data-event="amazon_click"
+          data-event-surface="browse-hero"
+          data-from="browse-hero"
+          data-book="A Dictionary of Color Combinations"
+        >Get Sanzo Wada's 1933 Dictionary on Amazon →</a>
+        {sourceBookShowDisclosure && (
+          <span class="browse-hero__disclosure"> — affiliate link; your price is unchanged. As an Amazon Associate we earn from qualifying purchases.</span>
+        )}
+      </p>
     </div>
   </section>
 
@@ -323,6 +348,32 @@ const jsonLd = [
 </script>
 
 <style>
+  .browse-hero__source-book {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    color: var(--color-ink-500);
+    line-height: 1.55;
+    margin: 1rem 0 0;
+    max-width: 56ch;
+  }
+  .browse-hero__source-book a {
+    color: var(--color-ink-800);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    display: inline-block;
+    padding-block: 0.75rem;
+  }
+  .browse-hero__source-book a:hover { color: var(--color-accent-500); }
+  .browse-hero__book-cover {
+    float: left;
+    margin: 0.2rem 0.75rem 0.25rem 0;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+  }
+  .browse-hero__source-book::after { content: ""; display: block; clear: both; }
+  .browse-hero__disclosure { color: var(--color-ink-500); font-size: 0.8125rem; }
+
   .browse-hero {
     padding-top: clamp(2rem, 6vw, 4rem);
     padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
