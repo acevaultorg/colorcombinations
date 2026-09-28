@@ -17,6 +17,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+// No network, ever. If a gate one day beacons server-side (fetch to a click counter), running this check on every
+// deploy must not turn into thousands of fake clicks: every fetch the code under test makes is recorded, answered
+// locally with 204, and never leaves this machine.
+const NET = [];
+globalThis.fetch = async (u) => { NET.push(String((u && u.url) || u)); return new Response(null, { status: 204 }); };
+process.on('exit', () => { if (NET.length) console.log(`note: ${NET.length} fetch call(s) from the gate were answered locally, e.g. ${NET[0]}`); });
+
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DIST = path.resolve(process.argv[2] || path.join(ROOT, 'dist'));
 const WORKER = path.join(DIST, '_worker.js');
