@@ -16,6 +16,16 @@ const description =
 
 const articles = [
   {
+    href: "/learn/why-painting-colours-shift/",
+    title: "The Yellow Problem: Why Painting Colours Are Not What the Artist Mixed",
+    eyebrow: "Pigments · Paintings",
+    description:
+      "Chrome yellow browns, zinc yellow darkens to ochre, cadmium yellow turns off-white. Three famous paintings, three chemical failures, and what that means when you sample a palette from art.",
+    publishedDate: "2026-08-06",
+    readingTime: "6 min",
+    tags: ["Pigments", "Paintings", "Color theory"],
+  },
+  {
     href: "/learn/wada-palettes-by-mood/",
     title: "Wada Palettes by Mood and Season: Grouping the 348 Plates",
     eyebrow: "Original research · Data",
@@ -176,6 +186,12 @@ const articles = [
     tags: ["Glossary", "Reference", "Color theory"],
   },
 ];
+
+// Every page under src/pages/learn/ must be listed above. The list is kept by hand, and
+// /learn/why-painting-colours-shift/ sat live for 53 days with no link from this hub (queue-k 2026-09-28).
+const learnPages = Object.keys(import.meta.glob("./*/index.astro")).map((p) => `/learn/${p.split("/")[1]}/`);
+const unlisted = learnPages.filter((h) => !articles.some((a) => a.href === h));
+if (unlisted.length) throw new Error(`learn/index.astro: add these pages to \`articles\`: ${unlisted.join(", ")}`);
 
 const siteUrl = "https://colorcombinations.org/";
 const learnUrl = `${siteUrl}learn/`;
