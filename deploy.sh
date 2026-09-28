@@ -52,6 +52,8 @@ trap 'rm -rf "$LOCK_DIR"' EXIT
 # pre<script> convention), re-running git-guard + verify-beacon-coverage after the
 # lock is already held for no benefit.
 npm run build
+# Every Amazon link tracked (p= + placement) and gated — refuses the upload otherwise (card muksgphls3y3tw).
+node scripts/amazon-tracking-guard.mjs
 node scripts/verify-deploy-integrity.mjs --pre
 : "${CF_PAGES_TOKEN:?CF_PAGES_TOKEN required for a Pages deploy}"
 CF_BATCH_MB=6 python3 scripts/cf-pages-chunked-deploy.py

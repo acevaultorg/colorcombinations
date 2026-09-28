@@ -143,6 +143,7 @@ validate_build:
     - npm ci --no-audit --no-fund
     - npx astro build
     - node scripts/verify-mediavine-exclusions.mjs
+    - node scripts/amazon-tracking-guard.mjs   # every Amazon link tracked + gated (card muksgphls3y3tw)
     # AFFILIATE LEAK GATE. This site routes every Amazon link through /go/
     # (Design-B gesture gate, affiliate-link-gate.md), so a raw tagged link in
     # static HTML is a leak. The CONTROL is the point: tagged=0 proves nothing
