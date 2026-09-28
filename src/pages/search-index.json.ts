@@ -57,6 +57,22 @@ const PAIRING_SYNONYMS: Record<string, string> = {
   gold: "bronze",
 };
 
+/** Style / use words a reader types that a collection's title does not contain.
+ *  Measured 2026-09-28 from GA4 SearchNoResults (08-29..09-27): "elegant" x2, "glam",
+ *  "premum", "tech" / "technology" / "technical" / "high tech", "presentation",
+ *  "profesional blue", "monotone", "bright" / "bright blue", "nude" all returned
+ *  nothing while a matching collection existed. Whole words only: the matcher is a
+ *  substring test, so "tech" would also catch "technology", but each form is listed
+ *  so the intent reads plainly here. Collections carried no `x` at all before this. */
+const COLLECTION_SYNONYMS: Record<string, string> = {
+  luxury: "elegant glam glamorous premium classy sophisticated",
+  websites: "tech technology technical high tech saas app ui web",
+  branding: "professional corporate business presentation",
+  monochromatic: "monotone monochrome tonal one colour one color",
+  bold: "bright vivid vibrant saturated",
+  neutral: "nude beige cream",
+};
+
 /** Standalone editorial + tool pages that have no data module of their own.
  *  Long, specific titles only -- see the crowding note in the index below. */
 const STANDALONE = [
@@ -141,7 +157,7 @@ export const GET: APIRoute = () => {
       s: `/collections/${c.slug}/`,
       t: c.title,
       k: "Collection",
-      x: "",
+      x: COLLECTION_SYNONYMS[c.slug] || "",
     })),
     // "colors that go with X" hubs — indexed as a colour-adjacent entry, one row
     // per colour (NOT per leaf: indexing all 702 [color]/[context] leaves would

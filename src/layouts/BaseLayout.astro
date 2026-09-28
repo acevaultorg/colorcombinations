@@ -560,7 +560,12 @@ const jsonLdArray = jsonLd
       // carry none. So an explicit "#" is unambiguous intent and always routes,
       // while a BARE six must contain a digit. A bare all-letter hex falls
       // through to normal search — exactly the behaviour today, no regression.
-      function hexOf(raw){var t=raw.trim(),h=t.charAt(0)==="#",v=t.replace(/^#/,"");if(/^[0-9a-fA-F]{6}$/.test(v)&&(h||/[0-9]/.test(v)))return v.toLowerCase();var m=/#([0-9a-fA-F]{6})\b/.exec(t);return m?m[1].toLowerCase():null}
+      // RGB + SHORTHAND (2026-09-28, GA4 SearchNoResults 08-29..09-27): 5 dead ends
+      // were RGB triples — "rgb(27, 42, 78)" x2, "rgb(162, 167, 78)", "rgb(2, 4, 7)",
+      // "rgb 27, 32, 50" — and one was CSS shorthand "#b8e". Same request as a pasted
+      // hex, so they convert to hex and take the same route. Shorthand needs the "#"
+      // (a bare "156" is a plate number); RGB needs the word "rgb" and three 0-255s.
+      function hexOf(raw){var t=raw.trim(),h=t.charAt(0)==="#",v=t.replace(/^#/,"");if(/^[0-9a-fA-F]{6}$/.test(v)&&(h||/[0-9]/.test(v)))return v.toLowerCase();var m=/#([0-9a-fA-F]{6})\b/.exec(t);if(m)return m[1].toLowerCase();if(h&&/^[0-9a-fA-F]{3}$/.test(v))return v.replace(/./g,"$&$&").toLowerCase();var r=/rgba?\s*\(?\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})/i.exec(t);if(r&&+r[1]<256&&+r[2]<256&&+r[3]<256)return [r[1],r[2],r[3]].map(function(n){return ("0"+(+n).toString(16)).slice(-2)}).join("");return null}
       function hexRow(h,i){return "<a role='option' id='cc-o"+i+"' href='/tools/palette-from-color/?hex="+h+"'><span>Find the closest Wada palettes to #"+h.toUpperCase()+"</span><span class='k'>Tool</span></a>"}
       /* Tier 3: TYPO RESCUE (2026-09-06, §E50). Measured over 30d of the site's own
          SearchNoResults log: 18 dead-end searches were single-character misses on
