@@ -122,7 +122,16 @@ const description = `What colors go with ${color.name.toLowerCase()} for ${ctx.l
 
 const canonical = `/colors-that-go-with/${color.slug}/${ctx.slug}/`;
 const siblings = contexts.filter((c) => c.slug !== ctx.slug);
-const otherColors = commonColors.filter((c) => c.slug !== color.slug).slice(0, 7);
+/* "Other colours for this context" = the nearest colours on each side in commonColors
+ * (wrapping), not the first 7 of the list. 2026-09-28, queue-b: the old
+ * `.filter(≠self).slice(0, 7)` sent every sibling link on all 54 colours' pages to the
+ * same 7 colours, so the other 47 colours' context pages got 0 links from this row.
+ * Now every colour/context page gets exactly 7 sibling links in (same pattern as
+ * collections/[slug].astro c1cf53f). */
+const colorIndex = commonColors.findIndex((c) => c.slug === color.slug);
+const otherColors = [-3, -2, -1, 1, 2, 3, 4]
+  .map((d) => commonColors[(colorIndex + d + commonColors.length) % commonColors.length])
+  .filter((c, i, arr) => c.slug !== color.slug && arr.findIndex((x) => x.slug === c.slug) === i);
 
 /**
  * FAQ — SINGLE SOURCE for the FAQPage schema below AND the visible <section>
