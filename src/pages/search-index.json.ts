@@ -39,6 +39,24 @@ const SPELLING_ALIASES: Record<string, string> = {
   "sulpher yellow": "sulphur yellow sulfur yellow",
 };
 
+/** Everyday names for a pairing hub's colour that its own name does not contain.
+ *  Measured 2026-09-28 from GA4 SearchNoResults (08-29..09-27, after the hubs were
+ *  indexed on 09-06): "Clay color", "Oxblood", "Moss green", "Soft grey", "Marron",
+ *  "Burnt umber", "Paynes grey", "Redwood", "Lime", "Bronze" all returned nothing
+ *  while the nearest hub existed. Only close, recognisable neighbours: the result
+ *  row still shows the hub's own colour name, so nobody is told moss IS olive. */
+const PAIRING_SYNONYMS: Record<string, string> = {
+  terracotta: "clay",
+  burgundy: "oxblood wine bordeaux",
+  "olive-green": "moss",
+  gray: "grey gris soft grey light grey",
+  "charcoal-grey": "paynes payne slate",
+  brown: "marron burnt umber chocolate",
+  rust: "redwood copper",
+  green: "lime chartreuse",
+  gold: "bronze",
+};
+
 /** Standalone editorial + tool pages that have no data module of their own.
  *  Long, specific titles only -- see the crowding note in the index below. */
 const STANDALONE = [
@@ -136,7 +154,7 @@ export const GET: APIRoute = () => {
         s: `/colors-that-go-with/${c.slug}/`,
         t: `Colors that go with ${c.name}`,
         k: "Pairing guide",
-        x: [c.name.toLowerCase(), "pairing", "goes with", "match"].join(" "),
+        x: [c.name.toLowerCase(), PAIRING_SYNONYMS[c.slug] || "", "pairing", "goes with", "match"].filter(Boolean).join(" "),
       })),
     // ------------------------------------------------------------------
     // Editorial + tool surfaces. Added 2026-09-06 (§E43) after measuring that

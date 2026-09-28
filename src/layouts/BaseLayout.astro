@@ -534,7 +534,13 @@ const jsonLdArray = jsonLd
         var words=norm(raw).split(" ").filter(function(w){return w!=="and"}).map(function(w){return JOINED[w]||w});
         return words.length>1?words.join(" "):norm(raw);
       }
-      function srch(raw){var found=strict(raw);if(found.length||!idx)return found;var combined=combinationQuery(raw);return combined!==norm(raw)?strict(combined):found}
+      // Intent wrapper (2026-09-28, GA4 SearchNoResults): readers type the question,
+      // not the colour — "Colors that go with old rose", "Clay color", "Red coruleur
+      // Combination". strict() needs EVERY word, so the wrapper words alone made
+      // these miss while old-rose palettes exist. Retried only after a miss, so a
+      // query that already matched keeps its exact results.
+      function intent(raw){var s=norm(raw).replace(/^(what )?(colou?rs? )?(that )?(go(es)? (well )?with|to (pair|match) with|(match(es|ing)?|pair(s|ing)?) (with )?|combinations? (with|for) )/,"").replace(/ (colou?rs?|combinations?|combos?|palettes?)$/,"").trim();return s}
+      function srch(raw){var found=strict(raw);if(found.length||!idx)return found;var combined=combinationQuery(raw);if(combined!==norm(raw)){found=strict(combined);if(found.length)return found}var core=intent(raw);return core&&core!==norm(raw)?strict(core):found}
       /* Loose fallback (2026-07-23): strict srch() requires EVERY token to match,
          so "sunset orange" returned nothing even though orange palettes exist —
          a dead end is a conversion leak. Score by ANY token hit (whole-word or
