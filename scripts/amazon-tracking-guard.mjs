@@ -10,6 +10,9 @@
 //      whose value is not "untagged";
 //   3. when config.gate is "required", no raw tagged amazon.* / amzn.to href may bypass the site's /go/ or /out/ gate
 //      (config.ungatedAllow: regexes for hrefs that are deliberately ungated).
+// config.trackerFiles: optional list of tracker files (relative to outDir) always searched with the page (a next/script tracker
+// is referenced only from the RSC payload). Prefer the page reference when the scan can see it: trackerFiles proves the
+// file ships, not that every page loads it.
 // An affiliate link = an <a href> to amazon.*/audible.* carrying tag=, an amzn.to / a.co short link, or the site's
 // own gate path (config.gatePrefixes, default ["/go/", "/out/"]).
 //
@@ -33,6 +36,8 @@ const gatePrefixes = cfg.gatePrefixes || ['/go/', '/out/'];
 const ungatedAllow = (cfg.ungatedAllow || []).map((s) => new RegExp(s));
 const skipFiles = (cfg.skipFiles || []).map((s) => new RegExp(s));
 const minLinks = cfg.minLinks ?? 1;
+// config.trackerFiles: tracker files (relative to outDir) that are loaded in a way the HTML scan cannot follow; each must exist.
+const trackerFilesCode = (cfg.trackerFiles || []).map((t) => { const p = path.join(outDir, t); if (!fs.existsSync(p)) { console.error(`AMAZON-TRACKING-GUARD: trackerFiles entry ${t} missing from ${outDir} — refusing.`); process.exit(1); } return fs.readFileSync(p, 'utf8'); }).join('\n');
 
 const AMZ = /^(https?:)?\/\/([a-z0-9-]+\.)*(amazon\.[a-z.]+|audible\.[a-z.]+)(\/|$|\?)/i;
 const SHORT = /^(https?:)?\/\/(amzn\.(to|eu)|a\.co)\//i;
@@ -74,6 +79,9 @@ function anchors(html) {
 const files = walk(outDir).filter((f) => !skipFiles.some((r) => r.test(path.relative(outDir, f))));
 let pages = 0, links = 0;
 const bad = [];
+let badCount = 0;
+// keep at most 200 messages, flattened (a V8 slice would pin the whole page HTML in memory: OOM on a 22k-page build)
+const fail = (m) => { badCount++; if (bad.length < 200) bad.push(Buffer.from(m).toString()); };
 for (const f of files) {
   let html = fs.readFileSync(f, 'utf8');
   if (process.env.AMAZON_GUARD_SABOTAGE === '1' && pages === 0 && /<\/body>/i.test(html)) {
@@ -83,20 +91,22 @@ for (const f of files) {
   if (!aff.length) continue;
   pages++; links += aff.length;
   const rel = path.relative(outDir, f);
-  const scripts = [...html.matchAll(/<script[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi)].map((m) => localScript(m[1], path.dirname(f))).join('\n');
+  // <script src> plus next/script-style preloads (<link rel=preload as=script href>), whose code never appears as a <script src>
+  const srcs = [...html.matchAll(/<script[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi), ...html.matchAll(/<link[^>]*\bas\s*=\s*["']script["'][^>]*\bhref\s*=\s*["']([^"']+)["']/gi), ...html.matchAll(/<link[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*\bas\s*=\s*["']script["']/gi)].map((m) => m[1]);
+  const scripts = [...new Set(srcs)].map((s) => localScript(s, path.dirname(f))).join('\n') + '\n' + trackerFilesCode;
   const hay = html + '\n' + scripts;
   const missing = trackerRes.filter((r) => !r.test(hay));
-  if (missing.length) bad.push(`${rel}: ${aff.length} affiliate link(s) but the tracker is missing (${missing.map(String).join(', ')})`);
+  if (missing.length) fail(`${rel}: ${aff.length} affiliate link(s) but the tracker is missing (${missing.map(String).join(', ')})`);
   for (const a of aff) {
     const h = a.href.trim();
     const place = placementAttrs.map((k) => a[k]).find((v) => v && v.trim() && v.trim() !== 'untagged');
-    if (!place) bad.push(`${rel}: no placement (${placementAttrs.join('|')}) on ${h.slice(0, 120)}`);
-    if (cfg.gate === 'required' && !isGate(h) && !ungatedAllow.some((r) => r.test(h))) bad.push(`${rel}: raw Amazon link bypasses the gate: ${h.slice(0, 120)}`);
+    if (!place) fail(`${rel}: no placement (${placementAttrs.join('|')}) on ${h.slice(0, 120)}`);
+    if (cfg.gate === 'required' && !isGate(h) && !ungatedAllow.some((r) => r.test(h))) fail(`${rel}: raw Amazon link bypasses the gate: ${h.slice(0, 120)}`);
   }
 }
 if (links < minLinks) { console.error(`AMAZON-TRACKING-GUARD: found ${links} affiliate links in ${outDir} (expected >= ${minLinks}) — the scan is blind or the build is incomplete. Refusing.`); process.exit(1); }
-if (bad.length) {
-  console.error(`AMAZON-TRACKING-GUARD FAILED: ${bad.length} problem(s) across ${pages} pages / ${links} affiliate links. First 25:`);
+if (badCount) {
+  console.error(`AMAZON-TRACKING-GUARD FAILED: ${badCount} problem(s) across ${pages} pages / ${links} affiliate links. First 25:`);
   for (const b of bad.slice(0, 25)) console.error('  - ' + b);
   process.exit(1);
 }
