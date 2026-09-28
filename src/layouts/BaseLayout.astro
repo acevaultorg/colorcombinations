@@ -376,8 +376,11 @@ const jsonLdArray = jsonLd
     {/* Microsoft Clarity — heatmaps + session recordings (project wpwnyowok1).
         Guarded by the gate above: Clarity has no documented runtime opt-out (GA4 has
         ga-disable-<ID>), so the only way to stop it recording an agent session is to
-        never inject the tag. */}
-    <script is:inline set:html={`if(!window.__FLEET_AGENT__){(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","wpwnyowok1");}`} />
+        never inject the tag.
+        EU/EEA/UK/CH gate (2026-09-28, card mul2evvrypcxuk): no consent banner, so a
+        visitor whose time zone is European (or unknown) never loads Clarity; window.clarity
+        stays a no-op so clarity('event') calls below never throw. */}
+    <script is:inline set:html={`if(!window.__FLEET_AGENT__){(function(c,l,a,r,i,t,y){try{var z=Intl.DateTimeFormat().resolvedOptions().timeZone||"";if(!z||/^(Europe\\/|Atlantic\\/(Reykjavik|Faroe|Canary|Madeira|Azores|Jan_Mayen)|Arctic\\/Longyearbyen|Africa\\/Ceuta|Asia\\/(Nicosia|Famagusta)|Indian\\/(Reunion|Mayotte)|America\\/(Guadeloupe|Martinique|Cayenne|St_Barthelemy|Marigot))/.test(z)){c[a]=c[a]||function(){};return}}catch(e){c[a]=c[a]||function(){};return}c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","wpwnyowok1");}`} />
 
     {/* Google Analytics 4 — measurement ID G-QT7PC59PV6 (stacked with Clarity). */}
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-QT7PC59PV6"></script>
