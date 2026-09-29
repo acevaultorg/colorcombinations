@@ -4,6 +4,7 @@ import SiteHeader from "@components/SiteHeader.astro";
 import SiteFooter from "@components/SiteFooter.astro";
 import FeedbackWidget from "@components/FeedbackWidget.astro";
 import CookieConsent from "@components/CookieConsent.astro";
+import { assetVersion } from "@/lib/assetVersion";
 
 export interface Props {
   title: string;
@@ -394,7 +395,7 @@ const jsonLdArray = jsonLd
         this site's Mediavine tag. The file only attaches document-level click/auxclick listeners
         — no dependency on running before DOMContentLoaded, no user can click within that window
         — so deferring it costs nothing functionally and removes it from the critical path. */}
-    <script is:inline defer src="/amazon-track.js"></script>
+    <script is:inline defer src={assetVersion("/amazon-track.js")}></script>
     {/* Mediavine Journey ad script — site 0e3765cf-7571-4481-9b28-bc96fd84b4e4.
         Approved for Journey 2026-09-04.
 
