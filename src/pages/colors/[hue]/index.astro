@@ -10,7 +10,8 @@ import PaletteCard from "@components/PaletteCard.astro";
 import ColorHarmony from "@components/ColorHarmony.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import BundleCta from "@components/BundleCta.astro";
-import { colorsByHue } from "@data/colors";
+import { colorsByHue, classifyHue } from "@data/colors";
+import { commonColors, contexts, palettesFor, MIN_PALETTES } from "@data/pairings";
 import { palettesByHue } from "@data/palettes";
 import { bestTextColorOn } from "@/lib/color";
 import type { DominantHue } from "@/types/palette";
@@ -106,6 +107,19 @@ const meta = HUE_META[hue];
 const hueGroups = colorsByHue();
 const colors = hueGroups.get(hue) ?? [];
 const hPalettes = palettesByHue(hue);
+
+// Pairing guides in this colour family (2026-09-30). The 54 /colors-that-go-with/
+// hubs answer the site's highest-volume question ("what colors go with sage
+// green?") yet were linked only from their own index and child pages (14 inbound
+// links each). These family pages rank for "[hue] color combinations", so each now
+// links the hubs whose reference hex falls in its family — classified by the same
+// classifyHue() that sorts the named colours above, and filtered by the same
+// quality guard that decides whether a hub page is built at all.
+const pairingGuides = commonColors.filter(
+  (c) =>
+    classifyHue(c.hex) === hue &&
+    contexts.some((ctx) => palettesFor(c.hex, ctx).length >= MIN_PALETTES),
+);
 
 const title = meta.title;
 const description = `${colors.length} named ${hue} colors and ${hPalettes.length} color combinations from Sanzo Wada's 1933 Dictionary of Color Combinations. ${meta.lede.split(".")[0]}.`;
@@ -208,6 +222,31 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/
   <div class="container-narrow">
     <ColorHarmony hex={meta.accentHex as any} name={hue.charAt(0).toUpperCase() + hue.slice(1)} />
   </div>
+
+  {/* ============ PAIRING GUIDES FOR COLOURS IN THIS FAMILY ============ */}
+  {pairingGuides.length > 0 && (
+    <section class="hue-pairings section" aria-labelledby="hue-pairings-heading">
+      <div class="container-wide">
+        <header class="section-head">
+          <p class="eyebrow">Pairing guides</p>
+          <h2 id="hue-pairings-heading" class="text-balance">What goes with each {hue} shade?</h2>
+          <p class="section-lede">
+            Pick a shade to see the colors it pairs with, room by room and outfit by outfit, with hex codes.
+          </p>
+        </header>
+        <ul class="hue-nav__list" role="list">
+          {pairingGuides.map((c) => (
+            <li>
+              <a href={`/colors-that-go-with/${c.slug}/`} class="hue-nav__item">
+                <span class="hue-nav__dot" style={`background:${c.hex}`} aria-hidden="true"></span>
+                <span class="hue-nav__label">Colors that go with {c.name}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 
   {/* ==================== PALETTES ==================== */}
   {hPalettes.length > 0 && (
@@ -372,6 +411,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/
   gap: var(--space-sm);
 }
 .hue-nav__item {
+  min-height: 44px;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
