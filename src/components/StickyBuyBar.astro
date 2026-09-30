@@ -9,7 +9,7 @@
  * WHAT IT IS. On a leaf page, once a phone reader has scrolled past the first
  * screen, a 56px bar pinned to the bottom of the viewport carries the page's
  * own lead book — the SAME book the in-page "Go deeper on colour" rail already
- * shows — with a 44px "See on Amazon" button through the site's own /go/b/
+ * shows — with a 44px "See price on Amazon" button through the site's own /go/b/
  * gate. The book is passed in by the page; this component never picks one.
  *
  * WHY THE SAME BOOK, not a new product decision: one element per test. Measured
@@ -100,7 +100,7 @@ const cover = bookCover(book, "S");
           <span class="sbb__title">{book.title}</span>
           <span class="sbb__note">Amazon affiliate link</span>
         </span>
-        <span class="sbb__btn">See on Amazon</span>
+        <span class="sbb__btn">See price on Amazon</span>
       </a>
     </aside>
     <noscript>

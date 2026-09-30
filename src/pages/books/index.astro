@@ -101,7 +101,7 @@ const jsonLd = {
                 <span class="shelf__note">{book.note}</span>
               </span>
             </a>
-            <a href={AMAZON.link(book.amazonAsin, "book")} class="shelf__buy" data-book={book.title} target="_blank" rel="sponsored nofollow noopener">Find {book.title} on Amazon →</a>
+            <a href={AMAZON.link(book.amazonAsin, "book")} class="shelf__buy" data-book={book.title} target="_blank" rel="sponsored nofollow noopener" aria-label={`${book.title}: see price on Amazon`}>See price on Amazon <span aria-hidden="true">↗</span></a>
           </li>
         );
       })}

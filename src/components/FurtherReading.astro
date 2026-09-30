@@ -179,7 +179,7 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
                 data-event="amazon_click"
                 data-book={book.title}
               >
-                View on Amazon <span aria-hidden="true">↗</span>
+                See price on Amazon <span aria-hidden="true">↗</span>
               </a>
             </div>
           </div>
@@ -446,7 +446,7 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
 
   /* 44px tap floor on the buy CTA at mobile (fleet-mobile-standard). This class
      overrides the global .btn padding (0.75rem -> 0.4rem), which rendered the
-     "View on Amazon" button at 36px measured at 375px - 8px under the floor, on
+     buy button ("See price on Amazon") at 36px measured at 375px - 8px under the floor, on
      the money path of the site's most-cited page. Mobile-scoped so the desktop
      compact look is untouched. */
   @media (max-width: 640px) {
