@@ -26,7 +26,7 @@ The audit found these gaps:
 - `src/pages/browse.astro` (the site's busiest landing page): the title goes from "Browse all palettes" to "Browse 378 Color Palettes by Hue, Era & Mood". The description is shorter and names only filters the page actually has.
 
 ### 2. Internal links and schema for the "colors that go with" guides
-- `src/pages/colors/[hue]/index.astro`: each of the 9 colour-family pages (`/colors/red/` … `/colors/neutral/`) now has a "What goes with each {hue} shade?" section. It links to the pairing guides whose reference colour falls in that family, 2 to 9 per page and 54 in total. Family is decided by the site's existing `classifyHue()` (now exported from `src/data/colors.ts`). Guides are filtered by the same quality rule that decides whether a guide page gets built, so no link can point at a page that does not exist.
+- `src/pages/colors/[hue]/index.astro`: each of the 9 colour-family pages (`/colors/red/` … `/colors/neutral/`) now has a "What goes with each {hue} shade?" section. It links to the pairing guides whose reference colour falls in that family, 3 to 10 per page and 54 in total. Family is decided by the site's existing `classifyHue()` (now exported from `src/data/colors.ts`), except for eight everyday names the classifier would misfile (for example Emerald Green, Beige, Blush), which are placed by name (fixed in review, see REVIEW.md). Guides are filtered by the same quality rule that decides whether a guide page gets built, so no link can point at a page that does not exist.
 - `src/pages/colors-that-go-with/index.astro`:
   - New title "What Colors Go Together? 54 Pairing Guides" and a shorter description.
   - Added BreadcrumbList and an ItemList of the 54 guides, in the same order, with the same names and URLs as the links on the page.
@@ -73,5 +73,5 @@ Measured on every page at both widths: no horizontal overflow. The smallest new 
 ## What a human should check before this goes live
 1. **The title change is site-wide.** About 1,200 pages lose the " — The Dictionary of Color Combinations" suffix; short titles keep it. Spot-check a few in Search Console afterwards. Titles that Google rewrites should settle within a few weeks. Pages whose own title already contains the brand, such as the homepage and the two Wada book pages, are unaffected.
 2. Read `https://<preview>/llms.txt` once and confirm you are happy listing the contact email there. It was already in the old file.
-3. Look at one colour-family page, for example `/colors/blue/`, on a phone. Emerald Green and Charcoal Grey appear under blue because the site's own hue classifier puts them there. If that reads oddly, it is a one-line data decision to change.
+3. Look at one colour-family page, for example `/colors/neutral/`, on a phone and confirm the guide list reads naturally.
 4. Deploy as usual. CI's `npx astro build` now produces `llms.txt`; nothing else in the deploy path changed.
