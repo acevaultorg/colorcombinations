@@ -334,13 +334,17 @@ const cover = bookCover(book, "S");
       align-items: center;
       justify-content: center;
       min-height: 44px;
-      padding: 0 14px;
+      /* "See price on Amazon" on one line took ~190px at 375px and cut the
+         book title to a few letters. Two short lines keep the title readable. */
+      max-width: 6.75rem;
+      padding: 4px 12px;
       border-radius: 8px;
       background: var(--color-ink-900, #111);
       color: #fff;
       font-weight: 600;
-      font-size: 0.875rem;
-      white-space: nowrap;
+      font-size: 0.8125rem;
+      line-height: 1.15;
+      text-align: center;
     }
   }
 
