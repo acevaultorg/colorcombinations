@@ -81,7 +81,12 @@ const description = collection.description.replace(/<[^>]+>/g, "");
 // meta description on all 69 collections, so search engines showed an arbitrary
 // cut of it or rewrote it. The snippet leads with what the page holds — built only
 // from the tagline and the real palette count — and stays near 160.
-const metaDescription = `${collection.tagline} ${total} palette${total === 1 ? "" : "s"} with hex codes, based on Sanzo Wada's 1933 color dictionary.`;
+const snippetCore = `${collection.tagline} ${total} palette${total === 1 ? "" : "s"} with hex codes`;
+const snippetSource = ", based on Sanzo Wada's 1933 color dictionary.";
+const metaDescription =
+  /wada/i.test(collection.tagline) || snippetCore.length + snippetSource.length > 160
+    ? `${snippetCore}.`
+    : `${snippetCore}${snippetSource}`;
 
 // Freshness signals for LLM citation + Google Freshness (Aleyda #9).
 const SITE_FIRST_PUBLISHED = "2026-04-10T00:00:00Z";

@@ -234,12 +234,15 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/
             Pick a shade to see the colors it pairs with, room by room and outfit by outfit, with hex codes.
           </p>
         </header>
-        <ul class="hue-nav__list" role="list">
+        <ul class="hue-pairings__list" role="list">
           {pairingGuides.map((c) => (
             <li>
-              <a href={`/colors-that-go-with/${c.slug}/`} class="hue-nav__item">
-                <span class="hue-nav__dot" style={`background:${c.hex}`} aria-hidden="true"></span>
-                <span class="hue-nav__label">Colors that go with {c.name}</span>
+              <a href={`/colors-that-go-with/${c.slug}/`} class="hue-pairings__item">
+                <span class="hue-pairings__dot" style={`background:${c.hex}`} aria-hidden="true"></span>
+                <span class="hue-pairings__text">
+                  <span class="hue-pairings__pre">Colors that go with</span>
+                  <span class="hue-pairings__name">{c.name}</span>
+                </span>
               </a>
             </li>
           ))}
@@ -399,6 +402,51 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/
 .hue-palettes__more {
   margin-top: var(--space-xl);
   text-align: center;
+}
+
+/* ==================== PAIRING GUIDES ==================== */
+.hue-pairings__list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.75rem;
+}
+.hue-pairings__item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--color-fg);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.hue-pairings__item:hover {
+  border-color: var(--color-link);
+  background: var(--color-bg-elevated);
+}
+.hue-pairings__dot {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1);
+}
+.hue-pairings__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+.hue-pairings__pre {
+  font-size: 0.8rem;
+  color: var(--color-fg-muted);
+}
+.hue-pairings__name {
+  font-weight: 600;
 }
 
 /* ==================== HUE NAV ==================== */
