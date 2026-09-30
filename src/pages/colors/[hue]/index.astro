@@ -115,9 +115,22 @@ const hPalettes = palettesByHue(hue);
 // links the hubs whose reference hex falls in its family — classified by the same
 // classifyHue() that sorts the named colours above, and filtered by the same
 // quality guard that decides whether a hub page is built at all.
+// The hex classifier files a few everyday names where a reader would not look
+// for them (Emerald Green under blue, Beige under orange, Blush under red), so
+// those guides are placed by their name instead.
+const GUIDE_FAMILY: Record<string, DominantHue> = {
+  "emerald-green": "green",
+  "charcoal-grey": "neutral",
+  beige: "neutral",
+  cream: "neutral",
+  "melodious-ivory": "neutral",
+  "universal-khaki": "neutral",
+  tan: "brown",
+  blush: "pink",
+};
 const pairingGuides = commonColors.filter(
   (c) =>
-    classifyHue(c.hex) === hue &&
+    (GUIDE_FAMILY[c.slug] ?? classifyHue(c.hex)) === hue &&
     contexts.some((ctx) => palettesFor(c.hex, ctx).length >= MIN_PALETTES),
 );
 
