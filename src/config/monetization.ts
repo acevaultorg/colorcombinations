@@ -489,7 +489,7 @@ export const FURTHER_READING: CuratedBook[] = [
     amazonAsin: "0300171870",
     isbn: "0300171870",
     olCoverId: 14576277,
-    why: "Ten essays — one per color — pairing cultural history with how each pigment came to mean what it does. Sits next to Finlay on a serious shelf.",
+    why: "Ten essays — one per color — pairing cultural history with how each pigment came to mean what it does. A good companion to Victoria Finlay's Color, also on this shelf.",
   },
   {
     slug: "the-anatomy-of-color",
