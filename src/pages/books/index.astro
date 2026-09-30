@@ -99,6 +99,7 @@ const jsonLd = {
                 <span class="shelf__author">{book.author}</span>
                 <span class="shelf__title">{book.title}</span>
                 <span class="shelf__note">{book.note}</span>
+                <span class="shelf__why">{book.why}</span>
               </span>
             </a>
             <a href={AMAZON.link(book.amazonAsin, "book")} class="shelf__buy" data-book={book.title} target="_blank" rel="sponsored nofollow noopener" aria-label={`${book.title}: see price on Amazon`}>See price on Amazon <span aria-hidden="true">↗</span></a>
@@ -247,6 +248,17 @@ const jsonLd = {
     font-size: 0.75rem;
     line-height: 1.45;
     color: var(--color-ink-500);
+  }
+
+  /* The reason each book is on the shelf, from its own record — so a reader
+     can choose here instead of opening every book page to find out. */
+  .shelf__why {
+    margin-top: 0.625rem;
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--color-ink-700);
   }
 
   .shelf__disclosure {
