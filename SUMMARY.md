@@ -58,7 +58,15 @@ The screenshots used the preinstalled Chromium against a local static server wit
 - **/books/ card layout at 375px:** the reason line sits in the narrow column beside the cover, which makes cards taller. It's readable, but a human may want the text to run under the cover on phones.
 
 ## What a human should check before this goes live
-1. The sticky bar's longer label leaves less room for the book title at 375px ("Interaction…"). Decide whether that's acceptable, or shorten the button padding.
+1. (Resolved in review) The sticky bar's label now wraps to two lines, so the book title shows in full at 375px.
 2. The palette-page book card is taller (about 230px more at 375px: 372px → 606px). The sticky bar hides while this card is on screen, which is unchanged. Check that the page still reads calmly.
 3. Look at the Wada Vol. 1 reason line, which is now shown on /books/ and on palette pages that rotate to it. It openly says the plates are free on the site. That was deliberate in the data, but it now appears in more places.
 4. Confirm the change in button wording on the affiliate dashboard / GA4 after deploy. Tracking is href-based, so no events should change.
+
+## Review follow-up (same day)
+A review pass added three small fixes. `REVIEW.md` has the details.
+- `src/components/StickyBuyBar.astro`: the button label wraps to two lines. The book title and the "Amazon affiliate link" note are no longer cut off at 375px.
+- `src/components/FurtherReading.astro`: on phones, "See price on Amazon ↗" stays on one line in book lists instead of wrapping inside the button.
+- `src/config/monetization.ts`: the "On Color" reason now names Victoria Finlay's book instead of just "Finlay".
+
+After these fixes the build exits 0 with 2192 pages. Affiliate hrefs, canonicals, robots.txt and the sitemap are identical to `main`, and all repo guards pass. The screenshots in `review/` have been retaken at 375px and 390px.
