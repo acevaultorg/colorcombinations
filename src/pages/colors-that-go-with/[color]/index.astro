@@ -234,9 +234,9 @@ const jsonLd = [
       </div>
       <div class="rounded-xl border border-stone-200 p-5">
         <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-stone-500">Computed partners</h2>
-        <div class="space-y-2">
+        <div class="space-y-1">
           {theory.map((t) => (
-            <a href={`/tools/palette-from-color/?hex=${encodeURIComponent(t.hex.replace("#", ""))}/`} class="flex items-center gap-2 text-sm text-stone-700 hover:underline">
+            <a href={`/tools/palette-from-color/?hex=${encodeURIComponent(t.hex.replace("#", ""))}`} class="flex min-h-[44px] items-center gap-2 text-sm text-stone-700 hover:underline">
               <span class="inline-block h-5 w-5 shrink-0 rounded ring-1 ring-black/10" style={`background:${t.hex}`}></span>
               <span>{t.role}</span>
               <span class="ml-auto font-mono text-xs text-stone-400">{t.hex}</span>
@@ -310,7 +310,7 @@ const jsonLd = [
         {otherColors.map((c) => (
           <a
             href={`/colors-that-go-with/${c.slug}/`}
-            class="flex items-center gap-2 rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
+            class="flex min-h-[44px] items-center gap-2 rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
           >
             <span class="inline-block h-3 w-3 rounded-full" style={`background:${c.hex}`}></span>
             {c.name}
