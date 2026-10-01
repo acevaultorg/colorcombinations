@@ -24,8 +24,11 @@ const colorCountTotals = colorCounts.reduce<Record<number, number>>((acc, n) => 
   return acc;
 }, {});
 
-const title = "Browse all palettes";
-const description = `Filter and explore all ${total} historically-grounded color combinations by era, dominant hue, or mood — each with verified hex and RGB values, contrast checks, and the story of where the pairing comes from.`;
+// Title/description sized for search results (2026-09-30): the old title,
+// "Browse all palettes", never said what kind of palettes, and the 202-char
+// description was cut mid-sentence. Filters named here are the ones this page ships.
+const title = `Browse ${total} Color Palettes by Hue, Era & Mood`;
+const description = `All ${total} color combinations in one grid, with hex codes. Filter by dominant hue, historical era, mood, or number of colors.`;
 
 const jsonLd = [
   {

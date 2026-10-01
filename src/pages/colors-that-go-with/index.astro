@@ -11,16 +11,44 @@ const groups = commonColors
   }))
   .filter((g) => g.ctxs.length > 0);
 
-const title = "Colors That Go With — pairing guides by color & setting";
-const description =
-  "What goes with sage green, navy, terracotta, mustard and more — paired with curated combinations from the 1933 Dictionary of Color Combinations, by setting: walls, weddings, clothes, kitchens.";
+// Title, description and schema built from the list this page renders (2026-09-30).
+// The old title ("Colors That Go With — pairing guides by color & setting") did not
+// read as the question people type, and the only schema was a bare CollectionPage.
+const guideCount = groups.length;
+const title = `What Colors Go Together? ${guideCount} Pairing Guides`;
+const description = `Pick a color — sage green, navy, terracotta, mustard and ${guideCount - 4} more — and see what goes with it, by setting: walls, weddings, clothes, kitchens.`;
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: title,
-  url: "https://colorcombinations.org/colors-that-go-with/",
-};
+const pageUrl = "https://colorcombinations.org/colors-that-go-with/";
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: pageUrl,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://colorcombinations.org/" },
+      { "@type": "ListItem", position: 2, name: "Colors that go with", item: pageUrl },
+    ],
+  },
+  // Same order, names and URLs as the h2 links below — the schema lists only what the page shows.
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Colors that go with — pairing guides",
+    numberOfItems: guideCount,
+    itemListElement: groups.map(({ color }, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: `Colors that go with ${color.name}`,
+      url: `${pageUrl}${color.slug}/`,
+    })),
+  },
+];
 ---
 
 <BaseLayout title={title} description={description} canonical="/colors-that-go-with/" jsonLd={jsonLd} alternates={[{ hreflang: "en", href: "/colors-that-go-with/" }, { hreflang: "de", href: "/de/farben-kombinieren/" }, { hreflang: "x-default", href: "/colors-that-go-with/" }]} adContent>

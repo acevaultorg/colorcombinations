@@ -38,7 +38,7 @@ function slugify(name: string): string {
 }
 
 /** Classify a hex color into a dominant hue bucket */
-function classifyHue(hex: HexColor): DominantHue {
+export function classifyHue(hex: HexColor): DominantHue {
   const clean = hex.replace("#", "");
   const r = parseInt(clean.slice(0, 2), 16);
   const g = parseInt(clean.slice(2, 4), 16);

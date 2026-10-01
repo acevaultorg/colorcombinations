@@ -115,10 +115,18 @@ const siteName = "The Dictionary of Color Combinations";
 // TWO titles contain the brand twice. Every other page has it once, as the suffix, and
 // is unaffected.
 const BRAND_CORE = "Dictionary of Color Combinations";
+// Suffix only when it fits (2026-09-30). The suffix is 39 chars, so on 1,211 of the
+// 1,533 indexable pages (every /colors-that-go-with/ page, 347 of 378 palettes) the
+// full title ran past ~60 and search results cut it inside the page's own topic
+// ("Colors That Go With Beige for living room — The Dictionary of Col…"). The brand
+// still reaches search engines through the WebSite/Organization JSON-LD and
+// og:site_name; the title keeps the words that answer the query.
+const TITLE_BUDGET = 60;
+const suffixed = `${title} — ${siteName}`;
 const fullTitle =
-  bareTitle || title === siteName || title.includes(BRAND_CORE)
+  bareTitle || title === siteName || title.includes(BRAND_CORE) || suffixed.length > TITLE_BUDGET
     ? title
-    : `${title} — ${siteName}`;
+    : suffixed;
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).toString();
 
 // Full-page Journey exclusions — generated in the signed-in Mediavine portal
