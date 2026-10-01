@@ -1,3 +1,5 @@
+> Round 2 (2026-10-01) is summarised in `SUMMARY-R2.md`. Below are both round-1 summaries, gap sweep first, growth sweep second.
+
 # Gap sweep — colorcombinations.org — 2026-09-30
 
 Branch: `cloud/gap-colorcombinations-2026-09-30` (branched from `main` at `d9f4480`). Not merged, not deployed.
