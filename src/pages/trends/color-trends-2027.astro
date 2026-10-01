@@ -52,12 +52,12 @@ const pickHref = (slug: string) =>
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/color-trends-2027/";
 const PUBLISHED = "2026-09-06T00:00:00Z";
-// Verified 2026-09-24 (first pass 2026-09-06) against each brand's own announcement plus Forbes, HGTV,
+// Verified 2026-10-01 (PPG Country Soil added; Benjamin Moore, Dunn-Edwards, Pantone re-checked, still unannounced; earlier passes 2026-09-24, 2026-09-06) against each brand's own announcement plus Forbes, HGTV,
 // Young House Love and PR Newswire. Bump when the picks are re-checked or a new
 // authority announces — never automatically. (Same rule as the 2026 page; there
 // dateModified used to be the build clock, which asserted a content change on
 // every deploy. Fixed 2026-09-06, commit 75dcb84.)
-const VERIFIED = "2026-09-24";
+const VERIFIED = "2026-10-01";
 const MODIFIED = `${VERIFIED}T00:00:00Z`;
 
 const AUTHOR = {
@@ -176,6 +176,18 @@ const PICKS: Pick[] = [
     match: { slug: "cobalt-green", name: "Cobalt Green", hex: "#96D1AA" },
   },
   {
+    brand: "PPG",
+    name: "Country Soil",
+    code: "PPG15-30",
+    family: "Warm beige-taupe-grey",
+    blurb:
+      "PPG describes it as a warm, saturated hue that blends beige, taupe and gray, drawn from clay-rich earth and weathered stone, under the theme “Foundations”. It is PPG's pick for its architectural brands across Europe, the Middle East, Africa, Latin America and Asia — separate from Glidden's Artifact.",
+    url: "https://news.ppg.com/Press-Releases/news-details/2026/PPG-announces-Country-Soil-as-2027-Color-of-the-Year/default.aspx",
+    announced: "29 September 2026",
+    sourcedHex: null,
+    match: { slug: "fawn", name: "Fawn", hex: "#D1B0A7" },
+  },
+  {
     brand: "WGSN + Coloro",
     name: "Luminous Blue",
     code: "—",
@@ -200,7 +212,7 @@ const PENDING = [
 const faq = [
   {
     q: "What is the 2027 Color of the Year?",
-    a: "There is no single one. Each authority names its own. As of 24 September 2026 eight have been named: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; Behr's Grounded (T27-01), a mossy olive; Graham & Brown's Rose Earth, a dusty clay pink; Dulux's Soulful Sage, a soft silvery green; Glidden's Artifact (PPG10-16), a calm smoky aqua; Sherwin-Williams' Celery (SW 6421), a soft yellow-green; and WGSN and Coloro's Luminous Blue. Pantone — the most-cited of them — announces in the first week of December.",
+    a: "There is no single one. Each authority names its own. As of 1 October 2026 nine have been named: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; Behr's Grounded (T27-01), a mossy olive; Graham & Brown's Rose Earth, a dusty clay pink; Dulux's Soulful Sage, a soft silvery green; Glidden's Artifact (PPG10-16), a calm smoky aqua; Sherwin-Williams' Celery (SW 6421), a soft yellow-green; PPG's Country Soil (PPG15-30), a warm beige-taupe-grey; and WGSN and Coloro's Luminous Blue. Pantone — the most-cited of them — announces in the first week of December.",
   },
   {
     q: "Is Sherwin-Williams' Rewild the 2027 Color of the Year?",
@@ -208,7 +220,7 @@ const faq = [
   },
   {
     q: "When are the rest of the 2027 colours announced?",
-    a: "The season runs from roughly late July to early December. Valspar opened it on 5 August 2026 and Pantone traditionally closes it in the first week of December. Graham & Brown, Dulux, Glidden and Sherwin-Williams followed in September; Benjamin Moore and Dunn-Edwards typically announce in the autumn.",
+    a: "The season runs from roughly late July to early December. Valspar opened it on 5 August 2026 and Pantone traditionally closes it in the first week of December. Graham & Brown, Dulux, Glidden, Sherwin-Williams and PPG followed in September; Benjamin Moore and Dunn-Edwards typically announce in the autumn.",
   },
   {
     q: "Why does this page not show the exact paint colour?",
@@ -216,13 +228,13 @@ const faq = [
   },
   {
     q: "What is the emerging 2027 direction?",
-    a: "Eight picks in, two families dominate: soft greens (Behr's olive, Dulux's silvery sage, Sherwin-Williams' celery) and blues (Valspar's grayed blue, Glidden's smoky aqua, WGSN and Coloro's luminous blue), with warm earth from Dutch Boy's orange and Graham & Brown's clay pink. Most are softened, nature-referenced colours rather than clean brights. Pantone in December is the one that sets the headline.",
+    a: "Nine picks in, two families dominate: soft greens (Behr's olive, Dulux's silvery sage, Sherwin-Williams' celery) and blues (Valspar's grayed blue, Glidden's smoky aqua, WGSN and Coloro's luminous blue), with warm earth from Dutch Boy's orange, Graham & Brown's clay pink and PPG's beige-taupe Country Soil. Most are softened, nature-referenced colours rather than clean brights. Pantone in December is the one that sets the headline.",
   },
 ];
 
 const title = "The 2027 Colors of the Year — Every Pick Announced So Far";
 const description =
-  "All 8 Colors of the Year for 2027 so far, side by side: Sherwin-Williams Celery, Dulux Soulful Sage, Glidden Artifact, Behr Grounded, Valspar Cottage Door and more — plus who is still to come. Verified 24 September 2026.";
+  "All 9 Colors of the Year for 2027 so far, side by side: PPG Country Soil, Sherwin-Williams Celery, Dulux Soulful Sage, Glidden Artifact, Behr Grounded and more — plus who is still to come. Verified 1 October 2026.";
 
 const jsonLd = [
   AUTHOR,
@@ -244,7 +256,7 @@ const jsonLd = [
     "@type": "ItemList",
     name: "2027 Colors of the Year announced so far",
     description:
-      "Official 2027 Color of the Year selections announced as of 24 September 2026. The season is ongoing.",
+      "Official 2027 Color of the Year selections announced as of 1 October 2026. The season is ongoing.",
     numberOfItems: PICKS.length,
     itemListElement: PICKS.map((p, i) => ({
       "@type": "ListItem",
@@ -307,7 +319,7 @@ const jsonLd = [
       </p>
       <p class="coty-hero__meta">
         By <a class="coty-hero__byline" href="/about/" rel="author">Paulo de Vries</a>
-        · Last verified <time datetime={VERIFIED}>24 September 2026</time>
+        · Last verified <time datetime={VERIFIED}>1 October 2026</time>
         · {PICKS.length} announced · {PENDING.length} still to come · sources cited below
       </p>
     </header>
@@ -376,7 +388,7 @@ const jsonLd = [
       <h2 id="pending">Still to come</h2>
       <p>
         {PENDING.length} authorities tracked here have not announced a 2027 pick as of
-        {" "}<time datetime={VERIFIED}>24 September 2026</time>. Timing notes below
+        {" "}<time datetime={VERIFIED}>1 October 2026</time>. Timing notes below
         are each brand's historical pattern, not a claim about this year.
       </p>
       <ul class="coty-pending" role="list">
@@ -387,15 +399,16 @@ const jsonLd = [
         ))}
       </ul>
 
-      <h2 id="direction">What the first eight suggest</h2>
+      <h2 id="direction">What the first nine suggest</h2>
       <p>
         On 6 September, with three picks in, this page said all of them were
-        mid-tone and earth-referenced. Five more have landed since, and they
+        mid-tone and earth-referenced. Six more have landed since, and they
         widen the picture rather than confirm it. Two families now dominate:
         <strong>soft greens</strong> (Behr's mossy olive, Dulux's silvery sage,
         Sherwin-Williams' light celery) and <strong>blues</strong> (Valspar's grayed
         mid-tone, Glidden's smoky aqua, WGSN and Coloro's luminous blue). Warm
-        earth is still there in Dutch Boy's orange and Graham & Brown's clay pink.
+        earth is still there in Dutch Boy's orange, Graham & Brown's clay pink
+        and PPG's Country Soil, a beige-taupe-grey drawn from clay and weathered stone.
       </p>
       <p>
         What they share is restraint: most are softened, nature-referenced colours
@@ -455,6 +468,10 @@ const jsonLd = [
         <li>
           Sherwin-Williams Celery — <a href="https://www.sherwin-williams.com/en-us/color/color-of-the-year/2027" rel="nofollow noopener" target="_blank">Color of the Year 2027, Celery SW 6421</a>,
           and the PR Newswire announcement, <a href="https://www.prnewswire.com/news-releases/sherwin-williams-and-hgtv-home-by-sherwin-williams-unite-to-name-celery-as-their-2027-color-of-the-year-302878273.html" rel="nofollow noopener" target="_blank">15 September 2026</a>.
+        </li>
+        <li>
+          PPG — <a href="https://news.ppg.com/Press-Releases/news-details/2026/PPG-announces-Country-Soil-as-2027-Color-of-the-Year/default.aspx" rel="nofollow noopener" target="_blank">“PPG announces Country Soil as 2027 Color of the Year”</a> (29 September 2026),
+          and Hardware Retailing, <a href="https://hardwareretailing.com/ppg-announces-country-soil-as-2027-color-of-the-year/" rel="nofollow noopener" target="_blank">“PPG Announces Country Soil as 2027 Color of the Year”</a>.
         </li>
         <li>
           WGSN + Coloro — <a href="https://www.wgsn.com/en/blog/colour-year-2027-luminous-blue" rel="nofollow noopener" target="_blank">“Colour of the Year 2027: Luminous Blue”</a> (2 June 2025).
