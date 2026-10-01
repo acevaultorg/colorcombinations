@@ -72,6 +72,13 @@ for (const m of matches) {
   }
 }
 const topFamilies = [...famCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map((e) => e[0]);
+// One real swatch per partner family for the at-a-glance block: the first
+// archive partner (matches are already ranked) that falls in that family.
+const familySwatches = topFamilies.map((f) => ({
+  family: f,
+  hex: matches.flatMap((m) => m.partners).find((p) => family(p) === f) as HexColor,
+}));
+const glance = matches.slice(0, 3);
 const partnerSentence =
   topFamilies.length >= 2
     ? `${topFamilies.slice(0, -1).join(", ")}, and ${topFamilies[topFamilies.length - 1]}`
@@ -218,8 +225,43 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors-that-go-with/[color]/[con
         </div>
       </div>
       <p class="answer mt-5 text-lg leading-relaxed text-stone-700">{answer}</p>
-      <p class="mt-3 text-sm text-stone-500">{ctx.lens}</p>
-      <p class="mt-4 text-sm"><a class="underline" href={`/tools/complementary-colors/?hex=${color.hex.slice(1)}`}>Find {color.name.toLowerCase()}’s complementary color on the color wheel →</a></p>
+
+      <!-- At a glance: the answer shown as colour, before the longer reading below.
+           Every swatch is a real hex from the matched archive plates. -->
+      <section aria-labelledby="glance-heading" class="mt-6 rounded-xl border border-stone-200 p-4 sm:p-5">
+        <h2 id="glance-heading" class="text-xs font-semibold uppercase tracking-wide text-stone-500">At a glance</h2>
+        <ul class="mt-3 flex flex-wrap gap-2" role="list">
+          <li class="flex items-center gap-2 rounded-full border border-stone-200 py-1 pl-1 pr-3 text-sm text-stone-800">
+            <span class="inline-block h-6 w-6 shrink-0 rounded-full ring-1 ring-black/10" style={`background:${color.hex}`} aria-hidden="true"></span>
+            {color.name}
+          </li>
+          {familySwatches.map((f) => (
+            <li class="flex items-center gap-2 rounded-full border border-stone-200 py-1 pl-1 pr-3 text-sm text-stone-700">
+              <span class="inline-block h-6 w-6 shrink-0 rounded-full ring-1 ring-black/10" style={`background:${f.hex}`} title={f.hex} aria-hidden="true"></span>
+              {f.family}
+            </li>
+          ))}
+        </ul>
+        <ul class="mt-4 grid gap-2 sm:grid-cols-3" role="list">
+          {glance.map((m) => (
+            <li>
+              <a href={`/palettes/${m.palette.slug}/`} class="group flex min-h-[44px] items-center gap-3 rounded-lg p-1 hover:bg-stone-50">
+                <span class="flex h-9 w-20 shrink-0 overflow-hidden rounded-md ring-1 ring-black/10" aria-hidden="true">
+                  {[m.matchHex, ...m.partners].map((hx) => <span class="flex-1" style={`background:${hx}`}></span>)}
+                </span>
+                <span class="min-w-0 text-sm leading-snug text-stone-800 group-hover:underline">{m.palette.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="#combinations" class="mt-2 inline-flex min-h-[44px] items-center gap-1.5 text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900">
+          See all {matches.length} combinations
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+        </a>
+      </section>
+
+      <p class="mt-5 text-sm text-stone-500">{ctx.lens}</p>
+      <p class="mt-2 text-sm"><a class="inline-flex min-h-[44px] items-center underline" href={`/tools/complementary-colors/?hex=${color.hex.slice(1)}`}>Find {color.name.toLowerCase()}’s complementary color on the color wheel →</a></p>
     </header>
 
     <!-- About the colour: factual reference, unique per colour -->
@@ -270,7 +312,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors-that-go-with/[color]/[con
     </section>
 
     <!-- Curated combinations from the archive -->
-    <section>
+    <section id="combinations" class="scroll-mt-20">
       <h2 class="mb-4 text-lg font-semibold text-stone-900">
         {matches.length} combinations with {color.name.toLowerCase()}, from the 1933 Dictionary
       </h2>
@@ -330,7 +372,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors-that-go-with/[color]/[con
         {siblings.map((c) => (
           <a
             href={`/colors-that-go-with/${color.slug}/${c.slug}/`}
-            class="rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
+            class="inline-flex min-h-[44px] items-center rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
           >{color.name} for {c.label}</a>
         ))}
       </div>
@@ -342,7 +384,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors-that-go-with/[color]/[con
         {otherColors.map((c) => (
           <a
             href={`/colors-that-go-with/${c.slug}/${ctx.slug}/`}
-            class="flex items-center gap-2 rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
+            class="flex min-h-[44px] items-center gap-2 rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-700 hover:border-stone-400"
           >
             <span class="inline-block h-3 w-3 rounded-full" style={`background:${c.hex}`}></span>
             {c.name} for {ctx.label}
