@@ -175,7 +175,7 @@ async function pre() {
     "navOk asserts Sec-Fetch navigate + same-origin",
   );
   check(
-    (w.match(/Response\.redirect\(`\$\{url\.origin\}\/`, 302\)/g) || []).length >= 2,
+    (w.match(/Response\.redirect\(`\$\{url\.origin\}\/`, 302\)|status: 302, headers: \{ location: `\$\{url\.origin\}\/`, "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow"/g) || []).length >= 2,
     "tokenless fallback still redirects home (no auto-minting interstitial)",
   );
   check(
