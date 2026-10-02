@@ -53,12 +53,12 @@ export const onRequestGet = ({ request }) => {
             "x-robots-tag": "noindex, nofollow",
           },
         })
-      : Response.redirect(`${url.origin}/`, 302);
+      : new Response(null, { status: 302, headers: { location: `${url.origin}/`, "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow" } });
 
   if (/^\/go\/prime\/?$/.test(url.pathname)) {
     return go("https://www.amazon.com/amazonprime?&linkCode=ll2&tag=colorcombinations-20&linkId=ce478672978b2ae0d059c64c9d3641f5&language=en_US&ref_=as_li_ss_tl");
   }
 
   // Unknown shape → home. Never a 404 dead-end on a money path.
-  return Response.redirect(`${url.origin}/`, 302);
+  return new Response(null, { status: 302, headers: { location: `${url.origin}/`, "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow" } });
 };

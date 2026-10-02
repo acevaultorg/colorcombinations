@@ -176,6 +176,11 @@ const destinations = DESTINATIONS.map((d) => {
     {intro && <p class="paint-kit__intro">{intro}</p>}
   </header>
 
+  {/* Amazon Creator University / Dos and Don'ts > Disclosures: the disclosure goes right next to the links, not only
+      after a long shelf (measured 2026-10-02: first buy link up to 18k chars before the only disclosure). Short lead
+      line here; the full wording stays after the shelf. */}
+  <p class="paint-kit__disclosure paint-kit__disclosure--lead">Affiliate links — as an Amazon Associate we earn from qualifying purchases.</p>
+
   {variant ==="destination" ? (
     <ul class="paint-kit__dest" role="list">
       {destinations.map(({ label, verdict, item }) => (
@@ -567,6 +572,11 @@ const destinations = DESTINATIONS.map((d) => {
     color: var(--color-ink-700);
     margin-top: 1.25rem;
     max-width: 60ch;
+  }
+
+  .paint-kit__disclosure--lead {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
   }
 
   .paint-kit--sidebar .paint-kit__disclosure {

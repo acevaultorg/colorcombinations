@@ -79,7 +79,7 @@ const DISCLOSURE_TEXT =
   variant ==="sidebar"
     ?"Affiliate links — as an Amazon Associate we earn from qualifying purchases."
     :"Book links are Amazon Associates affiliate links. Your price is unchanged; a small commission supports the archive. As an Amazon Associate we earn from qualifying purchases.";
-const showLeadDisclosure = showDisclosure && variant !=="sidebar" && books.length >= 5;
+const showLeadDisclosure = showDisclosure && variant !=="sidebar"; // any list length (2026-10-02: a 3-book shelf still put the only disclosure ~5.8k chars after the first link)
 
 // When the rendered set includes either Wada dictionary (the two highest-click
 // books on the site — 150+ Amazon clicks/30d combined), route undecided

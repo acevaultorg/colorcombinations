@@ -170,7 +170,7 @@ export const onRequestGet = ({ request }) => {
             "x-robots-tag": "noindex, nofollow",
           },
         })
-      : Response.redirect(`${url.origin}/`, 302);
+      : new Response(null, { status: 302, headers: { location: `${url.origin}/`, "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow" } });
 
   // Parse from the pathname rather than params so a trailing slash, or any
   // stray extra segment, is handled identically.
@@ -198,5 +198,5 @@ export const onRequestGet = ({ request }) => {
 
   // Unknown or non-ISBN shape → home. Never a 404 dead-end on a money path,
   // and never an untagged/guessed Amazon URL.
-  return Response.redirect(`${url.origin}/`, 302);
+  return new Response(null, { status: 302, headers: { location: `${url.origin}/`, "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow" } });
 };

@@ -90,7 +90,7 @@ export const onRequestGet = ({ request }) => {
             "x-robots-tag": "noindex, nofollow",
           },
         })
-      : Response.redirect(`${url.origin}/`, 302);
+      : new Response(null, { status: 302, headers: { location: `${url.origin}/`, "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow" } });
 
   // Parse from the pathname so a trailing slash or stray segment behaves the
   // same. ASIN charset is Amazon's: 10 chars, uppercase alnum.
@@ -106,5 +106,5 @@ export const onRequestGet = ({ request }) => {
 
   // Unknown shape → home. Never a 404 dead-end on a money path, and never an
   // untagged or guessed Amazon URL.
-  return Response.redirect(`${url.origin}/`, 302);
+  return new Response(null, { status: 302, headers: { location: `${url.origin}/`, "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow" } });
 };
