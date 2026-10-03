@@ -1,0 +1,89 @@
+---
+/**
+ * /saved/ — the visitor's saved palettes, read from their own browser (Palette Pro slice 3, card mushlmaapt2vx9).
+ * Nothing is stored on our side; the list is localStorage "cc_saved_v1" written by SavePalette.astro.
+ * noindex and out of the sitemap: the page is empty for every crawler and different for every visitor.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Your saved palettes" description="The palettes you saved on this device." noIndex={true}>
+  <section class="container-page saved">
+    <p class="eyebrow">On this device</p>
+    <h1>Your saved palettes</h1>
+    <p class="saved__lede">
+      Saved in this browser only: no account, nothing sent to us. Clearing your browser data removes them.
+      Syncing across devices is planned for <a href="/pro/" data-event="pro_click" data-variant="saved-page">Palette Pro</a>.
+    </p>
+    <p class="saved__empty" hidden>
+      Nothing saved yet. Open any palette and press <strong>Save palette</strong>, or <a href="/browse/">browse the archive</a>.
+    </p>
+    <p class="saved__blocked" hidden>Your browser blocks storage for this site (private mode or strict settings), so saved palettes cannot be shown.</p>
+    <ul class="saved__list" aria-live="polite"></ul>
+  </section>
+
+  <script>
+    const KEY = "cc_saved_v1";
+    type Entry = { s: string; t: string; c: string[]; at?: number };
+    const list = document.querySelector<HTMLUListElement>(".saved__list")!;
+    const empty = document.querySelector<HTMLElement>(".saved__empty")!;
+    const blocked = document.querySelector<HTMLElement>(".saved__blocked")!;
+    const read = (): Entry[] | null => { try { const v = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(v) ? v : []; } catch { return null; } };
+    const isHex = (h: unknown): h is string => typeof h === "string" && /^#[0-9a-f]{3,8}$/i.test(h);
+    const isSlug = (s: unknown): s is string => typeof s === "string" && /^[a-z0-9-]+$/.test(s);
+
+    const render = (): void => {
+      const items = read();
+      list.replaceChildren();
+      blocked.hidden = items !== null;
+      if (items === null) { empty.hidden = true; return; }
+      const valid = items.filter((e) => isSlug(e.s));
+      empty.hidden = valid.length > 0;
+      for (const e of valid) {
+        const li = document.createElement("li");
+        li.className = "saved__item plate";
+        const a = document.createElement("a");
+        a.href = `/palettes/${e.s}/`;
+        a.className = "saved__link";
+        const strip = document.createElement("span");
+        strip.className = "saved__strip";
+        strip.setAttribute("aria-hidden", "true");
+        for (const h of (Array.isArray(e.c) ? e.c : []).filter(isHex).slice(0, 6)) {
+          const sw = document.createElement("span");
+          sw.style.background = h;
+          strip.appendChild(sw);
+        }
+        const name = document.createElement("span");
+        name.className = "saved__name";
+        name.textContent = typeof e.t === "string" && e.t ? e.t : e.s;
+        a.append(strip, name);
+        const rm = document.createElement("button");
+        rm.type = "button";
+        rm.className = "saved__remove";
+        rm.textContent = "Remove";
+        rm.setAttribute("aria-label", `Remove ${name.textContent} from saved palettes`);
+        rm.addEventListener("click", () => {
+          try { localStorage.setItem(KEY, JSON.stringify((read() || []).filter((x) => x.s !== e.s))); } catch { /* blocked */ }
+          try { const w = window as unknown as { gtag?: (...a: unknown[]) => void }; if (w.gtag) w.gtag("event", "unsave_palette", { page: location.pathname, palette: e.s }); } catch { /* ignore */ }
+          render();
+        });
+        li.append(a, rm);
+        list.appendChild(li);
+      }
+    };
+    window.addEventListener("storage", (ev) => { if (ev.key === KEY) render(); });
+    render();
+  </script>
+</BaseLayout>
+
+<style>
+  .saved { padding-block: var(--spacing-section) 3rem; }
+  .saved__lede { max-width: 40rem; margin-block: 1rem 2rem; }
+  .saved__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
+  .saved__item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; min-width: 0; }
+  .saved__link { display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 0; min-height: 44px; text-decoration: none; color: inherit; }
+  .saved__strip { display: flex; flex: 0 0 auto; width: 6rem; height: 2.25rem; border-radius: var(--radius-md); overflow: hidden; }
+  .saved__strip span { flex: 1; }
+  .saved__name { font-family: var(--font-serif); font-size: 1.0625rem; overflow-wrap: anywhere; }
+  .saved__remove { flex: 0 0 auto; min-height: 44px; padding: 0 0.875rem; border: 1px solid var(--color-ink-300); border-radius: var(--radius-md); background: none; cursor: pointer; font-size: 0.8125rem; }
+</style>

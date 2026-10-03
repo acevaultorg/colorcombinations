@@ -1,0 +1,93 @@
+---
+/**
+ * SavePalette — save this palette to the visitor's own device (Palette Pro slice 3, card mushlmaapt2vx9, 2026-10-03).
+ *
+ * Free, no login, nothing leaves the browser: the list lives in localStorage under "cc_saved_v1" as
+ * [{ s: slug, t: title, c: [hex...], at: epochMs }]. /saved/ reads the same key. Cross-device sync is the
+ * planned Pro part (needs an email sender, operator card musis1ue9lbkcw). If storage is blocked (private mode,
+ * strict settings) the button explains that instead of failing silently.
+ * Events: save_palette / unsave_palette (gtag + Clarity, same pattern as the BaseLayout delegate).
+ */
+import type { Palette } from "@/types/palette";
+
+export interface Props { palette: Palette }
+const { palette } = Astro.props;
+const entry = { s: palette.slug, t: palette.title, c: palette.colors.map((c) => c.hex) };
+---
+
+<div class="save-palette" data-save-palette data-entry={JSON.stringify(entry)}>
+  <button type="button" class="save-palette__btn" aria-pressed="false">
+    <span class="save-palette__icon" aria-hidden="true">♡</span>
+    <span class="save-palette__label">Save palette</span>
+  </button>
+  <a class="save-palette__link" href="/saved/" hidden>Your saved palettes <span class="save-palette__count"></span></a>
+  <p class="save-palette__note">Saved on this device only. No account needed.</p>
+</div>
+
+<script>
+  const KEY = "cc_saved_v1";
+  type Entry = { s: string; t: string; c: string[]; at?: number };
+  const read = (): Entry[] | null => {
+    try { const v = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(v) ? v : []; } catch { return null; }
+  };
+  const write = (list: Entry[]): boolean => {
+    try { localStorage.setItem(KEY, JSON.stringify(list)); return true; } catch { return false; }
+  };
+  const track = (name: string, slug: string): void => {
+    try {
+      const w = window as unknown as { gtag?: (...a: unknown[]) => void; clarity?: (...a: unknown[]) => void };
+      if (w.gtag) w.gtag("event", name, { page: location.pathname, palette: slug });
+      if (w.clarity) w.clarity("event", name);
+    } catch { /* analytics must never break the button */ }
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-save-palette]").forEach((root) => {
+    const entry = JSON.parse(root.dataset.entry || "{}") as Entry;
+    const btn = root.querySelector<HTMLButtonElement>(".save-palette__btn")!;
+    const icon = root.querySelector<HTMLElement>(".save-palette__icon")!;
+    const label = root.querySelector<HTMLElement>(".save-palette__label")!;
+    const link = root.querySelector<HTMLAnchorElement>(".save-palette__link")!;
+    const count = root.querySelector<HTMLElement>(".save-palette__count")!;
+    const note = root.querySelector<HTMLElement>(".save-palette__note")!;
+
+    const render = (): void => {
+      const list = read();
+      if (list === null) { btn.disabled = true; note.textContent = "Your browser blocks saving on this site (private mode or storage settings)."; return; }
+      const on = list.some((e) => e.s === entry.s);
+      btn.setAttribute("aria-pressed", String(on));
+      icon.textContent = on ? "♥" : "♡";
+      label.textContent = on ? "Saved" : "Save palette";
+      link.hidden = list.length === 0;
+      count.textContent = `(${list.length})`;
+    };
+
+    btn.addEventListener("click", () => {
+      const list = read();
+      if (list === null) return render();
+      const on = list.some((e) => e.s === entry.s);
+      const next = on ? list.filter((e) => e.s !== entry.s) : [{ ...entry, at: Date.now() }, ...list];
+      if (!write(next)) { note.textContent = "Could not save: your browser's storage is full or blocked."; return; }
+      track(on ? "unsave_palette" : "save_palette", entry.s);
+      render();
+    });
+
+    window.addEventListener("storage", (e) => { if (e.key === KEY) render(); });
+    render();
+  });
+</script>
+
+<style>
+  .save-palette { margin-bottom: 1rem; }
+  .save-palette__btn {
+    display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; width: 100%;
+    padding: 0.625rem 0.875rem; font: 500 0.9375rem var(--font-sans);
+    border: 1px solid var(--color-ink-900); border-radius: var(--radius-md);
+    background: var(--color-bg-elevated); color: var(--color-ink-900); cursor: pointer;
+  }
+  .save-palette__btn[aria-pressed="true"] { background: var(--color-paper-100); }
+  .save-palette__btn:focus-visible { outline: 2px solid var(--color-accent-500); outline-offset: 2px; }
+  .save-palette__btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .save-palette__icon { font-size: 1.1rem; line-height: 1; }
+  .save-palette__link { display: inline-block; margin-top: 0.5rem; min-height: 44px; line-height: 44px; font-size: 0.875rem; }
+  .save-palette__note { font-size: 0.75rem; color: var(--color-ink-500); margin: 0.25rem 0 0; max-width: none; }
+</style>
