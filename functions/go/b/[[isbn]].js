@@ -196,7 +196,7 @@ export const onRequestGet = ({ request }) => {
     const usSearch = country === "US" && geo.host === "www.amazon.com" && US_TO_SEARCH[isbn];
     let dest = usSearch
       ? `https://www.amazon.com/s?k=${encodeURIComponent(usSearch)}&i=stripbooks&tag=${geo.tag}`
-      : `https://${geo.host}/dp/${isbn}?tag=${geo.tag}`;
+      : `https://${geo.host}/dp/${m[1].toUpperCase()}?tag=${geo.tag}`;
     // Per-page-class Amazon subtag (2026-08-15) — the caller passes it as
     // ?c=<slug> (see AMAZON.link() in src/config/monetization.ts) because the
     // real &tag= is decided HERE, server-side, per marketplace; the caller
