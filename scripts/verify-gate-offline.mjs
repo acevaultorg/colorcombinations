@@ -37,16 +37,24 @@ const env = { ASSETS: { fetch: async () => new Response('asset', { status: 200 }
 const mod = (src) => import('data:text/javascript,' + encodeURIComponent(src));
 
 const isbn10 = (s) => /^[0-9]{9}[0-9Xx]$/.test(s) && [...s].reduce((a, c, i) => a + (10 - i) * (/x/i.test(c) ? 10 : +c), 0) % 11 === 0;
+// US visitors get the tagged search for listings with no new US offer (2026-10-03, card
+// mus7y2u86ihabr). Mirrors US_TO_SEARCH in functions/go/b and TO_SEARCH in functions/go/p; keep
+// all three in sync. Every other id and every other country must still land on /dp/.
+const US_SEARCH = {
+  b: { '0714873896': 'https://www.amazon.com/s?k=Chromaphilia%20Stella%20Paul&i=stripbooks' },
+  p: { B0DPN7L6L5: 'https://www.amazon.com/s?k=Calibrite%20Display%20Plus%20HL%20colorimeter' },
+};
 function expected(href, country) {
   const u = new URL(href, ORIGIN);
   const c = u.searchParams.get('c');
   const st = c && /^[a-z0-9-]{1,32}$/.test(c) ? `&ascsubtag=${c}` : '';
   let m = u.pathname.match(/^\/go\/p\/([A-Za-z0-9]{10})\/?$/);
-  if (m) return `https://www.amazon.com/dp/${m[1].toUpperCase()}?tag=${TAG}${st}`;
+  if (m) return country === 'US' && US_SEARCH.p[m[1].toUpperCase()] ? `${US_SEARCH.p[m[1].toUpperCase()]}&tag=${TAG}${st}` : `https://www.amazon.com/dp/${m[1].toUpperCase()}?tag=${TAG}${st}`;
   m = u.pathname.match(/^\/go\/b\/([0-9Xx]{10})\/?$/);
   if (m) {
     if (!isbn10(m[1])) return null;
     const [host, tag] = EU_ROUTED.has(country) ? ['www.amazon.de', EU_TAG] : ['www.amazon.com', TAG];
+    if (country === 'US' && US_SEARCH.b[m[1].toUpperCase()]) return `${US_SEARCH.b[m[1].toUpperCase()]}&tag=${tag}${st}`;
     return `https://${host}/dp/${m[1].toUpperCase()}?tag=${tag}${st}`;
   }
   if (/^\/go\/prime\/?$/.test(u.pathname)) return PRIME;

@@ -103,7 +103,7 @@ export const onRequestGet = ({ request }) => {
     const TO_SEARCH = { B0DPN7L6L5: "Calibrite Display Plus HL colorimeter" };
     let dest = request.headers.get("cf-ipcountry") === "US" && TO_SEARCH[asin]
       ? `https://www.amazon.com/s?k=${encodeURIComponent(TO_SEARCH[asin])}&tag=${TAG}`
-      : `https://www.amazon.com/dp/${asin}?tag=${TAG}`;
+      : `https://www.amazon.com/dp/${m[1].toUpperCase()}?tag=${TAG}`;
     // Page-class subtag, same whitelist discipline as the book gate: short
     // slug only, no PII, no free text survives into the redirect target.
     const c = url.searchParams.get("c");
