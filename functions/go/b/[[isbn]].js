@@ -62,6 +62,18 @@ const TAG = "colorcombinations-20";
 // The store OneLink runs on. EU visitors are handed this, then forwarded.
 const EU_TAG = "caslonmedia-21";
 
+// US-only search fallback (2026-10-03, card mus7y2u86ihabr). Creators API getItems on
+// www.amazon.com (two passes; controls Gatsby = NEW Buy Box, junk = InvalidParameterValue):
+// these ISBNs have NO new offer in the US store, only used, so a US /dp/ click lands on no new
+// copy to buy. For visitors whose cf-ipcountry is US they go to the tagged book search instead.
+// Every other country keeps the /dp/ link unchanged: Global Earning forwards .com/dp/ to the
+// visitor's own store (DE/GB/FR/…), where the book may be new-in-stock, and whether Amazon forwards
+// a SEARCH URL the same way is unverified. DE is where this tag earns the most.
+// Re-check before removing an entry (buy-box state drifts week to week).
+const US_TO_SEARCH = {
+  "0714873896": "Chromaphilia Stella Paul",
+};
+
 // EU/EEA countries GLOBAL EARNING DOES NOT COVER — the only ones still worth
 // routing ourselves. Global Earning natively covers US · CA · GB · DE · FR · IT ·
 // ES · NL · PL · SE, so those are deliberately ABSENT: the plain .com link with
@@ -180,7 +192,11 @@ export const onRequestGet = ({ request }) => {
     const geo = EU_ROUTED.has(country)
       ? { host: "www.amazon.de", tag: EU_TAG }
       : { host: "www.amazon.com", tag: TAG };
-    let dest = `https://${geo.host}/dp/${m[1].toUpperCase()}?tag=${geo.tag}`;
+    const isbn = m[1].toUpperCase();
+    const usSearch = country === "US" && geo.host === "www.amazon.com" && US_TO_SEARCH[isbn];
+    let dest = usSearch
+      ? `https://www.amazon.com/s?k=${encodeURIComponent(usSearch)}&i=stripbooks&tag=${geo.tag}`
+      : `https://${geo.host}/dp/${isbn}?tag=${geo.tag}`;
     // Per-page-class Amazon subtag (2026-08-15) — the caller passes it as
     // ?c=<slug> (see AMAZON.link() in src/config/monetization.ts) because the
     // real &tag= is decided HERE, server-side, per marketplace; the caller
