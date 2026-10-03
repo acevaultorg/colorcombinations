@@ -251,6 +251,16 @@ const cover = bookCover(book, "S");
         // Ad units arrive after load: re-measure the bottom offset a few times.
         setTimeout(function () { apply(true); }, 2500);
         setTimeout(function () { apply(true); }, 6000);
+        // ...and keep re-measuring while the bar could be on screen. Journey fills
+        // its adhesion INSIDE the existing #fixed_container_bottom wrapper (not a
+        // new body child, so the MutationObserver above never fires), often after
+        // the 6s timer, and refreshes it later. Measured live 2026-10-03, iPhone
+        // 13 WebKit, /colors/moegi/: the bar was shown at bottom:0 under a freshly
+        // arrived 50px ad and its link stayed covered until the reader scrolled
+        // again. ~40 elementsFromPoint calls every 1.5s, only while visible.
+        setInterval(function () {
+          if (document.visibilityState === "visible" && mq.matches && passedFold) apply(true);
+        }, 1500);
         onScroll();
       })();
     </script>
