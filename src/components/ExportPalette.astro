@@ -71,6 +71,11 @@ const jsonExport = JSON.stringify(
     </button>
   </div>
 
+  <a class="export__pro" href="/pro/" data-event="pro_click" data-variant="export-row">
+    <span class="export__pro-label">Palette Pro · coming soon</span>
+    Figma variables, Adobe swatches (.ase), Procreate swatches, saved boards →
+  </a>
+
   <p class="export__status" aria-live="polite" role="status"></p>
 
   {/* Hidden payloads — read by the client script */}
@@ -186,6 +191,27 @@ const jsonExport = JSON.stringify(
   .export__btn:focus-visible {
     outline: 2px solid var(--color-accent-500);
     outline-offset: 2px;
+  }
+
+  .export__pro {
+    display: block;
+    margin-top: 0.75rem;
+    min-height: 44px;
+    padding: 0.625rem 0.875rem;
+    border: 1px dashed var(--color-ink-300);
+    border-radius: var(--radius-md);
+    font-size: 0.8125rem;
+    color: var(--color-ink-700, var(--color-ink-900));
+    text-decoration: none;
+  }
+
+  .export__pro:hover { border-color: var(--color-ink-900); }
+
+  .export__pro-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-accent-500);
   }
 
   .export__status {

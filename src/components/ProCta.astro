@@ -1,0 +1,31 @@
+---
+/**
+ * ProCta — compact Palette Pro block at the end of every palette page (slice 2, card mushlj8kaynbdy, 2026-10-03).
+ * Replaces the compact BundleCta in this one slot: per-palette Pro formats fit a palette page better than the
+ * archive tip jar, which stays on /shop and the other BundleCta placements. Not on sale yet → no price, the CTA
+ * goes to /pro/ (interest list). pro_click fires via the BaseLayout data-event delegate.
+ */
+---
+
+<section class="pro-cta">
+  <p class="eyebrow">Palette Pro · coming soon</p>
+  <h2 class="pro-cta__title text-balance">Take this palette into Figma, Adobe or Procreate</h2>
+  <p class="pro-cta__body">
+    Pro adds Figma variables, Adobe swatch files and Procreate swatches for every palette. The hex, CSS, Tailwind and
+    JSON exports on this page stay free.
+  </p>
+  <a href="/pro/" class="btn btn-primary" data-event="pro_click" data-variant="palette-end">See what Pro adds</a>
+</section>
+
+<style>
+  .pro-cta {
+    padding: 2rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-paper-100);
+    margin-block: 3rem 1rem;
+  }
+  .pro-cta__title { font-family: var(--font-serif); font-size: 1.375rem; margin: 0.25rem 0 0.5rem; }
+  .pro-cta__body { max-width: 38rem; margin: 0 0 1.25rem; }
+  .pro-cta .btn { min-height: 44px; display: inline-flex; align-items: center; }
+</style>

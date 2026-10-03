@@ -1,0 +1,101 @@
+---
+/**
+ * /pro/ — Palette Pro (slice 2, card mushlj8kaynbdy, 2026-10-03).
+ *
+ * Honest pre-launch page: Pro is not on sale yet (price and payment are Paulo's decision, card musgzdrmlj5v3c),
+ * so there is no price and no buy button, only an interest list on the site's own first-party form
+ * (EmailCapture → /api/subscribe, source "pro-waitlist"). The three file formats exist (src/lib/pro-export.ts,
+ * tested); saved boards are planned and are labelled as such. Everything free today stays free.
+ * Events: pro_view once per page load; pro_click on the CTAs via the BaseLayout data-event delegate.
+ * No Amazon mention anywhere in Pro copy.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import EmailCapture from "@components/EmailCapture.astro";
+
+const title = "Palette Pro";
+const description =
+  "Palette Pro adds Figma variables, Adobe swatch files and Procreate swatches for every Sanzo Wada palette. Coming soon; everything that is free today stays free.";
+
+const free = [
+  "Every palette, page and colour in the archive",
+  "Copy hex list, Tailwind config and CSS variables",
+  "Download the palette as JSON",
+  "Share cards and printable plates",
+];
+const pro = [
+  { name: "Figma variables", detail: "one colour collection per palette, ready to import as variables", ready: true },
+  { name: "Adobe swatches (.ase)", detail: "opens in Illustrator, Photoshop and InDesign swatch panels", ready: true },
+  { name: "Procreate swatches (.swatches)", detail: "drop onto Procreate to add the palette", ready: true },
+  { name: "Saved boards", detail: "keep the palettes you use, across devices", ready: false },
+];
+---
+
+<BaseLayout title={title} description={description} noIndex={true}>
+  <article class="container-page pro">
+    <p class="eyebrow">Coming soon</p>
+    <h1 class="text-balance">Palette Pro</h1>
+    <p class="pro__lede">
+      Pro adds file formats designers otherwise rebuild by hand, for all 348 of Sanzo Wada's combinations. It is not on
+      sale yet. Join the list below and you get one email when it opens.
+    </p>
+
+    <div class="pro__grid">
+      <section class="plate pro__col" aria-labelledby="pro-free">
+        <h2 id="pro-free">Free, and staying free</h2>
+        <ul>{free.map((f) => <li>{f}</li>)}</ul>
+      </section>
+      <section class="plate pro__col" aria-labelledby="pro-adds">
+        <h2 id="pro-adds">What Pro adds</h2>
+        <ul>
+          {pro.map((p) => (
+            <li>
+              <strong>{p.name}</strong>
+              {!p.ready && <span class="pro__tag">planned</span>}
+              <span class="pro__detail">{p.detail}</span>
+            </li>
+          ))}
+        </ul>
+        <a href="#newsletter" class="btn btn-primary" data-event="pro_click" data-variant="pro-page">Get notified</a>
+      </section>
+    </div>
+
+    <p class="pro__note">
+      No price yet: it will be set before launch and shown here first. Nothing on the site moves behind Pro.
+    </p>
+  </article>
+
+  <EmailCapture
+    source="pro-waitlist"
+    heading="Tell me when Palette Pro opens"
+    lede="One email, once, when Pro is available. Nothing else goes to this list."
+    cta="Get notified"
+    note="Free to join. The archive stays free either way."
+  />
+
+  <script is:inline>
+    (function () {
+      var tries = 0;
+      function fire() {
+        try {
+          if (window.gtag) { window.gtag("event", "pro_view", { page: location.pathname }); if (window.clarity) window.clarity("event", "pro_view"); return; }
+        } catch (x) { return; }
+        if (++tries < 20) setTimeout(fire, 500);
+      }
+      fire();
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .pro { padding-block: var(--spacing-section) 2rem; }
+  .pro__lede { font-size: 1.125rem; max-width: 40rem; margin-block: 1rem 2rem; }
+  .pro__grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .pro__grid { grid-template-columns: 1fr 1fr; } }
+  .pro__col { padding: 1.5rem; min-width: 0; }
+  .pro__col h2 { font-family: var(--font-serif); font-size: 1.25rem; margin: 0 0 1rem; }
+  .pro__col ul { margin: 0 0 1.25rem; padding-left: 1.1rem; display: grid; gap: 0.6rem; }
+  .pro__detail { display: block; font-size: 0.875rem; color: var(--color-ink-500); }
+  .pro__tag { margin-left: 0.5rem; font-size: 0.75rem; padding: 0.1rem 0.45rem; border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-ink-500); }
+  .pro__note { font-size: 0.875rem; color: var(--color-ink-500); margin-top: 1.5rem; }
+  .pro .btn { min-height: 44px; display: inline-flex; align-items: center; }
+</style>

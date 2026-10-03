@@ -11,7 +11,7 @@ export default defineConfig({
     sitemap({
       // /embed/* routes are noindex iframe widgets, not discovery surfaces.
       // Exclude from sitemap to avoid GSC "Excluded by noindex" noise.
-      filter: (page) => !page.includes("/embed/"),
+      filter: (page) => !page.includes("/embed/") && !page.endsWith("/pro/"), // /pro/ is noindex until Palette Pro launches (2026-10-03)
     }),
   ],
   vite: {
