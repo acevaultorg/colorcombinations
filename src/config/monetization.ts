@@ -281,10 +281,10 @@ export const PRIME_BOUNTY = {
 
   /** Honest, page-matched pitch. No price, no urgency, no "support us". */
   pitch:
-    "Ordering paint or paper for this palette? Amazon Prime's free 30-day trial includes fast free delivery and free returns — useful when a colour has to be right and a week's wait is how you find out it isn't.",
+    "Ordering paint or paper for this palette? Amazon Prime includes fast delivery on eligible items, and eligible new members may be offered a free trial — useful when a colour has to be right and a week's wait is how you find out it isn't.",
 
   /** Link text. */
-  cta: "Start the free 30-day trial",
+  cta: "See if you can try Prime free",
 
   /** FTC disclosure, rendered adjacent to the link in every variant. */
   disclosure:
