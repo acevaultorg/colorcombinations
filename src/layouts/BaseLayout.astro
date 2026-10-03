@@ -468,10 +468,7 @@ const jsonLdArray = jsonLd
     </script>
     <a href="#main" class="skip-link">Skip to content</a>
     <SiteHeader />
-    <div class="cc-search">
-      <input id="cc-q" type="search" role="combobox" aria-expanded="false" aria-controls="cc-results" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search palettes, colors, collections…" aria-label="Search the dictionary of color combinations" />
-      <div id="cc-results" role="listbox" aria-label="Search results" hidden></div>
-    </div>
+    <!-- Search lives in the header since 2026-10-02 (Amili Kit search, Paulo mur0dp4bzunyqy): the box that sat under the header and scrolled away is gone. -->
     <main id="main" class={adContent ? "site-main mv-content" : "site-main"}>
       <slot />
     </main>

@@ -1,0 +1,26 @@
+{
+  "outDir": "dist",
+  "label": "Search colour combinations",
+  "placeholder": "Search palettes, colors, collections\u2026",
+  "suggest": [
+    "beige",
+    "sage green",
+    "navy",
+    "wada sanzo",
+    "terracotta"
+  ],
+  "sourceIndex": {
+    "file": "search-index.json",
+    "map": {
+      "u": "s",
+      "t": "t",
+      "g": "k",
+      "k": "x"
+    }
+  },
+  "ga4": true,
+  "clarity": true,
+  "skipScript": [
+    "/embed/"
+  ]
+}

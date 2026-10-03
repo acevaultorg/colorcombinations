@@ -38,3 +38,6 @@ astro build
 node scripts/verify-mediavine-exclusions.mjs
 node scripts/make-worker.mjs
 node scripts/build-amili-index.mjs
+# Amili Kit search (2026-10-02, Paulo mur0dp4bzunyqy): kit search in the header on every width, header back on
+# scroll-up, Shop on phones; fed by this site's own tuned search-index.json (sourceIndex), after the build.
+node kit/search-inject.mjs amili-search.config.json
