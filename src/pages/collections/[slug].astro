@@ -277,11 +277,11 @@ const jsonLd = [
         Curated by <a href="/about/" rel="author">Paulo de Vries</a> · from Sanzo Wada's 1933
         <em>Dictionary of Color Combinations</em>
       </p>
-      <div class="collection-hero__description" set:html={collection.description}></div>
       <HeroSourceBook
         lead={wadaInCollection > 0 ? `${wadaInCollection} of these ${total} palettes come from one 1933 book.` : "Most palettes in this archive come from one 1933 book."}
         surface="collections-hero"
       />
+      <div class="collection-hero__description" set:html={collection.description}></div>
       <ShareActions
         title={collection.title}
         url={new URL(`/collections/${collection.slug}`, Astro.site).toString()}
