@@ -30,6 +30,8 @@ import {
   relatedBooks,
   type CuratedBook,
 } from "@/config/monetization";
+import { wadaPalettes } from "@/data/wada-palettes";
+import { colorBySlug } from "@/data/colors";
 
 export function getStaticPaths() {
   return FURTHER_READING.map((book) => ({
@@ -55,6 +57,35 @@ const related = relatedBooks(book.slug, 3);
 const WADA_VOL_1 = "a-dictionary-of-color-combinations";
 const WADA_VOL_2 = "a-dictionary-of-color-combinations-vol-2";
 const isWada = book.slug === WADA_VOL_1 || book.slug === WADA_VOL_2;
+
+// "What is inside Vol. 1", counted from the archive's own plate data at build
+// time so it can never drift from what /browse/ shows. Added 2026-10-07: this
+// page is the site's most AI-cited page (111 of 114 Bing/AI sessions in 28d
+// came from chatgpt.com, GA4 2026-10-07), and those visitors arrive asking
+// what the book contains. Facts only: counts, plate ranges and the colours
+// Wada used most. No page counts, no prices, nothing the data does not hold.
+const wadaSizes = new Map<number, { count: number; first: number; last: number }>();
+const wadaColorUse = new Map<string, { hex: string; count: number }>();
+wadaPalettes.forEach((p, i) => {
+  const n = p.colors.length;
+  const plate = i + 1;
+  const s = wadaSizes.get(n);
+  if (s) { s.count++; s.last = plate; } else wadaSizes.set(n, { count: 1, first: plate, last: plate });
+  for (const name of new Set(p.colors.map((c) => c.nameRomaji))) {
+    const hex = p.colors.find((c) => c.nameRomaji === name)!.hex;
+    const u = wadaColorUse.get(name);
+    if (u) u.count++; else wadaColorUse.set(name, { hex, count: 1 });
+  }
+});
+const wadaSizeRows = [...wadaSizes.entries()].sort((a, b) => a[0] - b[0]);
+const SIZE_LABEL: Record<number, string> = { 2: "pairs", 3: "trios", 4: "groups of four" };
+const wadaTopColors = [...wadaColorUse.entries()]
+  .sort((a, b) => b[1].count - a[1].count || a[0].localeCompare(b[0]))
+  .slice(0, 6)
+  .map(([name, u]) => {
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    return { name, hex: u.hex, count: u.count, href: colorBySlug(slug) ? `/colors/${slug}/` : null };
+  });
 
 const title = `${book.title} — ${book.author}`;
 const description = `${book.title} by ${book.author}. ${book.note} Why it's on the shelf at the Dictionary of Color Combinations, and what this archive already holds for free.`;
@@ -213,6 +244,38 @@ const jsonLd = [
               volume you actually want.
             </p>
           </>
+        )}
+        {book.slug === WADA_VOL_1 && (
+          <div class="book__inside">
+            <h3>What is inside, counted plate by plate</h3>
+            <p>
+              {wadaPalettes.length} combinations built from {wadaColorUse.size}{" "}
+              named colours, in three runs:
+            </p>
+            <ul class="book__runs" role="list">
+              {wadaSizeRows.map(([n, s]) => (
+                <li>
+                  <strong>{s.count} {SIZE_LABEL[n] ?? `sets of ${n}`}</strong>{" "}
+                  <span>plates {s.first}–{s.last}</span>
+                </li>
+              ))}
+            </ul>
+            <p>The colours Wada came back to most often:</p>
+            <ul class="book__top-colors" role="list">
+              {wadaTopColors.map((c) => (
+                <li>
+                  <span class="book__chip" style={`background:${c.hex}`} aria-hidden="true"></span>
+                  {c.href ? <a href={c.href}>{c.name}</a> : <span>{c.name}</span>}
+                  <span class="book__uses">{c.count} combinations</span>
+                </li>
+              ))}
+            </ul>
+            <p class="book__source">
+              Counted from the plate data in this archive (the community
+              reconstruction of the 1933–34 plates). Spellings follow Wada's
+              own colour names.
+            </p>
+          </div>
         )}
         <p class="book__compare-link">
           <a href="/compare/wada-vol-1-vs-vol-2/">
@@ -387,6 +450,69 @@ const jsonLd = [
 
   .book__compare-link {
     font-size: 0.9375rem;
+  }
+
+  .book__inside {
+    margin: 1.5rem 0 1.25rem;
+  }
+
+  .book__inside h3 {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    margin: 0 0 0.75rem;
+  }
+
+  .book__runs,
+  .book__top-colors {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    display: grid;
+    gap: 0.5rem;
+    max-width: 62ch;
+  }
+
+  .book__runs li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.625rem 0.875rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-ink-700);
+  }
+
+  .book__runs li span,
+  .book__uses {
+    color: var(--color-ink-400);
+    font-size: 0.9375rem;
+  }
+
+  .book__top-colors li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 44px;
+    color: var(--color-ink-700);
+  }
+
+  .book__top-colors a {
+    flex: 1;
+    padding: 0.5rem 0;
+  }
+
+  .book__chip {
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+  }
+
+  .book__source {
+    font-size: 0.875rem;
+    color: var(--color-ink-400) !important;
   }
 
   .book__related-list {
