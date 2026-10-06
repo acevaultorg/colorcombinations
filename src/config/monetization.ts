@@ -385,7 +385,8 @@ export const FURTHER_READING: CuratedBook[] = [
     slug: "a-dictionary-of-color-combinations",
     title: "A Dictionary of Color Combinations",
     author: "Sanzo Wada",
-    note: "The 2010 Seigensha republication of the 1933 original. Japanese import.",
+    // Source (checked 2026-10-07): hanmoto.com ISBN 9784861522475, Seigensha first edition July 2010; original study 1933-34 (six volumes).
+    note: "The 2010 Seigensha republication of the 1933–34 original. Japanese import.",
     amazonAsin: "4861522471",
     isbn: "4861522471",
     coverUrl: "/book-covers/wada-vol-1.jpg",
@@ -399,17 +400,18 @@ export const FURTHER_READING: CuratedBook[] = [
     // does buy it: the printed object, and a citable copy of the 1933 classic.
     // Fewer clicks here is the intended outcome — the ones left are qualified, and
     // readers who want plates they can't get free are routed to Vol 2.
-    why: "Every combination in it is already browsable free here, hex values and all. Buy this one for the object rather than the data — Seigensha's matte plates and Japanese binding, or a citable copy of the 1933 original. If you want plates this archive doesn't have, Vol. 2 is the one.",
+    why: "Every combination in it is already browsable free here, hex values and all. Buy this one for the object rather than the data — Seigensha's matte plates and Japanese binding, or a citable copy of the 1933–34 original. If you want plates this archive doesn't have, Vol. 2 is the one.",
   },
   {
     slug: "a-dictionary-of-color-combinations-vol-2",
     title: "A Dictionary of Color Combinations Vol. 2",
     author: "Sanzo Wada",
+    // Source (checked 2026-10-07): publisher blurb via moom.com.tw ISBN 9784861527722, Seigensha 2020: 72 seasonal combinations (1935-36) + 165 fashion/interior/graphic (1938).
     note: "Seigensha, 2020. Japanese import.",
     amazonAsin: "4861527724",
     isbn: "4861527724",
     coverUrl: "/book-covers/wada-vol-2.jpg",
-    why: "Wada's 1935–1938 follow-ups: 72 plates on the Japanese seasons and 165 drawn from early-century fashion, interior, and graphic design. Not in Vol. 1. Not in this archive. The book itself is a design object — Japanese binding, matte pages, zero captions.",
+    why: "Wada's 1935–36 and 1938 follow-ups: 72 plates on the Japanese seasons and 165 drawn from early-century fashion, interior, and graphic design. Not in Vol. 1. Not in this archive. The book itself is a design object — Japanese binding, matte pages, zero captions.",
   },
   {
     slug: "interaction-of-color",
@@ -590,7 +592,8 @@ export const COLOR_REFERENCE_LIBRARY: CuratedBook[] = [
     slug: "a-dictionary-of-color-combinations",
     title: "A Dictionary of Color Combinations",
     author: "Sanzo Wada",
-    note: "Seigensha, 2010 reprint of the 1933 original. Japanese import.",
+    // Source (checked 2026-10-07): hanmoto.com ISBN 9784861522475, Seigensha first edition July 2010; original study 1933-34 (six volumes).
+    note: "Seigensha, 2010 reprint of the 1933–34 original. Japanese import.",
     amazonAsin: "4861522471",
     isbn: "4861522471",
     coverUrl: "/book-covers/wada-vol-1.jpg",
@@ -600,6 +603,7 @@ export const COLOR_REFERENCE_LIBRARY: CuratedBook[] = [
     slug: "a-dictionary-of-color-combinations-vol-2",
     title: "A Dictionary of Color Combinations Vol. 2",
     author: "Sanzo Wada",
+    // Source (checked 2026-10-07): publisher blurb via moom.com.tw ISBN 9784861527722, Seigensha 2020: 72 seasonal combinations (1935-36) + 165 fashion/interior/graphic (1938).
     note: "Seigensha, 2020. Japanese import.",
     amazonAsin: "4861527724",
     isbn: "4861527724",
