@@ -66,6 +66,7 @@ const TRACKED = [
   "src/pages/learn/wada-color-psychology/index.astro",
   "src/pages/learn/wada-palettes-by-mood/index.astro",
   "src/pages/learn/wada-palettes-web-design/index.astro",
+  "src/pages/learn/sanzo-wada/index.astro",
   "src/pages/data/sanzo-wada-color-analysis.astro",
   "src/pages/data/sanzo-wada-wcag-contrast.astro",
   "src/pages/learn/why-painting-colours-shift/index.astro",

@@ -1,0 +1,308 @@
+---
+/**
+ * /learn/sanzo-wada/ — who Sanzo Wada was (2026-10-07, subchief-1-amazon).
+ *
+ * Demand (Bing Webmaster GetQueryStats, ~120 days to 2026-10-06): "sanzo wada" 119 impressions at
+ * avg position 7.8 with 4 clicks, "sanzo wada color combinations" 75, "wada sanzo colors" 25 and a
+ * long tail of "who was / book / pdf" queries. The site had no page about the man himself, only a
+ * paragraph on /about/. Facts below follow the English Wikipedia article (read 2026-10-06) and the
+ * Seigensha editions; archive numbers are computed from the 348 plates at build time.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
+import { wadaCatalog } from "@data/palettes";
+
+const dict = wadaCatalog();
+const N = dict.length;
+const distinctColors = new Set(dict.flatMap((p) => p.colors.map((c) => c.hex.toLowerCase()))).size;
+const twoColor = dict.filter((p) => p.colors.length === 2).length;
+const threeColor = dict.filter((p) => p.colors.length === 3).length;
+const fourColor = dict.filter((p) => p.colors.length >= 4).length;
+const firstPlates = dict.slice(0, 4);
+
+const title = "Who Was Sanzo Wada? The Painter Behind A Dictionary of Color Combinations";
+const description = `Sanzo Wada (1883–1967): Japanese painter, Oscar-winning costume designer for Gate of Hell, founder of the Japan Color Research Institute, and author of the color study that became A Dictionary of Color Combinations. His life, his books, and all ${N} combinations free to browse.`;
+const keywords = [
+  "Sanzo Wada",
+  "Wada Sanzo",
+  "who was Sanzo Wada",
+  "Sanzo Wada biography",
+  "Sanzo Wada color combinations",
+  "A Dictionary of Color Combinations author",
+  "和田三造",
+];
+const SITE_FIRST_PUBLISHED = "2026-10-07T00:00:00Z";
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and the data it renders. */
+const BUILD_DATE = contentDate("src/pages/learn/sanzo-wada/index.astro", "src/data/palettes.ts");
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/sanzo-wada/`;
+
+const faqs = [
+  {
+    q: "Who was Sanzo Wada?",
+    a: "Sanzo Wada (和田三造, 1883–1967) was a Japanese painter, costume designer and color researcher. He won the Academy Award for Best Costume Design for the film Gate of Hell (1953) and compiled the six-volume color study that the modern book A Dictionary of Color Combinations is based on.",
+  },
+  {
+    q: "What did Sanzo Wada win an Oscar for?",
+    a: "For the costumes and color design of Gate of Hell (Jigokumon), a 1953 Daiei film. The award was presented at the 27th Academy Awards in March 1955. The same film won the Palme d'Or at the 1954 Cannes Film Festival.",
+  },
+  {
+    q: "Is A Dictionary of Color Combinations the original 1933 book?",
+    a: `No. Between 1933 and 1934 Wada published a six-volume study, Haishoku Soukan (配色総監), with more than a thousand combinations. Seigensha's A Dictionary of Color Combinations (2011) is based on it and holds ${N} of them; a Volume II followed in 2020.`,
+  },
+  {
+    q: "Is there a free PDF of the dictionary?",
+    a: `The Seigensha editions are in print and we do not link to copies of them. What you can use for free is this site: all ${N} combinations with hex, RGB and CMYK values, contrast ratios and copy-ready code, one page per plate.`,
+  },
+  {
+    q: "When did Sanzo Wada die?",
+    a: "On 22 August 1967 in Tokyo, aged 84.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Biography",
+    author: { "@type": "Organization", "@id": `${siteUrl}#organization`, name: "The Dictionary of Color Combinations" },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    about: { "@id": `${siteUrl}#person-sanzo-wada` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${siteUrl}#person-sanzo-wada`,
+    name: "Sanzo Wada",
+    alternateName: ["Wada Sanzō", "和田三造"],
+    birthDate: "1883-03-03",
+    birthPlace: "Hyōgo Prefecture, Japan",
+    deathDate: "1967-08-22",
+    deathPlace: "Tokyo, Japan",
+    nationality: "Japanese",
+    jobTitle: ["Painter", "Costume designer", "Color researcher"],
+    alumniOf: "Tokyo School of Fine Arts",
+    award: [
+      "Academy Award for Best Costume Design (27th Academy Awards, 1955) for Gate of Hell",
+      "Person of Cultural Merit (1958)",
+    ],
+    memberOf: "Japan Art Academy",
+    sameAs: ["https://en.wikipedia.org/wiki/Sanzo_Wada", "https://www.wikidata.org/wiki/Q1407928"],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Sanzo Wada" },
+    ],
+  },
+];
+
+const timeline: [string, string][] = [
+  ["1883", "Born 3 March in Hyōgo Prefecture. The family moves to Fukuoka when he is 13."],
+  ["1899", "Moves to Tokyo at 16 to become a painter and studies under Kuroda Seiki, the leading Western-style painter of the day."],
+  ["1904", "Graduates from the Tokyo School of Fine Arts."],
+  ["1907–1915", "Studies in Europe, mainly France, as a Ministry of Education art student: Western painting and craft design."],
+  ["1932", "Becomes professor of design at the Tokyo School of Fine Arts (until 1944)."],
+  ["1933–1934", "Publishes Haishoku Soukan (配色総監), a six-volume study of more than a thousand color combinations."],
+  ["1936", "Designs the poster for the 1940 Tokyo Olympics, which were later cancelled."],
+  ["1945", "Reorganizes the Japan Standard Color Association into the Japan Color Research Institute and becomes its chairman."],
+  ["1951", "Completes Japan's first comprehensive standard color chart."],
+  ["1953", "Designs the color and costumes for the Daiei film Gate of Hell."],
+  ["1954", "Gate of Hell wins the Palme d'Or at Cannes, praised for its color."],
+  ["1955", "Wins the Academy Award for Best Costume Design at the 27th Academy Awards."],
+  ["1958", "Named a Person of Cultural Merit."],
+  ["1967", "Dies 22 August in Tokyo, aged 84."],
+  ["2011", "Seigensha publishes A Dictionary of Color Combinations, based on his study."],
+  ["2020", "A Dictionary of Color Combinations, Volume II."],
+];
+---
+
+<BaseLayout
+  adContent
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/about.png"
+  type="article"
+  modifiedTime={BUILD_DATE}
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Sanzo Wada</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Biography · <span lang="ja">和田三造</span></p>
+        <h1 class="display-hero text-balance">Who was Sanzo Wada?</h1>
+        <p class="article-hero__lede">
+          Sanzo Wada (1883–1967) was a Japanese painter who trained in Paris, won an Oscar for
+          the costumes of <em>Gate of Hell</em>, set Japan's first national color standard, and
+          wrote the color study that designers now know as <em>A Dictionary of Color
+          Combinations</em>. All {N} combinations from that book are on this site, free.
+        </p>
+        <HeroSourceBook
+          lead="The book most people find him through is the Seigensha dictionary."
+          surface="learn-wada-bio-hero"
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <h2 id="painter">A painter first</h2>
+      <p>
+        Wada was born in Hyōgo Prefecture and moved to Tokyo at sixteen to become a painter. He
+        studied with Kuroda Seiki, the teacher who brought French plein-air painting to Japan,
+        and graduated from the Tokyo School of Fine Arts in 1904. From 1907 to 1915 he lived
+        in Europe, mostly France, on a government grant, studying both Western painting and
+        craft design. His painting <em>South Wind</em> is in the collection of the National
+        Museum of Modern Art, Tokyo.
+      </p>
+      <p>
+        That double training matters for the dictionary. Wada knew the Western color wheel
+        from the inside, and he knew Japanese dye, textile and print traditions from home. His
+        color work is an attempt to write down the Japanese way of pairing colors, which leans on
+        muted, in-between shades that a Western primary-and-complement system has no names for.
+      </p>
+
+      <h2 id="color">From color research to a national standard</h2>
+      <p>
+        In 1932 he became professor of design at his old school. In 1933 and 1934 he published
+        <em>Haishoku Soukan</em> (<span lang="ja">配色総監</span>), six volumes documenting more
+        than a thousand color combinations. In 1945 he turned the Japan Standard Color
+        Association into the Japan Color Research Institute and led it; in 1951 the institute
+        finished Japan's first comprehensive standard color chart. He was a member of the Japan
+        Art Academy and was named a Person of Cultural Merit in 1958.
+      </p>
+
+      <h2 id="oscar">The Oscar for Gate of Hell</h2>
+      <p>
+        In 1953 Wada designed the color and costumes for <em>Gate of Hell</em>
+        (<span lang="ja">地獄門</span>), one of Daiei's first color films. It won the Palme d'Or
+        at Cannes in 1954, where its color was singled out, and Wada won the Academy Award for
+        Best Costume Design at the 27th Academy Awards in March 1955. It is the same eye at
+        work as in the dictionary: whole scenes built from a few deliberately paired colors.
+      </p>
+
+      <h2 id="dictionary">The dictionary, then and now</h2>
+      <p>
+        The book sold today is not the 1930s original. Seigensha's <em>A Dictionary of Color
+        Combinations</em> (2011) is a compact edition based on <em>Haishoku Soukan</em>, with
+        {N} combinations, and a second volume followed in 2020. Measured across the {N} plates
+        on this site:
+      </p>
+      <ul class="data-stats">
+        <li><strong>{distinctColors}</strong> distinct colors are reused across all plates.</li>
+        <li><strong>{twoColor}</strong> plates pair two colors, <strong>{threeColor}</strong> use three and <strong>{fourColor}</strong> use four.</li>
+      </ul>
+      <p>The first plates in the book, to start with:</p>
+      <ul class="mood-examples">
+        {firstPlates.map((p) => (
+          <li>
+            <span class="mood-swatches" aria-hidden="true">
+              {p.colors.map((c) => (
+                <span class="data-swatch" style={`background:${c.hex}`}></span>
+              ))}
+            </span>
+            <a href={`/palettes/${p.slug}/`}>{p.title}</a>
+          </li>
+        ))}
+      </ul>
+      <p>
+        Browse <a href="/browse/">all {N} combinations</a>, compare
+        <a href="/compare/wada-vol-1-vs-vol-2/">Volume 1 and Volume 2</a>, or read
+        <a href="/data/sanzo-wada-color-analysis/">what the numbers say about his palette</a>.
+      </p>
+
+      <h2 id="timeline">Timeline</h2>
+      <dl class="wada-timeline">
+        {timeline.map(([year, text]) => (
+          <div class="wada-timeline__row">
+            <dt>{year}</dt>
+            <dd>{text}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <h2 id="faq">Questions people ask</h2>
+      {faqs.map((f) => (
+        <section class="wada-faq">
+          <h3>{f.q}</h3>
+          <p>{f.a}</p>
+        </section>
+      ))}
+
+      <p class="article-related">
+        Sources: the English Wikipedia article on Sanzo Wada (read 6 October 2026) and the
+        Seigensha editions. Keep reading:
+        <a href="/learn/wada-color-psychology/">color psychology in Wada's system</a> ·
+        <a href="/learn/japanese-color-glossary/">Japanese color glossary</a> ·
+        <a href="/about/">about this archive</a>.
+      </p>
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <FurtherReading
+        pageClass="learn"
+        title="Wada's books and the ones beside them"
+        intro="Both Seigensha volumes, and the color histories designers keep next to them."
+        limit={4}
+      />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .data-stats { max-width: 65ch; margin: 0 0 1.5rem; padding-left: 1.5rem; }
+  .data-stats li { margin-bottom: 0.5rem; }
+  .mood-examples { list-style: none; margin: 0 0 1.5rem; padding: 0; max-width: 65ch; }
+  .mood-examples li {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border); flex-wrap: wrap;
+  }
+  .mood-swatches { display: inline-flex; gap: 2px; flex: none; }
+  .data-swatch {
+    width: 1.5rem; height: 1.5rem; border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.12); flex: none;
+  }
+  .wada-timeline { max-width: 65ch; margin: 0 0 2rem; }
+  .wada-timeline__row {
+    display: grid; grid-template-columns: 6.5rem 1fr; gap: 0.75rem;
+    padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);
+  }
+  .wada-timeline dt { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .wada-timeline dd { margin: 0; }
+  .wada-faq h3 { margin-top: 1.5rem; }
+  .article-related { margin-top: 2rem; font-size: 0.9375rem; }
+  .article-related a { color: var(--color-accent-500); text-decoration: underline; text-underline-offset: 2px; }
+  .article-end {
+    margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border);
+    font-style: italic; color: var(--color-ink-500); font-size: 0.9375rem;
+  }
+</style>
