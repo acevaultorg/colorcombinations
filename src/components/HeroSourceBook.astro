@@ -18,8 +18,10 @@ import { AMAZON } from "@/config/monetization";
 interface Props {
   lead: string;
   surface: string;
+  /** Link text; defaults to the line measured on /browse/ (keep it unless the page needs different wording). */
+  label?: string;
 }
-const { lead, surface } = Astro.props;
+const { lead, surface, label = "Get Sanzo Wada's 1933 Dictionary on Amazon →" } = Astro.props;
 const href = AMAZON.link("4861522471", surface);
 const showDisclosure = AMAZON.isLive;
 ---
@@ -34,7 +36,7 @@ const showDisclosure = AMAZON.isLive;
     data-event-surface={surface}
     data-from="hero-buyline"
     data-book="A Dictionary of Color Combinations"
-  >Get Sanzo Wada's 1933 Dictionary on Amazon →</a>
+  >{label}</a>
   {showDisclosure && (
     <span class="hero-source-book__disclosure"> — affiliate link; your price is unchanged. As an Amazon Associate we earn from qualifying purchases.</span>
   )}
