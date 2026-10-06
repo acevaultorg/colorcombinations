@@ -2,6 +2,7 @@
 import AskAmili from '../../../components/AskAmili.astro';
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import BundleCta from "@components/BundleCta.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
 import ShareBar from "@components/ShareBar.astro";
@@ -213,6 +214,7 @@ const jsonLd = [
         </div>
       </div>
       <p class="mt-4 max-w-2xl text-stone-700">{answer}</p>
+      <HeroSourceBook lead="Most combinations in this archive come from one 1933 book." surface="ctgw-hero" />
       <AskAmili />
       <p class="mt-4 text-sm"><a class="underline" href={`/tools/complementary-colors/?hex=${color.hex.slice(1)}`}>Find {color.name.toLowerCase()}’s complementary color on the color wheel →</a></p>
     </header>

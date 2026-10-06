@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import BundleCta from "@components/BundleCta.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
 import { ART_SUPPLIES } from "@/config/monetization";
@@ -220,6 +221,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors-that-go-with/[color]/[con
         </div>
       </div>
       <p class="answer mt-5 text-lg leading-relaxed text-stone-700">{answer}</p>
+      <HeroSourceBook lead="Most combinations in this archive come from one 1933 book." surface="ctgw-context-hero" />
 
       <!-- Top combinations: the answer shown as colour, before the longer reading below.
            The top three matched archive plates, with their real hex colours. -->

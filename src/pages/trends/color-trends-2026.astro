@@ -15,6 +15,7 @@
  * Confirmed exact hexes: Pantone Cloud Dancer #F0EEE9, BM Silhouette #57504c.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
@@ -247,6 +248,7 @@ const grid = PICKS.slice(2);
         light</strong> and <strong>grounded, tactile earth</strong>. Here is the
         complete set, side by side, with the meta-trend that ties them together.
       </p>
+      <HeroSourceBook lead="Trends change every year; most palettes on this site come from one 1933 book." surface="trends-hero" />
       <p class="coty-hero__meta">
         By <a class="coty-hero__byline" href="/about/" rel="author">Paulo de Vries</a>
         · Last verified <time datetime={VERIFIED}>2 September 2026</time>

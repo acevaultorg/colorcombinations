@@ -36,6 +36,7 @@
  * entries there and repoint these cards.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import { pairingPaths } from "@data/pairings";
@@ -317,6 +318,7 @@ const jsonLd = [
         greens and blues. Here is every pick to date, what each brand actually
         said, and who is still to come.
       </p>
+      <HeroSourceBook lead="Trends change every year; most palettes on this site come from one 1933 book." surface="trends-hero" />
       <p class="coty-hero__meta">
         By <a class="coty-hero__byline" href="/about/" rel="author">Paulo de Vries</a>
         · Last verified <time datetime={VERIFIED}>1 October 2026</time>
