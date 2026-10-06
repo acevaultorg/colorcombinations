@@ -71,7 +71,7 @@ wadaPalettes.forEach((p, i) => {
   const plate = i + 1;
   const s = wadaSizes.get(n);
   if (s) { s.count++; s.last = plate; } else wadaSizes.set(n, { count: 1, first: plate, last: plate });
-  for (const name of new Set(p.colors.map((c) => c.nameRomaji))) {
+  for (const name of new Set(p.colors.map((c) => c.nameRomaji).filter((n): n is string => !!n))) {
     const hex = p.colors.find((c) => c.nameRomaji === name)!.hex;
     const u = wadaColorUse.get(name);
     if (u) u.count++; else wadaColorUse.set(name, { hex, count: 1 });
