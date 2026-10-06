@@ -2,6 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import { collections, paletteSetForCollection } from "@/data/collections";
 
 const title = "Collections";
@@ -63,6 +64,10 @@ const jsonLd = [
       <p class="collections-hero__lede">
         {collections.length} curated groupings — browse by use case, season, hue family, or tradition. Every collection pairs an editorial shortlist with every matching plate from the full Wada catalog.
       </p>
+      <HeroSourceBook
+        lead="Every collection draws on the 348 plates of one 1933 book."
+        surface="collections-index-hero"
+      />
     </div>
   </section>
 

@@ -6,6 +6,7 @@ import SavePalette from "@components/SavePalette.astro";
 import ProCta from "@components/ProCta.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import ContrastMatrix from "@components/ContrastMatrix.astro";
 import ShareBar from "@components/ShareBar.astro";
 import StickyBuyBar from "@components/StickyBuyBar.astro";
@@ -386,6 +387,10 @@ const jsonLd = [
           )}
         </h1>
         <p class="palette-hero__summary cc-palette-intro">{palette.summary}</p>
+        <HeroSourceBook
+          lead={isWada ? "This plate is one of 348 in a single 1933 book." : "Most palettes in this archive come from one 1933 book."}
+          surface="palettes-hero"
+        />
       </div>
     </div>
   </section>

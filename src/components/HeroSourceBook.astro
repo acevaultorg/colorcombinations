@@ -1,0 +1,69 @@
+---
+/**
+ * HeroSourceBook — the one-line "source book" buy line for a page hero.
+ *
+ * Extracted 2026-10-06 (card muwq30znv5p0xo) from the /browse/ hero line (6f3a7f4), which took
+ * /browse/ from 0 to 3.8 Amazon clicks per 100 views in its first week (GA4, 09-21..09-27 vs
+ * 09-28..10-04). The busiest page types (/palettes/*, /colors/*, /collections/*, /colors,
+ * /collections) carried 11-41 buy links each, but the first sat 331-729 words down, below the
+ * phone fold; they clicked at 0.4-3.6 per 100 views. This puts the same line in their hero.
+ *
+ * `lead` must be TRUE for the page it sits on: only the 348 `wada-NNN-` plates come from the
+ * 1933 dictionary; the 30 editorial palettes do not (see palettes/[slug].astro provenance gate).
+ * `surface` rides as ?c= (GA4 page_class, beacon &p=, Amazon ascsubtag), so each page type is
+ * attributable on its own.
+ */
+import { AMAZON } from "@/config/monetization";
+
+interface Props {
+  lead: string;
+  surface: string;
+}
+const { lead, surface } = Astro.props;
+const href = AMAZON.link("4861522471", surface);
+const showDisclosure = AMAZON.isLive;
+---
+<p class="hero-source-book">
+  <img class="hero-source-book__cover" src="/book-covers/wada-vol-1.jpg" alt="Cover of A Dictionary of Color Combinations, Vol. 1 (Seigensha)" width="48" height="66" decoding="async" />
+  {lead}
+  <a
+    href={href}
+    rel="sponsored nofollow noopener"
+    target="_blank"
+    data-event="amazon_click"
+    data-event-surface={surface}
+    data-from="hero-buyline"
+    data-book="A Dictionary of Color Combinations"
+  >Get Sanzo Wada's 1933 Dictionary on Amazon →</a>
+  {showDisclosure && (
+    <span class="hero-source-book__disclosure"> — affiliate link; your price is unchanged. As an Amazon Associate we earn from qualifying purchases.</span>
+  )}
+</p>
+
+<style>
+  .hero-source-book {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    color: var(--color-ink-500);
+    line-height: 1.55;
+    margin: 1rem 0 0;
+    max-width: 56ch;
+  }
+  .hero-source-book a {
+    color: var(--color-ink-800);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    display: inline-block;
+    padding-block: 0.75rem;
+  }
+  .hero-source-book a:hover { color: var(--color-accent-500); }
+  .hero-source-book__cover {
+    float: left;
+    margin: 0.2rem 0.75rem 0.25rem 0;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+  }
+  .hero-source-book::after { content: ""; display: block; clear: both; }
+  .hero-source-book__disclosure { color: var(--color-ink-500); font-size: 0.8125rem; }
+</style>

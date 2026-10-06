@@ -4,6 +4,7 @@ import PaletteCard from "@components/PaletteCard.astro";
 import ColorHarmony from "@components/ColorHarmony.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import BundleCta from "@components/BundleCta.astro";
 import StickyBuyBar from "@components/StickyBuyBar.astro";
 import ShareActions from "@components/ShareActions.astro";
@@ -325,6 +326,10 @@ const jsonLd = [
         <h1 class="display-hero text-balance">{color.name}</h1>
         {color.nameJa && <p class="color-hero__ja">{color.nameJa}</p>}
         {color.meaning && <p class="color-hero__meaning cc-color-intro">{color.meaning}</p>}
+        <HeroSourceBook
+          lead={color.paletteSlugs.some((s) => s.startsWith("wada-")) ? `${color.name} is one of the colors Sanzo Wada used in his 1933 book.` : "Most colors in this archive come from one 1933 book."}
+          surface="colors-hero"
+        />
         <ShareActions
           title={`${color.name}${color.nameJa ? ` (${color.nameJa})` : ""}`}
           url={new URL(`/colors/${color.slug}`, Astro.site).toString()}
