@@ -1,0 +1,337 @@
+---
+/**
+ * /learn/color-dictionaries/ — the famous color dictionaries, compared (2026-10-07, subchief-1-amazon).
+ *
+ * Demand (Bing Webmaster GetQueryStats, 120 days 2026-06-05..10-02): generic "dictionary of colors"
+ * intent with no guide page on the site: "color dictionary" 160 impressions (pos 5.8), "the color
+ * dictionary" 34, "dictionary of colors" 27, "colour dictionary" 21, "dictionary of colours" 14.
+ * /colors/ (the named-color list) already ranks for "color dictionary", so this page answers the
+ * other reading of the query (which dictionaries exist, which to buy) and sends list-seekers to
+ * /colors/ in its first paragraph. Title deliberately avoids the bare phrase "Color Dictionary".
+ *
+ * Sources (read 2026-10-07): English Wikipedia "Werner's Nomenclature of Colours" (Syme, 1814, 108
+ * colours; 1821 second edition used by Darwin on the Beagle) and Smithsonian Books' 2018 facsimile
+ * listing (110 swatches in 13 palettes); English Wikipedia "ISCC–NBS system" (Kelly & Judd, NBS
+ * Circular 553, 1955; 267 named categories); library catalogue records for Maerz & Paul, A Dictionary
+ * of Color (McGraw-Hill, 1930; 56 color plates; second edition 1950); hanmoto.com for the Seigensha
+ * Wada edition (July 2010). Shelf facts for Adams and Krause come from the verified shelf in
+ * src/config/monetization.ts. Archive counts are computed at build time, never typed.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
+import { wadaCatalog } from "@data/palettes";
+import { allColors } from "@data/colors";
+import { FURTHER_READING, COLOR_REFERENCE_LIBRARY, type CuratedBook } from "@/config/monetization";
+
+const N = wadaCatalog().length;
+const namedColors = allColors();
+const wadaColorCount = namedColors.filter((c) => c.paletteSlugs.some((s) => s.startsWith("wada-"))).length;
+
+const shelfSlugs = [
+  "werners-nomenclature-of-colours",
+  "a-dictionary-of-color-combinations",
+  "a-dictionary-of-color-combinations-vol-2",
+  "the-designers-dictionary-of-color",
+  "color-index-xl",
+];
+const pool = [...FURTHER_READING, ...COLOR_REFERENCE_LIBRARY];
+const shelf: CuratedBook[] = shelfSlugs
+  .map((s) => pool.find((b) => b.slug === s))
+  .filter((b): b is CuratedBook => Boolean(b));
+if (shelf.length !== shelfSlugs.length) {
+  throw new Error(`learn/color-dictionaries: shelf book missing (${shelf.length}/${shelfSlugs.length})`);
+}
+
+const title = "Famous Color Dictionaries, From Werner's 1814 Nomenclature to Sanzo Wada";
+const description = `The color dictionaries designers and naturalists actually use: Werner's Nomenclature of Colours (1814), Maerz and Paul (1930), Sanzo Wada's combinations (1933–34), the ISCC–NBS names (1955) and two modern ones. What each holds, which you can still buy, and ${N} Wada combinations free.`;
+const keywords = [
+  "color dictionary",
+  "colour dictionary",
+  "dictionary of colors",
+  "famous color dictionaries",
+  "Werner's Nomenclature of Colours",
+  "Maerz and Paul Dictionary of Color",
+  "ISCC-NBS dictionary of color names",
+  "A Dictionary of Color Combinations",
+];
+const SITE_FIRST_PUBLISHED = "2026-10-07T00:00:00Z";
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and the data it renders. */
+const BUILD_DATE = contentDate("src/pages/learn/color-dictionaries/index.astro", "src/data/palettes.ts");
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/color-dictionaries/`;
+
+type Row = { name: string; year: string; who: string; holds: string; buy: string; href?: string };
+const rows: Row[] = [
+  {
+    name: "Werner's Nomenclature of Colours",
+    year: "1814 (2nd ed. 1821)",
+    who: "Patrick Syme, after the mineralogist A. G. Werner",
+    holds: "108 named colours, each tied to an animal, plant and mineral example",
+    buy: "Yes, Smithsonian facsimile (2018)",
+    href: "/books/werners-nomenclature-of-colours/",
+  },
+  {
+    name: "A Dictionary of Color",
+    year: "1930 (2nd ed. 1950)",
+    who: "A. Maerz and M. Rea Paul",
+    holds: "56 color plates of samples with their trade and historic names",
+    buy: "Out of print; used copies only",
+  },
+  {
+    name: "Haishoku Soukan → A Dictionary of Color Combinations",
+    year: "1933–34 (Seigensha 2010)",
+    who: "Sanzo Wada",
+    holds: `Color combinations rather than single colors; ${N} in the Seigensha edition`,
+    buy: "Yes, Vol. 1 and Vol. 2",
+    href: "/books/a-dictionary-of-color-combinations/",
+  },
+  {
+    name: "ISCC–NBS Dictionary of Color Names",
+    year: "1955",
+    who: "Kenneth L. Kelly and Deane B. Judd (US National Bureau of Standards)",
+    holds: "267 named color categories, cross-referenced to names from other color systems",
+    buy: "A government circular (NBS Circular 553), not a retail book",
+  },
+  {
+    name: "The Designer's Dictionary of Color",
+    year: "2017",
+    who: "Sean Adams (Abrams)",
+    holds: "Thirty key colors, their history and how they behave together",
+    buy: "Yes",
+    href: "/books/the-designers-dictionary-of-color/",
+  },
+  {
+    name: "Color Index XL",
+    year: "2017",
+    who: "Jim Krause (Watson-Guptill)",
+    holds: "1,100+ ready-made palettes with CMYK and RGB values",
+    buy: "Yes",
+    href: "/books/color-index-xl/",
+  },
+];
+
+const faqs = [
+  {
+    q: "What is a color dictionary?",
+    a: "A reference that pairs printed color samples with names, values or combinations, so different people can describe or reuse exactly the same color. Some list single named colors (Werner, Maerz and Paul, ISCC–NBS); Sanzo Wada's lists colors that work together.",
+  },
+  {
+    q: "What is the most famous color dictionary?",
+    a: `For naturalists it is Werner's Nomenclature of Colours, the book Charles Darwin used on the voyage of the Beagle. For designers today it is Sanzo Wada's A Dictionary of Color Combinations, whose ${N} combinations are all free to browse on this site.`,
+  },
+  {
+    q: "Is there a free color dictionary online?",
+    a: `Yes. This site lists ${wadaColorCount} named colors from Sanzo Wada's dictionary with hex, RGB and CMYK values, plus all ${N} of his combinations. The 1955 ISCC–NBS dictionary was published by the US government as NBS Circular 553.`,
+  },
+  {
+    q: "Which color dictionary should I buy?",
+    a: "To name colors you see in nature, Werner's Nomenclature. For palettes that work, Wada's A Dictionary of Color Combinations. For fast palettes with print and screen values, Color Index XL. To understand what single colors mean in design, The Designer's Dictionary of Color.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Guide",
+    author: { "@type": "Organization", "@id": `${siteUrl}#organization`, name: "The Dictionary of Color Combinations" },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Color dictionaries" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  adContent
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/about.png"
+  type="article"
+  modifiedTime={BUILD_DATE}
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Color dictionaries</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Guide · Reference books</p>
+        <h1 class="display-hero text-balance">The famous color dictionaries</h1>
+        <p class="article-hero__lede">
+          Six color dictionaries, from a naturalist's pocket book of 1814 to the designer's
+          palette books of today: what each one holds and which you can still buy. Looking for a
+          list of color names instead? <a href="/colors/">Browse {wadaColorCount} named colors</a>
+          with hex values, free.
+        </p>
+        <HeroSourceBook
+          lead="The one designers reach for most is Sanzo Wada's."
+          surface="learn-color-dictionaries-hero"
+          label="Get A Dictionary of Color Combinations on Amazon →"
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <h2 id="compared">Six dictionaries at a glance</h2>
+      <div class="dict-table-wrap">
+        <table class="dict-table">
+          <thead>
+            <tr><th scope="col">Dictionary</th><th scope="col">Year</th><th scope="col">What it holds</th><th scope="col">Can you buy it?</th></tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <th scope="row">
+                  {r.href ? <a href={r.href}>{r.name}</a> : r.name}
+                  <span class="dict-who">{r.who}</span>
+                </th>
+                <td class="dict-year">{r.year}</td>
+                <td>{r.holds}</td>
+                <td>{r.buy}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="werner">Werner's Nomenclature of Colours (1814)</h2>
+      <p>
+        The German mineralogist Abraham Gottlob Werner devised a fixed set of color terms for
+        describing minerals. The Edinburgh flower painter Patrick Syme turned it into a book in
+        1814: 108 colours, each painted as a swatch and tied to an example from the animal,
+        vegetable and mineral worlds, so a naturalist in the field could name a color the same
+        way as everyone else. The 1821 second edition is the one Charles Darwin used on the
+        voyage of the Beagle. Smithsonian Books reissued it in 2018 as a pocket facsimile with
+        110 swatches in 13 palettes.
+      </p>
+
+      <h2 id="maerz-paul">Maerz and Paul, A Dictionary of Color (1930)</h2>
+      <p>
+        A. Maerz and M. Rea Paul's book, published by McGraw-Hill in New York in 1930 with a
+        second edition in 1950, set out to match the color names used in trade, fashion and
+        history to printed samples, on 56 color plates. Its names are among those the 1955 ISCC–NBS dictionary
+        cross-referenced. It is out of print and turns up only second-hand.
+      </p>
+
+      <h2 id="wada">Sanzo Wada, combinations instead of names (1933–34)</h2>
+      <p>
+        Sanzo Wada's six-volume study <em>Haishoku Soukan</em> did something different: it
+        recorded which colors work together. The Kyoto publisher Seigensha brought it back as
+        <em>A Dictionary of Color Combinations</em> in 2010, with {N} combinations, and a
+        Volume II in 2020. Every one of those {N} combinations is on this site with hex, RGB and
+        CMYK values: <a href="/browse/">browse them all</a>, read
+        <a href="/learn/sanzo-wada/">who Wada was</a>, or see
+        <a href="/compare/wada-vol-1-vs-vol-2/">how the two volumes differ</a>.
+      </p>
+
+      <h2 id="iscc-nbs">The ISCC–NBS Dictionary of Color Names (1955)</h2>
+      <p>
+        The Inter-Society Color Council and the US National Bureau of Standards built a system
+        of standard color names, approved in 1939. In 1955 Kenneth Kelly and Deane Judd published
+        it as a dictionary (NBS Circular 553) with 267 named color categories such as
+        "vivid red" or "grayish olive", and cross-referenced the names used in other color
+        systems and charts to it, so one color name could be translated into another.
+      </p>
+
+      <h2 id="modern">Two modern ones for designers</h2>
+      <p>
+        Sean Adams' <em>The Designer's Dictionary of Color</em> (Abrams, 2017) takes thirty key
+        colors one at a time, with their history and real design examples. Jim Krause's
+        <em>Color Index XL</em> (Watson-Guptill, 2017) is the deadline book: more than 1,100
+        ready-made palettes with CMYK and RGB values.
+      </p>
+
+      <h2 id="which">Which one should you get?</h2>
+      <ul class="dict-pick">
+        <li><strong>To name colors you see in nature:</strong> <a href="/books/werners-nomenclature-of-colours/">Werner's Nomenclature</a>.</li>
+        <li><strong>For palettes that already work:</strong> <a href="/books/a-dictionary-of-color-combinations/">Wada's A Dictionary of Color Combinations</a>, or browse its {N} combinations here first.</li>
+        <li><strong>For fast palettes with print and screen values:</strong> <a href="/books/color-index-xl/">Color Index XL</a>.</li>
+        <li><strong>To understand what single colors mean:</strong> <a href="/books/the-designers-dictionary-of-color/">The Designer's Dictionary of Color</a>.</li>
+      </ul>
+
+      <h2 id="faq">Questions people ask</h2>
+      {faqs.map((f) => (
+        <section class="dict-faq">
+          <h3>{f.q}</h3>
+          <p>{f.a}</p>
+        </section>
+      ))}
+
+      <p class="article-related">
+        Sources (read 7 October 2026): the English Wikipedia articles on Werner's Nomenclature of
+        Colours and on the ISCC–NBS system, Smithsonian Books' description of its 2018 facsimile,
+        library catalogue records for Maerz and Paul, and the Japanese books database hanmoto.com
+        for the Seigensha edition. Archive counts are computed from this site's data. Keep
+        reading: <a href="/learn/japanese-color-glossary/">Japanese color glossary</a> ·
+        <a href="/glossary/">color terms glossary</a> ·
+        <a href="/shop/color-reference-library/">the color reference library</a>.
+      </p>
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <FurtherReading
+        pageClass="learn-color-dictionaries"
+        title="The color dictionaries you can still buy"
+        intro="Werner's facsimile, both Wada volumes, and the two modern designer's dictionaries."
+        books={shelf}
+      />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .dict-table-wrap { overflow-x: auto; margin: 0 0 2rem; -webkit-overflow-scrolling: touch; }
+  .dict-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; min-width: 34rem; }
+  .dict-table th, .dict-table td {
+    text-align: left; vertical-align: top; padding: 0.625rem 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .dict-table thead th { font-weight: 600; color: var(--color-ink-500); font-size: 0.8125rem; }
+  .dict-table tbody th { font-weight: 600; }
+  .dict-table a { color: var(--color-accent-500); text-decoration: underline; text-underline-offset: 2px; }
+  .dict-who { display: block; font-weight: 400; color: var(--color-ink-500); font-size: 0.8125rem; margin-top: 0.25rem; }
+  .dict-year { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .dict-pick { max-width: 65ch; margin: 0 0 2rem; padding-left: 1.25rem; }
+  .dict-pick li { margin-bottom: 0.625rem; }
+  .dict-pick a { color: var(--color-accent-500); text-decoration: underline; text-underline-offset: 2px; }
+  .dict-faq h3 { margin-top: 1.5rem; }
+  .article-related { margin-top: 2rem; font-size: 0.9375rem; }
+  .article-related a { color: var(--color-accent-500); text-decoration: underline; text-underline-offset: 2px; }
+  .article-end {
+    margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border);
+    font-style: italic; color: var(--color-ink-500); font-size: 0.9375rem;
+  }
+</style>
