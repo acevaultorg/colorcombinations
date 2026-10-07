@@ -1,0 +1,959 @@
+{
+ "ridgwayNamesParsed": 1092,
+ "rows": [
+  {
+   "wada": "Aconite Violet",
+   "tier": "identical",
+   "ridgway": "Aconite Violet",
+   "plate": "XXXVII"
+  },
+  {
+   "wada": "Andover Green",
+   "tier": "identical",
+   "ridgway": "Andover Green",
+   "plate": "XLVII"
+  },
+  {
+   "wada": "Antwarp Blue",
+   "tier": "spelling",
+   "ridgway": "Antwerp Blue",
+   "plate": "VIII"
+  },
+  {
+   "wada": "Apricot Orange",
+   "tier": "identical",
+   "ridgway": "Apricot Orange",
+   "plate": "XIV"
+  },
+  {
+   "wada": "Apricot Yellow",
+   "tier": "identical",
+   "ridgway": "Apricot Yellow",
+   "plate": "IV"
+  },
+  {
+   "wada": "Artemesia Green",
+   "tier": "spelling",
+   "ridgway": "Artemisia Green",
+   "plate": "XLVII"
+  },
+  {
+   "wada": "Benzol Green",
+   "tier": "identical",
+   "ridgway": "Benzol Green",
+   "plate": "VII"
+  },
+  {
+   "wada": "Black",
+   "tier": "identical",
+   "ridgway": "Black",
+   "plate": "LIII"
+  },
+  {
+   "wada": "Blackish Olive",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Blue",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Blue Violet",
+   "tier": "punctuation",
+   "ridgway": "Blue-Violet",
+   "plate": "X"
+  },
+  {
+   "wada": "Brick Red",
+   "tier": "identical",
+   "ridgway": "Brick Red",
+   "plate": "XIII"
+  },
+  {
+   "wada": "Brown",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Buffy Citrine",
+   "tier": "identical",
+   "ridgway": "Buffy Citrine",
+   "plate": "XVI"
+  },
+  {
+   "wada": "Burnt Sienna",
+   "tier": "identical",
+   "ridgway": "Burnt Sienna",
+   "plate": "II"
+  },
+  {
+   "wada": "Calamine BLue",
+   "tier": "punctuation",
+   "ridgway": "Calamine Blue",
+   "plate": "VIII"
+  },
+  {
+   "wada": "Cameo Pink",
+   "tier": "identical",
+   "ridgway": "Cameo Pink",
+   "plate": "XXVI"
+  },
+  {
+   "wada": "Carmine",
+   "tier": "identical",
+   "ridgway": "Carmine",
+   "plate": "I"
+  },
+  {
+   "wada": "Carmine Red",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Cerulian Blue",
+   "tier": "spelling",
+   "ridgway": "Cerulean Blue",
+   "plate": "VIII"
+  },
+  {
+   "wada": "Chromium Green",
+   "tier": "identical",
+   "ridgway": "Chromium Green",
+   "plate": "XXXII"
+  },
+  {
+   "wada": "Cinnamon Buff",
+   "tier": "punctuation",
+   "ridgway": "Cinnamon-Buff",
+   "plate": "XXIX"
+  },
+  {
+   "wada": "Cinnamon Rufous",
+   "tier": "punctuation",
+   "ridgway": "Cinnamon-Rufous",
+   "plate": "XIV"
+  },
+  {
+   "wada": "Citrine",
+   "tier": "identical",
+   "ridgway": "Citrine",
+   "plate": "IV"
+  },
+  {
+   "wada": "Citron Yellow",
+   "tier": "identical",
+   "ridgway": "Citron Yellow",
+   "plate": "XVI"
+  },
+  {
+   "wada": "Cobalt Green",
+   "tier": "identical",
+   "ridgway": "Cobalt Green",
+   "plate": "XIX"
+  },
+  {
+   "wada": "Coral Red",
+   "tier": "identical",
+   "ridgway": "Coral Red",
+   "plate": "XIII"
+  },
+  {
+   "wada": "Corinthian Pink",
+   "tier": "identical",
+   "ridgway": "Corinthian Pink",
+   "plate": "XXVII"
+  },
+  {
+   "wada": "Cossack Green",
+   "tier": "identical",
+   "ridgway": "Cossack Green",
+   "plate": "VI"
+  },
+  {
+   "wada": "Cotinga Purple",
+   "tier": "identical",
+   "ridgway": "Cotinga Purple",
+   "plate": "XI"
+  },
+  {
+   "wada": "Cream Yellow",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Dark Citrine",
+   "tier": "identical",
+   "ridgway": "Dark Citrine",
+   "plate": "IV"
+  },
+  {
+   "wada": "Dark Greenish Glaucous",
+   "tier": "identical",
+   "ridgway": "Dark Greenish Glaucous",
+   "plate": "XLI"
+  },
+  {
+   "wada": "Dark Medici Blue",
+   "tier": "identical",
+   "ridgway": "Dark Medici Blue",
+   "plate": "XLVIII"
+  },
+  {
+   "wada": "Dark Slate Purple",
+   "tier": "punctuation",
+   "ridgway": "Dark Slate-Purple",
+   "plate": "XLIV"
+  },
+  {
+   "wada": "Dark Soft Violet",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Dark Tyrian Blue",
+   "tier": "identical",
+   "ridgway": "Dark Tyrian Blue",
+   "plate": "XXXIV"
+  },
+  {
+   "wada": "Deep Grayish Olive",
+   "tier": "identical",
+   "ridgway": "Deep Grayish Olive",
+   "plate": "XLVI"
+  },
+  {
+   "wada": "Deep Indigo",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Deep Lyons Blue",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Deep Slate Green",
+   "tier": "punctuation",
+   "ridgway": "Deep Slate-Green",
+   "plate": "XLVII"
+  },
+  {
+   "wada": "Deep Slate Olive",
+   "tier": "punctuation",
+   "ridgway": "Deep Slate-Olive",
+   "plate": "XLVII"
+  },
+  {
+   "wada": "Deep Violet / Plumbeous",
+   "tier": "punctuation",
+   "ridgway": "Deep Violet-Plumbeous",
+   "plate": "XLIX"
+  },
+  {
+   "wada": "Diamine Green",
+   "tier": "identical",
+   "ridgway": "Diamine Green",
+   "plate": "VII"
+  },
+  {
+   "wada": "Dull Blue Violet",
+   "tier": "punctuation",
+   "ridgway": "Dull Blue-Violet",
+   "plate": "XXIV"
+  },
+  {
+   "wada": "Dull Violet Black",
+   "tier": "punctuation",
+   "ridgway": "Dull Violet-Black",
+   "plate": "XLIV"
+  },
+  {
+   "wada": "Dull Viridian Green",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Dusky Green",
+   "tier": "identical",
+   "ridgway": "Dusky Green",
+   "plate": "XXXIII"
+  },
+  {
+   "wada": "Dusky Madder Violet",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Ecru",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "English Red",
+   "tier": "identical",
+   "ridgway": "English Red",
+   "plate": "II"
+  },
+  {
+   "wada": "Eosine Pink",
+   "tier": "identical",
+   "ridgway": "Eosine Pink",
+   "plate": "I"
+  },
+  {
+   "wada": "Etruscan Red",
+   "tier": "identical",
+   "ridgway": "Etruscan Red",
+   "plate": "XXVII"
+  },
+  {
+   "wada": "Eugenia Red | A",
+   "tier": "identical",
+   "ridgway": "Eugenia Red",
+   "plate": "XIII"
+  },
+  {
+   "wada": "Eugenia Red | B",
+   "tier": "identical",
+   "ridgway": "Eugenia Red",
+   "plate": "XIII"
+  },
+  {
+   "wada": "Eupatorium Purple",
+   "tier": "identical",
+   "ridgway": "Eupatorium Purple",
+   "plate": "XXXVIII"
+  },
+  {
+   "wada": "Fawn",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Fresh Color",
+   "tier": "spelling",
+   "ridgway": "Flesh Color",
+   "plate": "XIV"
+  },
+  {
+   "wada": "Glaucous Green",
+   "tier": "punctuation",
+   "ridgway": "Glaucous-Green",
+   "plate": "XXXIII"
+  },
+  {
+   "wada": "Golden Yellow",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Grayish Lavender - A",
+   "tier": "identical",
+   "ridgway": "Grayish Lavender",
+   "plate": "XLIII"
+  },
+  {
+   "wada": "Grayish Lavender - B",
+   "tier": "identical",
+   "ridgway": "Grayish Lavender",
+   "plate": "XLIII"
+  },
+  {
+   "wada": "Green",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Green Blue",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Grenadine Pink",
+   "tier": "identical",
+   "ridgway": "Grenadine Pink",
+   "plate": "II"
+  },
+  {
+   "wada": "Hay's Russet",
+   "tier": "identical",
+   "ridgway": "Hay's Russet",
+   "plate": "XIV"
+  },
+  {
+   "wada": "Helvetia Blue",
+   "tier": "identical",
+   "ridgway": "Helvetia Blue",
+   "plate": "IX"
+  },
+  {
+   "wada": "Hermosa Pink",
+   "tier": "identical",
+   "ridgway": "Hermosa Pink",
+   "plate": "I"
+  },
+  {
+   "wada": "Hydrangea Red",
+   "tier": "identical",
+   "ridgway": "Hydrangea Red",
+   "plate": "XXVII"
+  },
+  {
+   "wada": "Indian Lake",
+   "tier": "identical",
+   "ridgway": "Indian Lake",
+   "plate": "XXVI"
+  },
+  {
+   "wada": "Isabella Color",
+   "tier": "identical",
+   "ridgway": "Isabella Color",
+   "plate": "XXX"
+  },
+  {
+   "wada": "Ivory Buff",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Jasper Red",
+   "tier": "identical",
+   "ridgway": "Jasper Red",
+   "plate": "XIII"
+  },
+  {
+   "wada": "Khaki",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Krongbergs Green",
+   "tier": "spelling",
+   "ridgway": "Kronberg's Green",
+   "plate": "XXXI"
+  },
+  {
+   "wada": "Laelia Pink",
+   "tier": "identical",
+   "ridgway": "Laelia Pink",
+   "plate": "XXXVIII"
+  },
+  {
+   "wada": "Lemon Yellow",
+   "tier": "identical",
+   "ridgway": "Lemon Yellow",
+   "plate": "IV"
+  },
+  {
+   "wada": "Light Brown Drab",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Light Brownish Olive",
+   "tier": "identical",
+   "ridgway": "Light Brownish Olive",
+   "plate": "XXX"
+  },
+  {
+   "wada": "Light Glaucous Blue",
+   "tier": "punctuation",
+   "ridgway": "Light Glaucous-Blue",
+   "plate": "XXXIV"
+  },
+  {
+   "wada": "Light Grayish Olive",
+   "tier": "identical",
+   "ridgway": "Light Grayish Olive",
+   "plate": "XLVI"
+  },
+  {
+   "wada": "Light Green Yellow",
+   "tier": "punctuation",
+   "ridgway": "Light Green-Yellow",
+   "plate": "V"
+  },
+  {
+   "wada": "Light Mauve",
+   "tier": "identical",
+   "ridgway": "Light Mauve",
+   "plate": "XXV"
+  },
+  {
+   "wada": "Light Pinkish Cinnamon",
+   "tier": "identical",
+   "ridgway": "Light Pinkish Cinnamon",
+   "plate": "XXIX"
+  },
+  {
+   "wada": "Light Porcelain Green",
+   "tier": "identical",
+   "ridgway": "Light Porcelain Green",
+   "plate": "XXXIII"
+  },
+  {
+   "wada": "Lilac",
+   "tier": "identical",
+   "ridgway": "Lilac",
+   "plate": "XXV"
+  },
+  {
+   "wada": "Lincoln Green",
+   "tier": "identical",
+   "ridgway": "Lincoln Green",
+   "plate": "XLI"
+  },
+  {
+   "wada": "Madder Brown",
+   "tier": "identical",
+   "ridgway": "Madder Brown",
+   "plate": "XIII"
+  },
+  {
+   "wada": "Maple",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Mars Brown Tobacco",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Mineral Gray",
+   "tier": "identical",
+   "ridgway": "Mineral Gray",
+   "plate": "XLVII"
+  },
+  {
+   "wada": "Naples Yellow",
+   "tier": "identical",
+   "ridgway": "Naples Yellow",
+   "plate": "XVI"
+  },
+  {
+   "wada": "Neutral Gray",
+   "tier": "identical",
+   "ridgway": "Neutral Gray",
+   "plate": "LIII"
+  },
+  {
+   "wada": "Night Green",
+   "tier": "identical",
+   "ridgway": "Night Green",
+   "plate": "VI"
+  },
+  {
+   "wada": "Nile Blue",
+   "tier": "identical",
+   "ridgway": "Nile Blue",
+   "plate": "XIX"
+  },
+  {
+   "wada": "Ochraceous Salmon",
+   "tier": "punctuation",
+   "ridgway": "Ochraceous-Salmon",
+   "plate": "XV"
+  },
+  {
+   "wada": "Ochre Red",
+   "tier": "spelling",
+   "ridgway": "Ocher Red",
+   "plate": "XXVII"
+  },
+  {
+   "wada": "Oil Green",
+   "tier": "identical",
+   "ridgway": "Oil Green",
+   "plate": "V"
+  },
+  {
+   "wada": "Old Rose",
+   "tier": "identical",
+   "ridgway": "Old Rose",
+   "plate": "XIII"
+  },
+  {
+   "wada": "Olive",
+   "tier": "identical",
+   "ridgway": "Olive",
+   "plate": "XXX"
+  },
+  {
+   "wada": "Olive Buff",
+   "tier": "punctuation",
+   "ridgway": "Olive-Buff",
+   "plate": "XL"
+  },
+  {
+   "wada": "Olive Green",
+   "tier": "punctuation",
+   "ridgway": "Olive-Green",
+   "plate": "IV"
+  },
+  {
+   "wada": "Olive Ocher",
+   "tier": "punctuation",
+   "ridgway": "Olive-Ocher",
+   "plate": "XXX"
+  },
+  {
+   "wada": "Olive Yellow",
+   "tier": "punctuation",
+   "ridgway": "Olive-Yellow",
+   "plate": "XXX"
+  },
+  {
+   "wada": "Olympic Blue",
+   "tier": "identical",
+   "ridgway": "Olympic Blue",
+   "plate": "XX"
+  },
+  {
+   "wada": "Orange",
+   "tier": "identical",
+   "ridgway": "Orange",
+   "plate": "III"
+  },
+  {
+   "wada": "Orange Citrine",
+   "tier": "punctuation",
+   "ridgway": "Orange-Citrine",
+   "plate": "IV"
+  },
+  {
+   "wada": "Orange Rufous",
+   "tier": "punctuation",
+   "ridgway": "Orange-Rufous",
+   "plate": "II"
+  },
+  {
+   "wada": "Orange Yellow",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Pale Burnt Lake",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Pale King's Blue",
+   "tier": "identical",
+   "ridgway": "Pale King's Blue",
+   "plate": "XXII"
+  },
+  {
+   "wada": "Pale Lemon Yellow",
+   "tier": "identical",
+   "ridgway": "Pale Lemon Yellow",
+   "plate": "IV"
+  },
+  {
+   "wada": "Pale Raw Umber",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Pansy Purple",
+   "tier": "identical",
+   "ridgway": "Pansy Purple",
+   "plate": "XII"
+  },
+  {
+   "wada": "Peach Red",
+   "tier": "identical",
+   "ridgway": "Peach Red",
+   "plate": "I"
+  },
+  {
+   "wada": "Peacock Blue",
+   "tier": "identical",
+   "ridgway": "Peacock Blue",
+   "plate": "VIII"
+  },
+  {
+   "wada": "Pinkish Cinnamon",
+   "tier": "identical",
+   "ridgway": "Pinkish Cinnamon",
+   "plate": "XXIX"
+  },
+  {
+   "wada": "Pistachio Green",
+   "tier": "identical",
+   "ridgway": "Pistachio Green",
+   "plate": "XLI"
+  },
+  {
+   "wada": "Pomegranite Purple",
+   "tier": "spelling",
+   "ridgway": "Pomegranate Purple",
+   "plate": "XII"
+  },
+  {
+   "wada": "Pompeian Red",
+   "tier": "identical",
+   "ridgway": "Pompeian Red",
+   "plate": "XIII"
+  },
+  {
+   "wada": "Purple Drab",
+   "tier": "punctuation",
+   "ridgway": "Purple-Drab",
+   "plate": "XLV"
+  },
+  {
+   "wada": "Pyrite Yellow",
+   "tier": "identical",
+   "ridgway": "Pyrite Yellow",
+   "plate": "IV"
+  },
+  {
+   "wada": "Rainette Green",
+   "tier": "identical",
+   "ridgway": "Rainette Green",
+   "plate": "XXXI"
+  },
+  {
+   "wada": "Raw Sienna",
+   "tier": "identical",
+   "ridgway": "Raw Sienna",
+   "plate": "III"
+  },
+  {
+   "wada": "Red",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Red Orange",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Red Violet",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Rosolanc Purple",
+   "tier": "spelling",
+   "ridgway": "Rosolane Purple",
+   "plate": "XXVI"
+  },
+  {
+   "wada": "Salvia Blue",
+   "tier": "identical",
+   "ridgway": "Salvia Blue",
+   "plate": "IX"
+  },
+  {
+   "wada": "Scarlet",
+   "tier": "identical",
+   "ridgway": "Scarlet",
+   "plate": "I"
+  },
+  {
+   "wada": "Sea Green",
+   "tier": "identical",
+   "ridgway": "Sea Green",
+   "plate": "XIX"
+  },
+  {
+   "wada": "Seashell Pink",
+   "tier": "identical",
+   "ridgway": "Seashell Pink",
+   "plate": "XIV"
+  },
+  {
+   "wada": "Sepia",
+   "tier": "identical",
+   "ridgway": "Sepia",
+   "plate": "XXIX"
+  },
+  {
+   "wada": "Slate Color",
+   "tier": "identical",
+   "ridgway": "Slate Color",
+   "plate": "LIII"
+  },
+  {
+   "wada": "Spectrum Red",
+   "tier": "identical",
+   "ridgway": "Spectrum Red",
+   "plate": "I"
+  },
+  {
+   "wada": "Spinel Red",
+   "tier": "identical",
+   "ridgway": "Spinel Red",
+   "plate": "XXVI"
+  },
+  {
+   "wada": "Sudan Brown",
+   "tier": "identical",
+   "ridgway": "Sudan Brown",
+   "plate": "III"
+  },
+  {
+   "wada": "Sulpher Yellow",
+   "tier": "spelling",
+   "ridgway": "Sulphur Yellow",
+   "plate": "V"
+  },
+  {
+   "wada": "Sulphine Yellow",
+   "tier": "identical",
+   "ridgway": "Sulphine Yellow",
+   "plate": "IV"
+  },
+  {
+   "wada": "Taupe Brown",
+   "tier": "identical",
+   "ridgway": "Taupe Brown",
+   "plate": "XLIV"
+  },
+  {
+   "wada": "Turquoise Green",
+   "tier": "identical",
+   "ridgway": "Turquoise Green",
+   "plate": "VII"
+  },
+  {
+   "wada": "Vandar Poel's Blue",
+   "tier": "spelling",
+   "ridgway": "Vanderpoel's Blue",
+   "plate": "XX"
+  },
+  {
+   "wada": "Vandyke Brown",
+   "tier": "identical",
+   "ridgway": "Vandyke Brown",
+   "plate": "XXVIII"
+  },
+  {
+   "wada": "Vandyke Red",
+   "tier": "identical",
+   "ridgway": "Vandyke Red",
+   "plate": "XIII"
+  },
+  {
+   "wada": "Venice Green",
+   "tier": "identical",
+   "ridgway": "Venice Green",
+   "plate": "VII"
+  },
+  {
+   "wada": "Veronia Purple",
+   "tier": "spelling",
+   "ridgway": "Vernonia Purple",
+   "plate": "XXXVIII"
+  },
+  {
+   "wada": "Vinaceous Cinnamon",
+   "tier": "punctuation",
+   "ridgway": "Vinaceous-Cinnamon",
+   "plate": "XXIX"
+  },
+  {
+   "wada": "Vinaceous Tawny",
+   "tier": "punctuation",
+   "ridgway": "Vinaceous-Tawny",
+   "plate": "XXVIII"
+  },
+  {
+   "wada": "Violet",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Violet Blue",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Violet Carmine",
+   "tier": "identical",
+   "ridgway": "Violet Carmine",
+   "plate": "XII"
+  },
+  {
+   "wada": "Violet Red",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Vistoris Lake",
+   "tier": "spelling",
+   "ridgway": "Victoria Lake",
+   "plate": "I"
+  },
+  {
+   "wada": "Warm Gray",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "White",
+   "tier": "identical",
+   "ridgway": "White",
+   "plate": "LIII"
+  },
+  {
+   "wada": "Yellow",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  },
+  {
+   "wada": "Yellow Green",
+   "tier": "punctuation",
+   "ridgway": "Yellow-Green",
+   "plate": "VI"
+  },
+  {
+   "wada": "Yellow Ocher",
+   "tier": "identical",
+   "ridgway": "Yellow Ocher",
+   "plate": "XV"
+  },
+  {
+   "wada": "Yellow Orange",
+   "tier": "none",
+   "ridgway": null,
+   "plate": null
+  }
+ ]
+}

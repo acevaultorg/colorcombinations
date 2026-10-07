@@ -1,0 +1,358 @@
+---
+/**
+ * /learn/ridgway-color-names/ — where the English colour names in Wada's dictionary come from
+ * (2026-10-07, subchief-1-amazon).
+ *
+ * Demand (Bing Webmaster GetQueryStats, 120 days 2026-06-05..10-02): searchers type the odd English
+ * names, often with the book's own misprints: "hay's russet" 11 impressions, "antwarp blue" 7 +
+ * "antwarp" 4, "madder brown" 7, "isabella color" 6, "dusky madder violet" 6, "grenadine pink" 4,
+ * "light brown drab" 4, "pale lemon yellow" 8. The /colors/ pages answer "what hex is it"; nothing
+ * on the site answered "why is it called that", and the color-dictionaries guide has no Ridgway.
+ *
+ * Original data: scripts/build-ridgway-match.py matches all 159 English names (src/data/wada-palettes.ts)
+ * against the index of Robert Ridgway, Color Standards and Color Nomenclature (Washington, 1912;
+ * public domain, Project Gutenberg #63087, read 2026-10-07) and writes src/data/ridgway-wada.json.
+ * Every count on this page is computed from that file at build time. Title-page facts (1,115
+ * named colors, 53 plates, curator of birds at the US National Museum, published by the author) are
+ * from the Gutenberg text. We found no published account of who chose the English names, so the page
+ * says so instead of asserting a provenance.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
+import { allColors } from "@data/colors";
+import ridgwayData from "@data/ridgway-wada.json";
+import { FURTHER_READING, COLOR_REFERENCE_LIBRARY, type CuratedBook } from "@/config/monetization";
+
+type Row = { wada: string; tier: "identical" | "punctuation" | "spelling" | "none"; ridgway: string | null; plate: string | null };
+const rows = ridgwayData.rows as Row[];
+
+const colorByName = new Map(allColors().map((c) => [c.name, c]));
+const missing = rows.filter((r) => !colorByName.has(r.wada)).map((r) => r.wada);
+if (missing.length) {
+  throw new Error(`learn/ridgway-color-names: names not in the colour list: ${missing.join(", ")}`);
+}
+const total = rows.length;
+const count = (t: Row["tier"]) => rows.filter((r) => r.tier === t).length;
+const identical = count("identical");
+const punctuation = count("punctuation");
+const spelling = count("spelling");
+const none = count("none");
+const matched = identical + punctuation + spelling;
+const pct = Math.round((matched / total) * 100);
+const misprints = rows.filter((r) => r.tier === "spelling");
+const unmatched = rows.filter((r) => r.tier === "none");
+const plainHues = new Set(["Red", "Blue", "Green", "Yellow", "Violet", "Brown"]);
+const plainCount = unmatched.filter((r) => plainHues.has(r.wada)).length;
+const colorHref = (name: string) => `/colors/${colorByName.get(name)!.slug}/`;
+const hexOf = (name: string) => colorByName.get(name)!.hex;
+
+const shelfSlugs = [
+  "a-dictionary-of-color-combinations",
+  "a-dictionary-of-color-combinations-vol-2",
+  "werners-nomenclature-of-colours",
+];
+const pool = [...FURTHER_READING, ...COLOR_REFERENCE_LIBRARY];
+const shelf: CuratedBook[] = shelfSlugs
+  .map((s) => pool.find((b) => b.slug === s))
+  .filter((b): b is CuratedBook => Boolean(b));
+if (shelf.length !== shelfSlugs.length) {
+  throw new Error(`learn/ridgway-color-names: shelf book missing (${shelf.length}/${shelfSlugs.length})`);
+}
+
+const title = "Why Wada's Colors Have Names Like Hay's Russet: Ridgway's 1912 Color Standards";
+const description = `${matched} of the ${total} English color names in Sanzo Wada's A Dictionary of Color Combinations match Robert Ridgway's 1912 Color Standards and Color Nomenclature, misprints included (Antwarp Blue, Sulpher Yellow). The full name-by-name match, with plates.`;
+const keywords = [
+  "Ridgway color names",
+  "Ridgway Color Standards and Color Nomenclature",
+  "Hay's Russet",
+  "Antwerp Blue",
+  "Isabella color",
+  "Sanzo Wada color names",
+  "A Dictionary of Color Combinations color names",
+];
+const SITE_FIRST_PUBLISHED = "2026-10-07T00:00:00Z";
+import { contentDate } from "@/lib/contentDate";
+/* Honest dateModified: the newest git commit date of this template and the data it renders. */
+const BUILD_DATE = contentDate("src/pages/learn/ridgway-color-names/index.astro", "src/data/ridgway-wada.json");
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/ridgway-color-names/`;
+
+const faqs = [
+  {
+    q: "Where do the English color names in A Dictionary of Color Combinations come from?",
+    a: `At least ${matched} of its ${total} English names (${pct}%) are names from Robert Ridgway's Color Standards and Color Nomenclature, published in Washington in 1912. We have found no published account of who chose them for the English edition.`,
+  },
+  {
+    q: "What is Hay's Russet?",
+    a: `A reddish brown that Ridgway named and painted on Plate XIV of his 1912 book. In Wada's dictionary it is ${hexOf("Hay's Russet")}, used in combinations such as plate 58 with Sea Green.`,
+  },
+  {
+    q: "Is it Antwarp Blue or Antwerp Blue?",
+    a: "Antwerp Blue, after the city. Ridgway spells it that way (Plate VIII). \"Antwarp Blue\" is one of the misprints in the English edition of Wada's dictionary, along with Sulpher Yellow, Pomegranite Purple and Cerulian Blue.",
+  },
+  {
+    q: "Can I read Ridgway's book for free?",
+    a: "Yes. It was published in 1912 and is in the public domain; Project Gutenberg has the full text with the color index, and scans of the colored plates are in several museum libraries.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Guide",
+    author: { "@type": "Organization", "@id": `${siteUrl}#organization`, name: "The Dictionary of Color Combinations" },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    citation: {
+      "@type": "Book",
+      name: "Color Standards and Color Nomenclature",
+      author: { "@type": "Person", name: "Robert Ridgway" },
+      datePublished: "1912",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: "Sanzo Wada's English color names matched to Ridgway (1912)",
+    description: `All ${total} English color names in A Dictionary of Color Combinations, each matched to Robert Ridgway's 1912 color index: ${identical} identical, ${punctuation} differing only in hyphens or capitals, ${spelling} misspelled, ${none} with no match.`,
+    url: articleUrl,
+    creator: { "@id": `${siteUrl}#organization` },
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    isBasedOn: "https://www.gutenberg.org/ebooks/63087",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Ridgway color names" },
+    ],
+  },
+];
+
+const tierLabel: Record<Row["tier"], string> = {
+  identical: "Same name",
+  punctuation: "Hyphen or capital",
+  spelling: "Misprint",
+  none: "No match",
+};
+---
+
+<BaseLayout
+  adContent
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/about.png"
+  type="article"
+  modifiedTime={BUILD_DATE}
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Ridgway color names</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Guide · Color names</p>
+        <h1 class="display-hero text-balance">Where Wada's color names come from</h1>
+        <p class="article-hero__lede">
+          Hay's Russet, Isabella Color, Vinaceous Tawny: the English names in Sanzo Wada's
+          dictionary are not Japanese and not modern. We matched all {total} of them against an
+          American ornithologist's color book of 1912. At least <strong>{matched} ({pct}%)</strong>
+          are his names, typos and all.
+        </p>
+        <HeroSourceBook
+          lead="The names come from the Seigensha edition of Wada's book."
+          surface="learn-ridgway-color-names-hero"
+          label="Get A Dictionary of Color Combinations on Amazon →"
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <h2 id="ridgway">Robert Ridgway's Color Standards (1912)</h2>
+      <p>
+        Robert Ridgway was curator of the Division of Birds at the United States National Museum
+        in Washington. Describing a bird's plumage needs exact color words, so in 1912 he published
+        himself <em>Color Standards and Color Nomenclature</em>: 53 colored plates and
+        1,115 named colors, each painted by hand and given a plate number. Ornithologists used it
+        for decades, and so did mycologists and stamp collectors. The book is in the public domain
+        and its full text is on Project Gutenberg.
+      </p>
+      <p>
+        Many of the names are his own coinages, after flowers, minerals, dyes or people:
+        Vanderpoel's Blue, Kronberg's Green, Rosolane Purple, Vernonia Purple. Words like these do
+        not turn up in two color lists by chance, which is why the overlap below is not a
+        coincidence.
+      </p>
+
+      <h2 id="match">The match, counted</h2>
+      <div class="rw-stats" role="list">
+        <div role="listitem"><span class="rw-num">{identical}</span> same name, letter for letter</div>
+        <div role="listitem"><span class="rw-num">{punctuation}</span> same name, only a hyphen or capital differs</div>
+        <div role="listitem"><span class="rw-num">{spelling}</span> a misprint of a Ridgway name</div>
+        <div role="listitem"><span class="rw-num">{none}</span> no Ridgway name</div>
+      </div>
+      <p>
+        Ridgway writes "Olive-Buff" and "Vinaceous-Tawny" with hyphens; the English edition of
+        Wada drops them. Of the {none} names with no match, {plainCount} are plain hue words such as
+        Red and Blue, which Ridgway calls "Spectrum Red" and "Spectrum Blue". Our count reads
+        Ridgway's printed index and may miss a handful of entries, so {matched} is a floor.
+      </p>
+
+      <h2 id="misprints">The {spelling} misprints</h2>
+      <p>
+        These are the names searchers copy straight from the book. The correct spelling is
+        Ridgway's.
+      </p>
+      <ul class="rw-misprints">
+        {misprints.map((r) => (
+          <li>
+            <span class="rw-swatch" style={`background:${hexOf(r.wada)}`} aria-hidden="true"></span>
+            <a href={colorHref(r.wada)}>{r.wada}</a>
+            <span class="rw-arrow" aria-hidden="true">→</span>
+            <strong>{r.ridgway}</strong>
+            <span class="rw-plate">Plate {r.plate}</span>
+          </li>
+        ))}
+      </ul>
+      <p>
+        Two of them are more than a typo: "Fresh Color" is almost certainly Ridgway's
+        <strong>Flesh Color</strong>, and "Vistoris Lake" his <strong>Victoria Lake</strong>, a dark
+        red from his first plate.
+      </p>
+
+      <h2 id="who">Who gave Wada's colors these names?</h2>
+      <p>
+        We do not know, and we have not found anyone who has published it. The English names are
+        the ones readers see in the 2010 Seigensha edition; we have not been able to check
+        whether Wada's six volumes of 1933–34 carried them too. What the match shows is that whoever named the colors in English worked from
+        Ridgway's book, copying his spellings and sometimes mistyping them. If you know the
+        history, <a href="/contact/">tell us</a> and we will add it with credit.
+      </p>
+      <p>
+        A Ridgway name is not a guarantee that Wada's swatch is Ridgway's exact shade: the two
+        books were printed decades apart with different inks. Use the hex values on each color
+        page for screen work.
+      </p>
+
+      <h2 id="all">All {total} names</h2>
+      <details class="rw-all">
+        <summary>Show the full table ({total} rows)</summary>
+        <div class="rw-table-wrap">
+          <table class="rw-table">
+            <thead>
+              <tr><th scope="col">Wada (English edition)</th><th scope="col">Ridgway 1912</th><th scope="col">Plate</th></tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr>
+                  <th scope="row">
+                    <span class="rw-swatch" style={`background:${hexOf(r.wada)}`} aria-hidden="true"></span>
+                    <a href={colorHref(r.wada)}>{r.wada}</a>
+                  </th>
+                  <td>{r.ridgway ?? "—"} <span class="rw-tier">{tierLabel[r.tier]}</span></td>
+                  <td class="rw-plate-cell">{r.plate ?? "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <h2 id="faq">Questions people ask</h2>
+      {faqs.map((f) => (
+        <section class="rw-faq">
+          <h3>{f.q}</h3>
+          <p>{f.a}</p>
+        </section>
+      ))}
+
+      <p class="article-related">
+        Sources: Robert Ridgway, <em>Color Standards and Color Nomenclature</em> (Washington,
+        1912), Project Gutenberg eBook 63087, read 7 October 2026; the English color names as
+        printed in the Seigensha edition of Wada. The match is ours and is free to reuse with
+        credit. Keep reading: <a href="/learn/color-dictionaries/">the famous color dictionaries</a> ·
+        <a href="/learn/sanzo-wada/">who Sanzo Wada was</a> ·
+        <a href="/colors/">all named colors</a>.
+      </p>
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <FurtherReading
+        pageClass="learn-ridgway-color-names"
+        title="The books behind the names"
+        intro="Both Wada volumes, and Werner's Nomenclature, the naturalists' color book from a century before Ridgway's."
+        books={shelf}
+      />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .rw-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin: 0 0 1.5rem; }
+  .rw-stats > div {
+    border: 1px solid var(--color-border); border-radius: 0.5rem; padding: 0.75rem;
+    font-size: 0.875rem; color: var(--color-ink-500); line-height: 1.35;
+  }
+  .rw-num { display: block; font-size: 1.75rem; font-weight: 600; color: var(--color-ink-900, inherit); font-variant-numeric: tabular-nums; }
+  @media (min-width: 640px) { .rw-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .rw-swatch {
+    display: inline-block; width: 1rem; height: 1rem; border-radius: 0.25rem; vertical-align: -0.15rem;
+    margin-right: 0.5rem; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12); flex: none;
+  }
+  .rw-misprints { list-style: none; padding: 0; margin: 0 0 1.5rem; }
+  .rw-misprints li {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.375rem;
+    padding: 0.5rem 0; border-bottom: 1px solid var(--color-border); min-height: 44px;
+  }
+  .rw-misprints a, .rw-table a, .article-related a, .article-body p a {
+    color: var(--color-accent-500); text-decoration: underline; text-underline-offset: 2px;
+  }
+  .rw-arrow { color: var(--color-ink-500); }
+  .rw-plate { margin-left: auto; font-size: 0.8125rem; color: var(--color-ink-500); font-variant-numeric: tabular-nums; }
+  .rw-all { margin: 0 0 2rem; }
+  .rw-all summary {
+    cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600;
+    color: var(--color-accent-500);
+  }
+  .rw-table-wrap { margin-top: 0.75rem; }
+  .rw-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  .rw-table th, .rw-table td {
+    text-align: left; vertical-align: top; padding: 0.5rem 0.375rem; border-bottom: 1px solid var(--color-border);
+  }
+  .rw-table thead th { font-weight: 600; color: var(--color-ink-500); font-size: 0.75rem; }
+  .rw-table tbody th { font-weight: 500; }
+  .rw-tier { display: block; font-size: 0.75rem; color: var(--color-ink-500); }
+  .rw-plate-cell { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .rw-faq h3 { margin-top: 1.5rem; }
+  .article-related { margin-top: 2rem; font-size: 0.9375rem; }
+  .article-end {
+    margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border);
+    font-style: italic; color: var(--color-ink-500); font-size: 0.9375rem;
+  }
+</style>
