@@ -453,12 +453,12 @@ const jsonLd = [
   }
 
   .book__inside {
-    margin: 1.5rem 0 1.25rem;
+    margin: 2.25rem 0 1.25rem;
   }
 
   .book__inside h3 {
     font-family: var(--font-serif);
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     margin: 0 0 0.75rem;
   }
 
@@ -472,20 +472,22 @@ const jsonLd = [
     max-width: 62ch;
   }
 
+  .book__runs {
+    gap: 0;
+  }
+
   .book__runs li {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.625rem 0.875rem;
-    background: var(--color-bg-elevated);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
     color: var(--color-ink-700);
   }
 
   .book__runs li span,
   .book__uses {
-    color: var(--color-ink-400);
+    color: var(--color-ink-500);
     font-size: 0.9375rem;
   }
 
@@ -512,7 +514,7 @@ const jsonLd = [
 
   .book__source {
     font-size: 0.875rem;
-    color: var(--color-ink-400) !important;
+    color: var(--color-ink-500) !important;
   }
 
   .book__related-list {
