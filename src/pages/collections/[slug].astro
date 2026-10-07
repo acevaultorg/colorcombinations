@@ -150,8 +150,23 @@ const AUTHOR = {
 const collectionFaq: { q: string; a: string }[] = [
   {
     q: `What is in the "${collection.title}" collection?`,
-    a: `${collection.title} is a curated collection of ${total} historical color palettes from Sanzo Wada's "A Dictionary of Color Combinations" (1933). ${collection.tagline}`,
+    // Count-true (2026-10-07): only `wada-NNN-` plates come from the book. The old
+    // answer said every palette did — on /collections/japanese that was 24 vs 4.
+    a: wadaInCollection === total
+      ? `${collection.title} is a curated collection of ${total} historical color palettes from Sanzo Wada's "A Dictionary of Color Combinations" (1933). ${collection.tagline}`
+      : `${collection.title} is a curated collection of ${total} color palettes. ${wadaInCollection > 0 ? `${wadaInCollection} of them are plates from Sanzo Wada's "A Dictionary of Color Combinations" (1933); the other ${total - wadaInCollection}` : `None are plates from Sanzo Wada's book; all ${total}`} were put together on this site for the theme. ${collection.tagline}`,
   },
+  // Page-specific (2026-10-07, Bing 90d via Mac reader): /collections/japanese is the site's
+  // top Bing page (3,466 impr, 238 clicks, pos 4) and its queries are about the BOOK —
+  // "japanese dictionary of color combinations" 443, "japanese color dictionary" 172,
+  // "japanese book of color combinations" 119. Facts from FURTHER_READING (monetization.ts,
+  // sources hanmoto ISBN 9784861522475 + Seigensha 2020 blurb) and /books/ plate counts.
+  ...(collection.slug === "japanese"
+    ? [{
+        q: `Is this the "Japanese dictionary of color combinations"?`,
+        a: `The book people search for as the Japanese color dictionary is Sanzo Wada's "A Dictionary of Color Combinations": his 1933–34 six-volume study, republished by Seigensha in 2010. It holds 348 combinations built from 159 named colours, and all 348 are browsable free on this site with hex values. This collection gathers ${total} Japanese palettes, ${wadaInCollection} of them Wada plates. A second volume (Seigensha, 2020) adds combinations from his later work that the first does not have.`,
+      }]
+    : []),
   {
     q: `How was the "${collection.title}" collection curated?`,
     a: `Editorial curation by colorcombinations.org. ${description} Palettes are grouped by thematic resonance — mood, era, or visual language — not algorithmic similarity.`,
@@ -281,6 +296,12 @@ const jsonLd = [
         lead={wadaInCollection > 0 ? `${wadaInCollection} of these ${total} palettes come from one 1933 book.` : "Most palettes in this archive come from one 1933 book."}
         surface="collections-hero"
       />
+      {collection.slug === "japanese" && (
+        <p class="collection-hero__book-q">
+          Looking for the Japanese color dictionary itself?
+          <a href="/books/a-dictionary-of-color-combinations/">What is inside Sanzo Wada's book, plate by plate →</a>
+        </p>
+      )}
       <div class="collection-hero__description" set:html={collection.description}></div>
       <ShareActions
         title={collection.title}
@@ -508,6 +529,8 @@ const jsonLd = [
      bottom: no JS, no lazy load, nothing above it moves, so it contributes zero
      CLS (the ads-density freeze RG-MV-COLOR-EVENT-DRIVEN-20260926 requires
      p75 CLS <= 0.10 preserved). Touches no .mv-content and no ad slot. */
+  .collection-hero__book-q { margin: 0.75rem 0 0; font-size: 0.95rem; line-height: 1.5; color: var(--color-ink-700, #4a453e); }
+  .collection-hero__book-q a { display: inline-block; padding: 0.6rem 0; text-decoration: underline; text-underline-offset: 3px; }
   .collection-faq__title { font-size: 1.05rem; font-weight: 600; margin: 0 0 0.9rem; color: var(--color-ink-900, #1a1714); }
   .collection-faq__list { margin: 0; }
   .collection-faq__item + .collection-faq__item { margin-top: 0.9rem; }
