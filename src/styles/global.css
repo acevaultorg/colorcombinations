@@ -88,6 +88,12 @@
   --container-wide: 84rem;
 }
 
+/* This site intentionally ships one light editorial theme. Keep dark user-agent
+   controls from implying an unsupported palette until a measured dark system exists. */
+:root {
+  color-scheme: light;
+}
+
 /* Editorial typefaces are loaded via <link> in BaseLayout.astro (render-blocking
    but cacheable, and avoids the @import ordering issue with Tailwind v4). */
 
