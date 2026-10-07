@@ -616,6 +616,11 @@ const jsonLd = [
     padding: 1.5rem;
   }
 
+  /* Keep the card copy readable without inheriting the site-wide prose cap. */
+  .coty-pick__body > p {
+    max-width: none;
+  }
+
   .coty-pick__brand {
     font-size: 0.75rem;
     letter-spacing: 0.06em;
@@ -713,6 +718,12 @@ const jsonLd = [
     font-weight: 600;
     margin-top: 1.25rem;
     color: var(--color-ink-900);
+  }
+
+  /* The report sections need deliberate separation from the paragraph above. */
+  .mv-content > h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .coty-faq dd {
