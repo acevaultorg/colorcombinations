@@ -38,7 +38,7 @@ const showDisclosure = AMAZON.isLive;
     data-book="A Dictionary of Color Combinations"
   >{label}</a>
   {showDisclosure && (
-    <span class="hero-source-book__disclosure"> — affiliate link; your price is unchanged. As an Amazon Associate we earn from qualifying purchases.</span>
+    <span class="hero-source-book__disclosure">affiliate link; your price is unchanged. As an Amazon Associate we earn from qualifying purchases.</span>
   )}
 </p>
 
@@ -48,7 +48,7 @@ const showDisclosure = AMAZON.isLive;
     font-size: 0.9375rem;
     color: var(--color-ink-500);
     line-height: 1.55;
-    margin: 1rem 0 0;
+    margin: 1rem 0 0.75rem;
     max-width: 56ch;
   }
   .hero-source-book a {
@@ -67,5 +67,11 @@ const showDisclosure = AMAZON.isLive;
     box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
   }
   .hero-source-book::after { content: ""; display: block; clear: both; }
-  .hero-source-book__disclosure { color: var(--color-ink-500); font-size: 0.8125rem; }
+  .hero-source-book__disclosure {
+    display: block;
+    clear: both;
+    margin-top: 0.125rem;
+    color: var(--color-ink-700);
+    font-size: 0.8125rem;
+  }
 </style>
