@@ -219,9 +219,9 @@ const jsonLd = [
                   {r.href ? <a href={r.href}>{r.name}</a> : r.name}
                   <span class="dict-who">{r.who}</span>
                 </th>
-                <td class="dict-year">{r.year}</td>
-                <td>{r.holds}</td>
-                <td>{r.buy}</td>
+                <td class="dict-year" data-label="Year">{r.year}</td>
+                <td data-label="Holds">{r.holds}</td>
+                <td data-label="Buy it?">{r.buy}</td>
               </tr>
             ))}
           </tbody>
@@ -324,6 +324,17 @@ const jsonLd = [
   .dict-table a { color: var(--color-accent-500); text-decoration: underline; text-underline-offset: 2px; }
   .dict-who { display: block; font-weight: 400; color: var(--color-ink-500); font-size: 0.8125rem; margin-top: 0.25rem; }
   .dict-year { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  @media (max-width: 640px) {
+    .dict-table { min-width: 0; }
+    .dict-table thead { display: none; }
+    .dict-table tr { display: block; padding: 0.75rem 0; border-bottom: 1px solid var(--color-border); }
+    .dict-table th, .dict-table td { display: block; border: 0; padding: 0.125rem 0; }
+    .dict-table tbody th { padding-bottom: 0.375rem; }
+    .dict-table td::before {
+      content: attr(data-label) ": "; font-weight: 600; color: var(--color-ink-500);
+    }
+    .dict-year { white-space: normal; }
+  }
   .dict-pick { max-width: 65ch; margin: 0 0 2rem; padding-left: 1.25rem; }
   .dict-pick li { margin-bottom: 0.625rem; }
   .dict-pick a { color: var(--color-accent-500); text-decoration: underline; text-underline-offset: 2px; }
