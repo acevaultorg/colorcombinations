@@ -68,7 +68,7 @@ const rows: Row[] = [
     name: "Werner's Nomenclature of Colours",
     year: "1814 (2nd ed. 1821)",
     who: "Patrick Syme, after the mineralogist A. G. Werner",
-    holds: "108 named colours, each tied to an animal, plant and mineral example",
+    holds: "108 named colours (110 in the 1821 edition), each tied to an animal, plant and mineral example",
     buy: "Yes, Smithsonian facsimile (2018)",
     href: "/books/werners-nomenclature-of-colours/",
   },
@@ -124,10 +124,6 @@ const faqs = [
   {
     q: "Is there a free color dictionary online?",
     a: `Yes. This site lists ${wadaColorCount} named colors from Sanzo Wada's dictionary with hex, RGB and CMYK values, plus all ${N} of his combinations. The 1955 ISCC–NBS dictionary was published by the US government as NBS Circular 553.`,
-  },
-  {
-    q: "Which color dictionary should I buy?",
-    a: "To name colors you see in nature, Werner's Nomenclature. For palettes that work, Wada's A Dictionary of Color Combinations. For fast palettes with print and screen values, Color Index XL. To understand what single colors mean in design, The Designer's Dictionary of Color.",
   },
 ];
 
@@ -221,7 +217,7 @@ const jsonLd = [
                 </th>
                 <td class="dict-year" data-label="Year">{r.year}</td>
                 <td data-label="Holds">{r.holds}</td>
-                <td data-label="Buy it?">{r.buy}</td>
+                <td data-label="Buy">{r.buy}</td>
               </tr>
             ))}
           </tbody>
@@ -232,10 +228,10 @@ const jsonLd = [
       <p>
         The German mineralogist Abraham Gottlob Werner devised a fixed set of color terms for
         describing minerals. The Edinburgh flower painter Patrick Syme turned it into a book in
-        1814: 108 colours, each painted as a swatch and tied to an example from the animal,
+        1814: 108 colours (110 by the 1821 edition), each painted as a swatch and tied to an example from the animal,
         vegetable and mineral worlds, so a naturalist in the field could name a color the same
         way as everyone else. The 1821 second edition is the one Charles Darwin used on the
-        voyage of the Beagle. Smithsonian Books reissued it in 2018 as a pocket facsimile with
+        voyage of the Beagle. Smithsonian Books reissued that edition in 2018 as a pocket facsimile with
         110 swatches in 13 palettes.
       </p>
 
