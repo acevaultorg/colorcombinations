@@ -1,5 +1,8 @@
 #!/bin/bash
 set -e
+# One heavy build/deploy at a time on this Mac (RAM governor, TaskPeace card muxz9lmkawuw8a, 2026-10-07).
+# Held until this script exits; waits in line, fails OPEN after 1h, never blocks a ship.
+"$HOME/.claude/bin/ace-heavy-lock" --hold-for-parent colorcombinations || true
 
 # The local/fallback deploy path for colorcombinations.org.
 #
