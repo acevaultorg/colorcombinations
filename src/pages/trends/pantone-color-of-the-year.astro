@@ -1,0 +1,262 @@
+---
+/**
+ * /trends/pantone-color-of-the-year — every Pantone Color of the Year, 2000 to 2026.
+ *
+ * DEMAND (Bing WMT GetQueryStats, colorcombinations.org, 2026-06-05..10-02, read 2026-10-07):
+ * the generic history queries had no page. "color of the year" 68 impr, "colour of the year"
+ * 15, "pantone color of the year" 8, "pantone colour of the year" plus year-less variants;
+ * the year pages (/trends/color-trends-2026, -2027) answer only their own year. /color-of-the-year
+ * 301s to the 2026 page and stays that way.
+ *
+ * FACTS: names, TCX codes and hexes from the Wikipedia "Pantone" article's Color of the Year
+ * table, read 2026-10-07. Cloud Dancer uses #F0EEE9, the value the 2026 page already shows as
+ * confirmed (Wikipedia lists #F0EFEA; the difference is invisible). Hexes are sRGB references
+ * for screens; the TCX code is the real colour.
+ *
+ * WHAT ONLY THIS SITE ADDS: for every Pantone pick, the nearest named colour in our own archive
+ * (Lab distance, computed at build time from allColors()), linked to its page and its palettes.
+ * Nothing is hand-matched, so a new archive colour can change a match on the next build.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
+import { allColors } from "@/data/colors";
+
+const siteUrl = "https://colorcombinations.org/";
+const pageUrl = "https://colorcombinations.org/trends/pantone-color-of-the-year/";
+const PUBLISHED = "2026-10-07T00:00:00Z";
+const VERIFIED = "2026-10-07";
+
+interface Coty { year: number; name: string; code: string; hex: string }
+const COTY: Coty[] = [
+  { year: 2000, name: "Cerulean", code: "15-4020", hex: "#9BB7D4" },
+  { year: 2001, name: "Fuchsia Rose", code: "17-2031", hex: "#C74375" },
+  { year: 2002, name: "True Red", code: "19-1664", hex: "#BF1932" },
+  { year: 2003, name: "Aqua Sky", code: "14-4811", hex: "#7BC4C4" },
+  { year: 2004, name: "Tigerlily", code: "17-1456", hex: "#E2583E" },
+  { year: 2005, name: "Blue Turquoise", code: "15-5217", hex: "#53B0AE" },
+  { year: 2006, name: "Sand Dollar", code: "13-1106", hex: "#DECDBE" },
+  { year: 2007, name: "Chili Pepper", code: "19-1557", hex: "#9B1B30" },
+  { year: 2008, name: "Blue Iris", code: "18-3943", hex: "#5A5B9F" },
+  { year: 2009, name: "Mimosa", code: "14-0848", hex: "#F0C05A" },
+  { year: 2010, name: "Turquoise", code: "15-5519", hex: "#45B5AA" },
+  { year: 2011, name: "Honeysuckle", code: "18-2120", hex: "#D94F70" },
+  { year: 2012, name: "Tangerine Tango", code: "17-1463", hex: "#DD4124" },
+  { year: 2013, name: "Emerald", code: "17-5641", hex: "#009473" },
+  { year: 2014, name: "Radiant Orchid", code: "18-3224", hex: "#B163A3" },
+  { year: 2015, name: "Marsala", code: "18-1438", hex: "#955251" },
+  { year: 2016, name: "Rose Quartz", code: "13-1520", hex: "#F7CAC9" },
+  { year: 2016, name: "Serenity", code: "15-3919", hex: "#92A8D1" },
+  { year: 2017, name: "Greenery", code: "15-0343", hex: "#88B04B" },
+  { year: 2018, name: "Ultra Violet", code: "18-3838", hex: "#5F4B8B" },
+  { year: 2019, name: "Living Coral", code: "16-1546", hex: "#FF6F61" },
+  { year: 2020, name: "Classic Blue", code: "19-4052", hex: "#0F4C81" },
+  { year: 2021, name: "Ultimate Gray", code: "17-5104", hex: "#939597" },
+  { year: 2021, name: "Illuminating", code: "13-0647", hex: "#F5DF4D" },
+  { year: 2022, name: "Very Peri", code: "17-3938", hex: "#6667AB" },
+  { year: 2023, name: "Viva Magenta", code: "18-1750", hex: "#BB2649" },
+  { year: 2024, name: "Peach Fuzz", code: "13-1023", hex: "#FFBE98" },
+  { year: 2025, name: "Mocha Mousse", code: "17-1230", hex: "#A47864" },
+  { year: 2026, name: "Cloud Dancer", code: "11-4201", hex: "#F0EEE9" },
+];
+
+// sRGB hex -> CIE Lab (D65). Pure math, no data.
+const lab = (hex: string): [number, number, number] => {
+  const c = hex.replace("#", "");
+  const lin = (v: number) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const [r, g, b] = [0, 2, 4].map((i) => lin(parseInt(c.slice(i, i + 2), 16)));
+  const x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
+  const y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+  const z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
+  const f = (t: number) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116);
+  return [116 * f(y) - 16, 500 * (f(x) - f(y)), 200 * (f(y) - f(z))];
+};
+const dist = (a: string, b: string) => { const p = lab(a), q = lab(b); return Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]); };
+
+const archive = allColors();
+const rows = COTY.map((c) => {
+  let best = archive[0], bd = Infinity;
+  for (const e of archive) { const d = dist(c.hex, e.hex); if (d < bd) { bd = d; best = e; } }
+  return { ...c, match: best, delta: bd };
+});
+// "Very close" below Delta E 10 is a plain-language label, not a claim of identity.
+const closeness = (d: number) => (d < 5 ? "near-identical" : d < 10 ? "very close" : d < 20 ? "close" : "the nearest we have");
+
+const textOn = (hex: string): string => {
+  const c = hex.replace("#", "");
+  const r = parseInt(c.slice(0, 2), 16), g = parseInt(c.slice(2, 4), 16), b = parseInt(c.slice(4, 6), 16);
+  return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? "#1a1a1a" : "#ffffff";
+};
+
+const latest = COTY[COTY.length - 1];
+const years = new Set(COTY.map((c) => c.year)).size;
+const title = `Every Pantone Color of the Year (2000–${latest.year}) With Hex Codes`;
+const description = `All ${COTY.length} Pantone Colors of the Year from Cerulean (2000) to ${latest.name} (${latest.year}), with TCX codes, hex values and the closest color in the 1933 Dictionary of Color Combinations archive.`;
+
+const faq = [
+  { q: "What is the current Pantone Color of the Year?", a: `${latest.name} (PANTONE ${latest.code}) is the ${latest.year} Pantone Color of the Year. Pantone names the next year's color in early December.` },
+  { q: "What was the first Pantone Color of the Year?", a: "Cerulean (PANTONE 15-4020), a sky blue, chosen for the year 2000. It was announced at the end of 1999." },
+  { q: "Has Pantone ever picked two colors in one year?", a: "Twice. 2016 paired Rose Quartz and Serenity, and 2021 paired Ultimate Gray and Illuminating." },
+  { q: "Are the hex codes exact?", a: "No hex is the real color. Pantone colors are defined by their TCX codes for physical materials; the hex values here are the commonly published sRGB references for screens. Use the TCX code when you match paint, fabric or print." },
+  { q: "When will the 2027 Pantone Color of the Year be announced?", a: "Pantone names its pick in early December of the year before. The paint brands have already started naming their 2027 colors; our 2027 page tracks them as they arrive." },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: pageUrl,
+    inLanguage: "en",
+    datePublished: PUBLISHED,
+    dateModified: `${VERIFIED}T00:00:00Z`,
+    author: { "@id": `${siteUrl}#person-paulo-de-vries` },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Pantone Colors of the Year",
+    numberOfItems: COTY.length,
+    itemListElement: COTY.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: `${c.year}: ${c.name} (PANTONE ${c.code}, ${c.hex})` })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Pantone Colors of the Year" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  adContent
+  title={title}
+  description={description}
+  canonical={pageUrl}
+  type="article"
+  author="Paulo de Vries"
+  publishedTime={PUBLISHED}
+  modifiedTime={`${VERIFIED}T00:00:00Z`}
+  keywords={["pantone color of the year", "color of the year", "pantone color of the year list", "pantone color of the year history", "color of the year hex codes"]}
+  jsonLd={jsonLd}
+>
+  <article class="pcy">
+    <header class="pcy-hero container-narrow">
+      <p class="eyebrow">Color Report · {COTY[0].year}–{latest.year}</p>
+      <h1 class="display-hero text-balance">Every Pantone Color of the Year</h1>
+      <p class="pcy-lede">
+        {COTY.length} colors over {years} years, from <strong>Cerulean</strong> in 2000 to
+        <strong>{latest.name}</strong> in {latest.year}. Each one has its Pantone code, a screen hex, and the
+        closest color in our archive of the 1933 <em>Dictionary of Color Combinations</em>, so you can see
+        which century-old palettes it already belongs to.
+      </p>
+      <p class="pcy-meta">
+        By <a href="/about/" rel="author">Paulo de Vries</a> · Last verified <time datetime={VERIFIED}>7 October 2026</time> · sources below
+      </p>
+      <p class="pcy-next">
+        Looking for this year's picks from every brand? <a href="/trends/color-trends-2026/">All 2026 Colors of the Year</a> ·
+        <a href="/trends/color-trends-2027/">2027 so far</a>
+      </p>
+    </header>
+
+    <section class="container-narrow" aria-labelledby="list">
+      <h2 id="list">The full list, newest first</h2>
+      <p class="pcy-note">Hex values are sRGB references for screens. The PANTONE TCX code is the real color for paint, fabric and print.</p>
+      <ol class="pcy-list" role="list">
+        {[...rows].reverse().map((r) => (
+          <li class="pcy-row">
+            <span class="pcy-swatch" style={`background:${r.hex};color:${textOn(r.hex)}`}>
+              <span class="pcy-year">{r.year}</span>
+            </span>
+            <span class="pcy-body">
+              <span class="pcy-name">{r.name}</span>
+              <span class="pcy-code">PANTONE {r.code} · {r.hex}</span>
+              <span class="pcy-match">
+                <span class="pcy-chip" style={`background:${r.match.hex}`} aria-hidden="true"></span>
+                Closest in our archive ({closeness(r.delta)}):
+                <a href={`/colors/${r.match.slug}/`}>{r.match.name}</a>
+                {r.match.paletteCount > 0 && <span class="pcy-count"> · in {r.match.paletteCount} palette{r.match.paletteCount === 1 ? "" : "s"}</span>}
+              </span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class="pcy-note">
+        How the match works: each Pantone hex is compared with every named color on this site in the CIELAB color
+        space, and the smallest distance wins. "Near-identical" means a difference most people cannot see side by
+        side; "the nearest we have" means the archive has nothing truly close.
+      </p>
+    </section>
+
+    <section class="container-narrow pcy-instrument">
+      <PaintThisPalette
+        pageClass="trends-destination"
+        title="Matching a Pantone color off-screen"
+        intro="A screen hex is only an approximation of a Pantone color. Which of these you need depends on where the color is going."
+        offset={1}
+        variant="destination"
+      />
+    </section>
+
+    <section class="container-narrow">
+      <FurtherReading pageClass="trends" title="Read more on colour" intro="Colour theory, forecasting and the language of palettes. Books we recommend on Amazon." limit={6} />
+    </section>
+
+    <section class="container-narrow">
+      <h2 id="faq">Frequently asked</h2>
+      {faq.map((f) => (
+        <details class="pcy-faq">
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </section>
+
+    <section class="container-narrow">
+      <h2 id="sources">Sources</h2>
+      <ul class="pcy-sources">
+        <li>Names, PANTONE TCX codes and hex references: the Color of the Year table in Wikipedia's <a href="https://en.wikipedia.org/wiki/Pantone" target="_blank" rel="noopener noreferrer">Pantone</a> article, checked 7 October 2026.</li>
+        <li>2026, Cloud Dancer: announced December 2025 (<a href="https://www.npr.org/2025/12/04/nx-s1-5632651/pantones-color-of-the-year-2026-white" target="_blank" rel="noopener noreferrer">NPR</a>). We show #F0EEE9, the value on our 2026 page.</li>
+        <li>Archive matches: computed from this site's own color data at build time.</li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .pcy-hero { padding: 3rem 0 1.25rem; }
+  .pcy-lede { font-size: 1.15rem; line-height: 1.6; max-width: 52ch; margin-top: 1rem; }
+  .pcy-meta { margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; }
+  .pcy-meta a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+  .pcy-next { margin-top: 1rem; padding: 0.75rem 1rem; background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-left: 3px solid var(--color-accent-500); border-radius: var(--radius-md); font-size: 0.9375rem; line-height: 1.6; }
+  .pcy-next a { color: var(--color-accent-500); font-weight: 600; }
+  .pcy section { margin-bottom: 2.5rem; }
+  .pcy h2 { margin-top: 2.5rem; }
+  .pcy-note { font-size: 0.85rem; opacity: 0.72; line-height: 1.55; max-width: 60ch; }
+  .pcy-list { list-style: none; padding: 0; margin: 1rem 0; display: grid; gap: 0.75rem; }
+  .pcy-row { display: grid; grid-template-columns: 5.5rem 1fr; border: 1px solid var(--color-border); border-radius: 12px; overflow: hidden; }
+  .pcy-swatch { display: flex; align-items: flex-end; padding: 0.5rem 0.6rem; min-height: 5.5rem; }
+  .pcy-year { font-size: 0.95rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .pcy-body { padding: 0.7rem 0.9rem; display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+  .pcy-name { font-size: 1.1rem; font-weight: 650; }
+  .pcy-code { font-size: 0.82rem; opacity: 0.65; font-variant-numeric: tabular-nums; }
+  .pcy-match { font-size: 0.875rem; line-height: 1.5; margin-top: 0.25rem; }
+  .pcy-match a { color: var(--color-accent-500); font-weight: 600; display: inline-block; min-height: 24px; }
+  .pcy-chip { display: inline-block; width: 0.85rem; height: 0.85rem; border-radius: 3px; border: 1px solid var(--color-border); vertical-align: -0.1rem; margin-right: 0.3rem; }
+  .pcy-count { opacity: 0.65; }
+  .pcy-instrument { margin-block: 3rem; }
+  .pcy-faq { border-bottom: 1px solid var(--color-border); padding-block: 0.875rem; }
+  .pcy-faq summary { font-weight: 600; cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+  .pcy-faq p { font-size: 0.9375rem; line-height: 1.65; color: var(--color-ink-700); margin: 0.6rem 0 0; }
+  .pcy-sources { font-size: 0.875rem; line-height: 1.6; padding-left: 1.1rem; }
+</style>
