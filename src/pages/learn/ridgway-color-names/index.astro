@@ -85,7 +85,7 @@ const faqs = [
   },
   {
     q: "What is Hay's Russet?",
-    a: `A reddish brown that Ridgway named and painted on Plate XIV of his 1912 book. In Wada's dictionary it is ${hexOf("Hay's Russet")}, used in combinations such as plate 58 with Sea Green.`,
+    a: `A reddish brown that Ridgway took from D. R. Hay's Nomenclature of Colours (1846) and painted on Plate XIV of his 1912 book. In Wada's dictionary it is ${hexOf("Hay's Russet")}, used in combinations such as plate 58 with Sea Green.`,
   },
   {
     q: "Is it Antwarp Blue or Antwerp Blue?",
@@ -124,7 +124,7 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "Dataset",
     name: "Sanzo Wada's English color names matched to Ridgway (1912)",
-    description: `All ${total} English color names in A Dictionary of Color Combinations, each matched to Robert Ridgway's 1912 color index: ${identical} identical, ${punctuation} differing only in hyphens or capitals, ${spelling} misspelled, ${none} with no match.`,
+    description: `All ${total} English color names in A Dictionary of Color Combinations, each matched to Robert Ridgway's 1912 color index: ${identical} identical, ${punctuation} differing only in hyphens or capitals, ${spelling} spelled differently, ${none} with no match.`,
     url: articleUrl,
     creator: { "@id": `${siteUrl}#organization` },
     license: "https://creativecommons.org/licenses/by/4.0/",
@@ -153,7 +153,7 @@ const jsonLd = [
 const tierLabel: Record<Row["tier"], string> = {
   identical: "Same name",
   punctuation: "Hyphen or capital",
-  spelling: "Misprint",
+  spelling: "Spelled differently",
   none: "No match",
 };
 ---
@@ -205,17 +205,20 @@ const tierLabel: Record<Row["tier"], string> = {
         and its full text is on Project Gutenberg.
       </p>
       <p>
-        Many of the names are his own coinages, after flowers, minerals, dyes or people:
-        Vanderpoel's Blue, Kronberg's Green, Rosolane Purple, Vernonia Purple. Words like these do
-        not turn up in two color lists by chance, which is why the overlap below is not a
-        coincidence.
+        Ridgway did not invent most of his names. His preface says he collected several thousand
+        named samples from earlier books, among them Werner's <em>Nomenclature of Colours</em>
+        (Syme's 1821 edition), D. R. Hay's <em>Nomenclature of Colours</em> (1846), his own 1886
+        <em>Nomenclature of Colors</em> and florists' color charts. That is where Hay's Russet and
+        Vanderpoel's Blue come from. Combined names like Kronberg's Green, Rosolane Purple and
+        Vernonia Purple do not turn up in two color lists by chance, which is why the overlap below
+        is not a coincidence.
       </p>
 
       <h2 id="match">The match, counted</h2>
       <div class="rw-stats" role="list">
         <div role="listitem"><span class="rw-num">{identical}</span> same name, letter for letter</div>
         <div role="listitem"><span class="rw-num">{punctuation}</span> same name, only a hyphen or capital differs</div>
-        <div role="listitem"><span class="rw-num">{spelling}</span> a misprint of a Ridgway name</div>
+        <div role="listitem"><span class="rw-num">{spelling}</span> a Ridgway name, spelled differently</div>
         <div role="listitem"><span class="rw-num">{none}</span> no Ridgway name</div>
       </div>
       <p>
@@ -225,10 +228,11 @@ const tierLabel: Record<Row["tier"], string> = {
         Ridgway's printed index and may miss a handful of entries, so {matched} is a floor.
       </p>
 
-      <h2 id="misprints">The {spelling} misprints</h2>
+      <h2 id="misprints">The {spelling} spelling differences</h2>
       <p>
-        These are the names searchers copy straight from the book. The correct spelling is
-        Ridgway's.
+        One is just British against American spelling (Ochre and Ocher). The other {spelling - 1}
+        are misprints, and they are the names searchers copy straight from the book. The correct
+        spelling is Ridgway's.
       </p>
       <ul class="rw-misprints">
         {misprints.map((r) => (
@@ -306,7 +310,7 @@ const tierLabel: Record<Row["tier"], string> = {
       <FurtherReading
         pageClass="learn-ridgway-color-names"
         title="The books behind the names"
-        intro="Both Wada volumes, and Werner's Nomenclature, the naturalists' color book from a century before Ridgway's."
+        intro="Both Wada volumes, and Werner's Nomenclature, one of the books Ridgway drew his names from."
         books={shelf}
       />
     </div>
