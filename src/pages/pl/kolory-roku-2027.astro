@@ -1,0 +1,164 @@
+---
+/**
+ * /pl/kolory-roku-2027/ — Polish demand probe for the 2027 Colour of the Year season (2026-10-08, subchief-1-amazon).
+ *
+ * WHY: Bing (GetQueryStats, 4 weeks to 2026-10-02): "kolory 2027 pantone" 163 impressions at position
+ * 6.0 with 0 clicks, plus "jaki będzie kolor roku 2027 wg pantone". The only page Bing can show for it is
+ * the English /trends/color-trends-2027/. This is the same tracker, in Polish, read on day 30
+ * (2026-11-07) before anything else Polish is built — same rule as the /de/ probe.
+ *
+ * ZERO FABRICATION, same rules as the English page: names and codes are each brand's own (sources
+ * on /trends/color-trends-2027/#sources, verified 2026-10-08); a swatch is shown ONLY where the
+ * brand itself publishes a value (Tikkurila S483 Heartland RGB 156,140,123 on tikkurila.pl;
+ * Behr T27-01 #5E5C50). Tikkurila is PPG's brand and announced Heartland on the same day as PPG's
+ * Country Soil under the same "Foundations" theme; the page says exactly that and no more.
+ * hreflang pairs this page with the English tracker (both directions).
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { wadaCatalog } from "@data/palettes";
+
+const N = wadaCatalog().length;
+
+const VERIFIED = "2026-10-08";
+const pageUrl = "https://colorcombinations.org/pl/kolory-roku-2027/";
+const enUrl = "/trends/color-trends-2027/";
+
+type Pick = { brand: string; name: string; code: string; opis: string; ogloszono: string; hex?: string };
+const PICKS: Pick[] = [
+  { brand: "Tikkurila", name: "Heartland", code: "S483", opis: "ciepły odcień między beżem, taupe a szarością, inspirowany gliną, ziemią i kamieniem", ogloszono: "29 września 2026", hex: "#9C8C7B" },
+  { brand: "PPG", name: "Country Soil", code: "PPG15-30", opis: "ciepły beżowo-taupe-szary; ten sam motyw „Foundations” co Heartland marki Tikkurila", ogloszono: "29 września 2026" },
+  { brand: "Dulux", name: "Soulful Sage", code: "—", opis: "miękka, srebrzysta szarozieleń", ogloszono: "8 września 2026" },
+  { brand: "Sherwin-Williams", name: "Celery", code: "SW 6421", opis: "stonowana zieleń z żółtym podtonem", ogloszono: "15 września 2026" },
+  { brand: "Behr", name: "Grounded", code: "T27-01", opis: "mchowa oliwka z brązowym podtonem", ogloszono: "koniec sierpnia 2026", hex: "#5E5C50" },
+  { brand: "Valspar", name: "Cottage Door", code: "8004-38E", opis: "przygaszony, średni błękit", ogloszono: "5 sierpnia 2026" },
+  { brand: "Dutch Boy", name: "Deep Rooted", code: "—", opis: "ziemisty pomarańcz", ogloszono: "25 sierpnia 2026" },
+  { brand: "Graham & Brown", name: "Rose Earth", code: "—", opis: "ciepły, przydymiony róż z nutą gliny", ogloszono: "początek września 2026" },
+  { brand: "Glidden", name: "Artifact", code: "PPG10-16", opis: "spokojny, przydymiony akwamaryn", ogloszono: "połowa września 2026" },
+  { brand: "Dunn-Edwards", name: "French Press Coffee", code: "DEBN07", opis: "głęboki brąz ze śliwkowym podtonem", ogloszono: "1 października 2026" },
+  { brand: "C2 Paint", name: "Pueblo", code: "C2-510", opis: "ziemisty, różowawy brąz", ogloszono: "5 października 2026" },
+  { brand: "Minwax", name: "Pickled Oak", code: "MW260", opis: "jasna, ciepła bejca do drewna", ogloszono: "6 października 2026" },
+  { brand: "WGSN + Coloro", name: "Luminous Blue", code: "—", opis: "świetlisty błękit między lapis lazuli a kobaltem (prognoza trendów)", ogloszono: "2 czerwca 2025" },
+];
+
+const faq = [
+  {
+    q: "Jaki jest kolor roku 2027 według Pantone?",
+    a: "Jeszcze nie wiadomo. Pantone ogłasza swój kolor roku zwykle w pierwszym tygodniu grudnia roku poprzedniego, więc kolor na 2027 rok poznamy najpewniej na początku grudnia 2026. Do 8 października 2026 Pantone go nie ogłosił.",
+  },
+  {
+    q: "Jaki jest kolor roku 2027 Tikkurila?",
+    a: "S483 Heartland, ciepły odcień między beżem, taupe a szarością. Tikkurila podaje dla niego RGB 156, 140, 123 i NCS 4508-Y23R. Ogłoszono go 29 września 2026 jako część trendów „Foundations” firmy PPG, do której należy Tikkurila.",
+  },
+  {
+    q: "Czy jest jeden kolor roku 2027?",
+    a: `Nie. Każda marka wybiera własny. Do 8 października 2026 znamy ${PICKS.length} kolorów na 2027 rok od marek farb i biur trendów, a Benjamin Moore zapowiada ogłoszenie w październiku.`,
+  },
+];
+
+const title = "Kolor roku 2027: Pantone, Tikkurila, Dulux i wszystkie ogłoszone kolory";
+const description = "Kolor roku 2027 według każdej marki: Tikkurila S483 Heartland, Dulux Soulful Sage, Sherwin-Williams Celery i inne. Pantone ogłasza swój w grudniu. Sprawdzono 8 października 2026.";
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: pageUrl,
+    inLanguage: "pl",
+    datePublished: "2026-10-08T00:00:00Z",
+    dateModified: `${VERIFIED}T00:00:00Z`,
+    author: { "@type": "Organization", "@id": "https://colorcombinations.org/#organization", name: "The Dictionary of Color Combinations" },
+    publisher: { "@id": "https://colorcombinations.org/#organization" },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    inLanguage: "pl",
+    mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  },
+];
+const alternates = [
+  { hreflang: "pl", href: "/pl/kolory-roku-2027/" },
+  { hreflang: "en", href: enUrl },
+  { hreflang: "x-default", href: enUrl },
+];
+---
+
+<BaseLayout title={title} description={description} canonical="/pl/kolory-roku-2027/" jsonLd={jsonLd} lang="pl" alternates={alternates} type="article" adContent>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <p class="eyebrow">Trendy · 2027</p>
+        <h1 class="display-hero text-balance">Kolor roku 2027</h1>
+        <p class="article-hero__lede">
+          Nie ma jednego koloru roku. Każda marka wybiera swój. Na 8 października 2026 znamy
+          {" "}{PICKS.length} kolorów na 2027 rok, w tym S483 Heartland od Tikkurila. Pantone
+          ogłosi swój wybór najpewniej na początku grudnia.
+        </p>
+        <p class="pl-meta">Sprawdzono <time datetime={VERIFIED}>8 października 2026</time> · <a href={enUrl} hreflang="en">English version with sources</a></p>
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <h2 id="lista">Wszystkie ogłoszone kolory na 2027 rok</h2>
+      <ul class="pl-picks" role="list">
+        {PICKS.map((p) => (
+          <li>
+            {p.hex ? <span class="pl-swatch" style={`background:${p.hex}`} aria-hidden="true"></span> : <span class="pl-swatch pl-swatch--none" aria-hidden="true"></span>}
+            <span>
+              <strong>{p.brand}: {p.name}</strong>{p.code !== "—" && <> ({p.code})</>}
+              <span class="pl-desc">{p.opis}. Ogłoszono: {p.ogloszono}.{p.hex && <> Wartość podana przez markę: {p.hex}.</>}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p class="pl-note">
+        Próbkę koloru pokazujemy tylko tam, gdzie marka sama podaje jego wartość. Farba na ścianie
+        zawsze wygląda nieco inaczej niż na ekranie, więc przed malowaniem zamów próbkę.
+      </p>
+
+      <h2 id="pantone">Pantone 2027: kiedy?</h2>
+      <p>
+        Pantone ogłasza kolor roku zwykle w pierwszym tygodniu grudnia. Na 8 października 2026 kolor
+        na 2027 rok nie jest jeszcze znany. Benjamin Moore zapowiada swój wybór na październik.
+        Ta strona będzie uzupełniana, gdy marki ogłoszą kolejne kolory.
+      </p>
+
+      <h2 id="kierunek">Co łączy kolory na 2027 rok?</h2>
+      <p>
+        Większość tegorocznych wyborów to ciepłe, ziemiste i przygaszone odcienie: beże i taupe
+        (Tikkurila, PPG), szarozielenie i oliwki (Dulux, Sherwin-Williams, Behr) oraz brązy
+        (Dunn-Edwards, C2 Paint). Wyjątkami są błękity Valspar i WGSN oraz pomarańcz Dutch Boy.
+      </p>
+
+      <h2 id="faq">Najczęstsze pytania</h2>
+      {faq.map((f) => (
+        <section class="pl-faq">
+          <h3>{f.q}</h3>
+          <p>{f.a}</p>
+        </section>
+      ))}
+
+      <p class="pl-more">
+        Szukasz kolorów, które do siebie pasują? Zobacz <a href="/browse/">{N} połączeń kolorów</a>
+        {" "}z japońskiego słownika Sanzo Wady z 1933 roku, z kodami hex do skopiowania (strona po angielsku).
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .pl-meta { font-size: 0.875rem; color: var(--color-ink-500); margin-top: 0.75rem; }
+  .pl-meta a, .pl-more a { color: var(--color-accent-500); text-decoration: underline; text-underline-offset: 2px; }
+  .pl-picks { list-style: none; padding: 0; margin: 0 0 1rem; }
+  .pl-picks li {
+    display: flex; gap: 0.875rem; align-items: flex-start;
+    padding: 0.75rem 0; border-bottom: 1px solid var(--color-border);
+  }
+  .pl-swatch { flex: none; width: 2.25rem; height: 2.25rem; border-radius: 0.375rem; border: 1px solid var(--color-border); }
+  .pl-swatch--none { background: repeating-linear-gradient(45deg, transparent 0 6px, var(--color-border) 6px 7px); }
+  .pl-desc { display: block; color: var(--color-ink-500); font-size: 0.9375rem; margin-top: 0.125rem; }
+  .pl-note { font-size: 0.875rem; color: var(--color-ink-500); margin-bottom: 2rem; }
+  .pl-faq h3 { margin-top: 1.5rem; }
+  .pl-more { margin-top: 2rem; }
+</style>
