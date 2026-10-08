@@ -202,7 +202,7 @@ const keywords = [
   "Dictionary of Color Combinations",
 ];
 
-const pageUrl = new URL(`/colors/hue/${hueKey}`, Astro.site).toString();
+const pageUrl = new URL(`/colors/hue/${hueKey}/`, Astro.site).toString();
 const ogImage = `/og/hue/${hueKey}.png`;
 
 const jsonLd = [

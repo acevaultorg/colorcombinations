@@ -104,7 +104,7 @@ const description =
   palette.summary.length >= 110
     ? palette.summary
     : `${palette.summary} A ${palette.colors.length}-color combination — ${_colorBits}${palette.colors.length > 3 ? " and more" : ""} — with hex and RGB values, contrast checks and pairing guidance.`;
-const pageUrl = new URL(`/palettes/${palette.slug}`, Astro.site).toString();
+const pageUrl = new URL(`/palettes/${palette.slug}/`, Astro.site).toString();
 const ogImage = `/og/${palette.slug}.png`;
 
 // Moved from ShareBar.astro when it was generalised (2026-09-06) — provenance
@@ -271,7 +271,7 @@ const jsonLd = [
     name: palette.title,
     alternateName: palette.titleJa,
     description: palette.summary,
-    url: new URL(`/palettes/${palette.slug}`, Astro.site).toString(),
+    url: new URL(`/palettes/${palette.slug}/`, Astro.site).toString(),
     abstract: palette.description,
     keywords: keywords.join(", "),
     datePublished: SITE_FIRST_PUBLISHED,
@@ -334,7 +334,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": `${new URL(`/palettes/${palette.slug}`, Astro.site).toString()}#faq`,
+    "@id": `${new URL(`/palettes/${palette.slug}/`, Astro.site).toString()}#faq`,
     mainEntity: paletteFaq.map((f) => ({
       "@type": "Question",
       name: f.q,
@@ -344,7 +344,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "@id": `${new URL(`/palettes/${palette.slug}`, Astro.site).toString()}#speakable`,
+    "@id": `${new URL(`/palettes/${palette.slug}/`, Astro.site).toString()}#speakable`,
     speakable: { "@type": "SpeakableSpecification", cssSelector: [".cc-palette-intro"] },
   },
 ];

@@ -241,7 +241,7 @@ const jsonLd = [
     name: color.name,
     alternateName: color.nameJa,
     description,
-    url: new URL(`/colors/${color.slug}`, Astro.site).toString(),
+    url: new URL(`/colors/${color.slug}/`, Astro.site).toString(),
     keywords: keywords.join(", "),
     color: color.hex,
     datePublished: SITE_FIRST_PUBLISHED,
@@ -281,7 +281,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": `${new URL(`/colors/${color.slug}`, Astro.site).toString()}#faq`,
+    "@id": `${new URL(`/colors/${color.slug}/`, Astro.site).toString()}#faq`,
     mainEntity: colorFaq.map((f) => ({
       "@type": "Question",
       name: f.q,
@@ -291,7 +291,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "@id": `${new URL(`/colors/${color.slug}`, Astro.site).toString()}#speakable`,
+    "@id": `${new URL(`/colors/${color.slug}/`, Astro.site).toString()}#speakable`,
     speakable: { "@type": "SpeakableSpecification", cssSelector: [".cc-color-intro"] },
   },
 ];
@@ -332,7 +332,7 @@ const jsonLd = [
         />
         <ShareActions
           title={`${color.name}${color.nameJa ? ` (${color.nameJa})` : ""}`}
-          url={new URL(`/colors/${color.slug}`, Astro.site).toString()}
+          url={new URL(`/colors/${color.slug}/`, Astro.site).toString()}
           image={new URL(`/og/colors/${color.slug}.png`, Astro.site).toString()}
           description={color.meaning ? `${color.name} (${color.hex}) — ${color.meaning}` : `${color.name} (${color.hex})`}
           heading="Share this color"

@@ -188,7 +188,7 @@ const jsonLd = [
     "@type": "CollectionPage",
     name: title,
     description,
-    url: new URL(`/collections/${collection.slug}`, Astro.site).toString(),
+    url: new URL(`/collections/${collection.slug}/`, Astro.site).toString(),
     author: { "@id": `${SITE_URL}#person-paulo-de-vries` },
     isPartOf: {
       "@type": "WebSite",
@@ -208,7 +208,7 @@ const jsonLd = [
     hasPart: palettes.map((p) => ({
       "@type": "CreativeWork",
       name: p.title,
-      url: new URL(`/palettes/${p.slug}`, Astro.site).toString(),
+      url: new URL(`/palettes/${p.slug}/`, Astro.site).toString(),
     })),
   },
   {
@@ -241,7 +241,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": `${new URL(`/collections/${collection.slug}`, Astro.site).toString()}#faq`,
+    "@id": `${new URL(`/collections/${collection.slug}/`, Astro.site).toString()}#faq`,
     mainEntity: collectionFaq.map((f) => ({
       "@type": "Question",
       name: f.q,
@@ -251,7 +251,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "@id": `${new URL(`/collections/${collection.slug}`, Astro.site).toString()}#speakable`,
+    "@id": `${new URL(`/collections/${collection.slug}/`, Astro.site).toString()}#speakable`,
     speakable: { "@type": "SpeakableSpecification", cssSelector: [".cc-collection-intro"] },
   },
 ];
@@ -305,7 +305,7 @@ const jsonLd = [
       <div class="collection-hero__description" set:html={collection.description}></div>
       <ShareActions
         title={collection.title}
-        url={new URL(`/collections/${collection.slug}`, Astro.site).toString()}
+        url={new URL(`/collections/${collection.slug}/`, Astro.site).toString()}
         image={new URL(`/og/collections/${collection.slug}.png`, Astro.site).toString()}
         description={`${collection.title} — ${collection.tagline}`}
         heading="Share this collection"

@@ -32,7 +32,7 @@ const jsonLd = [
     hasPart: collections.map((c) => ({
       "@type": "CreativeWork",
       name: c.title,
-      url: new URL(`/collections/${c.slug}`, Astro.site).toString(),
+      url: new URL(`/collections/${c.slug}/`, Astro.site).toString(),
     })),
   },
   {

@@ -61,7 +61,7 @@ const jsonLd = [
       "@type": "ListItem",
       position: i + 1,
       name: p.title,
-      url: new URL(`/palettes/${p.slug}`, Astro.site).toString(),
+      url: new URL(`/palettes/${p.slug}/`, Astro.site).toString(),
     })),
   },
 ];
