@@ -6,7 +6,7 @@ const title = "Pantone vs RAL — which color system to use, and why";
 const description =
   "Pantone and RAL are the two color systems designers and makers reach for — but for different jobs. A plain-language comparison: what each one is, how the codes work, how many colors they hold, and which to use for branding vs. coatings.";
 
-const pageUrl = new URL("/compare/pantone-vs-ral", Astro.site).toString();
+const pageUrl = new URL("/compare/pantone-vs-ral/", Astro.site).toString();
 
 const faq = [
   {
@@ -81,11 +81,6 @@ const jsonLd = [
       {
         "@type": "ListItem",
         position: 2,
-        name: "Compare",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
         name: "Pantone vs RAL",
         item: pageUrl,
       },

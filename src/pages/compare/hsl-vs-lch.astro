@@ -6,7 +6,7 @@ const title = "HSL vs LCH — which color model to use, and why";
 const description =
   "HSL and LCH (and OKLCH) both describe color by hue, but they behave very differently. A plain-language comparison: what each is, why HSL lightness looks wrong, perceptual uniformity, wide-gamut, and which to reach for in modern CSS.";
 
-const pageUrl = new URL("/compare/hsl-vs-lch", Astro.site).toString();
+const pageUrl = new URL("/compare/hsl-vs-lch/", Astro.site).toString();
 
 const faq = [
   {
@@ -82,11 +82,6 @@ const jsonLd = [
       {
         "@type": "ListItem",
         position: 2,
-        name: "Compare",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
         name: "HSL vs LCH",
         item: pageUrl,
       },

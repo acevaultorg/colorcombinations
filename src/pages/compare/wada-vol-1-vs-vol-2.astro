@@ -46,7 +46,7 @@ const vol2Plates = vol2Seasonal + vol2Design;
 const title ="Dictionary of Color Combinations Vol 1 vs Vol 2 — which should you buy?";
 const description = `Sanzo Wada's Vol 1 holds ${vol1Plates} combinations from 1933; Vol 2 adds ${vol2Plates} more from 1935–1938 that appear nowhere else. A plain comparison of what is in each book, what you can read here for free, and which one to buy first.`;
 
-const pageUrl = new URL("/compare/wada-vol-1-vs-vol-2", Astro.site).toString();
+const pageUrl = new URL("/compare/wada-vol-1-vs-vol-2/", Astro.site).toString();
 
 const faq = [
   {
@@ -100,8 +100,7 @@ const jsonLd = [
   {"@context":"https://schema.org","@type":"BreadcrumbList",
     itemListElement: [
       {"@type":"ListItem", position: 1, name:"Home", item: new URL("/", Astro.site).toString() },
-      {"@type":"ListItem", position: 2, name:"Compare" },
-      {"@type":"ListItem", position: 3, name:"Wada Vol 1 vs Vol 2", item: pageUrl },
+      {"@type":"ListItem", position: 2, name:"Wada Vol 1 vs Vol 2", item: pageUrl },
     ],
   },
 ];

@@ -6,7 +6,7 @@ const title = "Adobe Color vs Coolors — which palette tool to use";
 const description =
   "Adobe Color and Coolors are the two free palette tools most designers reach for — but they work very differently. A plain comparison: harmony-wheel vs spacebar-generator, integrations, what each does best, and which to use.";
 
-const pageUrl = new URL("/compare/adobe-vs-coolors", Astro.site).toString();
+const pageUrl = new URL("/compare/adobe-vs-coolors/", Astro.site).toString();
 
 const faq = [
   {
@@ -82,11 +82,6 @@ const jsonLd = [
       {
         "@type": "ListItem",
         position: 2,
-        name: "Compare",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
         name: "Adobe Color vs Coolors",
         item: pageUrl,
       },
