@@ -53,12 +53,12 @@ const pickHref = (slug: string) =>
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/color-trends-2027/";
 const PUBLISHED = "2026-09-06T00:00:00Z";
-// Verified 2026-10-06 (Dunn-Edwards French Press Coffee, C2 Paint Pueblo and Minwax Pickled Oak added; Benjamin Moore and Pantone re-checked, still unannounced; earlier passes 2026-10-01, 2026-09-24, 2026-09-06) against each brand's own announcement plus Forbes, HGTV,
+// Verified 2026-10-08 (Tikkurila S483 Heartland noted on the PPG card: PPG brand, same day, same theme, not a separate authority; Benjamin Moore still "coming this October", Pantone December; Young House Love list of 2026-10-06 matched). Earlier 2026-10-06 (Dunn-Edwards French Press Coffee, C2 Paint Pueblo and Minwax Pickled Oak added; Benjamin Moore and Pantone re-checked, still unannounced; earlier passes 2026-10-01, 2026-09-24, 2026-09-06) against each brand's own announcement plus Forbes, HGTV,
 // Young House Love and PR Newswire. Bump when the picks are re-checked or a new
 // authority announces — never automatically. (Same rule as the 2026 page; there
 // dateModified used to be the build clock, which asserted a content change on
 // every deploy. Fixed 2026-09-06, commit 75dcb84.)
-const VERIFIED = "2026-10-06";
+const VERIFIED = "2026-10-08";
 const MODIFIED = `${VERIFIED}T00:00:00Z`;
 
 const AUTHOR = {
@@ -182,7 +182,7 @@ const PICKS: Pick[] = [
     code: "PPG15-30",
     family: "Warm beige-taupe-grey",
     blurb:
-      "PPG describes it as a warm, saturated hue that blends beige, taupe and gray, drawn from clay-rich earth and weathered stone, under the theme “Foundations”. It is PPG's pick for its architectural brands across Europe, the Middle East, Africa, Latin America and Asia — separate from Glidden's Artifact.",
+      "PPG describes it as a warm, saturated hue that blends beige, taupe and gray, drawn from clay-rich earth and weathered stone, under the theme “Foundations”. It is PPG's pick for its architectural brands across Europe, the Middle East, Africa, Latin America and Asia — separate from Glidden's Artifact. PPG's Tikkurila brand announced S483 Heartland as its 2027 colour the same day, under the same “Foundations” theme; Tikkurila's own colour page gives it RGB 156, 140, 123.",
     url: "https://news.ppg.com/Press-Releases/news-details/2026/PPG-announces-Country-Soil-as-2027-Color-of-the-Year/default.aspx",
     announced: "29 September 2026",
     sourcedHex: null,
@@ -248,7 +248,7 @@ const PENDING = [
 const faq = [
   {
     q: "What is the 2027 Color of the Year?",
-    a: "There is no single one. Each authority names its own. As of 6 October 2026 twelve have been named: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; Behr's Grounded (T27-01), a mossy olive; Graham & Brown's Rose Earth, a dusty clay pink; Dulux's Soulful Sage, a soft silvery green; Glidden's Artifact (PPG10-16), a calm smoky aqua; Sherwin-Williams' Celery (SW 6421), a soft yellow-green; PPG's Country Soil (PPG15-30), a warm beige-taupe-grey; Dunn-Edwards' French Press Coffee (DEBN07), a deep plum-tinged brown; C2 Paint's Pueblo (C2-510), an earthy rose-brown; Minwax's Pickled Oak (MW260), a light warm wood stain; and WGSN and Coloro's Luminous Blue. Pantone — the most-cited of them — announces in the first week of December.",
+    a: "There is no single one. Each authority names its own. As of 8 October 2026 twelve have been named: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; Behr's Grounded (T27-01), a mossy olive; Graham & Brown's Rose Earth, a dusty clay pink; Dulux's Soulful Sage, a soft silvery green; Glidden's Artifact (PPG10-16), a calm smoky aqua; Sherwin-Williams' Celery (SW 6421), a soft yellow-green; PPG's Country Soil (PPG15-30), a warm beige-taupe-grey (PPG's Tikkurila brand announced S483 Heartland alongside it); Dunn-Edwards' French Press Coffee (DEBN07), a deep plum-tinged brown; C2 Paint's Pueblo (C2-510), an earthy rose-brown; Minwax's Pickled Oak (MW260), a light warm wood stain; and WGSN and Coloro's Luminous Blue. Pantone — the most-cited of them — announces in the first week of December.",
   },
   {
     q: "Is Sherwin-Williams' Rewild the 2027 Color of the Year?",
@@ -270,7 +270,7 @@ const faq = [
 
 const title = "The 2027 Colors of the Year — Every Pick Announced So Far";
 const description =
-  "All 12 Colors of the Year for 2027 so far, side by side: Dunn-Edwards French Press Coffee, Sherwin-Williams Celery, Dulux Soulful Sage, Glidden Artifact, Behr Grounded and more — plus who is still to come. Verified 6 October 2026.";
+  "All 12 Colors of the Year for 2027 so far, side by side: Dunn-Edwards French Press Coffee, Sherwin-Williams Celery, Dulux Soulful Sage, Glidden Artifact, Behr Grounded and more — plus who is still to come. Verified 8 October 2026.";
 
 const jsonLd = [
   AUTHOR,
@@ -292,7 +292,7 @@ const jsonLd = [
     "@type": "ItemList",
     name: "2027 Colors of the Year announced so far",
     description:
-      "Official 2027 Color of the Year selections announced as of 6 October 2026. The season is ongoing.",
+      "Official 2027 Color of the Year selections announced as of 8 October 2026. The season is ongoing.",
     numberOfItems: PICKS.length,
     itemListElement: PICKS.map((p, i) => ({
       "@type": "ListItem",
@@ -356,7 +356,7 @@ const jsonLd = [
       <HeroSourceBook lead="Trends change every year; most palettes on this site come from one 1933 book." surface="trends-hero" />
       <p class="coty-hero__meta">
         By <a class="coty-hero__byline" href="/about/" rel="author">Paulo de Vries</a>
-        · Last verified <time datetime={VERIFIED}>6 October 2026</time>
+        · Last verified <time datetime={VERIFIED}>8 October 2026</time>
         · {PICKS.length} announced · {PENDING.length} still to come · sources cited below
       </p>
     </header>
@@ -425,7 +425,7 @@ const jsonLd = [
       <h2 id="pending">Still to come</h2>
       <p>
         {PENDING.length} authorities tracked here have not announced a 2027 pick as of
-        {" "}<time datetime={VERIFIED}>6 October 2026</time>. Timing notes below
+        {" "}<time datetime={VERIFIED}>8 October 2026</time>. Timing notes below
         are each brand's historical pattern, or its own stated timing where it has given one.
       </p>
       <ul class="coty-pending" role="list">
@@ -515,7 +515,8 @@ const jsonLd = [
         </li>
         <li>
           PPG — <a href="https://news.ppg.com/Press-Releases/news-details/2026/PPG-announces-Country-Soil-as-2027-Color-of-the-Year/default.aspx" rel="nofollow noopener" target="_blank">“PPG announces Country Soil as 2027 Color of the Year”</a> (29 September 2026),
-          and Hardware Retailing, <a href="https://hardwareretailing.com/ppg-announces-country-soil-as-2027-color-of-the-year/" rel="nofollow noopener" target="_blank">“PPG Announces Country Soil as 2027 Color of the Year”</a>.
+          and Hardware Retailing, <a href="https://hardwareretailing.com/ppg-announces-country-soil-as-2027-color-of-the-year/" rel="nofollow noopener" target="_blank">“PPG Announces Country Soil as 2027 Color of the Year”</a>,
+          and Tikkurila Poland, <a href="https://tikkurila.pl/kampanie/kolor-roku-2027-s483-heartland" rel="nofollow noopener" target="_blank">“Kolor Roku 2027: S483 Heartland”</a> with the colour page <a href="https://tikkurila.pl/kolory/heartland-s483" rel="nofollow noopener" target="_blank">S483 Heartland</a> (RGB 156, 140, 123).
         </li>
         <li>
           Dunn-Edwards — the company's PR Newswire announcement, <a href="https://www.prnewswire.com/news-releases/dunn-edwards-announces-french-press-coffee-as-the-2027-color-of-the-year-302894602.html" rel="nofollow noopener" target="_blank">“Dunn-Edwards announces French Press Coffee as the 2027 Color of the Year”</a> (1 October 2026),

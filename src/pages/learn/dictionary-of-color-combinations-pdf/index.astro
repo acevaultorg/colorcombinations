@@ -1,0 +1,284 @@
+---
+/**
+ * /learn/dictionary-of-color-combinations-pdf/ — what is free, legal and online (2026-10-08, subchief-1-amazon).
+ *
+ * Demand (Bing Webmaster GetQueryStats, 18 weekly rows to 2026-10-02): the "pdf" reading of the
+ * book's title has no page of its own and lands on the home page (GetQueryPageStats: 100% of
+ * impressions to "/"). Largest variants: "a dictionary of color combinations pdf" 48 impressions
+ * (pos 7.5), "dictionary of color combinations pdf" 36, "a dictionary of color combinations pdf
+ * free" 22, "japanese dictionary of color combinations pdf" 8, plus ~65 smaller variants (pdf /
+ * free download / epub / read online / internet archive), ~200 impressions in all.
+ *
+ * Sources (read 2026-10-08): NDL Search records and NDL Digital Collections for 配色総鑑 (each
+ * linked pid below was opened and returned 200; the four checked records say インターネット公開,
+ * open to anyone online); a web search for any ebook/Kindle edition of the Seigensha book found
+ * none; the Seigensha shelf facts come from src/config/monetization.ts (checked 2026-10-07).
+ * NDL catalogues the title as 配色総鑑 (鑑, "mirror/compendium"); this site had 配色総監 on
+ * /learn/sanzo-wada/ until this commit.
+ *
+ * Deliberately NOT here: links to any unauthorised PDF, and any claim that the NDL viewer offers
+ * a PDF download (not verified).
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import FurtherReading from "@components/FurtherReading.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
+import { wadaCatalog } from "@data/palettes";
+import { FURTHER_READING, type CuratedBook } from "@/config/monetization";
+
+const N = wadaCatalog().length;
+
+const shelfSlugs = ["a-dictionary-of-color-combinations", "a-dictionary-of-color-combinations-vol-2"];
+const shelf: CuratedBook[] = shelfSlugs
+  .map((s) => FURTHER_READING.find((b) => b.slug === s))
+  .filter((b): b is CuratedBook => Boolean(b));
+if (shelf.length !== shelfSlugs.length) {
+  throw new Error(`learn/dictionary-of-color-combinations-pdf: shelf book missing (${shelf.length}/${shelfSlugs.length})`);
+}
+
+const NDL_SEARCH = "https://dl.ndl.go.jp/search/searchResult?keyword=%E9%85%8D%E8%89%B2%E7%B7%8F%E9%91%91";
+const NDL_VOL1 = "https://dl.ndl.go.jp/pid/1191854";
+const NDL_A1 = "https://dl.ndl.go.jp/pid/1145831";
+const NDL_B12 = "https://dl.ndl.go.jp/pid/1191847";
+const NDL_GUIDE = "https://dl.ndl.go.jp/pid/1911912";
+
+const title = "Is There a PDF of A Dictionary of Color Combinations? What Is Free and Legal";
+const description = `There is no official PDF or ebook of Sanzo Wada's A Dictionary of Color Combinations. What you can get free and legally: the 1930s original scanned by Japan's National Diet Library, and all ${N} combinations of the English edition with hex codes as a web page and a CSV.`;
+const keywords = [
+  "a dictionary of color combinations pdf",
+  "dictionary of color combinations pdf free",
+  "sanzo wada pdf",
+  "japanese dictionary of color combinations pdf",
+  "Haishoku Soukan",
+  "配色総鑑",
+];
+const SITE_FIRST_PUBLISHED = "2026-10-08T00:00:00Z";
+import { contentDate } from "@/lib/contentDate";
+const BUILD_DATE = contentDate("src/pages/learn/dictionary-of-color-combinations-pdf/index.astro", "src/data/palettes.ts");
+const siteUrl = "https://colorcombinations.org/";
+const articleUrl = `${siteUrl}learn/dictionary-of-color-combinations-pdf/`;
+
+type Row = { what: string; free: string; href?: string; external?: boolean };
+const rows: Row[] = [
+  { what: `All ${N} combinations of the English edition, with hex, RGB and CMYK`, free: "Yes, on this site", href: "/browse/" },
+  { what: "The same combinations as a spreadsheet", free: "Yes, CSV download", href: "/data/" },
+  { what: "Wada's original 1930s volumes (Haishoku Soukan), scanned page by page", free: "Yes, at Japan's National Diet Library", href: NDL_SEARCH, external: true },
+  { what: "Seigensha's English edition (2010) as a PDF or ebook", free: "Does not exist. Print only" },
+  { what: "Vol. 2 (Seigensha, 2020)", free: "Print only; not in this archive" },
+];
+
+const faqs = [
+  {
+    q: "Is there an official PDF of A Dictionary of Color Combinations?",
+    a: "No. Seigensha publishes the English edition only in print, and we found no ebook or Kindle edition. PDF files offered on file-sharing sites are scans of that copyrighted print edition, made without the publisher's permission.",
+  },
+  {
+    q: "Can I read Sanzo Wada's original book for free?",
+    a: "Yes. Japan's National Diet Library has scanned the 1930s volumes of Haishoku Soukan (配色総鑑) and shows them free online to anyone. The pages are in Japanese, but the color plates need no translation.",
+  },
+  {
+    q: "Where can I get the color combinations without buying the book?",
+    a: `Every one of the ${N} combinations in the English edition is on this site, each with hex, RGB and CMYK values, and the whole set downloads as a CSV from the data page.`,
+  },
+  {
+    q: "Is the book worth buying if the colors are free?",
+    a: "Only for the printed object: the matte plates, the small Japanese binding, a citable copy. If you want plates you cannot already see here, Vol. 2 is the better buy, because none of its plates are in this archive.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: articleUrl,
+    datePublished: SITE_FIRST_PUBLISHED,
+    dateModified: BUILD_DATE,
+    inLanguage: "en",
+    keywords: keywords.join(", "),
+    articleSection: "Guide",
+    author: { "@type": "Organization", "@id": `${siteUrl}#organization`, name: "The Dictionary of Color Combinations" },
+    publisher: { "@id": `${siteUrl}#organization` },
+    isPartOf: { "@id": `${siteUrl}#website` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Learn", item: `${siteUrl}learn/` },
+      { "@type": "ListItem", position: 3, name: "Is there a PDF?", item: articleUrl },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  adContent
+  title={title}
+  description={description}
+  keywords={keywords}
+  image="/og/about.png"
+  type="article"
+  modifiedTime={BUILD_DATE}
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="article-hero">
+      <div class="container-narrow">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/learn/">Learn</a></li>
+            <li aria-current="page">Is there a PDF?</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Guide · The book</p>
+        <h1 class="display-hero text-balance">Is there a PDF of A Dictionary of Color Combinations?</h1>
+        <p class="article-hero__lede">
+          No official one. The English edition is sold in print only. But you can get almost
+          everything in it free and legally: <a href="/browse/">all {N} combinations</a> with hex
+          codes on this site, and Wada's original 1930s volumes, scanned by Japan's national library.
+        </p>
+        <HeroSourceBook
+          lead="Want the printed book? It has no ebook edition."
+          surface="learn-dcc-pdf-hero"
+          label="Get A Dictionary of Color Combinations on Amazon →"
+        />
+      </div>
+    </header>
+
+    <div class="article-body container-narrow">
+      <h2 id="what-is-free">What is free, and what isn't</h2>
+      <div class="pdf-table-wrap">
+        <table class="pdf-table">
+          <thead>
+            <tr><th scope="col">What you want</th><th scope="col">Free?</th></tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <th scope="row">
+                  {r.href ? (
+                    <a href={r.href} rel={r.external ? "noopener" : undefined}>{r.what}</a>
+                  ) : r.what}
+                </th>
+                <td data-label="Free">{r.free}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="no-pdf">Why there is no official PDF</h2>
+      <p>
+        The book people mean is Seigensha's <em>A Dictionary of Color Combinations</em>, published
+        in Kyoto in 2010. Seigensha sells it as a small printed book and has never released a PDF,
+        Kindle or other ebook edition; we searched for one and found none. Wada died in 1967 and
+        his own 1930s volumes are out of copyright, but the 2010 edition is a new book: its layout,
+        its English text and its design belong to the publisher. The PDFs on file-sharing and
+        document sites are scans of that print edition, made without permission. We do not link to
+        them.
+      </p>
+
+      <h2 id="original">The original is free, at Japan's national library</h2>
+      <p>
+        The 2010 book is a selection from Wada's own work, <em>Haishoku Soukan</em>
+        (<span lang="ja">配色総鑑</span>), which the Tokyo publisher Hakubisha issued in parts from
+        1933, with reprints and further series into 1935. Japan's National Diet Library has scanned dozens of those parts and shows them
+        free online to anyone, no account needed:
+      </p>
+      <ul class="pdf-list">
+        <li><a href={NDL_SEARCH} rel="noopener">All digitised parts</a> (search for 配色総鑑 in the NDL Digital Collections)</li>
+        <li><a href={NDL_VOL1} rel="noopener">Volume 1</a> (1933)</li>
+        <li><a href={NDL_A1} rel="noopener">Series A, part 1</a> (reprint)</li>
+        <li><a href={NDL_B12} rel="noopener">Series B, parts 1 and 2</a>: the color schemes for January and February (1935)</li>
+        <li><a href={NDL_GUIDE} rel="noopener">Wada's own guide to using it</a> (1934)</li>
+      </ul>
+      <p>
+        The captions are in Japanese, but the plates are the point and they need no translation.
+        These are scans of 90-year-old printing, so the colors have aged; for exact values, use the
+        hex codes in this archive instead.
+      </p>
+
+      <h2 id="here">Every combination of the English edition, free here</h2>
+      <p>
+        All {N} combinations of the 2010 edition are on this site, each with hex, RGB and CMYK
+        values you can copy: <a href="/browse/">browse them</a> by color, mood or number. The full
+        set downloads as a spreadsheet from the <a href="/data/">data page</a> (CSV, free to reuse
+        with credit). The digitised color values come from Matt DesLauriers' open data set, credited
+        on our <a href="/copyright/">copyright page</a>.
+      </p>
+
+      <h2 id="buy">When the printed book is worth it</h2>
+      <p>
+        If you only want the colors, you already have them. People buy Vol. 1 for the object
+        itself: the matte plates, the small Japanese binding, and a copy they can cite. Vol. 2
+        (Seigensha, 2020) is different: its 72 seasonal plates from 1935–36 and 165 plates from
+        1938 fashion, interior and graphic design are not in this archive, so the book is the only
+        tidy way to have them. <a href="/compare/wada-vol-1-vs-vol-2/">How the two volumes differ</a>.
+      </p>
+
+      <h2 id="faq">Questions people ask</h2>
+      {faqs.map((f) => (
+        <section class="pdf-faq">
+          <h3>{f.q}</h3>
+          <p>{f.a}</p>
+        </section>
+      ))}
+
+      <p class="article-related">
+        Sources (read 8 October 2026): the National Diet Library's catalogue and Digital Collections
+        records for 配色総鑑 (each linked part opened and marked open to the public online), and a
+        search for any ebook edition of the Seigensha book. Archive counts are computed from this
+        site's data. Keep reading: <a href="/learn/sanzo-wada/">who Sanzo Wada was</a> ·
+        <a href="/learn/color-dictionaries/">the famous color dictionaries</a> ·
+        <a href="/books/a-dictionary-of-color-combinations/">the book, reviewed</a>.
+      </p>
+      <p class="article-end">— colorcombinations.org editorial</p>
+
+      <FurtherReading
+        pageClass="learn-dcc-pdf"
+        title="The two Wada books in print"
+        intro="Vol. 1 holds the combinations you can browse free here. Vol. 2 holds plates you can't."
+        books={shelf}
+      />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .pdf-table-wrap { overflow-x: auto; margin: 0 0 2rem; -webkit-overflow-scrolling: touch; }
+  .pdf-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+  .pdf-table th, .pdf-table td {
+    text-align: left; vertical-align: top; padding: 0.625rem 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .pdf-table thead th { font-weight: 600; color: var(--color-ink-500); font-size: 0.8125rem; }
+  .pdf-table tbody th { font-weight: 600; }
+  .pdf-table a, .pdf-list a, .article-related a { color: var(--color-accent-500); text-decoration: underline; text-underline-offset: 2px; }
+  @media (max-width: 640px) {
+    .pdf-table thead { display: none; }
+    .pdf-table tr { display: block; padding: 0.75rem 0; border-bottom: 1px solid var(--color-border); }
+    .pdf-table th, .pdf-table td { display: block; border: 0; padding: 0.125rem 0; }
+    .pdf-table td::before { content: attr(data-label) ": "; font-weight: 600; color: var(--color-ink-500); }
+  }
+  .pdf-list { max-width: 65ch; margin: 0 0 1.5rem; padding-left: 1.25rem; }
+  .pdf-list li { margin-bottom: 0.5rem; }
+  .pdf-faq h3 { margin-top: 1.5rem; }
+  .article-related { margin-top: 2rem; font-size: 0.9375rem; }
+  .article-end {
+    margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border);
+    font-style: italic; color: var(--color-ink-500); font-size: 0.9375rem;
+  }
+</style>
