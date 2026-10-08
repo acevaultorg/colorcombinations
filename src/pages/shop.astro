@@ -39,7 +39,7 @@ const jsonLd = [
       availability: BUNDLE.isLive
         ? "https://schema.org/InStock"
         : "https://schema.org/PreOrder",
-      url: new URL("/shop", Astro.site).toString(),
+      url: new URL("/shop/", Astro.site).toString(),
     },
   },
   {

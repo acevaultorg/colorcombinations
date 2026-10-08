@@ -34,7 +34,7 @@ const jsonLd = [
     "@type": "CollectionPage",
     name: title,
     description,
-    url: new URL("/shop/color-reference-library", Astro.site).toString(),
+    url: new URL("/shop/color-reference-library/", Astro.site).toString(),
     isPartOf: {
       "@type": "WebSite",
       name: "The Dictionary of Color Combinations",
@@ -63,7 +63,7 @@ const jsonLd = [
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).toString() },
-      { "@type": "ListItem", position: 2, name: "Shop", item: new URL("/shop", Astro.site).toString() },
+      { "@type": "ListItem", position: 2, name: "Shop", item: new URL("/shop/", Astro.site).toString() },
       { "@type": "ListItem", position: 3, name: "Color Reference Library" },
     ],
   },

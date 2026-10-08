@@ -10,7 +10,7 @@ const jsonLd = {
   "@type": "WebPage",
   name: title,
   description,
-  url: new URL("/privacy", Astro.site).toString(),
+  url: new URL("/privacy/", Astro.site).toString(),
   isPartOf: {
     "@type": "WebSite",
     name: "The Dictionary of Color Combinations",
