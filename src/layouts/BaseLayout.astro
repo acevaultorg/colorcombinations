@@ -94,6 +94,10 @@ const articlePublished = publishedTime ?? SITE_FIRST_PUBLISHED;
 // stamped exactly that into its OG tags. Absent metadata is honest; a clock is
 // not. Pages with a real date pass modifiedTime explicitly.
 const articleModified = modifiedTime ?? null;
+// og:locale follows <html lang>; it was hardcoded en_US, so the /de/ and /pl/ probes
+// told social crawlers they were English.
+const OG_LOCALES: Record<string, string> = { en: "en_US", de: "de_DE", pl: "pl_PL" };
+const ogLocale = OG_LOCALES[lang] ?? "en_US";
 
 const siteName = "The Dictionary of Color Combinations";
 // `bareTitle` is for pages whose own title ALREADY contains the brand — the
@@ -268,7 +272,7 @@ const jsonLdArray = jsonLd
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={fullTitle} />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={ogLocale} />
 
     {type === "article" && (
       <>
