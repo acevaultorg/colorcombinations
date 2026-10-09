@@ -24,6 +24,16 @@ interface Props {
 const { lead, surface, label = "Get Sanzo Wada's 1933 Dictionary on Amazon →" } = Astro.props;
 const href = AMAZON.link("4861522471", surface);
 const showDisclosure = AMAZON.isLive;
+
+// Holiday window (card mv04dhzan2vlus, 2026-10-09): /gift-guide/ converts ~10 Amazon clicks per
+// 16 views (GA4, 28d to 10-05) but only a footer link reaches it. From Nov 1 to Dec 24 the hero
+// line adds one internal link to it on every page type that carries this component. Decided at
+// build time (static site); the inline script hides it after the window if no rebuild lands.
+const GIFT_FROM = "11-01";
+const GIFT_UNTIL = "12-24";
+const buildDay = new Date().toISOString().slice(5, 10);
+const showGiftLine = buildDay >= GIFT_FROM && buildDay <= GIFT_UNTIL;
+const giftExpiry = `${new Date().getUTCFullYear()}-12-25`;
 ---
 <p class="hero-source-book">
   <img class="hero-source-book__cover" src="/book-covers/wada-vol-1.jpg" alt="Cover of A Dictionary of Color Combinations, Vol. 1 (Seigensha)" width="48" height="66" decoding="async" />
@@ -37,10 +47,20 @@ const showDisclosure = AMAZON.isLive;
     data-from="hero-buyline"
     data-book="A Dictionary of Color Combinations"
   >{label}</a>
+  {showGiftLine && (
+    <a class="hero-source-book__gift" href="/gift-guide/" data-from="hero-gift-guide" data-expires={giftExpiry}>Buying it as a gift? See the holiday gift guide</a>
+  )}
   {showDisclosure && (
     <span class="hero-source-book__disclosure">Affiliate link; your price is unchanged. As an Amazon Associate we earn from qualifying purchases.</span>
   )}
 </p>
+{showGiftLine && (
+  <script is:inline>
+    document.querySelectorAll("a[data-expires]").forEach(function (a) {
+      if (new Date().toISOString().slice(0, 10) >= a.getAttribute("data-expires")) a.remove();
+    });
+  </script>
+)}
 
 <style>
   .hero-source-book {
@@ -67,6 +87,11 @@ const showDisclosure = AMAZON.isLive;
     box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
   }
   .hero-source-book::after { content: ""; display: block; clear: both; }
+  .hero-source-book a.hero-source-book__gift {
+    padding-block: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-700);
+  }
   .hero-source-book__disclosure {
     display: block;
     clear: both;
