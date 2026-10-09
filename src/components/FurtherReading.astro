@@ -443,15 +443,19 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
     padding: 0.4rem 0.75rem;
   }
 
+  /* Second Eyes 2026-10-09 (card mv0xf826inmuw5): the figure read like fine print, the "(as of …)" stamp wrapped
+     after the day at 390px, and on the full-width sidebar button the line sat left under centred text. */
   .further-reading__price {
     flex-basis: 100%;
     min-height: 1.25rem;
-    font-size: 0.8125rem;
-    color: var(--color-ink-700);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-900);
   }
-  .further-reading__price:not(:empty)::before { content: "Amazon price: "; }
+  .further-reading__price:not(:empty)::before { content: "Amazon price: "; font-weight: 400; color: var(--color-ink-700); }
   .further-reading__price[hidden] { display: none; }
-  .further-reading__price :global(small) { font-size: 0.75rem; opacity: 0.85; }
+  .further-reading__price :global(small) { font-size: 0.75rem; font-weight: 400; color: var(--color-ink-700); white-space: nowrap; }
+  .further-reading--sidebar .further-reading__price { text-align: center; }
 
   .further-reading--sidebar .further-reading__link {
     display: flex;
