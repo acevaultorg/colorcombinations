@@ -26,10 +26,10 @@ const href = AMAZON.link("4861522471", surface);
 const showDisclosure = AMAZON.isLive;
 
 // Holiday window (card mv04dhzan2vlus, 2026-10-09): /gift-guide/ converts ~10 Amazon clicks per
-// 16 views (GA4, 28d to 10-05) but only a footer link reaches it. From Nov 1 to Dec 24 the hero
+// 16 views (GA4, 28d to 10-05) but only a footer link reaches it. From Oct 20 to Dec 24 the hero
 // line adds one internal link to it on every page type that carries this component. Decided at
 // build time (static site); the inline script hides it after the window if no rebuild lands.
-const GIFT_FROM = "11-01";
+const GIFT_FROM = "10-20"; // moved from 11-01 (primary 2026-10-09: live before 11-01, ahead of Black Friday 11-27)
 const GIFT_UNTIL = "12-24";
 const buildDay = new Date().toISOString().slice(5, 10);
 const showGiftLine = buildDay >= GIFT_FROM && buildDay <= GIFT_UNTIL;
