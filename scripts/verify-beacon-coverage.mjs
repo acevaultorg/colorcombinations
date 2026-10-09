@@ -68,6 +68,7 @@ function loadTracker() {
       target: { closest: () => ({ href: u.href, host: u.host, pathname: u.pathname, dataset }) },
     });
     const b = beacons[0];
+    click.lastBeacon = b || null;
     return b ? decodeURIComponent((b.match(/[&?]f=([^&]*)/) || [, ""])[1]) : null;
   };
   return { click, ctx };
@@ -78,21 +79,31 @@ const { click, ctx } = loadTracker();
 // ── 1. static battery ───────────────────────────────────────────────────────
 console.log("\nbeacon coverage — static battery");
 const battery = [
-  ["book",  "/go/b/4861522471?c=book",                          { book: "x" }],
-  ["book",  "/go/b/4861522471",                                 { book: "x" }],
-  ["tool",  "/go/p/B0BJ147GF9?c=art-supplies",                   { tool: "x" }],
-  ["tool",  "/go/p/B0973JVF85",                                  { tool: "x" }],
-  ["prime", "/go/prime",                                         { from: "prime-bounty" }],
-  ["book",  `https://www.amazon.com/dp/B0B87XPWB2?tag=x`,        { book: "x" }],
-  [null,    "/palettes/kurenai-kon/",                            {}],
-  [null,    "/colors/corinthian-pink/",                          {}],
-  [null,    "https://en.wikipedia.org/wiki/Sanzo_Wada",          {}],
+  ["book",  "/go/b/4861522471?c=book",                          { book: "x" },       "4861522471"],
+  ["book",  "/go/b/4861522471",                                 { book: "x" },       "4861522471"],
+  ["tool",  "/go/p/B0BJ147GF9?c=art-supplies",                   { tool: "x" },       "B0BJ147GF9"],
+  ["tool",  "/go/p/B0973JVF85",                                  { tool: "x" },       "B0973JVF85"],
+  ["prime", "/go/prime",                                         { from: "prime-bounty" }, null],
+  ["book",  `https://www.amazon.com/dp/B0B87XPWB2?tag=x`,        { book: "x" },       "B0B87XPWB2"],
+  ["tool",  "https://amzn.to/short-link",                        { tool: "x" },       null],
+  ["tool",  "/go/p/not-an-asin",                                 { tool: "x" },       null],
+  [null,    "/palettes/kurenai-kon/",                            {},                  null],
+  [null,    "/colors/corinthian-pink/",                          {},                  null],
+  [null,    "https://en.wikipedia.org/wiki/Sanzo_Wada",          {},                  null],
 ];
-for (const [want, href, data] of battery) {
+for (const [want, href, data, wantItem] of battery) {
   const got = click(href, data);
   const ok = want === null ? got === null : got === want;
   const label = `${href.slice(0, 46).padEnd(46)} → ${String(got).padEnd(8)} (want ${want})`;
   ok ? pass(label) : fail(label);
+  const beacon = click.lastBeacon ? new URL(click.lastBeacon) : null;
+  const items = beacon ? beacon.searchParams.getAll("i") : [];
+  const itemOk = wantItem === null
+    ? items.length === 0
+    : items.length === 1 && items[0] === wantItem;
+  itemOk
+    ? pass(`  item i=${items[0] || "(omitted)"}`)
+    : fail(`  item i=${items.join(",") || "(omitted)"} (want ${wantItem || "omitted"})`);
 }
 
 // gesture cookie: a regression here breaks the /go/ gate, not just measurement
