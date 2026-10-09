@@ -46,7 +46,8 @@ function loadTracker() {
   const beacons = [];
   let handler = null;
   const ctx = {
-    location: { host: "colorcombinations.org", pathname: "/palettes/x/" },
+    URL,
+    location: new URL("https://colorcombinations.org/palettes/x/"),
     document: { cookie: "", addEventListener: (t, f) => { if (t === "click") handler = f; } },
     navigator: { sendBeacon: (u) => { beacons.push(u); return true; } },
     window: {},
@@ -86,6 +87,12 @@ const battery = [
   ["prime", "/go/prime",                                         { from: "prime-bounty" }, null],
   ["book",  `https://www.amazon.com/dp/B0B87XPWB2?tag=x`,        { book: "x" },       "B0B87XPWB2"],
   ["tool",  "https://amzn.to/short-link",                        { tool: "x" },       null],
+  ["tool",  "/go/p/B0BJ147GF9X",                                { tool: "x" },       null],
+  ["tool",  "/go/p/B0BJ147GF9-bad",                             { tool: "x" },       null],
+  ["prime", "/go/prime?next=/dp/B0BJ147GF9",                     { from: "prime-bounty" }, null],
+  ["tool",  "https://amzn.to/short?next=/dp/B0BJ147GF9",           { tool: "x" },       null],
+  ["tool",  "/go/p/b0bj147gf9?c=art-supplies",                    { tool: "x" },       "B0BJ147GF9"],
+  ["book",  "https://www.amazon.com/gp/product/B0B87XPWB2/ref=x",  { book: "x" },       "B0B87XPWB2"],
   ["tool",  "/go/p/not-an-asin",                                 { tool: "x" },       null],
   [null,    "/palettes/kurenai-kon/",                            {},                  null],
   [null,    "/colors/corinthian-pink/",                          {},                  null],
