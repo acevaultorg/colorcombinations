@@ -27,8 +27,13 @@ function relativeLuminance(hex: HexColor): number {
 
 /** Return whether the given hex should use dark or light text on top */
 export function bestTextColorOn(bg: HexColor): "dark" | "light" {
+  // Pick whichever of white / near-black (#1a1a1a, L=0.0103) has the higher WCAG contrast.
+  // The crossover is L=0.20, not 0.5: a 0.5 cut-off put white on mid-tones like #eea78c at 1.99:1
+  // (site-guard 2026-10-06).
   const lum = relativeLuminance(bg);
-  return lum > 0.5 ? "dark" : "light";
+  const vsWhite = 1.05 / (lum + 0.05);
+  const vsDark = (lum + 0.05) / 0.0603;
+  return vsDark > vsWhite ? "dark" : "light";
 }
 
 /** Contrast ratio between two hex colors (WCAG) */
