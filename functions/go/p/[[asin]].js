@@ -100,7 +100,9 @@ export const onRequestGet = ({ request }) => {
     // US-visitor search fallback for listings with no new offer in the US store (2026-10-03,
     // card mus7y2u86ihabr; Creators API, see functions/go/b/[[isbn]].js). US only: other countries
     // keep /dp/, which Global Earning forwards to their own store. Re-check before removing.
-    const TO_SEARCH = { B0DPN7L6L5: "Calibrite Display Plus HL colorimeter" };
+    // B0DPN7L6L5 (Calibrite Display Plus HL kit) removed 2026-10-11: New Buy Box on 10-10 and 10-11
+    // (fleet-asin-audit, Creators API; card mv21lna26il6lq). Map left empty for the next listing that loses it.
+    const TO_SEARCH = {};
     let dest = request.headers.get("cf-ipcountry") === "US" && TO_SEARCH[asin]
       ? `https://www.amazon.com/s?k=${encodeURIComponent(TO_SEARCH[asin])}&tag=${TAG}`
       : `https://www.amazon.com/dp/${m[1].toUpperCase()}?tag=${TAG}`;

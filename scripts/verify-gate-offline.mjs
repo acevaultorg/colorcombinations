@@ -42,7 +42,7 @@ const isbn10 = (s) => /^[0-9]{9}[0-9Xx]$/.test(s) && [...s].reduce((a, c, i) => 
 // all three in sync. Every other id and every other country must still land on /dp/.
 const US_SEARCH = {
   b: { '0714873896': 'https://www.amazon.com/s?k=Chromaphilia%20Stella%20Paul&i=stripbooks' },
-  p: { B0DPN7L6L5: 'https://www.amazon.com/s?k=Calibrite%20Display%20Plus%20HL%20colorimeter' },
+  p: {}, // B0DPN7L6L5 back on /dp/ 2026-10-11 (card mv21lna26il6lq)
 };
 function expected(href, country) {
   const u = new URL(href, ORIGIN);
