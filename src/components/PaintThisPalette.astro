@@ -43,6 +43,7 @@
  * whole point is to find out which shelf the audience actually wants.
  */
 
+import { renderProductMedia, PRODUCT_CSS } from "../../kit/product.mjs";
 import { AMAZON, ART_SUPPLIES, PRIME_BOUNTY, type ArtSupply } from"@/config/monetization";
 
 export interface Props {
@@ -188,7 +189,7 @@ const destinations = DESTINATIONS.map((d) => {
           <p class="paint-kit__dest-label">{label}</p>
           <p class="paint-kit__dest-verdict">{verdict}</p>
           <div class="paint-kit__row">
-            <svg class="paint-kit__glyph" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true" set:html={glyph(item.form)} />
+            <span class="paint-kit__media" set:html={renderProductMedia({ asin: item.amazonAsin, name: `${item.brand} ${item.name}`, size: 72 })} />
             <div>
               <p class="paint-kit__brand">{item.brand}</p>
               <h3 class="paint-kit__name">
@@ -225,7 +226,7 @@ const destinations = DESTINATIONS.map((d) => {
             data-tool={item.name}
             aria-label={`${item.name} by ${item.brand} on Amazon`}
           >
-            See price on Amazon <span aria-hidden="true">↗</span>
+            <span class="pk-s">See price on Amazon</span><span class="pk-v">View on Amazon</span> <span aria-hidden="true">↗</span>
           </a>
         </li>
       ))}
@@ -235,7 +236,7 @@ const destinations = DESTINATIONS.map((d) => {
     {items.map((item) => (
       <li class="paint-kit__item">
         <div class="paint-kit__row">
-          <svg class="paint-kit__glyph" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true" set:html={glyph(item.form)} />
+          <span class="paint-kit__media" set:html={renderProductMedia({ asin: item.amazonAsin, name: `${item.brand} ${item.name}`, size: 72 })} />
           <div>
             <p class="paint-kit__brand">{item.brand}</p>
             <h3 class="paint-kit__name">
@@ -264,7 +265,7 @@ const destinations = DESTINATIONS.map((d) => {
             data-event="amazon_click"
             data-tool={item.name}
           >
-            See price on Amazon <span aria-hidden="true">↗</span>
+            <span class="pk-s">See price on Amazon</span><span class="pk-v">View on Amazon</span> <span aria-hidden="true">↗</span>
           </a>
         )}
       </li>
@@ -306,6 +307,9 @@ const destinations = DESTINATIONS.map((d) => {
     qualifying purchases.
   </p>
 </section>
+
+<Fragment set:html={`<style>${PRODUCT_CSS}.pk-v{display:none}.paint-kit__item:has([data-ak-pm-price]:not(:empty)) .pk-v,.paint-kit__dest-item:has([data-ak-pm-price]:not(:empty)) .pk-v{display:inline}.paint-kit__item:has([data-ak-pm-price]:not(:empty)) .pk-s,.paint-kit__dest-item:has([data-ak-pm-price]:not(:empty)) .pk-s{display:none}</style>`} />
+<script is:inline src="/kit-product.js" defer></script>
 
 <style>
   .paint-kit {
