@@ -94,6 +94,18 @@ const inputId = `email-capture-${source.replace(/[^a-z0-9-]/gi, "-")}`;
         consent?.focus();
         return;
       }
+      const reportSubscribeError = (kind: string, httpStatus: number) => {
+        const w = window as unknown as {
+          gtag?: (...args: unknown[]) => void;
+          clarity?: (...args: unknown[]) => void;
+        };
+        try {
+          w.gtag?.("event", "subscribe_error", { source, http_status: httpStatus, kind });
+          w.clarity?.("event", "subscribe_error");
+        } catch {
+          /* analytics must never break the signup */
+        }
+      };
       if (button) button.disabled = true;
       if (status) status.textContent = "Subscribing…";
       try {
@@ -122,10 +134,14 @@ const inputId = `email-capture-${source.replace(/[^a-z0-9-]/gi, "-")}`;
                 : "Your interest is saved. We haven’t started sending these emails yet.";
           form.reset();
         } else {
+          // 2026-10-12 (card mv595t58iurmzr): a failed submit used to emit nothing, so a broken form and an unused
+          // form looked identical. Status + error class only; the email is never sent to analytics.
+          reportSubscribeError(res.ok ? "unexpected" : "server", res.status);
           if (status) status.textContent = data.error || "Something went wrong. Try again in a moment.";
           if (button) button.disabled = false;
         }
       } catch {
+        reportSubscribeError("network", 0);
         if (status) status.textContent = "Network hiccup — try again in a moment.";
         if (button) button.disabled = false;
       }
