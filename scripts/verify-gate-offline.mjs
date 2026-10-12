@@ -133,6 +133,16 @@ async function run(handler, hrefs, quiet, isWorker) {
   const home = `${ORIGIN}/`;
   const ctl = async (label, href, o) => { const g = await call(handler, href, o); say(g.status === 302 && g.loc === home, `ctl ${label} → home [${g.status}] ${g.loc}`); };
   await ctl('tokenless', sample, { mint: 'none' });
+  // WebKit new-tab click (Safari/iOS, 2026-10-12, card mv5060keqxv8w2): Sec-Fetch-Site none + Dest document + click credential.
+  const WK = { 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none', 'sec-fetch-dest': 'document' };
+  for (const s of ['/go/p/', '/go/b/', '/go/prime']) {
+    const href = hrefs.find((h) => h.startsWith(s));
+    if (!href) continue;
+    const g = await call(handler, href, { headers: WK, mint: 'cookie' });
+    say(g.status === 302 && g.loc === expected(href, 'US'), `ctl webkit new-tab ${s} [${g.status}] ${g.loc.slice(0, 60)}`);
+  }
+  await ctl('webkit none, no credential', sample, { headers: WK, mint: 'none' });
+  await ctl('site none without Dest document', sample, { headers: { 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none' }, mint: 'cookie' });
   await ctl('no Sec-Fetch headers', sample, { headers: {} });
   await ctl('cross-site navigation', sample, { headers: { 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'cross-site' } });
   await ctl('stale token (2h)', sample, { t: (Date.now() - 7_200_000).toString(36) });

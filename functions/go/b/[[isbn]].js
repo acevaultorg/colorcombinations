@@ -154,7 +154,12 @@ export const onRequestGet = ({ request }) => {
   const navOk = (() => {
     const mode = request.headers.get("sec-fetch-mode");
     const site = request.headers.get("sec-fetch-site");
-    return mode === "navigate" && (site === "same-origin" || site === "same-site");
+    // SAFARI / iOS FIX 2026-10-12 (card mv5060keqxv8w2): WebKit sends Sec-Fetch-Site: none (+ Dest: document) for a
+    // target=_blank link and every iPhone tap, so requiring same-origin sent every Safari/iOS buy click home (Playwright
+    // WebKit on live, 2026-10-12). `none` passes only as a top-level document navigation; the click-minted cc_g / t
+    // credential below is still required, so a crawler opening a harvested href still goes home.
+    return mode === "navigate" && (site === "same-origin" || site === "same-site"
+      || (site === "none" && request.headers.get("sec-fetch-dest") === "document"));
   })();
   const tokenOk = navOk && (() => {
     const m = (request.headers.get("cookie") || "").match(
