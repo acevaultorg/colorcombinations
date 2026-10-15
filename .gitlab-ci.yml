@@ -95,43 +95,27 @@ validate_build:
       # Diffing against the LIVE commit makes the skip self-healing: a dropped
       # deploy is picked up by the next push automatically, because the baseline
       # only advances when something actually ships.
-      BASELINE=""
-      if [ -n "${CLOUDFLARE_API_TOKEN:-}" ]; then
-        BASELINE=$(curl -sS -m 25 -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-          "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$CF_PAGES_PROJECT/deployments?per_page=10&env=production" \
-          | node -e '
-            let b="";process.stdin.on("data",d=>b+=d).on("end",()=>{
-              try{const j=JSON.parse(b);
-                const d=(j.result||[]).find(x=>x.latest_stage&&x.latest_stage.status==="success"
-                  &&x.deployment_trigger&&x.deployment_trigger.metadata&&x.deployment_trigger.metadata.commit_hash);
-                process.stdout.write(d?d.deployment_trigger.metadata.commit_hash:"");
-              }catch(e){process.stdout.write("");}});' 2>/dev/null || true)
-      fi
-      if [ -n "$BASELINE" ] && git cat-file -e "$BASELINE^{commit}" 2>/dev/null; then
-        echo "docs-only check: baseline = live deployment $BASELINE"
-      else
-        # BASELINE unknown to this checkout (shallow clone, first deploy, API down).
-        # Do NOT silently fall back to CI_COMMIT_BEFORE_SHA — that is the exact
-        # blindness this replaces. Fetch it, and if it still is not there, BUILD.
-        if [ -n "$BASELINE" ]; then git fetch --quiet origin "$BASELINE" --depth=1 2>/dev/null || true; fi
-        if [ -n "$BASELINE" ] && git cat-file -e "$BASELINE^{commit}" 2>/dev/null; then
-          echo "docs-only check: baseline = live deployment $BASELINE (fetched)"
-        else
-          echo "docs-only check: live baseline unavailable -> BUILDING (fail open)"
-          BASELINE=""
-        fi
-      fi
-      BEFORE="$BASELINE"
+      # ~~BASELINE = the commit CF Pages is serving~~ (SUPERSEDED 2026-10-15). That
+      # baseline guarded against a CANCELED DEPLOY being stranded, which can only
+      # happen while CI deploys. CI has been VALIDATE-ONLY since 2026-09-24 (header),
+      # and the local chunked deploys post no commit_hash, so the CF lookup returned a
+      # pre-09-24 commit (or nothing) and EVERY push built in full, including
+      # .claude/-only and IndexNow-manifest-only commits. On 2026-10-15 those builds ran
+      # on the local gitlab-runner next to a production deploy at 2.3 GiB free disk
+      # (coordinator card mv9s2gk0j6l5ow). A skipped VALIDATION strands nothing, so the
+      # pushed parent is the right baseline now. If CI ever deploys again, restore
+      # the live-deployment baseline from git history (this block before 2026-10-15).
+      BEFORE="${CI_COMMIT_BEFORE_SHA:-}"
       if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] \
          && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
         CHANGED=$(git diff --name-only "$BEFORE" "$CI_COMMIT_SHA" 2>/dev/null || true)
-        if [ -n "$CHANGED" ] && [ -z "$(printf '%s\n' "$CHANGED" | grep -v '^\.claude/' || true)" ]; then
+        if [ -n "$CHANGED" ] && [ -z "$(printf '%s\n' "$CHANGED" | grep -v -e '^\.claude/' -e '^\.indexnow-manifest\.json$' || true)" ]; then
           SKIP=yes
         fi
       fi
       if [ "$SKIP" = "yes" ]; then
         echo "=============================================================="
-        echo "SKIPPED: every changed path is under .claude/ — nothing that"
+        echo "SKIPPED: every changed path is under .claude/ or is the IndexNow manifest — nothing that"
         echo "reaches the built site. NO BUILD AND NO DEPLOY HAPPENED."
         echo "Production still serves the previous commit, which is correct."
         printf '%s\n' "$CHANGED" | sed 's/^/  /'
