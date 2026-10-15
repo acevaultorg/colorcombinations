@@ -149,9 +149,15 @@ async function main() {
     combo.sort((a, b) => (a.swatch ?? 0) - (b.swatch ?? 0));
 
     // Title: join first two color names with " & " (or all if combo is 2).
+    // A short "+N" title collides when two plates share their first two
+    // colours (6 pairs, e.g. 166 and 193 are both "Grenadine Pink & Naples
+    // Yellow +1"), giving two distinct pages one <title> and <h1>. Those
+    // plates name every colour instead; see the collision pass below.
     const names = combo.map((c) => c.name);
     const title =
       combo.length <= 2 ? names.join(" & ") : `${names.slice(0, 2).join(" & ")} +${names.length - 2}`;
+    const fullTitle =
+      names.length <= 2 ? title : `${names.slice(0, -1).join(", ")} & ${names[names.length - 1]}`;
 
     // Slug: wada-NNN-firstname-secondname
     const slugTail = slugify(
@@ -181,6 +187,7 @@ async function main() {
     palettes.push({
       slug,
       title,
+      fullTitle, // not emitted; used only by the collision pass
       summary,
       description,
       era: "showa",
@@ -191,6 +198,21 @@ async function main() {
       tags: ["wada", "1933", "dictionary", `plate-${id}`],
     });
   }
+
+  // Collision pass: any short title shared by two or more plates becomes the
+  // full colour list on every plate that shares it.
+  const titleCount = new Map();
+  for (const p of palettes) titleCount.set(p.title, (titleCount.get(p.title) ?? 0) + 1);
+  let renamed = 0;
+  for (const p of palettes) {
+    if (titleCount.get(p.title) > 1) {
+      p.title = p.fullTitle;
+      renamed++;
+    }
+  }
+  const stillDup = palettes.length - new Set(palettes.map((p) => p.title)).size;
+  if (stillDup) throw new Error(`[wada] ${stillDup} duplicate titles remain after the collision pass`);
+  console.log(`[wada] ${renamed} colliding titles expanded to the full colour list`);
 
   console.log(`[wada] built ${palettes.length} palettes`);
 

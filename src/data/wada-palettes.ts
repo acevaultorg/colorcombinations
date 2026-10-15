@@ -12,7 +12,7 @@
  * the numbered plates are reproduced here following the same approach as
  * sanzo-wada.dmbk.io and the R `sanzo` CRAN package.
  *
- * Generated: 2026-10-07T13:28:14.953Z
+ * Generated: 2026-10-15T15:35:12.525Z
  */
 
 import type { Palette } from "@/types/palette";
@@ -2540,7 +2540,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-166-grenadine-pink-naples-yellow",
-    title: "Grenadine Pink & Naples Yellow +1",
+    title: "Grenadine Pink, Naples Yellow & Deep Slate Green",
     summary: "Plate 166 from Sanzo Wada's 1933 Dictionary of Color Combinations — Grenadine Pink, Naples Yellow, Deep Slate Green.",
     description: "Combination 166 of 348 in Wada's six-volume 1933 work. A 3-colour grouping of Grenadine Pink, Naples Yellow, Deep Slate Green, as documented in the original plates.",
     era: "showa",
@@ -2972,7 +2972,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-193-grenadine-pink-naples-yellow",
-    title: "Grenadine Pink & Naples Yellow +1",
+    title: "Grenadine Pink, Naples Yellow & Light Porcelain Green",
     summary: "Plate 193 from Sanzo Wada's 1933 Dictionary of Color Combinations — Grenadine Pink, Naples Yellow, Light Porcelain Green.",
     description: "Combination 193 of 348 in Wada's six-volume 1933 work. A 3-colour grouping of Grenadine Pink, Naples Yellow, Light Porcelain Green, as documented in the original plates.",
     era: "showa",
@@ -3228,7 +3228,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-209-ivory-buff-yellow-orange",
-    title: "Ivory Buff & Yellow Orange +1",
+    title: "Ivory Buff, Yellow Orange & Salvia Blue",
     summary: "Plate 209 from Sanzo Wada's 1933 Dictionary of Color Combinations — Ivory Buff, Yellow Orange, Salvia Blue.",
     description: "Combination 209 of 348 in Wada's six-volume 1933 work. A 3-colour grouping of Ivory Buff, Yellow Orange, Salvia Blue, as documented in the original plates.",
     era: "showa",
@@ -3644,7 +3644,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-235-ivory-buff-yellow-orange",
-    title: "Ivory Buff & Yellow Orange +1",
+    title: "Ivory Buff, Yellow Orange & Grayish Lavender - B",
     summary: "Plate 235 from Sanzo Wada's 1933 Dictionary of Color Combinations — Ivory Buff, Yellow Orange, Grayish Lavender - B.",
     description: "Combination 235 of 348 in Wada's six-volume 1933 work. A 3-colour grouping of Ivory Buff, Yellow Orange, Grayish Lavender - B, as documented in the original plates.",
     era: "showa",
@@ -3842,7 +3842,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-247-raw-sienna-apricot-yellow",
-    title: "Raw Sienna & Apricot Yellow +2",
+    title: "Raw Sienna, Apricot Yellow, Benzol Green & Deep Lyons Blue",
     summary: "Plate 247 from Sanzo Wada's 1933 Dictionary of Color Combinations — Raw Sienna, Apricot Yellow, Benzol Green, Deep Lyons Blue.",
     description: "Combination 247 of 348 in Wada's six-volume 1933 work. A 4-colour grouping of Raw Sienna, Apricot Yellow, Benzol Green, Deep Lyons Blue, as documented in the original plates.",
     era: "showa",
@@ -4165,7 +4165,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-266-spectrum-red-ivory-buff",
-    title: "Spectrum Red & Ivory Buff +2",
+    title: "Spectrum Red, Ivory Buff, Rainette Green & Benzol Green",
     summary: "Plate 266 from Sanzo Wada's 1933 Dictionary of Color Combinations — Spectrum Red, Ivory Buff, Rainette Green, Benzol Green.",
     description: "Combination 266 of 348 in Wada's six-volume 1933 work. A 4-colour grouping of Spectrum Red, Ivory Buff, Rainette Green, Benzol Green, as documented in the original plates.",
     era: "showa",
@@ -4692,7 +4692,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-297-burnt-sienna-yellow-orange",
-    title: "Burnt Sienna & Yellow Orange +2",
+    title: "Burnt Sienna, Yellow Orange, Olive Green & Violet Blue",
     summary: "Plate 297 from Sanzo Wada's 1933 Dictionary of Color Combinations — Burnt Sienna, Yellow Orange, Olive Green, Violet Blue.",
     description: "Combination 297 of 348 in Wada's six-volume 1933 work. A 4-colour grouping of Burnt Sienna, Yellow Orange, Olive Green, Violet Blue, as documented in the original plates.",
     era: "showa",
@@ -4760,7 +4760,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-301-spectrum-red-ivory-buff",
-    title: "Spectrum Red & Ivory Buff +2",
+    title: "Spectrum Red, Ivory Buff, Rainette Green & Aconite Violet",
     summary: "Plate 301 from Sanzo Wada's 1933 Dictionary of Color Combinations — Spectrum Red, Ivory Buff, Rainette Green, Aconite Violet.",
     description: "Combination 301 of 348 in Wada's six-volume 1933 work. A 4-colour grouping of Spectrum Red, Ivory Buff, Rainette Green, Aconite Violet, as documented in the original plates.",
     era: "showa",
@@ -4947,7 +4947,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-312-burnt-sienna-yellow-orange",
-    title: "Burnt Sienna & Yellow Orange +2",
+    title: "Burnt Sienna, Yellow Orange, Artemesia Green & Helvetia Blue",
     summary: "Plate 312 from Sanzo Wada's 1933 Dictionary of Color Combinations — Burnt Sienna, Yellow Orange, Artemesia Green, Helvetia Blue.",
     description: "Combination 312 of 348 in Wada's six-volume 1933 work. A 4-colour grouping of Burnt Sienna, Yellow Orange, Artemesia Green, Helvetia Blue, as documented in the original plates.",
     era: "showa",
@@ -4981,7 +4981,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-314-eosine-pink-hay-s-russet",
-    title: "Eosine Pink & Hay's Russet +2",
+    title: "Eosine Pink, Hay's Russet, Deep Lyons Blue & Dusky Madder Violet",
     summary: "Plate 314 from Sanzo Wada's 1933 Dictionary of Color Combinations — Eosine Pink, Hay's Russet, Deep Lyons Blue, Dusky Madder Violet.",
     description: "Combination 314 of 348 in Wada's six-volume 1933 work. A 4-colour grouping of Eosine Pink, Hay's Russet, Deep Lyons Blue, Dusky Madder Violet, as documented in the original plates.",
     era: "showa",
@@ -5066,7 +5066,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-319-raw-sienna-apricot-yellow",
-    title: "Raw Sienna & Apricot Yellow +2",
+    title: "Raw Sienna, Apricot Yellow, Yellow Orange & Cossack Green",
     summary: "Plate 319 from Sanzo Wada's 1933 Dictionary of Color Combinations — Raw Sienna, Apricot Yellow, Yellow Orange, Cossack Green.",
     description: "Combination 319 of 348 in Wada's six-volume 1933 work. A 4-colour grouping of Raw Sienna, Apricot Yellow, Yellow Orange, Cossack Green, as documented in the original plates.",
     era: "showa",
@@ -5355,7 +5355,7 @@ export const wadaPalettes: Palette[] = [
   },
   {
     slug: "wada-336-eosine-pink-hay-s-russet",
-    title: "Eosine Pink & Hay's Russet +2",
+    title: "Eosine Pink, Hay's Russet, Pale Lemon Yellow & Blackish Olive",
     summary: "Plate 336 from Sanzo Wada's 1933 Dictionary of Color Combinations — Eosine Pink, Hay's Russet, Pale Lemon Yellow, Blackish Olive.",
     description: "Combination 336 of 348 in Wada's six-volume 1933 work. A 4-colour grouping of Eosine Pink, Hay's Russet, Pale Lemon Yellow, Blackish Olive, as documented in the original plates.",
     era: "showa",
