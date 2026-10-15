@@ -662,6 +662,53 @@ export const collections: Collection[] = [
   },
 
   // =========================================================================
+  // 20b. Christmas color palettes (2026-10-16, card mv0qbgsr8fy3ib, slice 1)
+  // Selected from data, not by eye: every palette in the archive was scored for a
+  // saturated red (hue <18° or >335°) AND a green (85–175°). 25 matched; the
+  // pale peach / salmon / old-rose / russet pairings were dropped as autumnal, and
+  // plates whose third colour is violet or lavender were kept out of the curated
+  // six. Wada's dictionary is not a Christmas book; the copy below says so.
+  // =========================================================================
+  {
+    slug: "christmas",
+    title: "Christmas Color Palettes",
+    seoTitle: "Christmas Color Palettes: Red and Green Combinations with Hex Codes",
+    tagline: "Madder red, crimson lake and evergreen: red and green the way a 1930s colour dictionary paired them.",
+    description:
+      "Red and green is the oldest Christmas pairing, and also the easiest to get wrong: two saturated primaries at full strength fight each other. The combinations here come from Sanzo Wada's 1933 Dictionary of Color Combinations and the Japanese colour names around it, which were not made for Christmas but solve exactly that problem. Each one lowers the temperature of one side: a deep madder or crimson lake against a muted evergreen, or a bright scarlet against a dull viridian, often with a warm ivory, citrine or ochre in between to stand in for gold. Use them for holiday cards, packaging, table settings, seasonal branding and decor that should feel festive without looking like a candy cane.",
+    keywords: [
+      "christmas color palette",
+      "christmas color combinations",
+      "red and green color palette",
+      "holiday color palette",
+      "christmas colors hex codes",
+      "festive color scheme",
+    ],
+    curatedSlugs: [
+      "akane-tokiwa",
+      "enji-matsuba",
+      "wada-216-jasper-red-green",
+      "wada-262-eugenia-red-b-ivory-buff",
+      "wada-325-eugenia-red-b-naples-yellow",
+      "wada-136-scarlet-dull-viridian-green",
+    ],
+    match: (p) =>
+      [
+        "wada-225-carmine-dusky-green",
+        "wada-219-jasper-red-chromium-green",
+        "wada-017-eugenia-red-b-sea-green",
+        "wada-313-carmine-yellow",
+        "wada-284-eugenia-red-a-apricot-yellow",
+        "wada-270-eugenia-red-b-sulpher-yellow",
+        "wada-133-vandyke-red-citrine",
+        "wada-251-red-yellow",
+        "wada-316-vandyke-red-dull-viridian-green",
+      ].includes(p.slug),
+    limit: 24,
+    accentHex: "#B23B3B",
+  },
+
+  // =========================================================================
   // 21. Vintage color palettes — aged, faded, nostalgic
   // =========================================================================
   {
