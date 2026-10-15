@@ -46,7 +46,7 @@ const RESVG_VERSION = (() => {
 })();
 
 /** Rasterise `svg` to PNG at `width`, reusing a previous identical render when one exists. */
-export function renderPngCached(svg: string, width: number): Uint8Array {
+export function renderPngCached(svg: string, width: number): Uint8Array<ArrayBuffer> {
   const key = createHash("sha256")
     .update(`resvg@${RESVG_VERSION}|Georgia|system|w=${width}|`)
     .update(svg)
