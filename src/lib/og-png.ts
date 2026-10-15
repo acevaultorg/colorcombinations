@@ -17,6 +17,67 @@
  */
 
 import { Resvg } from "@resvg/resvg-js";
+import { createHash } from "node:crypto";
+import { mkdirSync, readFileSync, writeFileSync, renameSync } from "node:fs";
+import { join } from "node:path";
+
+/**
+ * Content-addressed PNG cache (2026-10-15).
+ *
+ * WHY: each rasterise costs ~3.3s here (measured from the build log, mostly
+ * loadSystemFonts per call), across ~1,100 OG + pin routes. That made every
+ * local deploy ~75 minutes even when one line of copy changed. The PNG is a pure
+ * function of (svg, width, font options, resvg version), so a hash of exactly
+ * those inputs can safely reuse the previous build's bytes. Change any input,
+ * get a new key and a fresh render, so stale output is impossible by construction.
+ *
+ * Lives under node_modules/.cache (gitignored, never deployed). A fresh checkout
+ * or CI runner just starts cold and renders everything, same as before.
+ * OG_PNG_CACHE=0 disables it.
+ */
+const CACHE_DIR = join(process.cwd(), "node_modules", ".cache", "og-png");
+const CACHE_ON = process.env.OG_PNG_CACHE !== "0";
+const RESVG_VERSION = (() => {
+  try {
+    return JSON.parse(readFileSync(join(process.cwd(), "node_modules", "@resvg", "resvg-js", "package.json"), "utf8")).version;
+  } catch {
+    return "unknown";
+  }
+})();
+
+/** Rasterise `svg` to PNG at `width`, reusing a previous identical render when one exists. */
+export function renderPngCached(svg: string, width: number): Uint8Array {
+  const key = createHash("sha256")
+    .update(`resvg@${RESVG_VERSION}|Georgia|system|w=${width}|`)
+    .update(svg)
+    .digest("hex");
+  const file = join(CACHE_DIR, `${key}.png`);
+  if (CACHE_ON) {
+    try {
+      return new Uint8Array(readFileSync(file));
+    } catch {
+      /* miss: render below */
+    }
+  }
+  const png = new Resvg(svg, {
+    font: { loadSystemFonts: true, defaultFontFamily: "Georgia" },
+    fitTo: { mode: "width", value: width },
+  })
+    .render()
+    .asPng();
+  if (CACHE_ON) {
+    try {
+      mkdirSync(CACHE_DIR, { recursive: true });
+      // Write-then-rename so a killed build never leaves a torn PNG under a valid key.
+      const tmp = `${file}.${process.pid}.tmp`;
+      writeFileSync(tmp, png);
+      renameSync(tmp, file);
+    } catch {
+      /* cache is an optimisation only; never fail the build over it */
+    }
+  }
+  return new Uint8Array(png);
+}
 
 /** Open Graph's standard card width. Height follows the SVG's own aspect ratio. */
 const OG_WIDTH = 1200;
@@ -47,14 +108,9 @@ export function fitText(
 }
 
 export function svgToPngResponse(svg: string, width: number = OG_WIDTH): Response {
-  const png = new Resvg(svg, {
-    font: { loadSystemFonts: true, defaultFontFamily: "Georgia" },
-    fitTo: { mode: "width", value: width },
-  })
-    .render()
-    .asPng();
+  const png = renderPngCached(svg, width);
 
-  return new Response(new Uint8Array(png), {
+  return new Response(png, {
     status: 200,
     headers: {
       "Content-Type": "image/png",

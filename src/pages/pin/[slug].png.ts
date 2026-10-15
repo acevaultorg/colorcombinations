@@ -16,7 +16,7 @@
  */
 
 import type { APIRoute } from "astro";
-import { Resvg } from "@resvg/resvg-js";
+import { renderPngCached } from "@/lib/og-png";
 import { allPalettes, paletteBySlug } from "@/data/palettes";
 
 export function getStaticPaths() {
@@ -88,14 +88,9 @@ ${swatches}
 <text x="${W - 56}" y="${H - FOOTER_H / 2 + 10}" text-anchor="end" font-family="Georgia, serif" font-size="30" font-style="italic" fill="#C9A23F">colorcombinations.org</text>
 </svg>`;
 
-  const png = new Resvg(svg, {
-    font: { loadSystemFonts: true, defaultFontFamily: "Georgia" },
-    fitTo: { mode: "width", value: W },
-  })
-    .render()
-    .asPng();
+  const png = renderPngCached(svg, W);
 
-  return new Response(new Uint8Array(png), {
+  return new Response(png, {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, max-age=86400",
