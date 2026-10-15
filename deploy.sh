@@ -6,12 +6,10 @@ set -e
 
 # The local/fallback deploy path for colorcombinations.org.
 #
-# CI IS CANONICAL (package.json _deploy_note, corrected 2026-09-03) — pushing to
-# main lets .gitlab-ci.yml build + deploy on an isolated GitLab runner, which never
-# contends with anything on this machine. This script exists for the case CI names
-# explicitly: "a fallback ONLY when CI is unavailable" — chunked-upload deploy runs
-# from a local checkout instead, and that path DOES contend with other sessions in
-# the same working tree.
+# ~~CI IS CANONICAL~~ (SUPERSEDED 2026-09-24, noted here 2026-10-15): CI is VALIDATE-ONLY,
+# its deploy step was removed because the RG freeze-guard exists only on the Macs. THIS
+# SCRIPT IS THE PRODUCTION DEPLOY PATH. It runs from a local checkout and DOES contend
+# with other sessions in the same working tree, hence the lock below.
 
 # Refuse to deploy from a checkout that is BEHIND origin — a Pages deploy REPLACES
 # the live directory, so rebuilding a stale checkout doesn't skip missing commits,
@@ -55,6 +53,9 @@ trap 'rm -rf "$LOCK_DIR"' EXIT
 # pre<script> convention), re-running git-guard + verify-beacon-coverage after the
 # lock is already held for no benefit.
 npm run build
+# Page-class census over the FRESH dist (moved here from the npm predeploy hook 2026-10-15:
+# there it ran before the build, so it failed on a clean checkout and tested a stale dist otherwise).
+node scripts/test-page-class.mjs
 # Every Amazon link tracked (p= + placement) and gated — refuses the upload otherwise (card muksgphls3y3tw).
 node scripts/amazon-tracking-guard.mjs
 node scripts/verify-deploy-integrity.mjs --pre
