@@ -45,6 +45,12 @@ export interface Props {
    * touching the default shelf every other caller relies on.
    */
   books?: CuratedBook[];
+  /**
+   * Give each item id={book.slug} so other pages can deep-link one book on
+   * this shelf (#slug). Opt-in: only a page that renders the shelf once may
+   * set it, or the ids would repeat.
+   */
+  anchorIds?: boolean;
 }
 
 const {
@@ -55,6 +61,7 @@ const {
   variant ="full",
   pageClass ="further-reading",
   books: sourceBooks = FURTHER_READING,
+  anchorIds = false,
 } = Astro.props;
 
 // Rotate + slice. Keeps the rendered set stable per-URL (no random) while
@@ -152,7 +159,7 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
       );
 
       return (
-        <li class="further-reading__item">
+        <li class="further-reading__item" id={anchorIds ? book.slug : undefined}>
           <a
             href={amazonHref}
             rel="sponsored nofollow noopener"
