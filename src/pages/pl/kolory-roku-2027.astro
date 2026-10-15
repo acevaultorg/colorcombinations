@@ -19,7 +19,7 @@ import { wadaCatalog } from "@data/palettes";
 
 const N = wadaCatalog().length;
 
-const VERIFIED = "2026-10-08";
+const VERIFIED = "2026-10-15";
 const pageUrl = "https://colorcombinations.org/pl/kolory-roku-2027/";
 const enUrl = "/trends/color-trends-2027/";
 
@@ -37,13 +37,14 @@ const PICKS: Pick[] = [
   { brand: "Dunn-Edwards", name: "French Press Coffee", code: "DEBN07", opis: "głęboki brąz ze śliwkowym podtonem", ogloszono: "1 października 2026" },
   { brand: "C2 Paint", name: "Pueblo", code: "C2-510", opis: "ziemisty, różowawy brąz", ogloszono: "5 października 2026" },
   { brand: "Minwax", name: "Pickled Oak", code: "MW260", opis: "jasna, ciepła bejca do drewna", ogloszono: "6 października 2026" },
+  { brand: "Benjamin Moore", name: "Webster Green", code: "HC-130", opis: "głęboka zieleń", ogloszono: "14 października 2026" },
   { brand: "WGSN + Coloro", name: "Luminous Blue", code: "—", opis: "świetlisty błękit między lapis lazuli a kobaltem (prognoza trendów)", ogloszono: "2 czerwca 2025" },
 ];
 
 const faq = [
   {
     q: "Jaki jest kolor roku 2027 według Pantone?",
-    a: "Jeszcze nie wiadomo. Pantone ogłasza swój kolor roku zwykle w pierwszym tygodniu grudnia roku poprzedniego, więc kolor na 2027 rok poznamy najpewniej na początku grudnia 2026. Do 8 października 2026 Pantone go nie ogłosił.",
+    a: "Jeszcze nie wiadomo. Pantone ogłasza swój kolor roku zwykle w pierwszym tygodniu grudnia roku poprzedniego, więc kolor na 2027 rok poznamy najpewniej na początku grudnia 2026. Do 15 października 2026 Pantone go nie ogłosił.",
   },
   {
     q: "Jaki jest kolor roku 2027 Tikkurila?",
@@ -51,12 +52,12 @@ const faq = [
   },
   {
     q: "Czy jest jeden kolor roku 2027?",
-    a: `Nie. Każda marka wybiera własny. Do 8 października 2026 znamy ${PICKS.length} kolorów na 2027 rok od marek farb i biur trendów, a Benjamin Moore zapowiada ogłoszenie w październiku.`,
+    a: `Nie. Każda marka wybiera własny. Do 15 października 2026 znamy ${PICKS.length} kolorów na 2027 rok od marek farb i biur trendów, w tym Webster Green (HC-130) od Benjamin Moore, ogłoszony 14 października.`,
   },
 ];
 
 const title = "Kolor roku 2027: Pantone, Tikkurila, Dulux i wszystkie ogłoszone kolory";
-const description = "Kolor roku 2027 według każdej marki: Tikkurila S483 Heartland, Dulux Soulful Sage, Sherwin-Williams Celery i inne. Pantone ogłasza swój w grudniu. Sprawdzono 8 października 2026.";
+const description = "Kolor roku 2027 według każdej marki: Tikkurila S483 Heartland, Dulux Soulful Sage, Sherwin-Williams Celery i inne. Pantone ogłasza swój w grudniu. Sprawdzono 15 października 2026.";
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -91,11 +92,11 @@ const alternates = [
         <p class="eyebrow">Trendy · 2027</p>
         <h1 class="display-hero text-balance">Kolor roku 2027</h1>
         <p class="article-hero__lede">
-          Nie ma jednego koloru roku. Każda marka wybiera swój. Na 8 października 2026 znamy
+          Nie ma jednego koloru roku. Każda marka wybiera swój. Na 15 października 2026 znamy
           {" "}{PICKS.length} kolorów na 2027 rok, w tym S483 Heartland od Tikkurila. Pantone
           ogłosi swój wybór najpewniej na początku grudnia.
         </p>
-        <p class="pl-meta">Sprawdzono <time datetime={VERIFIED}>8 października 2026</time> · <a href={enUrl} hreflang="en">English version with sources</a></p>
+        <p class="pl-meta">Sprawdzono <time datetime={VERIFIED}>15 października 2026</time> · <a href={enUrl} hreflang="en">English version with sources</a></p>
       </div>
     </header>
 
@@ -119,8 +120,8 @@ const alternates = [
 
       <h2 id="pantone">Pantone 2027: kiedy?</h2>
       <p>
-        Pantone ogłasza kolor roku zwykle w pierwszym tygodniu grudnia. Na 8 października 2026 kolor
-        na 2027 rok nie jest jeszcze znany. Benjamin Moore zapowiada swój wybór na październik.
+        Pantone ogłasza kolor roku zwykle w pierwszym tygodniu grudnia. Na 15 października 2026 kolor
+        na 2027 rok nie jest jeszcze znany. Benjamin Moore ogłosił swój 14 października: Webster Green HC-130, głęboką zieleń.
         Ta strona będzie uzupełniana, gdy marki ogłoszą kolejne kolory.
       </p>
 

@@ -58,7 +58,7 @@ const PUBLISHED = "2026-09-06T00:00:00Z";
 // authority announces — never automatically. (Same rule as the 2026 page; there
 // dateModified used to be the build clock, which asserted a content change on
 // every deploy. Fixed 2026-09-06, commit 75dcb84.)
-const VERIFIED = "2026-10-08";
+const VERIFIED = "2026-10-15";
 const MODIFIED = `${VERIFIED}T00:00:00Z`;
 
 const AUTHOR = {
@@ -225,6 +225,18 @@ const PICKS: Pick[] = [
     match: { slug: "ecru", name: "Ecru", hex: "#C2AE93" },
   },
   {
+    brand: "Benjamin Moore",
+    name: "Webster Green",
+    code: "HC-130",
+    family: "Deep green",
+    blurb:
+      "Benjamin Moore calls it adaptable but impactful: a deep green that layers into any style and gives a room personality. It leads an eight-colour Color Trends 2027 palette with White Down, Nelson Blue, Wild Aster, Shakespeare Tan, Antique Copper, Townsend Harbor Brown and Durango.",
+    url: "https://www.benjaminmoore.com/en-us/paint-colors/color-of-the-year-2027",
+    announced: "14 October 2026",
+    sourcedHex: null,
+    match: { slug: "cossack-green", name: "Cossack Green", hex: "#437742" },
+  },
+  {
     brand: "WGSN + Coloro",
     name: "Luminous Blue",
     code: "—",
@@ -242,13 +254,12 @@ const PICKS: Pick[] = [
 // Timing notes are the historical pattern, not a claim about 2027.
 const PENDING = [
   { brand: "Pantone", note: "Announces in the first week of December, and is the one the rest of the industry reacts to." },
-  { brand: "Benjamin Moore", note: "Announced its 2026 pick (Silhouette AF-655) in mid-October 2025; its own 2027 page says the reveal is coming this October." },
 ];
 
 const faq = [
   {
     q: "What is the 2027 Color of the Year?",
-    a: "There is no single one. Each authority names its own. As of 8 October 2026 twelve have been named: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; Behr's Grounded (T27-01), a mossy olive; Graham & Brown's Rose Earth, a dusty clay pink; Dulux's Soulful Sage, a soft silvery green; Glidden's Artifact (PPG10-16), a calm smoky aqua; Sherwin-Williams' Celery (SW 6421), a soft yellow-green; PPG's Country Soil (PPG15-30), a warm beige-taupe-grey (PPG's Tikkurila brand announced S483 Heartland alongside it); Dunn-Edwards' French Press Coffee (DEBN07), a deep plum-tinged brown; C2 Paint's Pueblo (C2-510), an earthy rose-brown; Minwax's Pickled Oak (MW260), a light warm wood stain; and WGSN and Coloro's Luminous Blue. Pantone — the most-cited of them — announces in the first week of December.",
+    a: "There is no single one. Each authority names its own. As of 15 October 2026 thirteen have been named: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; Behr's Grounded (T27-01), a mossy olive; Graham & Brown's Rose Earth, a dusty clay pink; Dulux's Soulful Sage, a soft silvery green; Glidden's Artifact (PPG10-16), a calm smoky aqua; Sherwin-Williams' Celery (SW 6421), a soft yellow-green; PPG's Country Soil (PPG15-30), a warm beige-taupe-grey (PPG's Tikkurila brand announced S483 Heartland alongside it); Dunn-Edwards' French Press Coffee (DEBN07), a deep plum-tinged brown; C2 Paint's Pueblo (C2-510), an earthy rose-brown; Minwax's Pickled Oak (MW260), a light warm wood stain; Benjamin Moore's Webster Green (HC-130), a deep green; and WGSN and Coloro's Luminous Blue. Pantone — the most-cited of them — announces in the first week of December.",
   },
   {
     q: "Is Sherwin-Williams' Rewild the 2027 Color of the Year?",
@@ -256,7 +267,7 @@ const faq = [
   },
   {
     q: "When are the rest of the 2027 colours announced?",
-    a: "The season runs from roughly late July to early December. Valspar opened it on 5 August 2026 and Pantone traditionally closes it in the first week of December. Graham & Brown, Dulux, Glidden, Sherwin-Williams and PPG followed in September, and Dunn-Edwards, C2 Paint and Minwax in early October; Benjamin Moore says its reveal comes this October.",
+    a: "The season runs from roughly late July to early December. Valspar opened it on 5 August 2026 and Pantone traditionally closes it in the first week of December. Graham & Brown, Dulux, Glidden, Sherwin-Williams and PPG followed in September, and Dunn-Edwards, C2 Paint and Minwax in early October, and Benjamin Moore on 14 October.",
   },
   {
     q: "Why does this page not show the exact paint colour?",
@@ -264,13 +275,13 @@ const faq = [
   },
   {
     q: "What is the emerging 2027 direction?",
-    a: "Twelve picks in, three families: soft greens (Behr's olive, Dulux's silvery sage, Sherwin-Williams' celery), blues (Valspar's grayed blue, Glidden's smoky aqua, WGSN and Coloro's luminous blue) and, growing fastest since October, warm earth (Dutch Boy's orange, Graham & Brown's clay pink, PPG's beige-taupe, Dunn-Edwards' coffee brown, C2's rose-brown Pueblo and Minwax's pale oak). Most are softened, nature-referenced colours rather than clean brights. Pantone in December is the one that sets the headline.",
+    a: "Thirteen picks in, three families: greens (Behr's olive, Dulux's silvery sage, Sherwin-Williams' celery and Benjamin Moore's deep Webster Green), blues (Valspar's grayed blue, Glidden's smoky aqua, WGSN and Coloro's luminous blue) and, growing fastest since October, warm earth (Dutch Boy's orange, Graham & Brown's clay pink, PPG's beige-taupe, Dunn-Edwards' coffee brown, C2's rose-brown Pueblo and Minwax's pale oak). Most are softened, nature-referenced colours rather than clean brights. Pantone in December is the one that sets the headline.",
   },
 ];
 
 const title = "The 2027 Colors of the Year — Every Pick Announced So Far";
 const description =
-  "All 12 Colors of the Year for 2027 so far, side by side: Dunn-Edwards French Press Coffee, Sherwin-Williams Celery, Dulux Soulful Sage, Glidden Artifact, Behr Grounded and more — plus who is still to come. Verified 8 October 2026.";
+  "All 13 Colors of the Year for 2027 so far, side by side: Benjamin Moore Webster Green, Sherwin-Williams Celery, Dunn-Edwards French Press Coffee, Dulux Soulful Sage, Behr Grounded and more — plus Pantone, still to come. Verified 15 October 2026.";
 
 const jsonLd = [
   AUTHOR,
@@ -292,7 +303,7 @@ const jsonLd = [
     "@type": "ItemList",
     name: "2027 Colors of the Year announced so far",
     description:
-      "Official 2027 Color of the Year selections announced as of 8 October 2026. The season is ongoing.",
+      "Official 2027 Color of the Year selections announced as of 15 October 2026. The season is ongoing.",
     numberOfItems: PICKS.length,
     itemListElement: PICKS.map((p, i) => ({
       "@type": "ListItem",
@@ -361,7 +372,7 @@ const jsonLd = [
       <HeroSourceBook lead="Trends change every year; most palettes on this site come from one 1933 book." surface="trends-hero" />
       <p class="coty-hero__meta">
         By <a class="coty-hero__byline" href="/about/" rel="author">Paulo de Vries</a>
-        · Last verified <time datetime={VERIFIED}>8 October 2026</time>
+        · Last verified <time datetime={VERIFIED}>15 October 2026</time>
         · {PICKS.length} announced · {PENDING.length} still to come · sources cited below
       </p>
     </header>
@@ -430,7 +441,7 @@ const jsonLd = [
       <h2 id="pending">Still to come</h2>
       <p>
         {PENDING.length} authorities tracked here have not announced a 2027 pick as of
-        {" "}<time datetime={VERIFIED}>8 October 2026</time>. Timing notes below
+        {" "}<time datetime={VERIFIED}>15 October 2026</time>. Timing notes below
         are each brand's historical pattern, or its own stated timing where it has given one.
       </p>
       <ul class="coty-pending" role="list">
@@ -441,10 +452,10 @@ const jsonLd = [
         ))}
       </ul>
 
-      <h2 id="direction">What the first twelve suggest</h2>
+      <h2 id="direction">What the first thirteen suggest</h2>
       <p>
         On 6 September, with three picks in, this page said all of them were
-        mid-tone and earth-referenced. Nine more have landed since, and they
+        mid-tone and earth-referenced. Ten more have landed since, and they
         widen the picture rather than confirm it. Two families led September:
         <strong><a href="/collections/sage/">soft greens</a></strong> (Behr's mossy olive, Dulux's silvery sage,
         Sherwin-Williams' light celery) and <strong><a href="/collections/blue/">blues</a></strong> (Valspar's grayed
@@ -457,6 +468,12 @@ const jsonLd = [
         a deep coffee brown with a plum undertone, C2 Paint a rose-brown it places
         between pink and terracotta, and Minwax a pale, warm oak stain. With PPG's
         Country Soil that makes four warm neutrals in a fortnight.
+      </p>
+      <p>
+        Benjamin Moore broke that run on 14 October with Webster Green, a deep
+        green. It is the fourth green of the season and the darkest pick so far,
+        so the 2027 greens now run from Sherwin-Williams' pale celery to a near
+        forest shade.
       </p>
       <p>
         What they share is restraint: most are softened, nature-referenced colours
@@ -534,6 +551,10 @@ const jsonLd = [
         <li>
           Minwax — <a href="https://www.minwax.com/en/wood-stain-color-guide/color-of-the-year/2027-coty" rel="nofollow noopener" target="_blank">2027 Color of the Year: Pickled Oak</a>,
           and Hardware Retailing, <a href="https://hardwareretailing.com/mixwax-names-2027-color-of-the-year" rel="nofollow noopener" target="_blank">“Minwax Names 2027 Color of the Year”</a> (6 October 2026).
+        </li>
+        <li>
+          Benjamin Moore — <a href="https://www.benjaminmoore.com/en-us/paint-colors/color-of-the-year-2027" rel="nofollow noopener" target="_blank">Color of the Year &amp; Color Trends 2027</a> (Webster Green HC-130 and the eight-colour palette, read 15 October 2026),
+          and Hardware Retailing, <a href="https://hardwareretailing.com/benjamin-moore-announces-2027-color-of-the-year" rel="nofollow noopener" target="_blank">“Benjamin Moore Announces 2027 Color of the Year”</a> (14 October 2026).
         </li>
         <li>
           WGSN + Coloro — <a href="https://www.wgsn.com/en/blog/colour-year-2027-luminous-blue" rel="nofollow noopener" target="_blank">“Colour of the Year 2027: Luminous Blue”</a> (2 June 2025).
