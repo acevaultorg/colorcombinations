@@ -55,6 +55,12 @@ const PAIRING_SYNONYMS: Record<string, string> = {
   rust: "redwood copper",
   green: "lime chartreuse",
   gold: "bronze",
+  // 2026-10-15 re-read of SearchNoResults with fallback_shown=false (09-30..10-15, after
+  // the 09-28 pass): 8 true dead ends in ~76 logged searches; "denim" x1 + "demin" x1 and
+  // "torq" x1 had an obvious hub. (Cyrillic "бургунди"/"фиолетовый" stay unfixed: norm()
+  // strips non-Latin letters, so no alias can reach them without changing accent handling.)
+  blue: "denim demin",
+  turquoise: "torq turq",
 };
 
 /** Style / use words a reader types that a collection's title does not contain.
