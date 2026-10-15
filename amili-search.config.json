@@ -1,7 +1,7 @@
 {
   "outDir": "dist",
   "label": "Search colour combinations",
-  "placeholder": "Search palettes, colors, collections\u2026",
+  "placeholder": "Search palettes, colors, collections…",
   "suggest": [
     "beige",
     "sage green",
@@ -22,5 +22,13 @@
   "clarity": true,
   "skipScript": [
     "/embed/"
+  ],
+  "routes": [
+    {
+      "match": "hex",
+      "href": "/tools/palette-from-color/?hex={hex}",
+      "label": "Find the closest Wada palettes to #{HEX}",
+      "group": "Tool"
+    }
   ]
 }

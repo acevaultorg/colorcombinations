@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.2.4 (header.mjs sha256 fa0ab6e7e8ac) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.16.4 (header.mjs sha256 d3f20ee965b2) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
 // Amili Kit: header bar — search in the header on every width, Shop in the phone header, header back on scroll-up.
 // Paulo 2026-10-02: "amili kit search missing in menu bar! very bad" (mur0dp4bzunyqy), "if user scrolls back on any of
 // our sites, header menu should appear" (mur06p8ukgwx6c), "consider to put shop in the mobile menu bar by default"
@@ -81,16 +81,16 @@ function akHeader(cfg) {
   if (wantSearch) { var sl = hdr.querySelectorAll('a[href],button'); for (var o2 = 0; o2 < sl.length; o2++) { var e2 = sl[o2], tx = (e2.textContent || '').replace(/[^a-z]/gi, '').toLowerCase(), hp = ''; try { hp = e2.href ? new URL(e2.href, location.href).pathname : ''; } catch (x) {} if (vis(e2) && (tx === 'search' || /^\/search\/?$/.test(hp))) { e2.setAttribute('data-ak-search-take', ''); bindTake(e2); wantSearch = false; out.took = true; } } }
   if (row && logo && (wantSearch || shop)) {
     var phone = innerWidth <= PH;
-    var g = d.createElement('div'); g.className = 'ak-hb'; g.setAttribute('role', 'group'); g.setAttribute('aria-label', 'Site tools');
+    var g = d.createElement('div'); g.className = 'ak-hb'; g.setAttribute('role', 'group'); var HT = cfg.t || {}; g.setAttribute('aria-label', HT.tools || 'Site tools');
     var shopEl = null;
     if (shop && shop.href && (phone || cfg.shopDesktop)) {
       shopEl = d.createElement('a'); shopEl.href = shop.href; shopEl.className = 'ak-hb-shop'; shopEl.setAttribute('data-event-from', 'kit-header-shop');
       shopEl.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span></span>';
-      shopEl.lastChild.textContent = shop.label || 'Shop'; g.appendChild(shopEl);
+      shopEl.lastChild.textContent = shop.label || HT.shop || 'Shop'; g.appendChild(shopEl);
     }
     if (wantSearch) {
-      var sb = d.createElement('button'); sb.type = 'button'; sb.className = 'ak-hb-search'; sb.setAttribute('data-ak-search-open', ''); sb.setAttribute('aria-label', 'Search this site');
-      sb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span class="ak-hb-sl">Search</span><kbd class="ak-hb-sl" aria-hidden="true">/</kbd>';
+      var sb = d.createElement('button'); sb.type = 'button'; sb.className = 'ak-hb-search'; sb.setAttribute('data-ak-search-open', ''); sb.setAttribute('aria-label', HT.label || 'Search this site');
+      sb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span class="ak-hb-sl"></span><kbd class="ak-hb-sl" aria-hidden="true">/</kbd>'; sb.querySelector('span.ak-hb-sl').textContent = HT.search || 'Search';
       if (cfg.late) sb.addEventListener('click', function () { openS(''); });
       g.appendChild(sb);
     }
@@ -109,7 +109,7 @@ function akHeader(cfg) {
       for (var pass = 0; pass < 24; pass++) {
         g.style.right = Math.round(rr.right - edge) + 'px';
         var gr = g.getBoundingClientRect(), hit = null, soft = [];
-        if (gr.left < lr.right + 8 || gr.left < rr.left) break;
+        if (gr.left < lr.right + 6 || gr.left < rr.left) break;
         for (var n = 0; n < all.length; n++) {
           var b = all[n]; if (g.contains(b) || b.contains(g) || b === logo || logo.contains(b) || !vis(b)) continue;
           var ia = IA.test(b.tagName) || b.getAttribute('role') === 'button';
