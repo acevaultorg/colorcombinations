@@ -170,16 +170,33 @@ const jsonLd = [
 
     <header class="book__head">
       <div class="book__cover">
+        {/* The cover is a link to the same Amazon CTA (2026-10-15, card mv9y90zik4abzp):
+            Clarity 10-06..10-14 put 6 of 27 sessions on the Vol. 1 page at a dead click
+            (22% vs 2.3% site-wide), and the cover is the largest unlinked element above
+            the buy button on a phone. Same href, rel and data-book as the CTA (so the
+            /go/ gate, the tag and the beacon's shelf=book are unchanged); data-surface
+            tells the two apart. FurtherReading links its covers the same way. */}
         {coverUrl && (
-          <img
-            src={coverUrl}
-            alt={`${book.title} by ${book.author} — book cover`}
-            width="400"
-            height="600"
-            loading="eager"
-            decoding="async"
-            onerror="this.style.display='none'"
-          />
+          <a
+            href={amazonHref}
+            rel="sponsored nofollow noopener"
+            target="_blank"
+            class="book__cover-link"
+            data-event="amazon_click"
+            data-book={book.title}
+            data-surface="book-cover"
+            aria-label={`${book.title} on Amazon (opens in a new tab)`}
+          >
+            <img
+              src={coverUrl}
+              alt={`${book.title} by ${book.author} — book cover`}
+              width="400"
+              height="600"
+              loading="eager"
+              decoding="async"
+              onerror="this.style.display='none'"
+            />
+          </a>
         )}
       </div>
 
@@ -365,6 +382,11 @@ const jsonLd = [
       grid-template-columns: minmax(0, 16rem) 1fr;
       gap: 3rem;
     }
+  }
+
+  .book__cover-link {
+    display: block;
+    border-radius: var(--radius-sm);
   }
 
   .book__cover img {
