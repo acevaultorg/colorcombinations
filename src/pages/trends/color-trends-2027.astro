@@ -39,6 +39,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import HeroSourceBook from "@components/HeroSourceBook.astro";
 import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
+import PaintThisPalette from "@components/PaintThisPalette.astro";
 import { pairingPaths } from "@data/pairings";
 
 // A pick's "what goes with" link targets /colors-that-go-with/<slug>/walls/ only when that
@@ -508,6 +509,28 @@ const jsonLd = [
           </>
         ))}
       </dl>
+
+      {/*
+        Instrument block, same pattern and reasoning as /trends/color-trends-2026/
+        (chief A1 card mtkltehvk2qm2l): this page's only Amazon surface was
+        FurtherReading (books, ~$20), while a 2027-colour reader is choosing
+        where a colour goes. Measured 2026-10-16: this URL takes ~512 of the
+        trends section's 698 landing sessions/30d (GA4), while the whole trends
+        section logged 7 trends-hero clicks in 14 days (beacon_page). Additive,
+        reversible; FurtherReading stays below. offset={1} is the same editorial
+        choice as the 2026 page (skip the ~$1,900 spectrophotometer for an
+        inspiration-seeker). Own pageClass so the next per-tag Associates read
+        separates this page from the 2026 bucket. No prices, disclosure rendered
+        by the component. Metric: clicks/session from this URL on the next beacon
+        pull; $/order only from the per-tag report.
+      */}
+      <PaintThisPalette
+        pageClass="trends-2027-destination"
+        title="Getting the 2027 colours right off-screen"
+        intro="The swatches above are the closest colours in this archive, not the paint itself — each brand's own code is the real colour. Which of these you need depends on where the colour is going."
+        offset={1}
+        variant="destination"
+      />
 
       <h2 id="sources">Sources &amp; methodology</h2>
       <p>
