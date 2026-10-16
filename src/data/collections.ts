@@ -662,6 +662,49 @@ export const collections: Collection[] = [
   },
 
   // =========================================================================
+  // 20a. Halloween color palettes (2026-10-16, seasonal, 15 days before 10-31)
+  // Selected from data: every palette scored for a saturated orange (hue 15–40°,
+  // S>0.5) AND a black (L<0.16) or deep purple. 16 matched; the plates where a
+  // pink, peach or ivory softens it into autumn were left out. entan-sumi is the
+  // one curated (non-Wada) palette that qualifies: red-lead orange, ink, gold.
+  // =========================================================================
+  {
+    slug: "halloween",
+    title: "Halloween Color Palettes",
+    seoTitle: "Halloween Color Palettes: Orange, Black and Purple Combinations with Hex Codes",
+    tagline: "Orange against ink black and dusky violet, from a 1933 colour dictionary that never heard of Halloween.",
+    description:
+      "Halloween colour is orange and black, usually with a purple, and the usual problem is that both the orange and the purple arrive at full saturation and look like a party-store bag. These combinations come from Sanzo Wada's 1933 Dictionary of Color Combinations, plus one traditional Japanese pairing of red-lead orange and ink. Wada's plate 46 is simply orange and black; others set an orange against a dusky madder violet, a sepia or a deep indigo, which reads as autumn night rather than costume. Use them for invitations, posters, packaging, seasonal social graphics and table settings.",
+    keywords: [
+      "halloween color palette",
+      "halloween color combinations",
+      "orange and black color palette",
+      "orange and purple color palette",
+      "halloween colors hex codes",
+      "spooky color scheme",
+    ],
+    curatedSlugs: [
+      "wada-046-orange-black",
+      "entan-sumi",
+      "wada-144-rosolanc-purple-orange",
+      "wada-053-yellow-orange-dusky-madder-violet",
+      "wada-288-yellow-orange-sepia",
+      "wada-103-cinnamon-rufous-dusky-madder-violet",
+    ],
+    match: (p) =>
+      [
+        "wada-149-olive-ocher-orange",
+        "wada-256-vinaceous-cinnamon-orange",
+        "wada-269-raw-sienna-pale-burnt-lake",
+        "wada-211-apricot-orange-olive-yellow",
+        "wada-182-raw-sienna-vandyke-brown",
+        "wada-255-raw-sienna-pyrite-yellow",
+      ].includes(p.slug),
+    limit: 24,
+    accentHex: "#C8411D",
+  },
+
+  // =========================================================================
   // 20b. Christmas color palettes (2026-10-16, card mv0qbgsr8fy3ib, slice 1)
   // Selected from data, not by eye: every palette in the archive was scored for a
   // saturated red (hue <18° or >335°) AND a green (85–175°). 25 matched; the
