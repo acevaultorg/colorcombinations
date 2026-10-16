@@ -675,7 +675,7 @@ export const collections: Collection[] = [
     seoTitle: "Christmas Color Palettes: Red and Green Combinations with Hex Codes",
     tagline: "Madder red, crimson lake and evergreen: red and green the way a 1930s colour dictionary paired them.",
     description:
-      "Red and green is the oldest Christmas pairing, and also the easiest to get wrong: two saturated primaries at full strength fight each other. The combinations here come from Sanzo Wada's 1933 Dictionary of Color Combinations and the Japanese colour names around it, which were not made for Christmas but solve exactly that problem. Each one lowers the temperature of one side: a deep madder or crimson lake against a muted evergreen, or a bright scarlet against a dull viridian, often with a warm ivory, citrine or ochre in between to stand in for gold. Use them for holiday cards, packaging, table settings, seasonal branding and decor that should feel festive without looking like a candy cane.",
+      "Red and green is the classic Christmas pairing, and also the easiest to get wrong: two saturated primaries at full strength fight each other. The combinations here come from Sanzo Wada's 1933 Dictionary of Color Combinations and the Japanese colour names around it, which were not made for Christmas but solve exactly that problem. Each one lowers the temperature of one side: a deep madder or crimson lake against a muted evergreen, or a bright scarlet against a dull viridian, often with a warm ivory, citrine or ochre in between to stand in for gold. Use them for holiday cards, packaging, table settings, seasonal branding and decor that should feel festive without looking like a candy cane.",
     keywords: [
       "christmas color palette",
       "christmas color combinations",
