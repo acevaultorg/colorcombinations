@@ -1028,12 +1028,16 @@ export const ART_SUPPLIES: ArtSupply[] = [
     form: "pans",
   },
   {
-    name: "Gansai Tambi 36",
+    // 2026-10-16: the 36-colour set (B001MPA6W4) went OUT_OF_STOCK (Creators API
+    // getItems, buy box OUT_OF_STOCK) while linked on 428 pages. Replaced with the
+    // 48-colour set sold by Kuretake's own store (Kuretake-Arts): IN_STOCK, New,
+    // buy-box winner on the same read. Title below is the API's, not a guess.
+    name: "Gansai Tambi 48",
     brand: "Kuretake",
-    amazonAsin: "B001MPA6W4",
+    amazonAsin: "B07R7XGHJW",
     verifiedTitle:
-      "Kuretake GANSAI TAMBI Watercolor Paint Set 36 Colors",
-    why: "The larger pan set. More range means mixing toward a specific plate rather than approximating it from six colours.",
+      "Kuretake Gansai Tambi Watercolor Paint Set, 48 Colors, Made in Japan | 48 vivid opaque colors, non-granulating pigment, large pans, palette & color chart, Professional Use, Artist Grade",
+    why: "The larger pan set. More range means mixing toward a specific plate rather than approximating it from a handful of colours.",
     group: "paint",
     form: "pans",
   },
