@@ -53,12 +53,12 @@ const pickHref = (slug: string) =>
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/color-trends-2027/";
 const PUBLISHED = "2026-09-06T00:00:00Z";
-// Verified 2026-10-08 (Tikkurila S483 Heartland noted on the PPG card: PPG brand, same day, same theme, not a separate authority; Benjamin Moore still "coming this October", Pantone December; Young House Love list of 2026-10-06 matched). Earlier 2026-10-06 (Dunn-Edwards French Press Coffee, C2 Paint Pueblo and Minwax Pickled Oak added; Benjamin Moore and Pantone re-checked, still unannounced; earlier passes 2026-10-01, 2026-09-24, 2026-09-06) against each brand's own announcement plus Forbes, HGTV,
+// Verified 2026-10-16 (Little Greene Marle added: littlegreene.eu blog "Introducing 'Marle': Our 2027 Colour of the Year", dated 12 October 2026, read 16 Oct; Living Etc's "no single shade" claim is contradicted by that page). Earlier 2026-10-08 (Tikkurila S483 Heartland noted on the PPG card: PPG brand, same day, same theme, not a separate authority; Benjamin Moore still "coming this October", Pantone December; Young House Love list of 2026-10-06 matched). Earlier 2026-10-06 (Dunn-Edwards French Press Coffee, C2 Paint Pueblo and Minwax Pickled Oak added; Benjamin Moore and Pantone re-checked, still unannounced; earlier passes 2026-10-01, 2026-09-24, 2026-09-06) against each brand's own announcement plus Forbes, HGTV,
 // Young House Love and PR Newswire. Bump when the picks are re-checked or a new
 // authority announces — never automatically. (Same rule as the 2026 page; there
 // dateModified used to be the build clock, which asserted a content change on
 // every deploy. Fixed 2026-09-06, commit 75dcb84.)
-const VERIFIED = "2026-10-15";
+const VERIFIED = "2026-10-16";
 const MODIFIED = `${VERIFIED}T00:00:00Z`;
 
 const AUTHOR = {
@@ -237,6 +237,18 @@ const PICKS: Pick[] = [
     match: { slug: "cossack-green", name: "Cossack Green", hex: "#437742" },
   },
   {
+    brand: "Little Greene",
+    name: "Marle",
+    code: "—",
+    family: "Mid-tone brown",
+    blurb:
+      "Little Greene calls it a comforting, mid-tone brown: heavy on yellow ochre, with plenty of black to soften it and a touch of red oxide. It was introduced with the brand's refreshed palette in September and named Colour of the Year on 12 October.",
+    url: "https://www.littlegreene.eu/blog/introducing-marle-our-2027-colour-of-the-year",
+    announced: "12 October 2026",
+    sourcedHex: null,
+    match: { slug: "light-brownish-olive", name: "Light Brownish Olive", hex: "#806E4B" },
+  },
+  {
     brand: "WGSN + Coloro",
     name: "Luminous Blue",
     code: "—",
@@ -259,7 +271,7 @@ const PENDING = [
 const faq = [
   {
     q: "What is the 2027 Color of the Year?",
-    a: "There is no single one. Each authority names its own. As of 15 October 2026 thirteen have been named: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; Behr's Grounded (T27-01), a mossy olive; Graham & Brown's Rose Earth, a dusty clay pink; Dulux's Soulful Sage, a soft silvery green; Glidden's Artifact (PPG10-16), a calm smoky aqua; Sherwin-Williams' Celery (SW 6421), a soft yellow-green; PPG's Country Soil (PPG15-30), a warm beige-taupe-grey (PPG's Tikkurila brand announced S483 Heartland alongside it); Dunn-Edwards' French Press Coffee (DEBN07), a deep plum-tinged brown; C2 Paint's Pueblo (C2-510), an earthy rose-brown; Minwax's Pickled Oak (MW260), a light warm wood stain; Benjamin Moore's Webster Green (HC-130), a deep green; and WGSN and Coloro's Luminous Blue. Pantone — the most-cited of them — announces in the first week of December.",
+    a: "There is no single one. Each authority names its own. As of 16 October 2026 fourteen have been named: Valspar's Cottage Door (8004-38E), a grayed mid-tone blue; Dutch Boy's Deep Rooted, an earthy orange; Behr's Grounded (T27-01), a mossy olive; Graham & Brown's Rose Earth, a dusty clay pink; Dulux's Soulful Sage, a soft silvery green; Glidden's Artifact (PPG10-16), a calm smoky aqua; Sherwin-Williams' Celery (SW 6421), a soft yellow-green; PPG's Country Soil (PPG15-30), a warm beige-taupe-grey (PPG's Tikkurila brand announced S483 Heartland alongside it); Dunn-Edwards' French Press Coffee (DEBN07), a deep plum-tinged brown; C2 Paint's Pueblo (C2-510), an earthy rose-brown; Minwax's Pickled Oak (MW260), a light warm wood stain; Benjamin Moore's Webster Green (HC-130), a deep green; Little Greene's Marle, a mid-tone brown; and WGSN and Coloro's Luminous Blue. Pantone — the most-cited of them — announces in the first week of December.",
   },
   {
     q: "Is Sherwin-Williams' Rewild the 2027 Color of the Year?",
@@ -281,7 +293,7 @@ const faq = [
 
 const title = "The 2027 Colors of the Year — Every Pick Announced So Far";
 const description =
-  "All 13 Colors of the Year for 2027 so far, side by side: Benjamin Moore Webster Green, Sherwin-Williams Celery, Dunn-Edwards French Press Coffee, Dulux Soulful Sage, Behr Grounded and more — plus Pantone, still to come. Verified 15 October 2026.";
+  "All 14 Colors of the Year for 2027 so far, side by side: Benjamin Moore Webster Green, Sherwin-Williams Celery, Dunn-Edwards French Press Coffee, Dulux Soulful Sage, Behr Grounded and more — plus Pantone, still to come. Verified 16 October 2026.";
 
 const jsonLd = [
   AUTHOR,
@@ -303,7 +315,7 @@ const jsonLd = [
     "@type": "ItemList",
     name: "2027 Colors of the Year announced so far",
     description:
-      "Official 2027 Color of the Year selections announced as of 15 October 2026. The season is ongoing.",
+      "Official 2027 Color of the Year selections announced as of 16 October 2026. The season is ongoing.",
     numberOfItems: PICKS.length,
     itemListElement: PICKS.map((p, i) => ({
       "@type": "ListItem",
@@ -372,7 +384,7 @@ const jsonLd = [
       <HeroSourceBook lead="Trends change every year; most palettes on this site come from one 1933 book." surface="trends-hero" />
       <p class="coty-hero__meta">
         By <a class="coty-hero__byline" href="/about/" rel="author">Paulo de Vries</a>
-        · Last verified <time datetime={VERIFIED}>15 October 2026</time>
+        · Last verified <time datetime={VERIFIED}>16 October 2026</time>
         · {PICKS.length} announced · {PENDING.length} still to come · sources cited below
       </p>
     </header>
@@ -441,7 +453,7 @@ const jsonLd = [
       <h2 id="pending">Still to come</h2>
       <p>
         {PENDING.length} authorities tracked here have not announced a 2027 pick as of
-        {" "}<time datetime={VERIFIED}>15 October 2026</time>. Timing notes below
+        {" "}<time datetime={VERIFIED}>16 October 2026</time>. Timing notes below
         are each brand's historical pattern, or its own stated timing where it has given one.
       </p>
       <ul class="coty-pending" role="list">
@@ -452,7 +464,7 @@ const jsonLd = [
         ))}
       </ul>
 
-      <h2 id="direction">What the first thirteen suggest</h2>
+      <h2 id="direction">What the first fourteen suggest</h2>
       <p>
         On 6 September, with three picks in, this page said all of them were
         mid-tone and earth-referenced. Ten more have landed since, and they
@@ -473,7 +485,8 @@ const jsonLd = [
         Benjamin Moore broke that run on 14 October with Webster Green, a deep
         green. It is the fourth green of the season and the darkest pick so far,
         so the 2027 greens now run from Sherwin-Williams' pale celery to a near
-        forest shade.
+        forest shade. Two days earlier, Little Greene had named Marle, a
+        mid-tone ochre brown, which keeps the warm-neutral thread going.
       </p>
       <p>
         What they share is restraint: most are softened, nature-referenced colours
@@ -555,6 +568,9 @@ const jsonLd = [
         <li>
           Benjamin Moore — <a href="https://www.benjaminmoore.com/en-us/paint-colors/color-of-the-year-2027" rel="nofollow noopener" target="_blank">Color of the Year &amp; Color Trends 2027</a> (Webster Green HC-130 and the eight-colour palette, read 15 October 2026),
           and Hardware Retailing, <a href="https://hardwareretailing.com/benjamin-moore-announces-2027-color-of-the-year" rel="nofollow noopener" target="_blank">“Benjamin Moore Announces 2027 Color of the Year”</a> (14 October 2026).
+        </li>
+        <li>
+          Little Greene — <a href="https://www.littlegreene.eu/blog/introducing-marle-our-2027-colour-of-the-year" rel="nofollow noopener" target="_blank">“Introducing ‘Marle’: Our 2027 Colour of the Year”</a> (12 October 2026, read 16 Oct 2026).
         </li>
         <li>
           WGSN + Coloro — <a href="https://www.wgsn.com/en/blog/colour-year-2027-luminous-blue" rel="nofollow noopener" target="_blank">“Colour of the Year 2027: Luminous Blue”</a> (2 June 2025).
