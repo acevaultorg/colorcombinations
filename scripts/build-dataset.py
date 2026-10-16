@@ -27,7 +27,7 @@ from PIL import Image
 
 HERE = Path(__file__).parent
 API = "https://commons.wikimedia.org/w/api.php"
-UA = "colorcombinations-palette-builder/1.0 (https://colorcombinations.org; contact@acevault.org)"
+UA = "colorcombinations-palette-builder/1.0 (https://colorcombinations.org; contact@vondelmedia.com)"
 
 # (slug, title, artist, surname-token, year, museum, commons file)
 ENTRIES = [
