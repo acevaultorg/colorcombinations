@@ -57,6 +57,7 @@ const related = relatedBooks(book.slug, 3);
 const WADA_VOL_1 = "a-dictionary-of-color-combinations";
 const WADA_VOL_2 = "a-dictionary-of-color-combinations-vol-2";
 const isWada = book.slug === WADA_VOL_1 || book.slug === WADA_VOL_2;
+const WADA_SET_ASIN = "B094NTK2RB"; // same set as /compare/wada-vol-1-vs-vol-2/
 
 // "What is inside Vol. 1", counted from the archive's own plate data at build
 // time so it can never drift from what /browse/ shows. Added 2026-10-07: this
@@ -220,6 +221,24 @@ const jsonLd = [
           >
             See price on Amazon <span aria-hidden="true">↗</span>
           </a>
+          {/* Two-volume set (2026-10-16): ~66% of this site's Amazon clicks go to Vol. 1
+              (first-party beacon, 30d), an ~$18 book, and earnings follow cart price. The
+              set B094NTK2RB was only offered on /compare/wada-vol-1-vs-vol-2/, which calls
+              it the honest answer for readers who want both. Secondary text link only: the
+              primary CTA above is unchanged. Creators API 2026-10-16: IN_STOCK. */}
+          {isWada && (
+            <p class="book__set">
+              Want both volumes?{" "}
+              <a
+                href={AMAZON.link(WADA_SET_ASIN, "book")}
+                rel="sponsored nofollow noopener"
+                target="_blank"
+                data-event="amazon_click"
+                data-book="Wada Vol 1 + Vol 2 set"
+                data-surface="book-set"
+              >The two-volume set</a> is a single listing.
+            </p>
+          )}
           <p class="book__disclosure">
             Affiliate link. Your price is unchanged; as an Amazon Associate we
             earn from qualifying purchases.
@@ -438,6 +457,12 @@ const jsonLd = [
     flex-direction: column;
     gap: 0.75rem;
     align-items: flex-start;
+  }
+
+  .book__set {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-ink-700);
   }
 
   .book__disclosure {
