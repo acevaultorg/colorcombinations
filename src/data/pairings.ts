@@ -30,7 +30,7 @@ export interface CommonColor {
 
 export const commonColors: CommonColor[] = [
   // ---- 2026 colours of the year -------------------------------------------
-  // The 14 authorities' own 2026 picks, lifted from src/pages/trends/color-trends-2026.astro.
+  // The 15 authorities' own 2026 picks (PPG added 2026-10-16), lifted from src/pages/trends/color-trends-2026.astro.
   // WHY: /trends/color-trends-2026/ is the single most-cited page in the fleet (6,064
   // citations). It named all 14 colours while linking every one of them OFF-SITE to
   // pantone.com / benjaminmoore.com / behr.com and ten more, and /colors/cloud-dancer/
@@ -45,6 +45,7 @@ export const commonColors: CommonColor[] = [
   { slug: "hidden-gem", name: "Hidden Gem", hex: "#5E7A72", descriptor: "smokey jade — Behr's 2026 colour of the year, N430-6A (swatch is an honest sRGB approximation — the official code is authoritative)" },
   { slug: "warm-eucalyptus", name: "Warm Eucalyptus", hex: "#98A189", descriptor: "gray-green — Valspar's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
   { slug: "warm-mahogany", name: "Warm Mahogany", hex: "#7B473C", descriptor: "red-brown — Glidden's 2026 colour of the year, PPG1060-7 (swatch is an honest sRGB approximation — the official code is authoritative)" },
+  { slug: "secret-safari", name: "Secret Safari", hex: "#C6BB68", descriptor: "soft yellow-green — PPG's 2026 colour of the year, PPG1110-4 (swatch read from the one PPG renders for that code — the official code is authoritative)" },
   { slug: "midnight-garden", name: "Midnight Garden", hex: "#39463C", descriptor: "deep green — Dunn-Edwards's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
   { slug: "melodious-ivory", name: "Melodious Ivory", hex: "#EEE6D2", descriptor: "warm cream — Dutch Boy's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },
   { slug: "divine-damson", name: "Divine Damson", hex: "#4C2E48", descriptor: "deep purple — Graham & Brown's 2026 colour of the year (swatch is an honest sRGB approximation — the official code is authoritative)" },

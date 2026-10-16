@@ -24,9 +24,9 @@ import PaintThisPalette from "@components/PaintThisPalette.astro";
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/color-trends-2026/";
 const PUBLISHED = "2026-06-20T00:00:00Z";
-// Re-verified 2026-09-02 against NAHB, Young House Love, Dulux + the 14 authorities' own pages
+// Re-verified 2026-10-16: PPG added (Secret Safari PPG1110-4, PPG release on Business Wire 2025-10-02; swatch #C6BB68 read from the swatch ppgpaints.com renders for PPG1110-4, so exact:false). Dulux re-checked on dulux.co.uk and kept as the prose note, not a card, by design. Earlier: re-verified 2026-09-02 against NAHB, Young House Love, Dulux + the 14 authorities' own pages
 // (task mtjaxsmk36hi9v). Bump this date whenever the picks are re-checked, never automatically.
-const VERIFIED = "2026-09-02";
+const VERIFIED = "2026-10-16";
 // dateModified is the CURATED verification date, not the build clock. It used to be
 // `new Date().toISOString()`, which told machines this page changed on every deploy while
 // the byline told humans "Last verified 2 September" — the same page asserting two
@@ -74,6 +74,7 @@ const PICKS: Pick[] = [
   { brand: "Behr", name: "Hidden Gem", code: "N430-6A", hex: "#5E7A72", exact: false, family: "Smokey jade", blurb: "A smokey, desaturated jade — mysterious elegance that holds a full wall.", url: "https://www.behr.com" },
   { brand: "Valspar", name: "Warm Eucalyptus", code: "—", hex: "#98A189", exact: false, family: "Gray-green", blurb: "A muted, earthy gray-green meant to be restful to the eye and restorative to the soul.", url: "https://www.valspar.com" },
   { brand: "Glidden", name: "Warm Mahogany", code: "PPG1060-7", hex: "#7B473C", exact: false, family: "Red-brown", blurb: "A rich, grounded red-brown evoking rest, connection and creativity.", url: "https://www.glidden.com" },
+  { brand: "PPG", name: "Secret Safari", code: "PPG1110-4", hex: "#C6BB68", exact: false, family: "Soft yellow-green", blurb: "A versatile yellow-green that balances soothing comfort with a touch of energy, part of PPG's 2026 global theme, Parallels.", url: "https://www.businesswire.com/news/home/20251002304338/en/PPG-announces-Secret-Safari-as-2026-Color-of-the-Year" },
   { brand: "Dunn-Edwards", name: "Midnight Garden", code: "—", hex: "#39463C", exact: false, family: "Deep green", blurb: "A deep, muted green of quiet elegance with earthy undertones and timeless appeal.", url: "https://www.dunnedwards.com" },
   { brand: "Dutch Boy", name: "Melodious Ivory", code: "—", hex: "#EEE6D2", exact: false, family: "Warm cream", blurb: "A warm cream with a nostalgic, elevated vibe — a base for layering bolder accents.", url: "https://www.dutchboy.com/" },
   { brand: "Graham & Brown", name: "Divine Damson", code: "—", hex: "#4C2E48", exact: false, family: "Deep purple", blurb: "A deep, saturated damson purple — luxury and sophistication with timeless versatility.", url: "https://www.grahambrown.com" },
@@ -251,7 +252,7 @@ const grid = PICKS.slice(2);
       <HeroSourceBook lead="Trends change every year; most palettes on this site come from one 1933 book." surface="trends-hero" />
       <p class="coty-hero__meta">
         By <a class="coty-hero__byline" href="/about/" rel="author">Paulo de Vries</a>
-        · Last verified <time datetime={VERIFIED}>2 September 2026</time>
+        · Last verified <time datetime={VERIFIED}>16 October 2026</time>
         · {PICKS.length} authorities · sources cited below
       </p>
     </header>
@@ -362,14 +363,14 @@ const grid = PICKS.slice(2);
     <section class="coty-trend container-narrow">
       <h2 id="meta-trend">The 2026 meta-trend: calm earth</h2>
       <p>
-        Read together, 2026's picks aren't fourteen different directions — they're
+        Read together, 2026's picks aren't fifteen different directions — they're
         two sides of one mood. On one side is <strong>serene, near-weightless
         light</strong>: Pantone's Cloud Dancer is the first true white it has ever
         crowned, echoed by Dutch Boy's Melodious Ivory and Sherwin-Williams'
         Universal Khaki. On the other is <strong>grounded, tactile earth</strong> —
         warm browns (Benjamin Moore Silhouette, Glidden Warm Mahogany, Minwax
-        Special Walnut), deep greens (Dunn-Edwards Midnight Garden, Valspar Warm
-        Eucalyptus) and smokey blue-greens (WGSN/Coloro's Transformative Teal,
+        Special Walnut), deep and soft greens (Dunn-Edwards Midnight Garden, Valspar Warm
+        Eucalyptus, PPG's yellow-green Secret Safari) and smokey blue-greens (WGSN/Coloro's Transformative Teal,
         Behr's Hidden Gem, Rust-Oleum's Satin Lagoon).
       </p>
       <p>
@@ -457,6 +458,7 @@ const grid = PICKS.slice(2);
         <li>2026 paint Colors of the Year overview (<a href="https://www.hgtv.com/decorating/color/colors-of-the-year-pictures" target="_blank" rel="noopener noreferrer">HGTV</a>, <a href="https://www.younghouselove.com/2026-color-of-the-year/" target="_blank" rel="noopener noreferrer">Young House Love</a>, <a href="https://www.nahb.org/blog/2025/12/2026-colors-of-the-year" target="_blank" rel="noopener noreferrer">NAHB</a>).</li>
         <li>Benjamin Moore Silhouette AF-655 hex reference (<a href="https://encycolorpedia.com/57504c" target="_blank" rel="noopener noreferrer">Encycolorpedia</a>).</li>
         <li>2025 Colors of the Year, for the year-over-year table (<a href="https://www.nahb.org/blog/2024/12/here-are-the-top-colors-for-2025" target="_blank" rel="noopener noreferrer">NAHB</a>, <a href="https://www.younghouselove.com/2025-color-of-the-year-guide/" target="_blank" rel="noopener noreferrer">Young House Love</a>).</li>
+        <li>PPG Color of the Year 2026, Secret Safari PPG1110-4 — announced 2 Oct 2025 (<a href="https://www.businesswire.com/news/home/20251002304338/en/PPG-announces-Secret-Safari-as-2026-Color-of-the-Year" target="_blank" rel="noopener noreferrer">PPG release, Business Wire</a>; swatch from <a href="https://www.ppgpaints.com/ppg-colors/secret-safari" target="_blank" rel="noopener noreferrer">ppgpaints.com</a>).</li>
         <li>Dulux Colours of the Year 2026, The Rhythm of Blues (<a href="https://www.dulux.co.uk/en/dulux-colours-of-the-year-2026" target="_blank" rel="noopener noreferrer">Dulux</a>).</li>
         <li>2026 selections design context (<a href="https://www.archdaily.com/1037721/2026-color-of-the-year-selections-highlight-tonal-depth-and-spatial-calm" target="_blank" rel="noopener noreferrer">ArchDaily</a>).</li>
       </ul>
