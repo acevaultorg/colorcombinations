@@ -63,6 +63,7 @@
  *
  * USAGE:  node scripts/verify-asins.mjs          (exits 0/1)
  *         node scripts/verify-asins.mjs --json   (machine-readable report)
+ *         node scripts/verify-asins.mjs --no-http  (API only; never fetch an Amazon page)
  * Exits 0 without CREATORS_API_* credentials so it can never break a build.
  */
 import fs from "fs";
@@ -73,6 +74,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CONFIG = path.join(ROOT, "src/config/monetization.ts");
 const TAG = "colorcombinations-20";
 const JSON_OUT = process.argv.includes("--json");
+// --no-http (2026-10-16): never fetch an Amazon retail page. Fleet lanes run under a
+// "no Amazon retail fetches" rule; without this flag they had to patch a scratch copy.
+// API-absent ASINs then stay not-in-api (UNKNOWN), never DEAD, so exit 1 cannot fire.
+const NO_HTTP = process.argv.includes("--no-http");
 
 const ID = process.env.CREATORS_API_CREDENTIAL_ID;
 const SECRET = process.env.CREATORS_API_SECRET;
@@ -109,6 +114,7 @@ async function token() {
  * 404 on the product page counts as dead.
  */
 async function httpConfirmDead(asin) {
+  if (NO_HTTP) return false; // absence stays UNKNOWN; see --no-http above
   try {
     const r = await fetch(`https://www.amazon.com/dp/${asin}`, {
       headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120 Safari/537.36" },
