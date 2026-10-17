@@ -279,6 +279,10 @@ const faq = [
     a: "No. Rewild is Sherwin-Williams' 2027 Colormix Trend Forecast — a 48-hue collection organised into three stories, Revive, Reignite and Reconnect. Sherwin-Williams' own announcement described the forecast as the foundation for its Color of the Year, which was announced separately on 15 September 2026: Celery (SW 6421). Several roundups conflated the two.",
   },
   {
+    q: "What is the Pantone Color of the Year 2027?",
+    a: "Pantone has not announced it yet (as of 16 October 2026). Pantone names its Color of the Year in early December of the year before: its 2026 pick, Cloud Dancer (PANTONE 11-4201), was announced on 4 December 2025, so the 2027 colour is due in the first week of December 2026. Anything named as Pantone's 2027 colour before then is a prediction, not an announcement. The fourteen picks already in lean towards soft greens, blues and warm browns; this page adds Pantone's pick the day it is published, and every Pantone colour since 2000 is listed on the Pantone archive page.",
+  },
+  {
     q: "When are the rest of the 2027 colours announced?",
     a: "The season runs from roughly late July to early December. Valspar opened it on 5 August 2026 and Pantone traditionally closes it in the first week of December. Graham & Brown, Dulux, Glidden, Sherwin-Williams and PPG followed in September, and Dunn-Edwards, C2 Paint and Minwax in early October, and Benjamin Moore on 14 October.",
   },
@@ -292,7 +296,11 @@ const faq = [
   },
 ];
 
-const title = "The 2027 Colors of the Year — Every Pick Announced So Far";
+// Title front-loads "Color of the Year 2027", the page's biggest Bing query (1,445 impressions at avg
+// position 5.4 over the 4 weekly buckets 2026-09-25..10-16, GetQueryStats read 2026-10-17 from device 1;
+// 14 clicks). The count comes from PICKS so it can never drift from the cards again (the 13 -> 14 FAQ
+// fix of 2026-10-16 was exactly that drift). Amili card from:mvc157jxy2oz0d.
+const title = `Color of the Year 2027: All ${PICKS.length} Picks So Far, Side by Side`;
 const description =
   "All 14 Colors of the Year for 2027 so far, side by side: Benjamin Moore Webster Green, Sherwin-Williams Celery, Dunn-Edwards French Press Coffee, Dulux Soulful Sage, Behr Grounded and more — plus Pantone, still to come. Verified 16 October 2026.";
 
@@ -301,7 +309,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "The 2027 Colors of the Year — Every Pick Announced So Far",
+    headline: title,
     description,
     url: pageUrl,
     inLanguage: "en",
@@ -399,6 +407,29 @@ const jsonLd = [
           <a href="#pending">still to come</a> rather than guessed at.
         </p>
       </div>
+
+      <h2 id="at-a-glance" class="coty-glance__title">All {PICKS.length} 2027 Colors of the Year at a glance</h2>
+      <div class="coty-glance" role="region" aria-labelledby="at-a-glance" tabindex="0">
+        <table>
+          <thead>
+            <tr><th scope="col">Authority</th><th scope="col">2027 colour</th><th scope="col">Family</th></tr>
+          </thead>
+          <tbody>
+            {PICKS.map((p) => (
+              <tr>
+                <th scope="row">{p.brand}<span class="coty-glance__date">{p.announced}</span></th>
+                <td><span class="coty-glance__dot" style={`background-color:${p.match.hex}`} aria-hidden="true"></span>{p.name}{p.code !== "—" && <span class="coty-glance__code"> {p.code}</span>}</td>
+                <td>{p.family}</td>
+              </tr>
+            ))}
+            <tr class="coty-glance__pending">
+              <th scope="row">Pantone</th>
+              <td colspan="2">Not announced yet. Due in the first week of December 2026.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="coty-glance__note">Dots show the closest colour in this archive, not the paint itself. Full notes, sources and pairings for each pick below.</p>
 
       <ul class="coty-picks" role="list">
         {PICKS.map((p) => (
@@ -649,6 +680,64 @@ const jsonLd = [
     color: var(--color-ink-700);
   }
 
+  .coty-glance__title {
+    margin-top: 2rem;
+  }
+  .coty-glance {
+    overflow-x: auto;
+    margin: 0.75rem 0 0.5rem;
+    border: 1px solid var(--color-border, rgba(127, 127, 127, 0.3));
+    border-radius: 8px;
+  }
+  .coty-glance table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+  .coty-glance th,
+  .coty-glance td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--color-border, rgba(127, 127, 127, 0.2));
+  }
+  .coty-glance thead th {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+  }
+  .coty-glance tbody th {
+    font-weight: 600;
+  }
+  .coty-glance__date {
+    display: block;
+    font-weight: 400;
+    font-size: 0.78rem;
+    opacity: 0.7;
+  }
+  .coty-glance__code {
+    opacity: 0.7;
+    font-size: 0.85em;
+  }
+  .coty-glance__dot {
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    border-radius: 50%;
+    margin-right: 0.4em;
+    vertical-align: -0.05em;
+    box-shadow: 0 0 0 1px rgba(127, 127, 127, 0.35);
+  }
+  .coty-glance__pending td {
+    font-style: italic;
+  }
+  .coty-glance__note {
+    font-size: 0.82rem;
+    opacity: 0.75;
+    margin-bottom: 1.5rem;
+  }
   .coty-picks {
     list-style: none;
     padding: 0;

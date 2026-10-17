@@ -139,6 +139,38 @@ import AskAmili from '../components/AskAmili.astro';
     />
   </section>
 
+  {/* ==================== ABOUT THE BOOK (Amili card from:mvc157jxy2oz0d, 2026-10-17) ====================
+      Bing ranks THIS page, not the dedicated guides, for "sanzo wada" (81 impressions, avg position 8.0,
+      0 clicks) and "dictionary of color combinations pdf" (42 impressions, position 6.5) over the 4 weekly
+      buckets 2026-09-25..10-16 (GetQueryStats + GetQueryPageStats, read 2026-10-17). The home page did not
+      answer either question and did not link to /learn/sanzo-wada/ or /learn/dictionary-of-color-combinations-pdf/
+      at all (0 hrefs in the served HTML). Two short, sourced answers + the links; every fact is the one
+      those two guides already state and source. */}
+  <section class="about-book container-narrow" aria-labelledby="about-book-heading">
+    <h2 id="about-book-heading" class="text-balance">About the book and its author</h2>
+    <div class="about-book__qa">
+      <h3>Who was Sanzo Wada?</h3>
+      <p>
+        Sanzo Wada (1883–1967) was a Japanese painter, teacher and colour researcher. He studied
+        under Kuroda Seiki in Tokyo, spent 1907 to 1915 in Europe, and in 1933–34 published
+        <em>Haishoku Soukan</em>, six volumes of colour combinations. In 1945 he turned the Japan
+        Standard Color Association into the Japan Color Research Institute, and he won the Academy
+        Award for Best Costume Design for the film <em>Gate of Hell</em> in 1955.
+        <a href="/learn/sanzo-wada/">His full story →</a>
+      </p>
+    </div>
+    <div class="about-book__qa">
+      <h3>Is there a PDF of <em>A Dictionary of Color Combinations</em>?</h3>
+      <p>
+        No official one. Seigensha's 2010 English edition is sold in print only, and the PDFs on
+        file-sharing sites are unauthorised scans. Two free, legal routes exist: Wada's original
+        1930s volumes, scanned by Japan's National Diet Library, and all {wadaCount} combinations on
+        this site with hex, RGB and CMYK values.
+        <a href="/learn/dictionary-of-color-combinations-pdf/">What is free and where →</a>
+      </p>
+    </div>
+  </section>
+
   {/* ==================== FEATURED ==================== */}
   <section class="featured section" id="featured">
     <div class="container-wide">
@@ -373,6 +405,12 @@ import AskAmili from '../components/AskAmili.astro';
 </BaseLayout>
 
 <style>
+  .about-book { margin: 3rem auto 1rem; }
+  .about-book h2 { margin-bottom: 1rem; }
+  .about-book__qa { margin: 0 0 1.25rem; }
+  .about-book__qa h3 { font-size: 1.1rem; margin: 0 0 0.35rem; }
+  .about-book__qa p { margin: 0; line-height: 1.6; }
+
   /* ========== HERO ========== */
   .hero {
     padding-top: clamp(3rem, 8vw, 7rem);
