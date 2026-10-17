@@ -121,7 +121,45 @@ const textOn = (hex: string): string => {
   return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? "#1a1a1a" : "#ffffff";
 };
 
+// ── Cloud Dancer in numbers (Amili card from:mvc157jxy2oz0d, 2026-10-17) ─────────────────────
+// This page's Bing queries "pantone color of the year 2026" (565 impressions, avg position 7.0) and
+// "pantone colour of the year 2026" (162, pos 6.3) over the 4 weekly buckets 2026-09-25..10-16
+// (GetQueryStats, read 2026-10-17). The #1 result for them is Pantone's own announcement, which gives
+// the name, code and mood. What a designer asks next — the hex, RGB, and which text colours are
+// readable on it — it does not answer. Everything below is COMPUTED from the one confirmed hex
+// (#F0EEE9) and the confirmed hexes already on this site (Silhouette here, Mocha Mousse on
+// /trends/pantone-color-of-the-year/), with the WCAG 2.x relative-luminance formula, at build time,
+// so no number on the page can drift from its input.
+const hexRgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const lin = (c: number) => { const v = c / 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+const luminance = (h: string) => { const [r, g, b] = hexRgb(h).map(lin); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+const contrast = (a: string, b: string) => { const [x, y] = [luminance(a), luminance(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
+const hsl = (h: string) => {
+  const [r, g, b] = hexRgb(h).map((c) => c / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min;
+  if (d === 0) return [0, 0, Math.round(l * 100)];
+  const sat = d / (1 - Math.abs(2 * l - 1));
+  let hue = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  hue = Math.round(hue * 60); if (hue < 0) hue += 360;
+  return [hue, Math.round(sat * 100), Math.round(l * 100)];
+};
+const CD = "#F0EEE9";
+const cdRgb = hexRgb(CD);
+const cdHsl = hsl(CD);
+const verdict = (r: number) => (r >= 7 ? "Passes AAA, any text size" : r >= 4.5 ? "Passes AA for body text" : r >= 3 ? "Large text and icons only (AA large)" : "Fails, decoration only");
+const CD_TEXT = [
+  { name: "Black", note: "body text", hex: "#000000" },
+  { name: "Benjamin Moore Silhouette", note: "2026 pick, AF-655", hex: "#57504C" },
+  { name: "Pantone Mocha Mousse", note: "2025 pick, 17-1230", hex: "#A47864" },
+  { name: "Pure white", note: "#FFFFFF page next to it", hex: "#FFFFFF" },
+].map((t) => ({ ...t, ratio: contrast(CD, t.hex) }));
+const fmtRatio = (r: number) => `${r.toFixed(2)}:1`;
+
 const faq = [
+  {
+    q: "What is the hex code for Pantone Cloud Dancer?",
+    a: `Cloud Dancer (PANTONE 11-4201) is ${CD} on screen: RGB ${cdRgb.join(", ")}, HSL ${cdHsl[0]}°, ${cdHsl[1]}%, ${cdHsl[2]}%. It is a warm off-white, not pure white. Black text on it has a contrast ratio of ${fmtRatio(contrast(CD, "#000000"))}, well past the WCAG AAA threshold; against a pure white page it measures only ${fmtRatio(contrast(CD, "#FFFFFF"))}, so a Cloud Dancer panel on white needs a border or shadow to be seen. For print, use the PANTONE code, not the hex.`,
+  },
   {
     q: "What is the Pantone Color of the Year 2026?",
     a: "Pantone's 2026 Color of the Year is Cloud Dancer (PANTONE 11-4201), a soft, serene white — the first true white ever chosen since the program began in 1999.",
@@ -360,6 +398,49 @@ const grid = PICKS.slice(2);
       />
     </section>
 
+    <section class="coty-numbers container-narrow" aria-labelledby="cloud-dancer-numbers">
+      <h2 id="cloud-dancer-numbers">Pantone Cloud Dancer in numbers</h2>
+      <div class="coty-numbers__spec">
+        <div class="coty-numbers__swatch" style={`background-color:${CD}`} aria-hidden="true"></div>
+        <dl>
+          <div><dt>Pantone</dt><dd>11-4201 Cloud Dancer</dd></div>
+          <div><dt>Hex</dt><dd><code>{CD}</code></dd></div>
+          <div><dt>RGB</dt><dd><code>{cdRgb.join(", ")}</code></dd></div>
+          <div><dt>HSL</dt><dd><code>{cdHsl[0]}°, {cdHsl[1]}%, {cdHsl[2]}%</code></dd></div>
+          <div><dt>Relative luminance</dt><dd><code>{luminance(CD).toFixed(3)}</code> (pure white is 1.000)</dd></div>
+        </dl>
+      </div>
+      <p>
+        Cloud Dancer is a warm off-white: a little more red than blue, so it reads
+        cream beside a cool screen white. The question that decides whether it
+        works in a design is what you can put on top of it. These are the WCAG 2
+        contrast ratios, computed from the hex codes:
+      </p>
+      <div class="coty-numbers__table" role="region" aria-labelledby="cloud-dancer-numbers" tabindex="0">
+        <table>
+          <thead>
+            <tr><th scope="col">On Cloud Dancer</th><th scope="col">Contrast</th><th scope="col">What it is good for</th></tr>
+          </thead>
+          <tbody>
+            {CD_TEXT.map((t) => (
+              <tr>
+                <th scope="row"><span class="coty-numbers__dot" style={`background-color:${t.hex}`} aria-hidden="true"></span>{t.name}<span class="coty-numbers__sub">{t.note}</span></th>
+                <td><code>{fmtRatio(t.ratio)}</code></td>
+                <td>{verdict(t.ratio)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="coty-numbers__note">
+        WCAG asks for 4.5:1 for body text and 3:1 for large text and icons.
+        Silhouette is the 2026 pick that works as a text colour on Cloud Dancer;
+        last year's Mocha Mousse does not, except at headline size. For print,
+        specify PANTONE 11-4201 and let the printer match it: a hex is a screen
+        value only. <a href={pairUrl("Cloud Dancer")}>Palettes that pair with Cloud Dancer →</a>
+      </p>
+    </section>
+
     <section class="coty-trend container-narrow">
       <h2 id="meta-trend">The 2026 meta-trend: calm earth</h2>
       <p>
@@ -478,6 +559,24 @@ const grid = PICKS.slice(2);
      3rem rule as `.color-destination`, `.palette-destination` and
      `.collection-destination` on the three surfaces that already made this
      move, so the block reads identically site-wide. */
+  .coty-numbers { margin: 2.5rem auto; }
+  .coty-numbers__spec { display: flex; gap: 1rem; align-items: stretch; margin: 1rem 0; }
+  .coty-numbers__swatch { flex: 0 0 5.5rem; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(127,127,127,0.35); }
+  .coty-numbers__spec dl { margin: 0; display: grid; gap: 0.35rem; font-size: 0.95rem; }
+  .coty-numbers__spec dl div { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .coty-numbers__spec dt { font-weight: 600; min-width: 8.5rem; }
+  .coty-numbers__spec dd { margin: 0; }
+  .coty-numbers__table { overflow-x: auto; border: 1px solid var(--color-border, rgba(127,127,127,0.3)); border-radius: 8px; margin: 0.75rem 0; }
+  .coty-numbers__table table { width: 100%; border-collapse: collapse; font-size: 0.92rem; line-height: 1.4; }
+  .coty-numbers__table th, .coty-numbers__table td { text-align: left; vertical-align: top; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--color-border, rgba(127,127,127,0.2)); }
+  .coty-numbers__table thead th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.75; }
+  .coty-numbers__sub { display: block; font-weight: 400; font-size: 0.78rem; opacity: 0.7; }
+  .coty-numbers__dot { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 50%; margin-right: 0.4em; vertical-align: -0.05em; box-shadow: 0 0 0 1px rgba(127,127,127,0.45); }
+  .coty-numbers__note { font-size: 0.9rem; }
+  @media (max-width: 480px) {
+    .coty-numbers__spec { flex-direction: column; }
+    .coty-numbers__swatch { flex: 0 0 3rem; }
+  }
   .coty-instrument {
     margin-block: 3rem;
   }
