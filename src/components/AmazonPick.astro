@@ -1,0 +1,100 @@
+---
+/**
+ * AmazonPick — ONE clear Amazon button for one matching product, high on the page.
+ *
+ * Why (Amili card mvc8yz47xd0zq3, Paulo 2026-10-17): the four pages that rank 5-15 in Bing for the
+ * 10 striking-distance queries (card mvc157jxy2oz0d: /trends/color-trends-2027/, /trends/color-trends-2026/,
+ * /, /browse/) were improved to win more visitors; this puts one obvious buy button for the matching
+ * paint set where those visitors land, so the extra traffic can also earn.
+ *
+ * Measurement — clicks per button, readable on Monday (card mvc31jnotuyem5):
+ *   - `placement` is sent twice: as `?c=<placement>` (the beacon's p= page class, and the gate
+ *     re-appends it as &ascsubtag=) and as data-from (the beacon's f= position, mapped in
+ *     public/amazon-track.js). f= has only ~3 keys per day on this site, so a new key never hits the
+ *     collector's 12-keys-per-site-day `_other` fold; p= is the backup.
+ *   - Read: fleet.promptprio.com/beacon-pages?site=colorcombinations.org&days=7 -> positions + pages rows.
+ *
+ * Compliance (Amazon Associates operating agreement + FTC): no static price (the kit shows a price
+ * only from a live API answer, with its as-of time), disclosure adjacent to the button,
+ * rel="sponsored nofollow noopener", no "best price"/scarcity language, routed through the /go/p/ gate.
+ */
+import { renderProductMedia, PRODUCT_CSS } from "../../kit/product.mjs";
+import { AMAZON, ART_SUPPLIES } from "@/config/monetization";
+
+export interface Props {
+  /** ASIN from ART_SUPPLIES (must be in the verified catalogue). */
+  asin: string;
+  /** Per-button key, e.g. "strike-2027". Lowercase, [a-z0-9-], starts with "strike-". */
+  placement: string;
+  eyebrow?: string;
+  title: string;
+  text: string;
+}
+
+const { asin, placement, eyebrow = "Make it yourself", title, text } = Astro.props;
+const item = ART_SUPPLIES.find((a) => a.amazonAsin === asin);
+if (!item) throw new Error(`AmazonPick: ${asin} is not in ART_SUPPLIES`);
+if (!/^strike-[a-z0-9-]{1,30}$/.test(placement)) throw new Error(`AmazonPick: bad placement ${placement}`);
+const href = AMAZON.link(item.amazonAsin, placement);
+---
+<aside class="amz-pick" aria-label={`${item.brand} ${item.name} on Amazon`}>
+  <span class="amz-pick__media" set:html={renderProductMedia({ asin: item.amazonAsin, name: `${item.brand} ${item.name}`, size: 88 })} />
+  <div class="amz-pick__body">
+    <p class="amz-pick__eyebrow">{eyebrow}</p>
+    <p class="amz-pick__title">{title}</p>
+    <p class="amz-pick__text">{text}</p>
+    <a
+      href={href}
+      rel="sponsored nofollow noopener"
+      target="_blank"
+      class="btn btn-primary amz-pick__btn"
+      data-event="amazon_click"
+      data-from={placement}
+      data-tool={item.name}
+    >
+      {item.brand} {item.name} on Amazon <span aria-hidden="true">↗</span>
+    </a>
+    <p class="amz-pick__disclosure">Affiliate link. As an Amazon Associate we earn from qualifying purchases; your price is the same.</p>
+  </div>
+</aside>
+<Fragment set:html={`<style>${PRODUCT_CSS}</style>`} />
+<script is:inline src="/kit-product.js" defer></script>
+<style>
+  .amz-pick {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-block: 1.75rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, currentColor 4%, transparent);
+  }
+  .amz-pick__media { flex: 0 0 auto; }
+  .amz-pick__body { min-width: 0; flex: 1 1 auto; }
+  .amz-pick__eyebrow {
+    margin: 0 0 0.2rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .amz-pick__title { margin: 0 0 0.35rem; font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+  .amz-pick__text { margin: 0 0 0.8rem; line-height: 1.5; }
+  .amz-pick__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    max-width: 100%;
+    text-align: center;
+    white-space: normal;
+  }
+  .amz-pick__disclosure { margin: 0.55rem 0 0; font-size: 0.8rem; opacity: 0.75; }
+  @media (max-width: 520px) {
+    .amz-pick { flex-direction: column; align-items: stretch; }
+    .amz-pick__media { align-self: center; }
+    .amz-pick__btn { width: 100%; }
+  }
+</style>

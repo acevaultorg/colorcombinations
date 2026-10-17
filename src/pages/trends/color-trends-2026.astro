@@ -19,6 +19,7 @@ import HeroSourceBook from "@components/HeroSourceBook.astro";
 import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
+import AmazonPick from "@components/AmazonPick.astro";
 
 
 const siteUrl = "https://colorcombinations.org/";
@@ -310,6 +311,16 @@ const grid = PICKS.slice(2);
           </span>
         </a>
       ))}
+    </section>
+
+    <section class="container-narrow">
+      {/* One clear Amazon button for the matching paint set (Amili card mvc8yz47xd0zq3, 2026-10-17); clicks per button: f=/p= strike-2026. */}
+      <AmazonPick
+        asin="B07R7XGHJW"
+        placement="strike-2026"
+        title="Mix the 2026 colours by hand"
+        text="Cloud Dancer is a soft white, and whites are where screens lie the most. A 48-colour gansai set lets you mix it and the other 2026 picks on paper, next to each other."
+      />
     </section>
 
     <section class="container-narrow">

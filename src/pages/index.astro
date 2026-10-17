@@ -3,6 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import ComboExplorer from "@components/ComboExplorer.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
+import AmazonPick from "@components/AmazonPick.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import EmailCapture from "@components/EmailCapture.astro";
 import BundleCta from "@components/BundleCta.astro";
@@ -169,6 +170,17 @@ import AskAmili from '../components/AskAmili.astro';
         <a href="/learn/dictionary-of-color-combinations-pdf/">What is free and where →</a>
       </p>
     </div>
+  </section>
+
+  {/* One clear Amazon button for the matching paint set (Amili card mvc8yz47xd0zq3, 2026-10-17), right after the
+      answer the Bing visitors for "sanzo wada" / "dictionary of color combinations pdf" came for. f=/p= strike-home. */}
+  <section class="container-narrow">
+    <AmazonPick
+      asin="B07R7XGHJW"
+      placement="strike-home"
+      title="Paint Wada's plates by hand"
+      text="Wada's plates were flat printed colour. Japanese gansai watercolour is the closest everyday paint to that look, and with 48 colours you mix toward a plate instead of guessing from a handful."
+    />
   </section>
 
   {/* ==================== FEATURED ==================== */}
