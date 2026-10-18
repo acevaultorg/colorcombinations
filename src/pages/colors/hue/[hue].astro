@@ -252,7 +252,7 @@ const jsonLd = [
   jsonAlternate={`/api/hue/${hueKey}.json`}
   jsonLd={jsonLd}
 >
-  <nav class="breadcrumb container-wide" aria-label="Breadcrumb">
+  <nav class="breadcrumb container-narrow" aria-label="Breadcrumb">
     <ol>
       <li><a href="/">Home</a></li>
       <li aria-hidden="true">›</li>
@@ -397,6 +397,20 @@ const jsonLd = [
 </BaseLayout>
 
 <style>
+  /* Breadcrumb on one line (wraps if needed), same as /colors/<hue>/ — it had no styles here, so the
+     <ol> rendered one item per line at 390px (card mvdzflwlkfvbpt follow-up, 2026-10-18). */
+  .breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    list-style: none;
+    padding: 0;
+    margin: var(--space-md) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+  .breadcrumb a { color: var(--color-muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--color-text); text-decoration: underline; }
   .hue-hero { padding: 3rem 0 2rem; }
   .hue-hero__inner { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
   .hue-hero__accent {
