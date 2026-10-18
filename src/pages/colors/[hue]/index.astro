@@ -6,6 +6,7 @@
  * Each page aggregates all named colors + all palettes in that hue family.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import ColorHarmony from "@components/ColorHarmony.astro";
 import FurtherReading from "@components/FurtherReading.astro";
@@ -200,6 +201,16 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors/[hue]/index.astro", "src/
       <p class="hue-hero__lede">{meta.lede}</p>
     </div>
   </section>
+
+  {/* Hero buy line (card mvdzflwlkfvbpt, 2026-10-18): the first Amazon link on this hub sat ~20 phone
+      screens down (y=16679 at 390px) and the hubs clicked 0 times on 152 human views (GA4 09-19..10-16).
+      Kept outside the accent-coloured hero so the link always sits on the page background. */}
+  <div class="container-wide">
+    <HeroSourceBook
+      lead={`${colors.filter((c) => c.paletteSlugs.some((s) => s.startsWith("wada-"))).length} of these ${colors.length} colors come from one 1933 book.`}
+      surface="hue-hero"
+    />
+  </div>
 
   {/* ==================== COLOR SWATCHES ==================== */}
   {colors.length > 0 && (
