@@ -69,10 +69,40 @@ const keywords = [
 // citation share. Pages that legitimately need site context nest it instead, as a WebPage
 // with isPartOf (see privacy.astro); a second top-level WebSite is always a duplicate.
 import AskAmili from '../components/AskAmili.astro';
+
+// Homepage CollectionPage + ItemList (2026-10-18, cards mvcvb4c7myw2ul + mvcvb4z1figutv: fleet parity D3 wanted >=3
+// JSON-LD blocks on the homepage and D4 found no Dataset/ItemList). The page IS a collection: the ItemList is exactly the
+// "Eight palettes to start with" grid rendered below (same `featured`, same order, same /palettes/<slug>/ URLs), so
+// nothing is claimed that the visitor cannot see. The full catalog stays described by the Dataset/DataCatalog on /data/.
+const siteOrigin = (Astro.site?.toString() ?? "https://colorcombinations.org/").replace(/\/$/, "");
+const homeJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${siteOrigin}/#webpage`,
+  url: `${siteOrigin}/`,
+  name: title,
+  description,
+  inLanguage: "en",
+  isPartOf: { "@id": `${siteOrigin}/#website` },
+  publisher: { "@id": `${siteOrigin}/#organization` },
+  about: { "@type": "Book", name: "A Dictionary of Color Combinations", author: { "@type": "Person", name: "Sanzo Wada" } },
+  mainEntity: {
+    "@type": "ItemList",
+    name: "Editorial picks: eight palettes to start with",
+    numberOfItems: featured.length,
+    itemListElement: featured.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: p.title,
+      url: `${siteOrigin}/palettes/${p.slug}/`,
+    })),
+  },
+};
 ---
 
 <BaseLayout
   adContent
+  jsonLd={homeJsonLd}
   bareTitle title={title} description={description} keywords={keywords} image="/og/index.png">
   {/* ==================== HERO ==================== */}
   <section class="hero section">
