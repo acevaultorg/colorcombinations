@@ -11,6 +11,7 @@
  * SEO_page_addition × +50. Companion /og/hue/[hue].png already shipped.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import BundleCta from "@components/BundleCta.astro";
@@ -272,6 +273,11 @@ const jsonLd = [
       <p class="eyebrow">Hue family · {colors.length} colors · {palettes.length} palettes</p>
       <h1 class="display-hero text-balance">{meta.title}</h1>
       <p class="hue-hero__lede">{meta.lede}</p>
+      {/* Hero buy line (card mvdzflwlkfvbpt, 2026-10-18): first Amazon link was far below the phone fold. */}
+      <HeroSourceBook
+        lead={`${colors.filter((c) => c.paletteSlugs.some((s) => s.startsWith("wada-"))).length} of these ${colors.length} colors come from one 1933 book.`}
+        surface="hue-family-hero"
+      />
       <p class="hue-hero__description">{meta.description}</p>
       <ShareActions
         title={meta.title}

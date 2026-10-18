@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
+import HeroSourceBook from "@components/HeroSourceBook.astro";
 import { allPalettes } from "@data/palettes";
 
 const title = "Palette Finder — Start from one color";
@@ -65,6 +66,11 @@ const jsonLd = [
         Start with a color you already have. We'll find the closest matches
         across all 378 historical combinations from Sanzo Wada's 1933 archive.
       </p>
+      {/* Hero buy line (card mvdzflwlkfvbpt, 2026-10-18): first Amazon link sat at y=2400 at 390px. */}
+      <HeroSourceBook
+        lead={`${allPalettes().filter((p) => p.slug.startsWith("wada-")).length} of the ${allPalettes().length} combinations this tool searches come from one 1933 book.`}
+        surface="tool-palette-from-color-hero"
+      />
     </div>
   </section>
 
