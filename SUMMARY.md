@@ -1,3 +1,112 @@
+# Gap sweep: colorcombinations.org (2026-10-22)
+
+Branch: `cloud/selfgap-colorcombinations-2026-10-22-1813`, cut from `2187b62`, the current tip of the session's checkout (the latest commit on `main` as cloned). Nothing was merged or deployed, and nothing was pushed to `main`. Earlier summaries follow below this one; round 2 is in `SUMMARY-R2.md`.
+
+**Freeze check:** I found no HOLD or FREEZE note that is still active. The only freeze note is the Mediavine one in `.claude/state/MONETIZATION_STACK.md` ("freeze provider settings through 2026-09-25"). That date has passed, and nothing here touches ad or provider settings. `deploy.sh` runs its own freeze guard (`rg-freeze-guard`) from the owner's Macs. That guard's register is not in this repo, so the person who deploys should let it run as usual.
+
+## How I chose the three changes
+I built `main` (exit 0, 2,218 pages), then:
+- crawled every internal link in `dist/`. Nothing was broken; the only 2 hits are JavaScript template strings.
+- loaded 16 key pages at 375px in Chromium. None scrolls sideways.
+- measured where the first Amazon button sits on each page and how tall it is.
+- read the Amili Kit (`kit/`) to see where live prices are already wired in.
+
+Findings, ranked by expected effect:
+1. **The live price was missing where buying intent is highest.** The site already gets live Amazon prices through the Amili Kit product script (`/kit-product.js` → `/amz/items`, Creators API). The /books/ pages did not use it, and the repo notes call them the site's best-converting template. Two blocks that already showed the live price (the shared book card and AmazonPick) still said "See price on Amazon" next to it. The owner rule says that label is for when there is no price.
+2. **The "which volume should I buy?" page had its first buy button at y≈2,723px at 375px**, below the FAQ. The page answers the question in its first paragraph, but a reader had to scroll the whole page before they could act on that answer. The repo's click data says this is the site's main buying question.
+3. **The gift guide had the same problem:** a short answer naming three books, but the first button about two screens down (y≈1,679px). Holiday readers arrive in Nov–Dec. Its FAQ also said "We never show a price here", which is no longer true: its book cards already show the live Amazon price.
+
+## What changed
+### 1. Live price on the book pages; button labels follow the price
+- New kit block **`kit/price-cta.mjs`**. `ctaLabel()` renders both labels and CSS shows one: "View on Amazon" only while a live price is on screen, and "See price on Amazon" otherwise. That is also the default when the price service is down, so a wrong label never flashes. `priceSlot(asin)` is an empty slot that the existing kit script fills. The script only fills it from an answer less than 23 hours old, and adds the "as of" time and Amazon's disclaimer.
+- Where it is used:
+  - `/books/<slug>/` (11 pages): main button plus a live price under it.
+  - `/books/`: each card's button plus a live price.
+  - `FurtherReading` (the book card on palette pages and many other pages): the button label now follows the price that was already there.
+  - `AmazonPick`: the button label now follows the price. The product name, which used to be the button text, now sits on its own line above the button so it stays visible.
+- The no-price wording is unchanged. Prices never appear in the HTML; they only come in live.
+
+### 2. Vol 1 vs Vol 2: the buy buttons sit right under the verdict
+- New kit block **`kit/verdict-picks.mjs`**, built on price-cta. It shows two or three side-by-side choices. Each has who it is for, one line on why, a full-width 44px+ button with the live price, a "More about…" link to the book's own page, and the affiliate disclosure directly under the block. The arrow is an inline SVG in `currentColor`.
+- `/compare/wada-vol-1-vs-vol-2/`: "New to Wada → Vol 1" and "Already know Vol 1 → Vol 2", directly under the short answer. Every word comes from the page's own verdict and its own computed counts (348 and 237).
+
+### 3. Gift guide: the three books under the short answer
+- `/gift-guide/` reuses the verdict-picks block for Wada Vol. 1 / Wada Vol. 2 / Interaction of Color ("New to Wada" / "Already owns Vol. 1" / "Has both"). The wording comes from the page's own short answer and FAQ.
+- I corrected the FAQ line about prices. It now says that any price shown comes straight from Amazon with the time it was checked, and that the price at checkout is the one that applies.
+
+New buttons use the page's existing tagged link (`AMAZON.link(asin, "compare" | "gift-guide")`, so the same `/go/` route and page class), `rel="sponsored nofollow noopener"`, and `data-event="amazon_click"` plus `data-book` like the shelf below. `data-surface="compare-verdict" / "gift-verdict"` lets you tell clicks on the new buttons apart.
+
+## Kit blocks
+- **Used:** `kit/product.mjs` (through the existing `/kit-product.js`).
+- **Added:**
+  - `kit/price-cta.mjs`
+  - `kit/verdict-picks.mjs`
+
+  Both are documented in their file headers and marked as site kit blocks, not vendored copies. They are candidates to upstream to the fleet kit.
+
+## Files touched
+- `kit/price-cta.mjs` (new)
+- `kit/verdict-picks.mjs` (new)
+- `src/pages/books/[slug].astro`
+- `src/pages/books/index.astro`
+- `src/components/FurtherReading.astro`
+- `src/components/AmazonPick.astro`
+- `src/pages/compare/wada-vol-1-vs-vol-2.astro`
+- `src/pages/gift-guide.astro`
+- `review/r3-*.png` (28 screenshots)
+- `SUMMARY.md`
+
+## Build and checks
+| | Before (2187b62) | After |
+|---|---|---|
+| `npm run build` exit code | 0 | 0 |
+| `astro check` errors | 0 | 0 |
+| `.html` pages in `dist/` | 2,218 | 2,218 (same file list, no new pages) |
+| affiliate links (amazon-tracking-guard) | 47,523 on 1,548 pages | 47,528 on 1,548 pages (+5: the 2 + 3 new buttons) |
+
+- **Unchanged:**
+  - `robots.txt`, `sitemap-index.xml`, `sitemap-0.xml` and `sitemap-ai.xml` are byte-identical.
+  - No page's canonical changed.
+  - No page's set of distinct `/go/` hrefs changed.
+  - The analytics snippets are on the same pages as before.
+  - No page lost an "As an Amazon Associate" disclosure.
+- **Guards:** all pass.
+  - `amazon-tracking-guard`: OK.
+  - `verify-beacon-coverage`: OK.
+  - `test-page-class`: 67/67 classes, 100% of links.
+  - Mediavine/ad-provider guard: OK.
+- **Internal links:** no broken internal links.
+
+## Screenshots (`review/r3-*`, each at 375px and 390px, 2× scale)
+I used the preinstalled Playwright/Chromium against the built `dist/` on a local server, with all third-party requests blocked. The local server has no `/amz/items`, so the plain screenshots show the real no-price state ("See price on Amazon"). The `*-with-price` screenshots fill the price slots with the placeholder text **"[live price]"** only to show the price layout and the label switching to "View on Amazon". That placeholder is not in the site.
+- `r3-compare-top`, `r3-compare-full`, `r3-compare-verdict-with-price`
+- `r3-gift-guide-top`, `r3-gift-guide-full`, `r3-gift-guide-verdict-with-price`
+- `r3-books-full`, `r3-books-card-with-price`
+- `r3-book-vol2-top`, `r3-book-vol2-full`, `r3-book-vol2-cta-with-price`
+- `r3-palette-book-card`, `r3-palette-book-card-with-price`, `r3-home-amazon-pick`
+
+Measured on every changed page at both widths: `scrollWidth` equals the viewport, so there is no sideways scroll. Every new or changed button and link is at least 44px tall.
+
+## Skipped, and why
+- **Live price in the phone sticky buy bar (palette pages):** at 375px there is no room for a price next to the title, the disclosure and the button without cutting one of them. It keeps "See price on Amazon", which is correct when no price is shown.
+- **The Wada two-volume set link (B094NTK2RB):** it gets no price slot. I could not confirm from the repo that this ASIN is on the `/amz/items` allow-list.
+- **Inline title links under 44px** (book titles in the shelf, product names in the paint kit, "The two-volume set"): these are text links inside sentences or headings that repeat a nearby 44px button. Rebuilding them would be a layout change across ~1,500 pages for little gain.
+- **The "Which should you buy?" paragraphs further down the compare page** were left as text. The buttons now sit at the top.
+
+## What a human must check before this goes live
+1. **That the live price really fills in on a preview deploy.** Open `/books/a-dictionary-of-color-combinations-vol-2/`, `/books/` and `/compare/wada-vol-1-vs-vol-2/` and confirm three things:
+   - a price with "(as of …)" appears;
+   - the button switches to "View on Amazon";
+   - with no price, it stays "See price on Amazon".
+
+   This depends on the shared `amili-amazon-ad` Worker answering for these book ASINs. They are the same ASINs the palette-page book card already prices, but I could not call the Worker from here.
+2. **The palette-page book card label.** It will now read "View on Amazon" whenever a price is shown. That is the owner rule, but it changes the wording of the site's busiest buy button. Watch the click rate for a week after deploy (`data-book`/beacon tracking is unchanged).
+3. **Compare and gift-guide pages on a phone.** The new block adds about 550px (compare) and about 800px (gift guide) at 375px, a little more while prices show, near the top, which pushes the first in-content ad slot down. Check that the pages still read calmly.
+4. **The FAQ wording change on `/gift-guide/`** (prices are now mentioned, not denied).
+5. **Deploy with `bash deploy.sh` as usual** so the freeze, tracking and integrity guards run.
+
+---
+
 > Round 2 (2026-10-01) is summarised in `SUMMARY-R2.md`. Below are both round-1 summaries, gap sweep first, growth sweep second.
 
 # Gap sweep — colorcombinations.org — 2026-09-30
