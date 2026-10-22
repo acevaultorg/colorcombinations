@@ -22,7 +22,8 @@
  */
 import BaseLayout from"@layouts/BaseLayout.astro";
 import FurtherReading from"@components/FurtherReading.astro";
-import { AMAZON } from"@/config/monetization";
+import { AMAZON, bookBySlug } from"@/config/monetization";
+import { renderAnswerPick, ANSWER_PICK_CSS } from "../../../kit/answer-pick.mjs";
 import { wadaPalettes } from"@/data/wada-palettes";
 
 // Seigensha's two-volume set (Vol 1 + Vol 2 + Japanese Traditional Colors chart),
@@ -113,6 +114,18 @@ const rows = [
   { dim:"Best for", v1:"First-time Wada readers; anyone citing the classic set", v2:"People who already know Vol 1 and want what they cannot get online" },
   { dim:"Format", v1:"Japanese import, matte plates, minimal captions", v2:"Japanese import, matte plates, minimal captions" },
 ];
+
+// The hero's short answer, with a button for each half of it (kit answer-pick). Titles and edition notes come from
+// the shelf records; the links are the same /go/b/ routes and ?c=compare class the shelf at the foot of the page uses.
+const pickVol1 = bookBySlug("a-dictionary-of-color-combinations");
+const pickVol2 = bookBySlug("a-dictionary-of-color-combinations-vol-2");
+const answerPick = pickVol1 && pickVol2 ? renderAnswerPick({
+  label: "Which volume to buy",
+  choices: [
+    { when: "New to Wada", title: pickVol1.title + " (Vol 1)", note: pickVol1.note, href: AMAZON.link(pickVol1.amazonAsin, "compare"), book: pickVol1.title, surface: "compare-answer" },
+    { when: "Already own Vol 1", title: pickVol2.title, note: pickVol2.note, href: AMAZON.link(pickVol2.amazonAsin, "compare"), book: pickVol2.title, surface: "compare-answer" },
+  ],
+}) : "";
 ---
 
 <BaseLayout title={title} description={description} image="/og-default.png" jsonLd={jsonLd} adContent>
@@ -128,6 +141,7 @@ const rows = [
         not a reprint: {vol2Plates} plates from 1935–1938 that are not reproduced here
         or in most online sources. Here is the full picture.
       </p>
+      {answerPick && <Fragment set:html={answerPick + `<style>${ANSWER_PICK_CSS}</style>`} />}
     </div>
   </section>
 
