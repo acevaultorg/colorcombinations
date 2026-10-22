@@ -2402,6 +2402,35 @@ export function collectionsForPalette(palette: Palette): Collection[] {
   });
 }
 
+/**
+ * The "Featured in" chips on a palette page (up to `max`). collectionsForPalette() returns
+ * memberships in array order, and the first collections (branding, bold, warm, dark…) match
+ * most of the archive, so slicing it to 4 left 47 of 71 collections with no link from any of
+ * their own palettes (2026-10-22: y2k 0/8, art-deco 0/24, gothic 0/12). Order instead: the
+ * in-season/upcoming seasonal collection, then collections whose page actually lists this
+ * palette (a reciprocal link), then the most specific (fewest members). Simulated with the
+ * real data: 1 collection left at zero, 51 linked from at least half their palettes (was 16).
+ */
+let featuredShown: Map<string, Set<string>> | undefined;
+let featuredSize: Map<string, number> | undefined;
+export function featuredCollectionsForPalette(palette: Palette, max = 6): Collection[] {
+  featuredShown ??= new Map(collections.map((c) => [c.slug, new Set(paletteSetForCollection(c).map((p) => p.slug))]));
+  featuredSize ??= new Map(
+    collections.map((c) => [c.slug, palettes.filter((p) => c.curatedSlugs.includes(p.slug) || (c.match?.(p) ?? false)).length]),
+  );
+  const seasonal = [inSeasonCollection(), upcomingSeasonalCollection()].flatMap((c) => (c ? [c.slug] : []));
+  const rank = (c: Collection) => [
+    seasonal.includes(c.slug) ? 0 : 1,
+    featuredShown!.get(c.slug)?.has(palette.slug) ? 0 : 1,
+    featuredSize!.get(c.slug) ?? 0,
+  ];
+  return collectionsForPalette(palette)
+    .map((c, i) => ({ c, i, r: rank(c) }))
+    .sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1] || a.r[2] - b.r[2] || a.i - b.i)
+    .slice(0, max)
+    .map((x) => x.c);
+}
+
 /** Lookup a collection by slug. */
 export function collectionBySlug(slug: string): Collection | undefined {
   return collections.find((c) => c.slug === slug);
