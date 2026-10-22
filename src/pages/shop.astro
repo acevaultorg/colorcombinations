@@ -8,13 +8,18 @@ import PaintThisPalette from "@components/PaintThisPalette.astro";
 import { BUNDLE, PRINTS } from "@/config/monetization";
 
 const title = "Shop";
-const description =
-  "Support the archive. Get the bundle, the books, and the prints that built The Dictionary of Color Combinations.";
+const description = BUNDLE.isLive
+  ? "Support the archive. Get the bundle, the books, and the prints that built The Dictionary of Color Combinations."
+  : "The books, tools and prints behind The Dictionary of Color Combinations, picked for designers, painters and printmakers.";
 
 const bundlePrice = BUNDLE.price.replace(/[^\d.]/g, "");
 const bundleMinPrice = BUNDLE.minPrice.replace(/[^\d.]/g, "");
 
-const jsonLd = [
+// Product + Offer schema ONLY while the bundle can actually be bought. Until
+// 2026-10-22 this shipped a PreOrder offer at $3 for a product with no checkout
+// (BUNDLE.isLive false, checkoutUrl a /shop anchor, page copy "Launching soon"):
+// structured data for a purchase nobody can make is misleading markup.
+const bundleProductLd = BUNDLE.isLive ? [
   {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -42,6 +47,10 @@ const jsonLd = [
       url: new URL("/shop/", Astro.site).toString(),
     },
   },
+] : [];
+
+const jsonLd = [
+  ...bundleProductLd,
   {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
