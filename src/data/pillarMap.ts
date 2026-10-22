@@ -115,6 +115,21 @@ export const TRENDS_FALLBACK: PillarLink = {
   lede: "Pantone, Benjamin Moore, Behr, Sherwin-Williams and the rest — every official 2026 Color of the Year, and the palette each one sits in.",
 };
 
+/**
+ * TRENDS_NEXT — a second, smaller link under TRENDS_FALLBACK on the same 51 collections
+ * (2026-10-22). /trends/color-trends-2027/ is the site's third-largest Bing page (11,225
+ * impressions over 20 weeks to 10-16, position 5.0) but had internal links from 5 pages, vs 57
+ * for 2026. After TRENDS_FALLBACK went live on 09-06, "color of the year 2026" moved from
+ * weekly position 6 to 3 by 10-16; "color of the year 2027" is rising (681 impressions in the
+ * week of 10-16, position 8 → 4) ahead of Pantone's early-December pick. 2026 keeps its link.
+ * Read: the 2027 read card filed with this change (position on "color of the year 2027").
+ */
+export const TRENDS_NEXT: PillarLink = {
+  href: "/trends/color-trends-2027/",
+  title: "Color of the Year 2027: the picks so far",
+  lede: "",
+};
+
 /** Lookup helper: given a collection slug, return its pillar link or null. */
 export function pillarForCollection(slug: string | undefined | null): PillarLink | null {
   if (!slug) return null;

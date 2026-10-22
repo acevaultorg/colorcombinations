@@ -68,7 +68,7 @@ if (downloadSwatches.length === 0 || downloadSwatches[0].hex.toLowerCase() !== c
 // Pillar-article cross-link — when a collection has a matching /learn pillar,
 // surface it as a "From the editorial" callout. Compounds internal-link
 // density between thematic palettes and long-form context.
-import { pillarForCollection, TRENDS_FALLBACK } from "@data/pillarMap";
+import { pillarForCollection, TRENDS_FALLBACK, TRENDS_NEXT } from "@data/pillarMap";
 // Fall back to the colour-trends editorial when this collection has no /learn
 // pillar (51 of 69). Link-concentration test — see TRENDS_FALLBACK in pillarMap.ts
 // for the measurement, the success metric and why this is not in pillarForCollection().
@@ -422,6 +422,11 @@ const jsonLd = [
           <p class="collection-pillar__lede">{pillar.lede}</p>
           <span class="collection-pillar__more">Read the article →</span>
         </a>
+        {pillar === TRENDS_FALLBACK && (
+          <p class="collection-pillar__also">
+            Next year: <a href={TRENDS_NEXT.href}>{TRENDS_NEXT.title} →</a>
+          </p>
+        )}
       </div>
     </section>
   )}
@@ -789,6 +794,17 @@ const jsonLd = [
     margin: 0 0 0.75rem;
     color: var(--color-ink-900);
     max-width: 32ch;
+  }
+
+  .collection-pillar__also {
+    margin: 1rem 0 0;
+    font-size: 1rem;
+    color: var(--color-ink-700);
+  }
+
+  .collection-pillar__also a {
+    display: inline-block;
+    padding-block: 0.625rem;
   }
 
   .collection-pillar__lede {
