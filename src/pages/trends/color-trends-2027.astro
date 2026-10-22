@@ -43,7 +43,7 @@ import PaintThisPalette from "@components/PaintThisPalette.astro";
 import AmazonPick from "@components/AmazonPick.astro";
 import { pairingPaths } from "@data/pairings";
 import { renderNextStep, NEXT_STEP_CSS } from "../../../kit/next-step.mjs";
-import { palettesForTrendHexes, withNames } from "@/lib/trendPalettes";
+import { palettesForTrendHexes, closestTo } from "@/lib/trendPalettes";
 
 // A pick's "what goes with" link targets /colors-that-go-with/<slug>/walls/ only when that
 // page is actually built (pairingPaths applies MIN_PALETTES). Archive-only colours such as
@@ -305,11 +305,11 @@ const nextStep = renderNextStep({
   id: "keep-exploring",
   heading: "Keep exploring the 2027 colours",
   intro: "Palettes from the archive that already use the closest colours to this year's picks, and the earlier lists to compare them with.",
-  palettes: palettesForTrendHexes(PICKS.map((p) => p.match.hex)).map(({ palette, shared }) => ({
+  palettes: palettesForTrendHexes(PICKS.map((p) => ({ hex: p.match.hex, label: p.name }))).map(({ palette, shared }) => ({
     href: `/palettes/${palette.slug}/`,
     name: palette.title,
     colors: palette.colors.map((c) => c.hex),
-    note: withNames(shared),
+    note: closestTo(shared),
   })),
   links: [
     { href: "/trends/color-trends-2026/", title: "The 2026 Colors of the Year", text: "Last season's picks, to see how far the 2027 colours have moved." },

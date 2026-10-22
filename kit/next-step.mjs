@@ -59,11 +59,11 @@ export const NEXT_STEP_CSS = `.ak-ns{margin:2.5rem 0 3rem;padding:1.5rem 1.25rem
 .ak-ns-pals{grid-template-columns:1fr}
 @media (min-width:640px){.ak-ns-pals{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .ak-ns-links{margin-top:1rem}
-.ak-ns-pal,.ak-ns-link{display:flex;align-items:center;gap:.75rem;min-height:44px;padding:.75rem .875rem;border:1px solid var(--color-border,rgba(127,127,127,.3));border-radius:10px;color:inherit;text-decoration:none;background:var(--color-bg,#faf7ef)}
-.ak-ns-pal{flex-wrap:wrap}
+.ak-ns-pal,.ak-ns-link{display:flex;align-items:center;gap:.5rem .75rem;min-height:44px;padding:.75rem .875rem;border:1px solid var(--color-border,rgba(127,127,127,.3));border-radius:10px;color:inherit;text-decoration:none;background:var(--color-bg,#faf7ef)}
+.ak-ns-pal{display:grid;grid-template-columns:minmax(0,1fr) auto}
 .ak-ns-pal:hover,.ak-ns-link:hover{border-color:currentColor}
 .ak-ns-pal:focus-visible,.ak-ns-link:focus-visible{outline:2px solid var(--color-accent-500,#9a2a2a);outline-offset:2px}
-.ak-ns-strip{display:flex;flex:0 0 100%;height:40px;border-radius:6px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(127,127,127,.25)}
+.ak-ns-strip{display:flex;grid-column:1/-1;height:40px;border-radius:6px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(127,127,127,.25)}
 .ak-ns-strip span{flex:1 1 0}
 .ak-ns-pal-body{display:flex;flex-direction:column;gap:.15rem;min-width:0;flex:1 1 auto}
 .ak-ns-title{font-weight:600;font-size:.9375rem;line-height:1.3;color:var(--color-ink-900,#141414)}

@@ -23,21 +23,26 @@ const lab = (hex: string): [number, number, number] => {
 };
 const dist = (a: string, b: string) => { const p = lab(a), q = lab(b); return Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]); };
 
-// Archive names carry a few data artifacts ("Eugenia Red | A", "Calamine BLue"); show them clean.
-export const cleanColorName = (n: string) =>
-  n.replace(/\s*\|\s*[A-Z]$/, "").replace(/\b([A-Z])([A-Z])([a-z]+)/g, (_m, a, b, c) => a + b.toLowerCase() + c);
-
 export function nearestArchiveColor(hex: string): ColorEntry {
   let best = allColors()[0], bd = Infinity;
   for (const e of allColors()) { const d = dist(hex, e.hex); if (d < bd) { bd = d; best = e; } }
   return best;
 }
 
+/** A trend pick: its screen hex and the name a visitor saw on the page ("Rose Earth", "Cloud Dancer"). */
+export interface TrendColor { hex: string; label: string }
+/** shared = labels of the picks whose closest archive colour this palette contains, in page order. */
 export interface TrendPalette { palette: Palette; shared: string[] }
 
-export function palettesForTrendHexes(hexes: string[], limit = 3): TrendPalette[] {
+export function palettesForTrendHexes(picks: TrendColor[], limit = 3): TrendPalette[] {
   const matched = new Map<string, ColorEntry>();
-  for (const h of hexes) { const m = nearestArchiveColor(h); matched.set(m.slug, m); }
+  const labels = new Map<string, string[]>(); // archive colour slug -> pick labels
+  for (const t of picks) {
+    const m = nearestArchiveColor(t.hex);
+    matched.set(m.slug, m);
+    const l = labels.get(m.slug) ?? [];
+    if (!l.includes(t.label)) labels.set(m.slug, [...l, t.label]);
+  }
   const bySlug = new Map<string, string[]>(); // palette slug -> matched colour slugs it contains
   for (const m of matched.values()) for (const ps of m.paletteSlugs) bySlug.set(ps, [...(bySlug.get(ps) ?? []), m.slug]);
 
@@ -55,11 +60,11 @@ export function palettesForTrendHexes(hexes: string[], limit = 3): TrendPalette[
     if (!best) break;
     const cs = bySlug.get(best.slug)!;
     cs.forEach((c) => covered.add(c));
-    out.push({ palette: best, shared: cs.map((c) => cleanColorName(matched.get(c)!.name)) });
+    out.push({ palette: best, shared: cs.flatMap((c) => labels.get(c) ?? []) });
   }
   return out;
 }
 
-/** "With Fawn" / "With Fawn and Ecru" / "With Fawn, Ecru and Olive Green" */
-export const withNames = (names: string[]) =>
-  names.length <= 1 ? `With ${names[0] ?? ""}` : `With ${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+/** "Closest to Celery" / "Closest to Celery and Marle" / "Closest to Celery, Marle and Artifact" */
+export const closestTo = (names: string[]) =>
+  names.length <= 1 ? `Closest to ${names[0] ?? ""}` : `Closest to ${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
