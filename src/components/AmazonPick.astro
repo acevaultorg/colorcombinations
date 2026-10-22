@@ -44,6 +44,7 @@ const href = AMAZON.link(item.amazonAsin, placement);
     <p class="amz-pick__eyebrow">{eyebrow}</p>
     <p class="amz-pick__title">{title}</p>
     <p class="amz-pick__text">{text}</p>
+    <p class="amz-pick__name">{item.brand} {item.name}</p>
     <a
       href={href}
       rel="sponsored nofollow noopener"
@@ -53,7 +54,7 @@ const href = AMAZON.link(item.amazonAsin, placement);
       data-from={placement}
       data-tool={item.name}
     >
-      <Fragment set:html={ctaLabel()} /><span class="sr-only">: {item.brand} {item.name}</span> <span aria-hidden="true">↗</span>
+      <Fragment set:html={ctaLabel()} /><span class="sr-only">: {item.brand} {item.name}</span><span aria-hidden="true">↗</span>
     </a>
     <p class="amz-pick__disclosure">Affiliate link. As an Amazon Associate we earn from qualifying purchases; your price is the same.</p>
   </div>
@@ -82,6 +83,7 @@ const href = AMAZON.link(item.amazonAsin, placement);
   }
   .amz-pick__title { margin: 0 0 0.35rem; font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
   .amz-pick__text { margin: 0 0 0.8rem; line-height: 1.5; }
+  .amz-pick__name { margin: 0 0 0.5rem; font-weight: 600; font-size: 0.9375rem; }
   .amz-pick__btn {
     display: inline-flex;
     align-items: center;
