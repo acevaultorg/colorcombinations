@@ -249,10 +249,16 @@ const rows = [
   </section>
 
   {/* ============ THE THREE BOOKS (affiliate — compliant via FurtherReading) ============ */}
-  <FurtherReading
-      pageClass="compare"
-    title="The three books"
-    intro="Vol 1, Vol 2, and the Albers. Links go to Amazon."
-    limit={3}
-  />
+  {/* Wrapped like adobe-vs-coolors / hsl-vs-lch: bare, the rail ran flush to the
+      screen edge at 390px (2026-10-22). */}
+  <div class="cmp-books">
+    <div class="container-wide">
+      <FurtherReading
+        pageClass="compare"
+        title="The three books"
+        intro="Vol 1, Vol 2, and the Albers. Links go to Amazon."
+        limit={3}
+      />
+    </div>
+  </div>
 </BaseLayout>

@@ -720,6 +720,10 @@ const jsonLd = [
          the frontmatter. Visible text matches the schema by construction; never build
          one without the other (§E46). -->
     <section class="section palette-faq-section" aria-labelledby="palette-faq-heading">
+      {/* container-narrow like the collections FAQ: without it the heading and answers
+          ran flush to the screen edge at 390px (measured 0px on 18/18 sampled palettes,
+          2026-10-22). */}
+      <div class="container-narrow">
       <h2 id="palette-faq-heading" class="palette-faq__title">Questions about {palette.title}</h2>
       <dl class="palette-faq__list">
         {paletteFaq.map((f) => (
@@ -729,6 +733,7 @@ const jsonLd = [
           </div>
         ))}
       </dl>
+      </div>
     </section>
 
     <section class="section related">
