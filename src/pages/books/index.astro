@@ -6,6 +6,7 @@
  * on Amazon directly from this shelf. Disclosure precedes the purchase links.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { coverFallback, COVER_FALLBACK_CSS } from "../../../kit/cover-fallback.mjs";
 import { AMAZON, FURTHER_READING, bookCover } from "@/config/monetization";
 
 const title = "The shelf — books on colour";
@@ -87,8 +88,7 @@ const jsonLd = {
                     height="300"
                     loading="lazy"
                     decoding="async"
-                    onerror="this.classList.add('is-missing')"
-                    onload="if (this.naturalWidth < 10) this.classList.add('is-missing')"
+                    {...coverFallback(book.amazonAsin, { missingClass: "is-missing" })}
                   />
                 ) : null}
                 <span class="shelf__cover-fallback" aria-hidden="true">
@@ -113,6 +113,9 @@ const jsonLd = {
       unchanged; as an Amazon Associate we earn from qualifying purchases.
     </p>
   </div>
+  {/* Kit cover-fallback: an edition with no Open Library cover shows its live Amazon photo instead. */}
+  <Fragment set:html={`<style>${COVER_FALLBACK_CSS}</style>`} />
+  <script is:inline src="/kit-product.js" defer></script>
 </BaseLayout>
 
 <style>
