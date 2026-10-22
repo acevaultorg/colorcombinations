@@ -14,7 +14,7 @@ import AmazonPick from "@components/AmazonPick.astro";
 import { FURTHER_READING, ART_SUPPLIES } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
 import { commonColors, contexts, pairingPaths, redmean } from "@data/pairings";
-import { collectionsForPalette, paletteSetForCollection } from "@data/collections";
+import { collectionsForPalette, paletteSetForCollection, inSeasonCollection, upcomingSeasonalCollection } from "@data/collections";
 import { pillarForCollection } from "@data/pillarMap";
 import { bestTextColorOn, contrastRatio } from "@/lib/color";
 
@@ -30,7 +30,17 @@ if (!palette) {
 }
 
 const related = relatedPalettes(palette, 3);
-const paletteCollections = collectionsForPalette(palette).slice(0, 4);
+const allPaletteCollections = collectionsForPalette(palette);
+const paletteCollections = allPaletteCollections.slice(0, 4);
+// "Featured in" chips: the in-season and upcoming seasonal collections go first when this palette is
+// a member. Array order otherwise cut them off: on 2026-10-22 only 3 of 15 Christmas palettes and 2 of 12
+// Halloween palettes linked back to their collection (autumn: 24 of 24). Chips only; primaryCollection
+// below stays on the first collection so the "Other palettes in" block does not change with the season.
+const seasonalSlugs = [inSeasonCollection(), upcomingSeasonalCollection()].flatMap((c) => (c ? [c.slug] : []));
+const featuredInCollections = [
+  ...allPaletteCollections.filter((c) => seasonalSlugs.includes(c.slug)),
+  ...paletteCollections.filter((c) => !seasonalSlugs.includes(c.slug)),
+];
 
 // "More from [primary collection]" — pull up to 6 sibling palettes from the
 // first collection this palette belongs to. Different axis from `related`
@@ -641,12 +651,12 @@ const jsonLd = [
   )}
 
   {/* ============ FEATURED IN COLLECTIONS ============ */}
-  {paletteCollections.length > 0 && (
+  {featuredInCollections.length > 0 && (
     <section class="featured-in">
       <div class="container-wide">
         <p class="eyebrow">Featured in</p>
         <ul class="featured-in__list" role="list">
-          {paletteCollections.map((c) => (
+          {featuredInCollections.map((c) => (
             <li>
               <a href={`/collections/${c.slug}/`} class="featured-in__chip">
                 <span
