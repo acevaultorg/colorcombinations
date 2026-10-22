@@ -8,6 +8,10 @@ import { collections, paletteSetForCollection } from "@/data/collections";
 const title = "Collections";
 const description =
   "Curated groupings of palettes by practical use case — websites, branding, seasonal themes, indigo traditions, Heian court colors, and more. Every collection combines editorial picks with matching plates from the full Sanzo Wada catalog.";
+// Meta description fitted to 155 chars (2026-10-22) so search results show it whole; the
+// longer text above stays in the JSON-LD.
+const metaDescription =
+  "Curated color palette collections by use case — websites, branding, seasonal themes, indigo and Heian court colors — from the full Sanzo Wada catalog.";
 
 // Pre-compute per-collection preview data at build time.
 const collectionData = collections.map((c) => {
@@ -55,7 +59,7 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={title} description={description} image="/og/collections.png" jsonLd={jsonLd} adContent>
+<BaseLayout title={title} description={metaDescription} image="/og/collections.png" jsonLd={jsonLd} adContent>
   <section class="collections-hero">
     <div class="container-wide collections-hero__inner">
       <p class="eyebrow">Curated groupings</p>

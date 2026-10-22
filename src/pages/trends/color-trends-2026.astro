@@ -112,6 +112,9 @@ const PICKS: Pick[] = [
  */
 const title = `Color of the Year 2026: Pantone Cloud Dancer + ${PICKS.length - 1} More`;
 const description = `All ${PICKS.length} official 2026 Colors of the Year in one place — Pantone Cloud Dancer, Benjamin Moore Silhouette, Behr Hidden Gem, Sherwin-Williams Universal Khaki and more.`;
+// Meta description fitted to 155 chars (2026-10-22) so search results show it whole; the
+// longer text above stays in the JSON-LD.
+const metaDescription = `All ${PICKS.length} official 2026 Colors of the Year — Pantone Cloud Dancer, Benjamin Moore Silhouette, Behr Hidden Gem, Sherwin-Williams Universal Khaki and more.`;
 
 // Luminance → readable swatch text colour (no fabrication; pure math).
 const textOn = (hex: string): string => {
@@ -261,7 +264,7 @@ const grid = PICKS.slice(2);
 <BaseLayout
   adContent
   title={title}
-  description={description}
+  description={metaDescription}
   canonical={pageUrl}
   type="article"
   author="Paulo de Vries"

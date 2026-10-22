@@ -89,7 +89,12 @@ const wadaTopColors = [...wadaColorUse.entries()]
   });
 
 const title = `${book.title} — ${book.author}`;
-const description = `${book.title} by ${book.author}. ${book.note} Why it's on the shelf at the Dictionary of Color Combinations, and what this archive already holds for free.`;
+// Fitted to 155 chars (2026-10-22): keep the longest wording that fits.
+const description =
+  [
+    `${book.title} by ${book.author}. ${book.note} Why it's on the shelf at the Dictionary of Color Combinations, and what this archive already holds for free.`,
+    `${book.title} by ${book.author}. ${book.note}`,
+  ].find((d) => d.length <= 155) ?? `${book.title} by ${book.author}. ${book.note}`;
 
 // Book schema — only fields we can stand behind. No aggregateRating, no
 // price, no invented publisher metadata: an unverifiable field in structured

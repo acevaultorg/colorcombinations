@@ -38,6 +38,9 @@ const editorialTotal = total - wadaTotal;
  */
 const title = `${wadaTotal} Wada Dictionary Colors + ${editorialTotal} Editorial — ${total} Named Colors`;
 const description = `All ${total} named colors in the archive: the ${wadaTotal} colors of Sanzo Wada's 1933 Dictionary of Color Combinations plus ${editorialTotal} traditional Japanese shikisai names from our 30 editorial palettes. Browse by hue, see hex values, and find every palette that uses each color.`;
+// Meta description fitted to 155 chars (2026-10-22) so search results show it whole; the
+// longer text above stays in the JSON-LD.
+const metaDescription = `All ${total} named colors: the ${wadaTotal} colors of Sanzo Wada's 1933 Dictionary of Color Combinations plus ${editorialTotal} traditional Japanese shikisai names, with hex values.`;
 
 const hueOrder = ["red", "orange", "yellow", "brown", "pink", "green", "blue", "purple", "neutral"] as const;
 
@@ -75,7 +78,7 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={title} description={description} image="/og/colors.png" jsonLd={jsonLd} adContent>
+<BaseLayout title={title} description={metaDescription} image="/og/colors.png" jsonLd={jsonLd} adContent>
   <section class="colors-hero">
     <div class="container-wide colors-hero__inner">
       <p class="eyebrow">{total} named colors · {wadaTotal} from Wada's dictionary · {editorialTotal} editorial</p>

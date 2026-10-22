@@ -7,6 +7,10 @@ import { allPalettes } from "@data/palettes";
 const title = "Palette Finder — Start from one color";
 const description =
   "Pick any color and find the closest Sanzo Wada palettes from the full 378-combination archive. The fastest way to anchor a brand, illustration, or UI in a historical tradition.";
+// Meta description fitted to 155 chars (2026-10-22) so search results show it whole; the
+// longer text above stays in the JSON-LD.
+const metaDescription =
+  "Pick any color and find the closest Sanzo Wada palettes from the full 378-combination archive — to anchor a brand, illustration or UI in tradition.";
 
 const keywords = [
   "sanzo wada palette finder",
@@ -52,7 +56,7 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={title} description={description} keywords={keywords} jsonLd={jsonLd} adContent>
+<BaseLayout title={title} description={metaDescription} keywords={keywords} jsonLd={jsonLd} adContent>
   <!-- Palette index embedded for client-side search (no extra fetch) -->
   <script id="palette-data" type="application/json" set:html={JSON.stringify(paletteIndex)} />
 

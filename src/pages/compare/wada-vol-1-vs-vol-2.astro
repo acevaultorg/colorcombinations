@@ -43,8 +43,12 @@ const vol2Seasonal = 72;
 const vol2Design = 165;
 const vol2Plates = vol2Seasonal + vol2Design;
 
-const title ="Dictionary of Color Combinations Vol 1 vs Vol 2 — which should you buy?";
+// <title> fitted to 60 chars (2026-10-22); the JSON-LD headline keeps the long form.
+const title ="Dictionary of Color Combinations Vol 1 vs 2: Which to Buy?";
 const description = `Sanzo Wada's Vol 1 holds ${vol1Plates} combinations from 1933; Vol 2 adds ${vol2Plates} more from 1935–1938 that appear nowhere else. A plain comparison of what is in each book, what you can read here for free, and which one to buy first.`;
+// Meta description fitted to 155 chars (2026-10-22) so search results show it whole; the
+// longer text above stays in the JSON-LD.
+const metaDescription = `Sanzo Wada's Vol 1 holds ${vol1Plates} combinations from 1933; Vol 2 adds ${vol2Plates} more from 1935–1938 that appear nowhere else. What is in each, and which to buy first.`;
 
 const pageUrl = new URL("/compare/wada-vol-1-vs-vol-2/", Astro.site).toString();
 
@@ -115,7 +119,7 @@ const rows = [
 ];
 ---
 
-<BaseLayout title={title} description={description} image="/og-default.png" jsonLd={jsonLd} adContent>
+<BaseLayout title={title} description={metaDescription} image="/og-default.png" jsonLd={jsonLd} adContent>
   {/* ============ HERO — direct answer first (AEO/featured-snippet shape) ============ */}
   <section class="cmp-hero">
     <div class="container-wide cmp-hero__inner">

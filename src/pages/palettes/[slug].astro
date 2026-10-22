@@ -101,10 +101,28 @@ const _colorBits = palette.colors
   .slice(0, 3)
   .map((c) => `${c.nameRomaji ?? c.hex} (${c.hex})`)
   .join(", ");
-const description =
+// Fit to 155 chars (2026-10-22): the long extension made 208 of 378 palette
+// descriptions 160-245 chars, so search results cut them mid-hex. Try the
+// richest wording first and keep the first one that fits; every candidate is
+// built from the palette's own names and hexes, nothing invented.
+const _n = palette.colors.length;
+const _more = _n > 3 ? " and more" : "";
+const _hexBits = palette.colors
+  .slice(0, 3)
+  .map((c) => (c.nameRomaji ? `${c.nameRomaji} ${c.hex}` : c.hex))
+  .join(", ");
+const DESC_BUDGET = 155;
+const _descCandidates =
   palette.summary.length >= 110
-    ? palette.summary
-    : `${palette.summary} A ${palette.colors.length}-color combination — ${_colorBits}${palette.colors.length > 3 ? " and more" : ""} — with hex and RGB values, contrast checks and pairing guidance.`;
+    ? [palette.summary]
+    : [
+        `${palette.summary} A ${_n}-color combination — ${_colorBits}${_more} — with hex and RGB values, contrast checks and pairing guidance.`,
+        `${palette.summary} A ${_n}-color combination — ${_colorBits}${_more} — with hex and RGB values.`,
+        `${palette.summary} A ${_n}-color palette: ${_hexBits}${_more}.`,
+        `${palette.summary} Hex: ${_hexBits}${_more}.`,
+        `${palette.summary} A ${_n}-color palette with hex and RGB values.`,
+      ];
+const description = _descCandidates.find((d) => d.length <= DESC_BUDGET) ?? palette.summary;
 const pageUrl = new URL(`/palettes/${palette.slug}/`, Astro.site).toString();
 const ogImage = `/og/${palette.slug}.png`;
 

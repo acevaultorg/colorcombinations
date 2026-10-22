@@ -304,6 +304,9 @@ const faq = [
 const title = `Color of the Year 2027: All ${PICKS.length} Picks So Far, Side by Side`;
 const description =
   "All 14 Colors of the Year for 2027 so far, side by side: Benjamin Moore Webster Green, Sherwin-Williams Celery, Dunn-Edwards French Press Coffee, Dulux Soulful Sage, Behr Grounded and more — plus Pantone, still to come. Verified 16 October 2026.";
+// Meta description fitted to 155 chars (2026-10-22) so search results show it whole; the
+// longer text above stays in the JSON-LD.
+const metaDescription = `All ${PICKS.length} Colors of the Year for 2027 so far, side by side: Benjamin Moore Webster Green, Sherwin-Williams Celery, Dulux Soulful Sage, Behr Grounded and more.`;
 
 const jsonLd = [
   AUTHOR,
@@ -359,7 +362,7 @@ const jsonLd = [
 <BaseLayout
   adContent
   title={title}
-  description={description}
+  description={metaDescription}
   canonical={pageUrl}
   alternates={[
     { hreflang: "en", href: "/trends/color-trends-2027/" },

@@ -134,6 +134,18 @@ const fullTitle =
     : suffixed;
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).toString();
 
+// Description safety net (2026-10-22): Google cuts meta descriptions near 155
+// chars. Templates are fitted at the source; if one still runs over, end it at
+// the last full sentence that fits. Never cut mid-sentence or add an ellipsis —
+// when no sentence end fits (or it would leave a stub under 70 chars), the
+// description is left as written.
+const DESC_BUDGET = 155;
+const metaDescription = (() => {
+  if (!description || description.length <= DESC_BUDGET) return description;
+  const cut = description.slice(0, DESC_BUDGET + 1).lastIndexOf(". ");
+  return cut >= 70 ? description.slice(0, cut + 1) : description;
+})();
+
 // Full-page Journey exclusions — generated in the signed-in Mediavine portal
 // on 2026-09-10. The wrapper is deliberately sitewide, so withholding
 // `mv-content` is NOT sufficient: non-in-content units can still render. Keep
@@ -252,7 +264,7 @@ const jsonLdArray = jsonLd
     <meta name="msvalidate.01" content="E99F14F043F0" />
 
     <title>{fullTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={metaDescription} />
     {keywords && keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
     {noIndex && <meta name="robots" content="noindex, nofollow" />}
 
@@ -267,7 +279,7 @@ const jsonLdArray = jsonLd
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
     <meta property="og:image:width" content="1200" />
@@ -289,7 +301,7 @@ const jsonLdArray = jsonLd
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:image" content={imageUrl} />
 
     <!-- Sitemap discovery -->
