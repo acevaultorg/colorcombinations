@@ -42,6 +42,8 @@ import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
 import AmazonPick from "@components/AmazonPick.astro";
 import { pairingPaths } from "@data/pairings";
+import { renderNextStep, NEXT_STEP_CSS } from "../../../kit/next-step.mjs";
+import { palettesForTrendHexes, withNames } from "@/lib/trendPalettes";
 
 // A pick's "what goes with" link targets /colors-that-go-with/<slug>/walls/ only when that
 // page is actually built (pairingPaths applies MIN_PALETTES). Archive-only colours such as
@@ -297,6 +299,25 @@ const faq = [
   },
 ];
 
+// One clear second page at the end of the cards (round cc-adsense-trends, 2026-10-22): real palettes
+// built on the picks' closest archive colours, plus the two sibling reports. Kit block kit/next-step.mjs.
+const nextStep = renderNextStep({
+  id: "keep-exploring",
+  heading: "Keep exploring the 2027 colours",
+  intro: "Palettes from the archive that already use the closest colours to this year's picks, and the earlier lists to compare them with.",
+  palettes: palettesForTrendHexes(PICKS.map((p) => p.match.hex)).map(({ palette, shared }) => ({
+    href: `/palettes/${palette.slug}/`,
+    name: palette.title,
+    colors: palette.colors.map((c) => c.hex),
+    note: withNames(shared),
+  })),
+  links: [
+    { href: "/trends/color-trends-2026/", title: "The 2026 Colors of the Year", text: "Last season's picks, to see how far the 2027 colours have moved." },
+    { href: "/trends/pantone-color-of-the-year/", title: "Every Pantone Color of the Year since 2000", text: "With codes, screen hexes and the closest colour in this archive." },
+  ],
+  from: "trends-2027-next",
+});
+
 // Title front-loads "Color of the Year 2027", the page's biggest Bing query (1,445 impressions at avg
 // position 5.4 over the 4 weekly buckets 2026-09-25..10-16, GetQueryStats read 2026-10-17 from device 1;
 // 14 clicks). The count comes from PICKS so it can never drift from the cards again (the 13 -> 14 FAQ
@@ -478,6 +499,8 @@ const jsonLd = [
           </li>
         ))}
       </ul>
+
+      <Fragment set:html={`<style>${NEXT_STEP_CSS}</style>${nextStep}`} />
 
       <h2 id="forecast">Sherwin-Williams Rewild is a forecast, not a Color of the Year</h2>
       <p>
