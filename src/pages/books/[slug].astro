@@ -23,6 +23,7 @@
  * FTC disclosure adjacent to the CTA, no price, no scarcity language.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { coverFallback, COVER_FALLBACK_CSS } from "../../../kit/cover-fallback.mjs";
 import {
   AMAZON,
   FURTHER_READING,
@@ -195,7 +196,7 @@ const jsonLd = [
               height="600"
               loading="eager"
               decoding="async"
-              onerror="this.style.display='none'"
+              {...coverFallback(book.amazonAsin)}
             />
           </a>
         )}
@@ -344,8 +345,7 @@ const jsonLd = [
                       height="300"
                       loading="lazy"
                       decoding="async"
-                      onerror="this.classList.add('is-missing')"
-                      onload="if (this.naturalWidth < 10) this.classList.add('is-missing')"
+                      {...coverFallback(other.amazonAsin, { missingClass: "is-missing" })}
                     />
                   )}
                   <span class="book__related-fallback" aria-hidden="true">{initials}</span>
@@ -365,6 +365,9 @@ const jsonLd = [
       </p>
     </section>
   </article>
+  {/* Kit cover-fallback: an edition with no Open Library cover shows its live Amazon photo instead. */}
+  <Fragment set:html={`<style>${COVER_FALLBACK_CSS}</style>`} />
+  <script is:inline src="/kit-product.js" defer></script>
 </BaseLayout>
 
 <style>

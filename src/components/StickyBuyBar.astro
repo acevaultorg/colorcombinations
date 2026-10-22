@@ -51,6 +51,7 @@
  * cover with width/height set.
  */
 import { AMAZON, bookCover, type CuratedBook } from "@/config/monetization";
+import { coverFallback, COVER_FALLBACK_CSS } from "../../kit/cover-fallback.mjs";
 
 export interface Props {
   /** The page's lead book — the one its in-page rail shows first. */
@@ -95,6 +96,7 @@ const cover = bookCover(book, "S");
           height="48"
           loading="lazy"
           decoding="async"
+          {...coverFallback(book.amazonAsin)}
         />
         <span class="sbb__text">
           <span class="sbb__title">{book.title}</span>
@@ -103,6 +105,9 @@ const cover = bookCover(book, "S");
         <span class="sbb__btn">See price on Amazon</span>
       </a>
     </aside>
+    {/* Kit cover-fallback: no Open Library cover -> the live Amazon photo, never a broken-image box. */}
+    <Fragment set:html={`<style>${COVER_FALLBACK_CSS}</style>`} />
+    <script is:inline src="/kit-product.js" defer></script>
     <noscript>
       <style>
         /* No JS: the bar is simply there (progressive). */
