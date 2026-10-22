@@ -10,8 +10,9 @@
  *
  * Every fact rendered here comes from the FURTHER_READING record: author,
  * publisher note, and the editorial reason the book is on the shelf. Nothing is
- * invented — no page counts, no ratings, no prices (Amazon Associates forbids
- * rendering price), no invented review quotes.
+ * invented — no page counts, no ratings, no stored prices, no invented review
+ * quotes. The only price is the live one the Amili Kit product script fills from
+ * the Creators API (with its as-of time), never a number written into the HTML.
  *
  * The one thing these pages have that a retailer listing does not: this archive
  * holds the actual plates from Wada Vol 1, so a reader can see the contents
@@ -32,6 +33,7 @@ import {
 } from "@/config/monetization";
 import { wadaPalettes } from "@/data/wada-palettes";
 import { colorBySlug } from "@/data/colors";
+import { ctaLabel, priceSlot, PRICE_CTA_CSS } from "../../../kit/price-cta.mjs";
 
 export function getStaticPaths() {
   return FURTHER_READING.map((book) => ({
@@ -214,7 +216,7 @@ const jsonLd = [
 
         <p class="book__why">{book.why}</p>
 
-        <div class="book__cta">
+        <div class="book__cta" data-ak-cta>
           <a
             href={amazonHref}
             rel="sponsored nofollow noopener"
@@ -224,8 +226,12 @@ const jsonLd = [
             data-book={book.title}
             data-surface="book-page"
           >
-            See price on Amazon <span aria-hidden="true">↗</span>
+            <Fragment set:html={ctaLabel()} /> <span aria-hidden="true">↗</span>
           </a>
+          {/* Live Amazon price for this edition (Amili Kit price-cta + product script, the same /amz/items source the
+              palette-page book card already uses): shown only from a live answer under 23 h old, with its "as of"
+              time and Amazon's disclaimer; the button reads "View on Amazon" only while a price is shown. */}
+          <Fragment set:html={priceSlot(book.amazonAsin)} />
           {/* Two-volume set (2026-10-16): ~66% of this site's Amazon clicks go to Vol. 1
               (first-party beacon, 30d), an ~$18 book, and earnings follow cart price. The
               set B094NTK2RB was only offered on /compare/wada-vol-1-vs-vol-2/, which calls
@@ -370,6 +376,8 @@ const jsonLd = [
       </p>
     </section>
   </article>
+  <Fragment set:html={`<style>${PRICE_CTA_CSS}</style>`} />
+  <script is:inline src="/kit-product.js" defer></script>
 </BaseLayout>
 
 <style>

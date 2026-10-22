@@ -7,6 +7,7 @@
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { AMAZON, FURTHER_READING, bookCover } from "@/config/monetization";
+import { ctaLabel, priceSlot, PRICE_CTA_CSS } from "../../../kit/price-cta.mjs";
 
 const title = "The shelf — books on colour";
 const description =
@@ -76,7 +77,7 @@ const jsonLd = {
           .toUpperCase();
 
         return (
-          <li class="shelf__item" style="display:flex;flex-direction:column">
+          <li class="shelf__item" style="display:flex;flex-direction:column" data-ak-cta>
             <a href={`/books/${book.slug}/`} class="shelf__link" style="height:auto;flex:1">
               <span class="shelf__cover">
                 {coverUrl ? (
@@ -102,7 +103,8 @@ const jsonLd = {
               </span>
               <span class="shelf__why">{book.why}</span>
             </a>
-            <a href={AMAZON.link(book.amazonAsin, "book")} class="shelf__buy" data-book={book.title} target="_blank" rel="sponsored nofollow noopener" aria-label={`${book.title}: see price on Amazon`}>See price on Amazon <span aria-hidden="true">↗</span></a>
+            <a href={AMAZON.link(book.amazonAsin, "book")} class="shelf__buy" data-book={book.title} target="_blank" rel="sponsored nofollow noopener" ><Fragment set:html={ctaLabel()} /><span class="sr-only">: {book.title}</span> <span aria-hidden="true">↗</span></a>
+            <Fragment set:html={priceSlot(book.amazonAsin)} />
           </li>
         );
       })}
@@ -113,6 +115,8 @@ const jsonLd = {
       unchanged; as an Amazon Associate we earn from qualifying purchases.
     </p>
   </div>
+  <Fragment set:html={`<style>${PRICE_CTA_CSS}</style>`} />
+  <script is:inline src="/kit-product.js" defer></script>
 </BaseLayout>
 
 <style>

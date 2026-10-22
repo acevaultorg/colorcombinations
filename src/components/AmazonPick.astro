@@ -19,6 +19,7 @@
  * rel="sponsored nofollow noopener", no "best price"/scarcity language, routed through the /go/p/ gate.
  */
 import { renderProductMedia, PRODUCT_CSS } from "../../kit/product.mjs";
+import { ctaLabel, PRICE_CTA_CSS } from "../../kit/price-cta.mjs";
 import { AMAZON, ART_SUPPLIES } from "@/config/monetization";
 
 export interface Props {
@@ -37,7 +38,7 @@ if (!item) throw new Error(`AmazonPick: ${asin} is not in ART_SUPPLIES`);
 if (!/^strike-[a-z0-9-]{1,30}$/.test(placement)) throw new Error(`AmazonPick: bad placement ${placement}`);
 const href = AMAZON.link(item.amazonAsin, placement);
 ---
-<aside class="amz-pick" aria-label={`${item.brand} ${item.name} on Amazon`}>
+<aside class="amz-pick" aria-label={`${item.brand} ${item.name} on Amazon`} data-ak-cta>
   <span class="amz-pick__media" set:html={renderProductMedia({ asin: item.amazonAsin, name: `${item.brand} ${item.name}`, size: 88 })} />
   <div class="amz-pick__body">
     <p class="amz-pick__eyebrow">{eyebrow}</p>
@@ -52,12 +53,12 @@ const href = AMAZON.link(item.amazonAsin, placement);
       data-from={placement}
       data-tool={item.name}
     >
-      {item.brand} {item.name} on Amazon <span aria-hidden="true">↗</span>
+      <Fragment set:html={ctaLabel()} /><span class="sr-only">: {item.brand} {item.name}</span> <span aria-hidden="true">↗</span>
     </a>
     <p class="amz-pick__disclosure">Affiliate link. As an Amazon Associate we earn from qualifying purchases; your price is the same.</p>
   </div>
 </aside>
-<Fragment set:html={`<style>${PRODUCT_CSS}</style>`} />
+<Fragment set:html={`<style>${PRODUCT_CSS}${PRICE_CTA_CSS}</style>`} />
 <script is:inline src="/kit-product.js" defer></script>
 <style>
   .amz-pick {
