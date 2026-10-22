@@ -2423,3 +2423,13 @@ export function inSeasonCollection(date: Date = new Date()): Collection | undefi
   if (monthDay >= 1101 && monthDay <= 1226) return collectionBySlug("christmas");
   return undefined;
 }
+
+/** The next seasonal collection during its lead-in, or undefined. Christmas from
+ * 10-15, so the homepage links /collections/christmas/ while Halloween is still in
+ * season: on 2026-10-22 Bing had crawled the page but stored 0 bytes of it, and
+ * November demand would otherwise arrive before the homepage link did. */
+export function upcomingSeasonalCollection(date: Date = new Date()): Collection | undefined {
+  const monthDay = (date.getUTCMonth() + 1) * 100 + date.getUTCDate();
+  if (monthDay >= 1015 && monthDay <= 1031) return collectionBySlug("christmas");
+  return undefined;
+}
