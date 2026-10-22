@@ -432,7 +432,7 @@ const jsonLd = [
               <tr>
                 <th scope="row">{p.brand}<span class="coty-glance__date">{p.announced}</span></th>
                 <td><span class="coty-glance__dot" style={`background-color:${p.match.hex}`} aria-hidden="true"></span>{p.name}{p.code !== "—" && <span class="coty-glance__code"> {p.code}</span>}</td>
-                <td>{p.family}</td>
+                <td>{p.family}<a class="coty-glance__pair" href={pickHref(p.match.slug)} aria-label={`Palettes with ${p.match.name}, the closest archive colour to ${p.brand} ${p.name}`}>Palettes →</a></td>
               </tr>
             ))}
             <tr class="coty-glance__pending">
@@ -442,7 +442,7 @@ const jsonLd = [
           </tbody>
         </table>
       </div>
-      <p class="coty-glance__note">Dots show the closest colour in this archive, not the paint itself. Full notes, sources and pairings for each pick below.</p>
+      <p class="coty-glance__note">Dots show the closest colour in this archive, not the paint itself; "Palettes" opens the combinations built around it. Full notes, sources and pairings for each pick below.</p>
       <ul class="coty-picks" role="list">
         {PICKS.map((p) => (
           <li class="coty-pick">
@@ -741,6 +741,20 @@ const jsonLd = [
     margin-right: 0.4em;
     vertical-align: -0.05em;
     box-shadow: 0 0 0 1px rgba(127, 127, 127, 0.35);
+  }
+  /* Row link to the pick's existing pairing/colour page (2026-10-22). The table
+     sits ~2 screens down at 390px, the per-pick cards from 3.6 to ~25 screens;
+     /trends landers ran 1.26 pv/session (card muwulnlgzs1my4). */
+  .coty-glance__pair {
+    display: block;
+    width: fit-content;
+    margin-top: 0.3rem;
+    padding: 0.35rem 0;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-accent-500);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
   .coty-glance__pending td {
     font-style: italic;
