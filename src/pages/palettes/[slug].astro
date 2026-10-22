@@ -598,6 +598,30 @@ const jsonLd = [
     </div>
   </section>
 
+  {/* ============ RELATED ============ */}
+  {/* Moved up from below the FAQ (2026-10-22). GA4 28d: palette pages pass 12-17
+      readers per 100 views on to another page, vs 44-56 on home, /browse,
+      /collections/<x> and /colors/<x>, and this block sat at 77-78% of a
+      19-screen page at 390px. It now follows the buy blocks and the export
+      panel, so the hero buy line and "Taking … off the screen" stay first. */}
+  {related.length > 0 && (
+    <section class="section related">
+      <div class="container-wide">
+        <header class="section-head">
+          <p class="eyebrow">Related combinations</p>
+          <h2>Three palettes with a similar feel.</h2>
+        </header>
+        <div class="palette-grid" role="list">
+          {related.map((p) => (
+            <div role="listitem">
+              <PaletteCard palette={p} headingLevel="h3" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
   {/* ============ FEATURED IN COLLECTIONS ============ */}
   {paletteCollections.length > 0 && (
     <section class="featured-in">
@@ -728,9 +752,10 @@ const jsonLd = [
     </section>
   )}
 
-  {/* ============ RELATED ============ */}
-  {related.length > 0 && (
-    <!-- FAQ — renders `paletteFaq`, the SAME array that feeds the FAQPage schema in
+  {/* ============ FAQ ============ */}
+  {/* Rendered unconditionally: the FAQPage schema above always ships, and the
+      visible FAQ used to sit inside the `related.length > 0` guard (2026-10-22). */}
+  <!-- FAQ — renders `paletteFaq`, the SAME array that feeds the FAQPage schema in
          the frontmatter. Visible text matches the schema by construction; never build
          one without the other (§E46). -->
     <section class="section palette-faq-section" aria-labelledby="palette-faq-heading">
@@ -749,23 +774,6 @@ const jsonLd = [
       </dl>
       </div>
     </section>
-
-    <section class="section related">
-      <div class="container-wide">
-        <header class="section-head">
-          <p class="eyebrow">Related combinations</p>
-          <h2>Three palettes with a similar feel.</h2>
-        </header>
-        <div class="palette-grid" role="list">
-          {related.map((p) => (
-            <div role="listitem">
-              <PaletteCard palette={p} headingLevel="h3" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
   {/* ============ STICKY BUY BAR (M2, RG-AMAZON-ORDER-UX-STANDARD) ============
        Phone-only, appears after the first screen, mirrors the aside's lead book
        (same bookOffset rotation) so the reader always has a way back to the buy
