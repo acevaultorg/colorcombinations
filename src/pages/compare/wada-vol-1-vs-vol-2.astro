@@ -22,7 +22,9 @@
  */
 import BaseLayout from"@layouts/BaseLayout.astro";
 import FurtherReading from"@components/FurtherReading.astro";
-import { AMAZON } from"@/config/monetization";
+import { AMAZON, bookBySlug } from"@/config/monetization";
+import { renderVerdictPicks, VERDICT_PICKS_CSS } from "../../../kit/verdict-picks.mjs";
+import { PRICE_CTA_CSS } from "../../../kit/price-cta.mjs";
 import { wadaPalettes } from"@/data/wada-palettes";
 
 // Seigensha's two-volume set (Vol 1 + Vol 2 + Japanese Traditional Colors chart),
@@ -109,6 +111,37 @@ const jsonLd = [
   },
 ];
 
+// The verdict as buttons, right under the short answer (Amili Kit verdict-picks, 2026-10-22). Before this the
+// page's first Amazon button sat under the FAQ, many screens down at 375px, so a reader who already had their
+// answer from the lede had to scroll the whole page to act on it. Same books, same tagged links (AMAZON.link,
+// page class "compare"), same data-event/data-book as the shelf below; words are this page's own verdict.
+const vol1Book = bookBySlug("a-dictionary-of-color-combinations")!;
+const vol2Book = bookBySlug("a-dictionary-of-color-combinations-vol-2")!;
+const verdictPicks = renderVerdictPicks({
+  btnClass: "btn btn-primary",
+  disclosure: "Affiliate links. Your price is unchanged; as an Amazon Associate we earn from qualifying purchases.",
+  items: [
+    {
+      eyebrow: "New to Wada",
+      title: "Vol 1 (1933)",
+      text: `${vol1Plates} combinations, the classic set. All of them are free to browse here first.`,
+      href: AMAZON.link(vol1Book.amazonAsin, "compare"),
+      asin: vol1Book.amazonAsin,
+      attrs: { "data-event": "amazon_click", "data-book": vol1Book.title, "data-surface": "compare-verdict" },
+      more: { href: `/books/${vol1Book.slug}/`, label: "More about Vol 1" },
+    },
+    {
+      eyebrow: "Already know Vol 1",
+      title: "Vol 2 (1935–38)",
+      text: `${vol2Plates} plates that are not in Vol 1 and not in this archive.`,
+      href: AMAZON.link(vol2Book.amazonAsin, "compare"),
+      asin: vol2Book.amazonAsin,
+      attrs: { "data-event": "amazon_click", "data-book": vol2Book.title, "data-surface": "compare-verdict" },
+      more: { href: `/books/${vol2Book.slug}/`, label: "More about Vol 2" },
+    },
+  ],
+});
+
 const rows = [
   { dim:"First published", v1:"1933 (Seigensha republication, 2010)", v2:"1935–1938 (Seigensha, 2020)" },
   { dim:"Plates", v1: `${vol1Plates} color combinations`, v2: `${vol2Plates} plates — ${vol2Seasonal} seasonal, ${vol2Design} design-sourced` },
@@ -132,6 +165,7 @@ const rows = [
         not a reprint: {vol2Plates} plates from 1935–1938 that are not reproduced here
         or in most online sources. Here is the full picture.
       </p>
+      <Fragment set:html={verdictPicks} />
     </div>
   </section>
 
@@ -265,4 +299,5 @@ const rows = [
       />
     </div>
   </div>
+  <Fragment set:html={`<style>${VERDICT_PICKS_CSS}${PRICE_CTA_CSS}</style>`} />
 </BaseLayout>
