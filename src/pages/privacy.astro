@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { AD_PROVIDER } from "@/config/adProvider.mjs";
 
 const title = "Privacy Policy";
 const description =
@@ -49,12 +50,28 @@ const jsonLd = {
             similar identifiers; Cloudflare Web Analytics does not. Clarity does not load at all for visitors whose browser time zone is in the EU, EEA, UK or Switzerland. We never sell this data.
           </li>
           <li>
+            {AD_PROVIDER === "adsense" ? (
+              <>
+                <strong>Third-party advertising:</strong> This site shows ads served by
+                <strong>Google AdSense</strong>. Google and its partners use cookies, web beacons,
+                IP addresses and similar identifiers to serve and measure ads, including ads based
+                on your previous visits to this site and/or other sites on the Internet. Google's
+                use of advertising cookies lets it and its partners serve ads based on those visits.
+                See <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">How Google uses data when you use our partners' sites or apps</a>.
+                You can opt out of personalised advertising in
+                <a href="https://adssettings.google.com/" target="_blank" rel="noopener">Google's Ad Settings</a>
+                or at <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener">aboutads.info</a>.
+              </>
+            ) : (
+              <>
             <strong>Third-party advertising:</strong> Advertising on this site is managed by
             <strong>Mediavine</strong> (Journey by Mediavine). Mediavine and its programmatic
             advertising partners use cookies and other identifiers to serve and measure ads,
             including ads based on your browsing activity on this site and/or other sites on
             the Internet.
             See the <a href="https://www.mediavine.com/privacy-policy/" target="_blank" rel="noopener">Mediavine privacy policy</a> for the data they process and the partners they work with.
+              </>
+            )}
           </li>
           <li>
             <strong>Affiliate links:</strong> Some links on this site (books, design tools) are
@@ -85,7 +102,7 @@ const jsonLd = {
 
         <h2>Cookies</h2>
         <p>
-          Cloudflare Web Analytics is cookieless. Microsoft Clarity and Google Analytics 4 set cookies or similar identifiers to measure aggregate usage and record on-page interactions. Clarity does not load for visitors in the EU, EEA, UK or Switzerland. Mediavine and its
+          Cloudflare Web Analytics is cookieless. Microsoft Clarity and Google Analytics 4 set cookies or similar identifiers to measure aggregate usage and record on-page interactions. Clarity does not load for visitors in the EU, EEA, UK or Switzerland. {AD_PROVIDER === "adsense" ? "Google" : "Mediavine"} and its
           advertising partners may set cookies on your device to serve and personalise advertising.
           You can opt out of personalised advertising at any time via
           <a href="https://optout.networkadvertising.org/" target="_blank" rel="noopener">the NAI opt-out tool</a>,
@@ -114,7 +131,7 @@ const jsonLd = {
         <p>
           Under the GDPR and UK GDPR, you have additional rights including the right to object to
           processing and to lodge a complaint with your national supervisory authority. For
-          personalised advertising in the EEA/UK, Mediavine operates a certified Consent Management
+          personalised advertising in the EEA/UK, {AD_PROVIDER === "adsense" ? "Google" : "Mediavine"} operates a certified Consent Management
           Platform (CMP) that controls the consent flow.
         </p>
 

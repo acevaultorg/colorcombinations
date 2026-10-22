@@ -5,6 +5,7 @@ import SiteFooter from "@components/SiteFooter.astro";
 import FeedbackWidget from "@components/FeedbackWidget.astro";
 import CookieConsent from "@components/CookieConsent.astro";
 import { assetVersion } from "@/lib/assetVersion";
+import { AD_PROVIDER, ADSENSE_CLIENT, ADSENSE_VERIFY_META } from "@/config/adProvider.mjs";
 
 export interface Props {
   title: string;
@@ -425,13 +426,25 @@ const jsonLdArray = jsonLd
         ⚠️ The site id is 0e3765cf (zero-E). A 0c… variant returns HTTP 200 with a
         ZERO-BYTE body, so a status-code check cannot tell the two apart — verify by
         response SIZE (~171KB) if this ever needs re-checking. */}
-    <script is:inline type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/0e3765cf-7571-4481-9b28-bc96fd84b4e4.js"></script>
+    {AD_PROVIDER === "journey" && (
+      <script is:inline type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/0e3765cf-7571-4481-9b28-bc96fd84b4e4.js"></script>
+    )}
+    {/* AdSense ownership check only: no script, no ads (src/config/adProvider.mjs). */}
+    {ADSENSE_VERIFY_META && <meta name="google-adsense-account" content={ADSENSE_CLIENT} />}
+    {/* AdSense auto ads — only when AD_PROVIDER is flipped to "adsense" after approval.
+        Not loaded at all on the pages Journey also kept ad-free (legal, /books, /shop,
+        gift-guide, noindex): with auto ads, no script = no units, which is stricter than
+        a blocklist. EEA/UK consent comes from Google's own certified CMP, switched on in
+        AdSense > Privacy & messaging; it answers __tcfapi, which CookieConsent already polls. */}
+    {AD_PROVIDER === "adsense" && !shouldBlockAllAds && (
+      <script is:inline async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`} crossorigin="anonymous"></script>
+    )}
 
   </head>
   <body>
     {/* Official provider-generated full-page exclusion. It must be present in
         rendered HTML; selecting toggles in the portal alone changes nothing. */}
-    {shouldBlockAllAds && (
+    {AD_PROVIDER === "journey" && shouldBlockAllAds && (
       <div id="ad-management-config-settings" data-blocklist-all="1"></div>
     )}
     {/* Event tracking — connects data-event attributes to the analytics sinks.
@@ -473,7 +486,7 @@ const jsonLdArray = jsonLd
     <a href="#main" class="skip-link">Skip to content</a>
     <SiteHeader />
     <!-- Search lives in the header since 2026-10-02 (Amili Kit search, Paulo mur0dp4bzunyqy): the box that sat under the header and scrolled away is gone. -->
-    <main id="main" class={adContent ? "site-main mv-content" : "site-main"}>
+    <main id="main" class={adContent && AD_PROVIDER === "journey" ? "site-main mv-content" : "site-main"}>
       <slot />
     </main>
     <FeedbackWidget />

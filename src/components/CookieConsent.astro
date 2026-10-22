@@ -1,4 +1,5 @@
 ---
+import { AD_PROVIDER } from "@/config/adProvider.mjs";
 // Notice banner — shown once on first visit.
 // This site uses Microsoft Clarity + Google Analytics 4 (and cookieless Cloudflare
 // Web Analytics). Plausible was retired 2026-06-28. Mediavine display ads went live
@@ -18,7 +19,7 @@
       <strong>About data on this site.</strong> We use Microsoft Clarity and
       Google Analytics to measure aggregate usage and record on-page
       interactions, alongside cookieless Cloudflare Web Analytics. Display
-      advertising is served by Mediavine, whose own consent tool manages your
+      advertising is served by {AD_PROVIDER === "adsense" ? "Google AdSense" : "Mediavine"}, whose own consent tool manages your
       advertising choices. Book links route through the
       Amazon Associates affiliate program; amazon.com sets its own cookies
       once you visit it. As an Amazon Associate we earn from qualifying
