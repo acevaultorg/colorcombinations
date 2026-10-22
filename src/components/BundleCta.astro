@@ -10,8 +10,8 @@
  *  - /palettes/[slug] (end of every palette page, compact variant)
  *  - /about (optional, compact)
  *
- * Degrades gracefully when BUNDLE.isLive is false — copy shifts to "coming
- * soon" and the CTA anchors to the bundle section on /shop.
+ * Degrades gracefully when BUNDLE.isLive is false — copy shifts to "not on sale yet, join the list" (no "coming soon" wording, 2026-10-22 AdSense pass, card mvjp5fojmscx3b)
+ * and the CTA anchors to the bundle section on /shop.
  */
 
 import { BUNDLE } from "@/config/monetization";
@@ -66,7 +66,7 @@ const eventName = live ? "bundle_cta_click" : "bundle_interest_click";
         )}
         {!live && (
           <p class="bundle-cta__anchor">
-            Launching soon. The free archive stays free, always.
+            Not on sale yet: join the list for one email when it opens. The free archive stays free, always.
           </p>
         )}
       </div>
