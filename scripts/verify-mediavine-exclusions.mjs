@@ -11,12 +11,15 @@
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
+import { existsSync } from "node:fs";
+import { AD_PROVIDER, ADSENSE_ADS_TXT_LINE } from "../src/config/adProvider.mjs";
 
 const dist = resolve("dist");
 const markerId = 'id="ad-management-config-settings"';
 const markerAll = 'data-blocklist-all="1"';
 const markerTag = /<div\b(?=[^>]*\bid=["']ad-management-config-settings["'])(?=[^>]*\bdata-blocklist-all=["']1["'])[^>]*>/gi;
 const wrapper = "scripts.scriptwrapper.com/tags/0e3765cf-7571-4481-9b28-bc96fd84b4e4.js";
+const adsenseTag = "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
 
 const exact = new Set([
   "/404",
@@ -67,6 +70,38 @@ if (htmlFiles.length < 1500) {
 }
 
 const failures = [];
+
+// ── Ad-network exclusivity (2026-10-22, src/config/adProvider.mjs) ──────────
+// Never both networks on one page, and the ads.txt swap must match the script.
+if (AD_PROVIDER === "adsense") {
+  let adsensePages = 0;
+  for (const file of htmlFiles) {
+    const route = routeFor(file);
+    const html = readFileSync(file, "utf8");
+    if (html.includes(wrapper)) failures.push(`${route}: Journey wrapper present in adsense mode`);
+    if (html.includes(markerId)) failures.push(`${route}: Journey exclusion marker present in adsense mode`);
+    const hasTag = html.includes(adsenseTag);
+    const blockedRoute = exact.has(route) || prefixes.some((x) => route === x || route.startsWith(`${x}/`));
+    if (blockedRoute && hasTag) failures.push(`${route}: AdSense script on an ad-free route`);
+    if (hasTag) adsensePages++;
+  }
+  if (adsensePages < 1000) failures.push(`positive control: only ${adsensePages} pages carry the AdSense script`);
+  const adsTxt = existsSync(join(dist, "ads.txt")) ? readFileSync(join(dist, "ads.txt"), "utf8") : "";
+  if (!adsTxt.includes(ADSENSE_ADS_TXT_LINE)) failures.push("dist/ads.txt missing the AdSense line");
+  const red = existsSync(join(dist, "_redirects")) ? readFileSync(join(dist, "_redirects"), "utf8") : "";
+  if (/^\/ads\.txt\s/m.test(red)) failures.push("dist/_redirects still 301s /ads.txt to Mediavine");
+  if (failures.length) {
+    console.error("ad-provider guard (adsense) FAILED\n" + failures.slice(0, 40).join("\n") + `\n(${failures.length} total)`);
+    process.exit(1);
+  }
+  console.log(`ad-provider guard OK (adsense): ${adsensePages} pages with AdSense, 0 Journey tags, ads.txt + _redirects swapped, ${htmlFiles.length} HTML files`);
+  process.exit(0);
+}
+for (const file of htmlFiles) {
+  if (readFileSync(file, "utf8").includes(adsenseTag)) failures.push(`${routeFor(file)}: AdSense script in journey mode`);
+}
+if (existsSync(join(dist, "ads.txt"))) failures.push("dist/ads.txt exists in journey mode (it would shadow the Mediavine redirect)");
+
 let blocked = 0;
 let wrapperControls = 0;
 let bookPages = 0;

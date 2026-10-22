@@ -1,4 +1,5 @@
 ---
+import { AD_PROVIDER } from "@/config/adProvider.mjs";
 import BaseLayout from "@layouts/BaseLayout.astro";
 
 const title = "Terms of Service";
@@ -66,7 +67,7 @@ const jsonLd = {
 
         <h2>4. Affiliate links and advertising</h2>
         <p>
-          This site displays advertising managed by Mediavine (Journey by Mediavine) and
+          This site displays advertising managed by {AD_PROVIDER === "adsense" ? "Google AdSense" : "Mediavine (Journey by Mediavine)"} and
           contains Amazon Associates affiliate links. It may also contain clearly identified
           affiliate or sponsored links from other partner programs. If you click an affiliate
           link and complete a qualifying purchase or other qualifying action, we may earn a
@@ -90,7 +91,7 @@ const jsonLd = {
         <p>
           This site uses third-party services including Amazon Associates and other affiliate
           networks or merchants when their links are present, Microsoft Clarity, Google Analytics,
-          Open Library, Google Fonts, Mediavine (Journey by Mediavine), and Cloudflare Pages.
+          Open Library, Google Fonts, {AD_PROVIDER === "adsense" ? "Google AdSense" : "Mediavine (Journey by Mediavine)"}, and Cloudflare Pages.
           These services are subject to their own terms and privacy policies. See our Privacy
           Policy for details about analytics, advertising, cookies, and related identifiers.
         </p>
