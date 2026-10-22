@@ -105,7 +105,7 @@ export const BUNDLE = {
    * Recommended Gumroad config: PWYW, minimum $3, suggested $5, name "Support
    * the archive — The Complete Wada Bundle."
    */
-  checkoutUrl: "/shop#bundle-coming-soon" as const,
+  checkoutUrl: "/shop/#bundle-coming-soon" as const,
 
   /** True when `checkoutUrl` points to a real external payment page. */
   get isLive(): boolean {
