@@ -49,18 +49,29 @@ const PAIRING_SYNONYMS: Record<string, string> = {
   terracotta: "clay",
   burgundy: "oxblood wine bordeaux",
   "olive-green": "moss",
-  gray: "grey gris soft grey light grey",
+  gray: "grey gris soft grey light grey ash ashen",
   "charcoal-grey": "paynes payne slate",
-  brown: "marron burnt umber chocolate",
+  brown: "marron burnt umber chocolate cognac",
   rust: "redwood copper",
   green: "lime chartreuse",
-  gold: "bronze",
+  gold: "bronze amber",
   // 2026-10-15 re-read of SearchNoResults with fallback_shown=false (09-30..10-15, after
   // the 09-28 pass): 8 true dead ends in ~76 logged searches; "denim" x1 + "demin" x1 and
   // "torq" x1 had an obvious hub. (Cyrillic "бургунди"/"фиолетовый" stay unfixed: norm()
   // strips non-Latin letters, so no alias can reach them without changing accent handling.)
   blue: "denim demin",
   turquoise: "torq turq",
+  // 2026-10-22 re-read, Amili Kit search_no_results (10-03..10-21) + the last SearchNoResults
+  // terms, replayed through the vendored Kit engine against the live kit-search-index.json
+  // (controls "navy" / "sage green" returned rows). The Kit matches whole WORDS (prefix on
+  // the last token, 1-2 typos), so "ash" never found "seashell" and "pruss" needs a word
+  // that starts with it. True dead ends with a close hub: eggplant/aubergine, fuchsia/"fuc",
+  // butteryellow, ash, pruss, cognac; "amber" x3 only typo-matched raw umber palettes.
+  plum: "eggplant aubergine",
+  magenta: "fuchsia",
+  yellow: "butter butteryellow",
+  navy: "prussian",
+  pink: "ballet",
 };
 
 /** Style / use words a reader types that a collection's title does not contain.
@@ -77,6 +88,9 @@ const COLLECTION_SYNONYMS: Record<string, string> = {
   monochromatic: "monotone monochrome tonal one colour one color",
   bold: "bright vivid vibrant saturated",
   neutral: "nude beige cream",
+  // 2026-10-22, Kit search_no_results: "cyberpunk" (10-13), "ballet" (10-05).
+  neon: "cyberpunk synthwave",
+  coquette: "ballet balletcore",
 };
 
 /** Standalone editorial + tool pages that have no data module of their own.
