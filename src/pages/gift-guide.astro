@@ -26,7 +26,9 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
-import { FURTHER_READING } from "@/config/monetization";
+import { AMAZON, FURTHER_READING } from "@/config/monetization";
+import { renderVerdictPicks, VERDICT_PICKS_CSS } from "../../kit/verdict-picks.mjs";
+import { PRICE_CTA_CSS } from "../../kit/price-cta.mjs";
 
 // The three proven picks, in their proven order (Vol 1, Vol 2, Interaction of
 // Color are the first three entries in FURTHER_READING — see that file's own
@@ -35,6 +37,26 @@ import { FURTHER_READING } from "@/config/monetization";
 // silently swap this guide's picks without a visible diff here.
 const PROVEN_ASINS = new Set(["4861522471", "4861527724", "0300179359"]);
 const provenBooks = FURTHER_READING.filter((b) => PROVEN_ASINS.has(b.amazonAsin));
+
+// The short answer as buttons, right under it (Amili Kit verdict-picks, 2026-10-22). The first Amazon button
+// used to sit below "How these were picked", about two screens down at 375px, on the page holiday-gift readers
+// land on in Nov-Dec. Same three books, same tagged links (page class "gift-guide") as the shelf below.
+const giftFor: Record<string, { eyebrow: string; title: string; text: string }> = {
+  "4861522471": { eyebrow: "New to Wada", title: "Wada Vol. 1", text: "The 1933 classic every other color reference cites." },
+  "4861527724": { eyebrow: "Already owns Vol. 1", title: "Wada Vol. 2", text: "237 further plates that do not overlap with Vol. 1." },
+  "0300179359": { eyebrow: "Has both", title: "Interaction of Color", text: "Albers on why colors read the way they do side by side." },
+};
+const giftPicks = renderVerdictPicks({
+  btnClass: "btn btn-primary",
+  disclosure: "Affiliate links. Your price is unchanged; as an Amazon Associate we earn from qualifying purchases.",
+  items: provenBooks.map((b) => ({
+    ...giftFor[b.amazonAsin],
+    href: AMAZON.link(b.amazonAsin, "gift-guide"),
+    asin: b.amazonAsin,
+    attrs: { "data-event": "amazon_click", "data-book": b.title, "data-surface": "gift-verdict" },
+    more: { href: `/books/${b.slug}/`, label: "More about this book" },
+  })),
+});
 
 const title = "Gift guide for color lovers & designers";
 const description =
@@ -57,7 +79,7 @@ const faq = [
   },
   {
     q: "Are these affiliate links?",
-    a: "Yes — Amazon Associates links, disclosed on this page and on the linked sections. Your price is unchanged; a small commission on qualifying purchases helps keep this archive free. We never show a price here (Amazon's own policy for affiliate content) and never suggest a pick that doesn't genuinely fit.",
+    a: "Yes — Amazon Associates links, disclosed on this page and on the linked sections. Your price is unchanged; a small commission on qualifying purchases helps keep this archive free. Any price shown comes straight from Amazon with the time it was checked, and Amazon's price at checkout is the one that applies. We never suggest a pick that doesn't genuinely fit.",
   },
 ];
 
@@ -125,6 +147,7 @@ const jsonLd = [
         actually gets made with. No filler picks here; every item on this
         page is one people who read color plates for fun already choose.
       </p>
+      <Fragment set:html={giftPicks} />
     </div>
   </section>
 
@@ -190,6 +213,7 @@ const jsonLd = [
       </p>
     </div>
   </section>
+  <Fragment set:html={`<style>${VERDICT_PICKS_CSS}${PRICE_CTA_CSS}</style>`} />
 </BaseLayout>
 
 <style>
