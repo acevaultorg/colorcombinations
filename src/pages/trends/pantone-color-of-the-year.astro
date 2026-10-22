@@ -21,6 +21,8 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
 import { allColors } from "@/data/colors";
+import { renderNextStep, NEXT_STEP_CSS } from "../../../kit/next-step.mjs";
+import { palettesForTrendHexes, closestTo } from "@/lib/trendPalettes";
 
 const siteUrl = "https://colorcombinations.org/";
 const pageUrl = "https://colorcombinations.org/trends/pantone-color-of-the-year/";
@@ -91,6 +93,25 @@ const textOn = (hex: string): string => {
 };
 
 const latest = COTY[COTY.length - 1];
+
+// One clear second page right after the list (round cc-adsense-trends, 2026-10-22): real palettes
+// built on the picks' closest archive colours, plus the two yearly reports. Kit block kit/next-step.mjs.
+const nextStep = renderNextStep({
+  id: "keep-exploring",
+  heading: "Keep exploring Pantone's colours",
+  intro: "Palettes from the archive that already use the closest colours to Pantone's picks, and this year's picks from every brand.",
+  palettes: palettesForTrendHexes(COTY.map((c) => ({ hex: c.hex, label: `${c.name} (${c.year})` }))).map(({ palette, shared }) => ({
+    href: `/palettes/${palette.slug}/`,
+    name: palette.title,
+    colors: palette.colors.map((c) => c.hex),
+    note: closestTo(shared),
+  })),
+  links: [
+    { href: "/trends/color-trends-2027/", title: "The 2027 Colors of the Year so far", text: "Every pick announced for next year, with Pantone's due in early December." },
+    { href: "/trends/color-trends-2026/", title: "All 2026 Colors of the Year", text: "Cloud Dancer next to the picks from Benjamin Moore, Behr, Sherwin-Williams and more." },
+  ],
+  from: "trends-pantone-next",
+});
 const years = new Set(COTY.map((c) => c.year)).size;
 const title = `Every Pantone Color of the Year (2000–${latest.year}) With Hex Codes`;
 const description = `All ${COTY.length} Pantone Colors of the Year from Cerulean (2000) to ${latest.name} (${latest.year}), with TCX codes, hex values and the closest color in the 1933 Dictionary of Color Combinations archive.`;
@@ -200,6 +221,7 @@ const jsonLd = [
         space (CIE76 ΔE), and the smallest distance wins. Near-identical: ΔE under 5, hard to tell apart side by side.
         Very close: under 10. Close: under 20. "The nearest we have": the archive has nothing truly close.
       </p>
+      <Fragment set:html={`<style>${NEXT_STEP_CSS}</style>${nextStep}`} />
     </section>
 
     <section class="container-narrow pcy-instrument">

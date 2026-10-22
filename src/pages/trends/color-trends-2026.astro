@@ -20,6 +20,8 @@ import AskAmili from "@components/AskAmili.astro";
 import FurtherReading from "@components/FurtherReading.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
 import AmazonPick from "@components/AmazonPick.astro";
+import { renderNextStep, NEXT_STEP_CSS } from "../../../kit/next-step.mjs";
+import { palettesForTrendHexes, closestTo } from "@/lib/trendPalettes";
 
 
 const siteUrl = "https://colorcombinations.org/";
@@ -257,6 +259,24 @@ const jsonLd = [
   },
 ];
 
+// One clear second page right after the picks (round cc-adsense-trends, 2026-10-22): real palettes
+// built on the picks' closest archive colours, plus the two sibling reports. Kit block kit/next-step.mjs.
+const nextStep = renderNextStep({
+  id: "keep-exploring",
+  heading: "Keep exploring the 2026 colours",
+  intro: "Palettes from the archive that already use the closest colours to these picks, and the other lists to compare them with.",
+  palettes: palettesForTrendHexes(PICKS.map((p) => ({ hex: p.hex, label: p.name }))).map(({ palette, shared }) => ({
+    href: `/palettes/${palette.slug}/`,
+    name: palette.title,
+    colors: palette.colors.map((c) => c.hex),
+    note: closestTo(shared),
+  })),
+  links: [
+    { href: "/trends/color-trends-2027/", title: "The 2027 Colors of the Year so far", text: "Every pick announced for next year, updated as the season runs." },
+    { href: "/trends/pantone-color-of-the-year/", title: "Every Pantone Color of the Year since 2000", text: "With codes, screen hexes and the closest colour in this archive." },
+  ],
+  from: "trends-2026-next",
+});
 const featured = PICKS.slice(0, 2);
 const grid = PICKS.slice(2);
 ---
@@ -363,6 +383,7 @@ const grid = PICKS.slice(2);
           </li>
         ))}
       </ul>
+      <Fragment set:html={`<style>${NEXT_STEP_CSS}</style>${nextStep}`} />
     </section>
 
     {/*

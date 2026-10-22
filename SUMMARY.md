@@ -1,3 +1,80 @@
+> Round cc-adsense-trends (2026-10-22) is first below. Earlier rounds follow it unchanged; round 2 is in `SUMMARY-R2.md`.
+
+# Payoff round cc-adsense-trends — colorcombinations.org — 2026-10-22
+
+Branch: `claude/adsense-readiness-trends-3juw15`, cut from `main` at `f60fe0a`. Nothing is merged or deployed. The task named `cloud/selfgap-colorcombinations-2026-10-22-1409`, but this session is locked to the branch above, so the work is there.
+
+**Freeze/HOLD check:** the only freeze note in the repo is Mediavine's "freeze provider settings through 2026-09-25" in `.claude/state/MONETIZATION_STACK.md`. That date has passed, and nothing here touches ad provider settings. No HOLD note covers the /trends/ pages.
+
+## Which change should move the metric, and how to read it
+
+**The change:** a "Keep exploring" block on all three /trends/ pages, placed right after the list a visitor came for:
+- `/trends/color-trends-2027/`: after the 14 pick cards, before the Rewild section
+- `/trends/color-trends-2026/`: after "Every 2026 Color of the Year"
+- `/trends/pantone-color-of-the-year/`: after the full list and its "How the match works" note
+
+Each block has three real archive palettes, each made of the closest archive colours to that page's picks (for example "Closest to Rose Earth and Luminous Blue"), plus two large links to the other two trend reports. Before this change, the 2027 page's cards ran about 25 phone screens. The only way on was a small text link in each card, followed by sources, FAQ and books. Nothing invited a second page.
+
+**Expected move:** pageviews per visit 2.35 → 2.45–2.60 within 21 days (whole site). The /trends/ landers bring about 700 landing sessions in 30 days according to the repo's notes, and earlier notes measured /trends/ landers at 1.26 pv/session.
+
+**How to read it after deploy:**
+1. GA4 → Explore: landing page contains `/trends/`, metric "Views per session". Compare the 21 days after the deploy date with the 21 days before.
+2. GA4 events: the block's links carry `data-event="next_step_click"` with `data-variant` = `trends-2027-next` / `trends-2026-next` / `trends-pantone-next`. The site's existing click listener in `BaseLayout.astro` sends these to GA4 (`next_step_click`, parameter `variant`, plus `url`) and to Clarity, so clicks per block can be counted directly. No new analytics code was added.
+3. Site-wide pv/visit is the NORTH_STARS figure (17,995 pv / 7,648 sessions over 30 days).
+
+## AdSense review readiness
+
+| Check | Result | Action |
+|---|---|---|
+| Privacy, about, contact and terms pages exist and are linked | Pass. All four are in the footer of every page (`SiteFooter.astro`). Privacy and terms already name Google AdSense, its cookies, Google's partner-sites page and the ad-settings opt-out, because `AD_PROVIDER` is `"adsense"`. | None |
+| No ads on policy and buy-only pages | Pass. `BaseLayout.astro` does not load `adsbygoogle.js` on /about, /contact, /privacy, /terms, /copyright, /random, /gift-guide, /books/*, /shop/* or noindex pages. 1,533 of the 1,555 sitemap URLs load it. | None |
+| ads.txt | Pass. `dist/ads.txt` has the Google line `pub-7449214764048186`. The Mediavine `/ads.txt` redirect is commented out in `dist/_redirects`. | None |
+| Sitemap has no noindex, missing or duplicate pages | Pass. 1,555 URLs, 0 missing files, 0 noindex, 0 duplicate titles, 0 duplicate meta descriptions. Median main-text length is 1,548 words. | None |
+| Thin pages in the sitemap | **Needs a human.** 13 URLs have under 300 words of main text, and all 13 already carry no ads: 11 /books/ pages (79–292 words, mostly a cover, the edition note and a buy button), /contact/ (123) and /random/ (254). Google reviews the whole site, and thin affiliate pages are a common reason for a "low value content" rejection. | Not fixed. Fixing it means either writing real reviews for the 9 short book pages (the repo has only `note` and `why` for each book, and new facts must not be invented) or taking /books/<slug>/ out of the sitemap. Sitemap logic is frozen for this round, and the repo's notes call /books/ the best-converting template, so this is the owner's call. |
+| Ads only below buy blocks, never above or between them | **Cannot be enforced in code.** The site runs AdSense **Auto ads** (one script, no manual units), so Google chooses where units go. That can include above the "Mix the 2027 colours by hand" Amazon block near the top of the trends pages, or between the AmazonPick and PaintThisPalette blocks. The repo has no ad slot IDs, so manual units cannot be placed here without inventing IDs. This round added no ad code. | In AdSense → Ads → colorcombinations.org → Edit: either (a) turn off in-page Auto ads and create a display unit, then send its `data-ad-slot` id so a kit ad slot can be placed only after the buy blocks; or (b) at minimum, use the preview's "remove ad" control or page exclusions on positions above buy blocks. |
+| Leftover Mediavine markup | `mv-content` class strings remain on two /trends/ sections as styling hooks (CSS selectors). Mediavine scripts and the blocklist div only render when `AD_PROVIDER === "journey"`. | None. They are harmless, and no Mediavine or Journey code was brought back. |
+
+## What changed (files)
+- `kit/next-step.mjs` (new kit block, documented in its header): `renderNextStep()` plus `NEXT_STEP_CSS`. It is a site-local Amili Kit block: calm card list, inline SVG arrow in `currentColor`, tap targets of 44px or more, no buy button or ad slot inside, and it renders nothing when it has nothing to link to. It is not vendored from fleet-kit; the header says how to promote it.
+- `src/lib/trendPalettes.ts` (new): matches each trend hex to its nearest archive colour (CIELAB, the same method the Pantone page already uses), then picks palettes greedily so the three show different trend colours. It is deterministic, and every name and colour comes from `src/data`.
+- `src/pages/trends/color-trends-2027.astro`, `color-trends-2026.astro`, `pantone-color-of-the-year.astro`: import the block and place it after the pick lists.
+- `review/next-step-*.png`: screenshots.
+
+**Kit blocks:** added `kit/next-step.mjs`. The pages also still use the existing `kit/product.mjs`, through `AmazonPick` and `PaintThisPalette`; both are untouched.
+
+**Unchanged:** affiliate tag, every `/go/` route, disclosures, analytics snippets, robots.txt, sitemap logic, canonicals, `BaseLayout.astro`, ad provider config. No prices anywhere in the new block. No new pages.
+
+## Build and page counts
+| | Before (`main` f60fe0a) | After |
+|---|---|---|
+| `npm run build` exit code | 0 | 0 |
+| `.html` files in `dist/` | 2,218 | 2,218 |
+| Sitemap URLs | 1,555 | 1,555 |
+
+Guards on the new build: `amazon-tracking-guard` OK (47,523 affiliate links on 1,548 pages); `verify-beacon-coverage` OK. All nine linked palette pages exist in `dist/`.
+
+## Screenshots
+Taken with the preinstalled Chromium (Playwright) against a local static server of `dist/`, at 2× scale with third-party requests blocked, so no ads or covers load:
+- `review/next-step-trends_color-trends-2027-375.png`, `-390.png`
+- `review/next-step-trends_color-trends-2026-375.png`, `-390.png`
+- `review/next-step-trends_pantone-color-of-the-year-375.png`, `-390.png`
+
+At both widths no page scrolls sideways (`scrollWidth` = viewport) and the smallest tap target in the block is 85px tall.
+
+## Skipped, and why
+- **Manual ad slots below buy blocks:** no slot IDs in the repo. See the table.
+- **Thin /books/ pages:** needs real writing or a sitemap decision. See the table.
+- **"The same colour in other trends" per colour:** each trend page keeps its picks inside its own file, and the 2027 hexes are mostly unpublished. The block therefore links to the other two reports as a whole instead of claiming colour-by-colour overlaps.
+- **No measurement taken**, as instructed.
+
+## What a human must check before it goes live
+1. Read the three blocks on the live preview, and check that the palette choices read as sensible next steps.
+2. Decide the AdSense placement question (Auto ads vs. one manual unit below the buy blocks).
+3. Decide what to do with the 9 short /books/ pages before requesting an AdSense review.
+4. Deploy with `bash deploy.sh` as usual. Do not push to main expecting CI to deploy.
+
+---
+
 > Round 2 (2026-10-01) is summarised in `SUMMARY-R2.md`. Below are both round-1 summaries, gap sweep first, growth sweep second.
 
 # Gap sweep — colorcombinations.org — 2026-09-30
