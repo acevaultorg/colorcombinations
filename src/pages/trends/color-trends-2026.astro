@@ -307,6 +307,18 @@ const grid = PICKS.slice(2);
       </p>
     </header>
 
+    <section class="container-narrow">
+      {/* One clear Amazon button for the matching paint set (Amili card mvc8yz47xd0zq3, 2026-10-17); clicks per button: f=/p= strike-2026.
+          Moved 2026-10-22 (Paulo mvjfbf3yug8n1b, card mvjfgix6dzqbfn) to directly after the hero, the same spot as /browse/,
+          whose identical button sits on the first phone screen and got 16 clicks over 4 days to 0 here. */}
+      <AmazonPick
+        asin="B07R7XGHJW"
+        placement="strike-2026"
+        title="Mix the 2026 colours by hand"
+        text="Cloud Dancer is a soft white, and whites are where screens lie the most. A 48-colour gansai set lets you mix it and the other 2026 picks on paper, next to each other."
+      />
+    </section>
+
     <section class="coty-featured container-narrow" aria-label="The two global picks">
       {featured.map((p) => (
         <a class="coty-feature" href={pairUrl(p.name)}>
@@ -322,16 +334,6 @@ const grid = PICKS.slice(2);
           </span>
         </a>
       ))}
-    </section>
-
-    <section class="container-narrow">
-      {/* One clear Amazon button for the matching paint set (Amili card mvc8yz47xd0zq3, 2026-10-17); clicks per button: f=/p= strike-2026. */}
-      <AmazonPick
-        asin="B07R7XGHJW"
-        placement="strike-2026"
-        title="Mix the 2026 colours by hand"
-        text="Cloud Dancer is a soft white, and whites are where screens lie the most. A 48-colour gansai set lets you mix it and the other 2026 picks on paper, next to each other."
-      />
     </section>
 
     <section class="container-narrow">

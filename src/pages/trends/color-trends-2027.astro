@@ -399,6 +399,18 @@ const jsonLd = [
       </p>
     </header>
 
+    <section class="container-narrow">
+      {/* One clear Amazon button for the matching paint set (Amili card mvc8yz47xd0zq3, 2026-10-17); clicks per button: f=/p= strike-2027.
+          Moved 2026-10-22 (Paulo mvjfbf3yug8n1b, card mvjfgix6dzqbfn) to directly after the hero, the same spot as /browse/,
+          whose identical button sits on the first phone screen and got 16 clicks over 4 days to 0 here. */}
+      <AmazonPick
+        asin="B07R7XGHJW"
+        placement="strike-2027"
+        title="Mix the 2027 colours by hand"
+        text="The swatches on this page are screen colours. With a 48-colour gansai set you can mix Cottage Door, the greens and the earth tones on paper and see how they really sit together."
+      />
+    </section>
+
     <section class="mv-content container-narrow">
       <div class="coty-note">
         <p>
@@ -431,14 +443,6 @@ const jsonLd = [
         </table>
       </div>
       <p class="coty-glance__note">Dots show the closest colour in this archive, not the paint itself. Full notes, sources and pairings for each pick below.</p>
-      {/* One clear Amazon button for the matching paint set (Amili card mvc8yz47xd0zq3, 2026-10-17); clicks per button: f=/p= strike-2027. */}
-      <AmazonPick
-        asin="B07R7XGHJW"
-        placement="strike-2027"
-        title="Mix the 2027 colours by hand"
-        text="The swatches above are screen colours. With a 48-colour gansai set you can mix Cottage Door, the greens and the earth tones on paper and see how they really sit together."
-      />
-
       <ul class="coty-picks" role="list">
         {PICKS.map((p) => (
           <li class="coty-pick">

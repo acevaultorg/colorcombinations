@@ -189,7 +189,10 @@ const destinations = DESTINATIONS.map((d) => {
           <p class="paint-kit__dest-label">{label}</p>
           <p class="paint-kit__dest-verdict">{verdict}</p>
           <div class="paint-kit__row">
-            <span class="paint-kit__media" set:html={renderProductMedia({ asin: item.amazonAsin, name: `${item.brand} ${item.name}`, size: 72 })} />
+            {/* Photo only, no live price (Amili primary 2026-10-22): after 83940de put the price in the shelf, shelf clicks fell 13.2 -> 1.0/day
+                (beacon f=tool, 09-28..10-11 vs 10-13..10-21), so visitors no longer clicked through to see it. With no price element the
+                label stays "See price on Amazon" (.pk-v only shows when a price is present). Card mvjf6bn0utwf4e. */}
+            <span class="paint-kit__media" set:html={renderProductMedia({ asin: item.amazonAsin, name: `${item.brand} ${item.name}`, size: 72, price: false })} />
             <div>
               <p class="paint-kit__brand">{item.brand}</p>
               <h3 class="paint-kit__name">
@@ -236,7 +239,7 @@ const destinations = DESTINATIONS.map((d) => {
     {items.map((item) => (
       <li class="paint-kit__item">
         <div class="paint-kit__row">
-          <span class="paint-kit__media" set:html={renderProductMedia({ asin: item.amazonAsin, name: `${item.brand} ${item.name}`, size: 72 })} />
+          <span class="paint-kit__media" set:html={renderProductMedia({ asin: item.amazonAsin, name: `${item.brand} ${item.name}`, size: 72, price: false })} />
           <div>
             <p class="paint-kit__brand">{item.brand}</p>
             <h3 class="paint-kit__name">

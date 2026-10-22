@@ -10,6 +10,7 @@ import HeroSourceBook from "@components/HeroSourceBook.astro";
 import ContrastMatrix from "@components/ContrastMatrix.astro";
 import ShareBar from "@components/ShareBar.astro";
 import StickyBuyBar from "@components/StickyBuyBar.astro";
+import AmazonPick from "@components/AmazonPick.astro";
 import { FURTHER_READING, ART_SUPPLIES } from "@/config/monetization";
 import { allPalettes, paletteBySlug, relatedPalettes } from "@data/palettes";
 import { commonColors, contexts, pairingPaths, redmean } from "@data/pairings";
@@ -427,6 +428,19 @@ const jsonLd = [
         })}
       </div>
     </div>
+  </section>
+
+  {/* One clear Amazon button for the matching paint set, the /browse/ button (Paulo mvjfpdrz7o4qal + mvjfbf3yug8n1b, card
+      mvjfgix6dzqbfn, 2026-10-22). On /browse/ the same button sits on the first phone screen with palettes in view and got 16
+      clicks in 4 days, so here it goes straight under the swatches: the palette stays the first thing on the page and is in
+      view right above the button. One per page; f=/p= strike-palette. */}
+  <section class="container-narrow">
+    <AmazonPick
+      asin="B07R7XGHJW"
+      placement="strike-palette"
+      title="Mix this palette on paper"
+      text={`These swatches are screen colours. Japanese gansai watercolour is the closest everyday paint to ${isWada ? "Wada's flat printed plates" : "flat printed colour"}, and with 48 colours you can mix all ${palette.colors.length} of these and see how they really sit together.`}
+    />
   </section>
 
   {/* ============ QUICK SHARE STRIP ============ */}
