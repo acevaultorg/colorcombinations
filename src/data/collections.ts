@@ -2411,3 +2411,15 @@ export function collectionBySlug(slug: string): Collection | undefined {
 export function allCollectionSlugs(): string[] {
   return collections.map((c) => c.slug);
 }
+
+/** The seasonal collection in season on `date` (build time), or undefined.
+ * Halloween 09-25..10-31, Christmas 11-01..12-26 (UTC). Used by the homepage
+ * theme grid and the /browse/ lede: /collections/halloween/ had 0 GA4 views in
+ * its first 7 days because nothing busy linked to it (2026-10-22). The site
+ * redeploys most days, so the slot turns over within a day of a boundary. */
+export function inSeasonCollection(date: Date = new Date()): Collection | undefined {
+  const monthDay = (date.getUTCMonth() + 1) * 100 + date.getUTCDate();
+  if (monthDay >= 925 && monthDay <= 1031) return collectionBySlug("halloween");
+  if (monthDay >= 1101 && monthDay <= 1226) return collectionBySlug("christmas");
+  return undefined;
+}

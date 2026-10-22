@@ -7,10 +7,12 @@ import AmazonPick from "@components/AmazonPick.astro";
 import PaletteCard from "@components/PaletteCard.astro";
 import ShelfCallout from "@components/ShelfCallout.astro";
 import { allPalettes } from "@data/palettes";
+import { inSeasonCollection } from "@data/collections";
 import { AMAZON } from "@/config/monetization";
 
 const palettes = allPalettes();
 const total = palettes.length;
+const seasonal = inSeasonCollection();
 
 // Collect unique filter values from the actual data.
 const eras = Array.from(new Set(palettes.map((p) => p.era))).sort();
@@ -88,6 +90,7 @@ const sourceBookShowDisclosure = AMAZON.isLive;
       </p>
       <p class="browse-hero__lede">
         Looking for something specific? See <a href="/trends/color-trends-2026/">every 2026 Color of the Year</a> — Pantone, Benjamin Moore, Behr and more, side by side. The <a href="/trends/color-trends-2027/">2027 Colors of the Year announced so far</a> are here too.
+        {seasonal && <> In season now: <a href={`/collections/${seasonal.slug}/`}>{seasonal.title.toLowerCase()}</a>.</>}
       </p>
       <AskAmili />
       <p class="browse-hero__source-book">
