@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw
 
 HERE = Path(__file__).parent
 API = "https://commons.wikimedia.org/w/api.php"
-UA = "colorcombinations-palette-builder/1.0 (https://colorcombinations.org; contact@acevault.org)"
+UA = "colorcombinations-palette-builder/1.0 (https://colorcombinations.org; contact@vondelmedia.com)"
 
 THUMB_W, ROW_H, SW = 300, 150, 100
 
