@@ -74,6 +74,12 @@ export interface Props {
    * and the full/sidebar shelves keep "art-supplies".
    */
   pageClass?: string;
+  /**
+   * Items shown FIRST, ahead of the ART_SUPPLIES rotation (full/sidebar only;
+   * `limit` still caps the total). Used for seasonal picks on one page without a
+   * second shelf (2026-10-23, HOLIDAY_CARD_SUPPLIES on /collections/christmas/).
+   */
+  lead?: ArtSupply[];
 }
 
 const {
@@ -83,6 +89,7 @@ const {
   offset = 0,
   variant ="full",
   pageClass,
+  lead = [],
 } = Astro.props;
 
 // Preserve the historical defaults per variant when no override is given.
@@ -95,7 +102,7 @@ const shelfTag = pageClass ??"art-supplies";
 const items: ArtSupply[] = (() => {
   const n = ART_SUPPLIES.length;
   const start = ((offset % n) + n) % n;
-  const rotated = [...ART_SUPPLIES.slice(start), ...ART_SUPPLIES.slice(0, start)];
+  const rotated = [...lead, ...ART_SUPPLIES.slice(start), ...ART_SUPPLIES.slice(0, start)];
   return typeof limit ==="number" ? rotated.slice(0, limit) : rotated;
 })();
 

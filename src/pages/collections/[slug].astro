@@ -6,6 +6,7 @@ import PaintThisPalette from "@components/PaintThisPalette.astro";
 import HeroSourceBook from "@components/HeroSourceBook.astro";
 import BundleCta from "@components/BundleCta.astro";
 import ShareActions from "@components/ShareActions.astro";
+import { HOLIDAY_CARD_SUPPLIES } from "@/config/monetization";
 import {
   collections,
   collectionBySlug,
@@ -361,11 +362,22 @@ const jsonLd = [
       A MOVE, not an addition — the bottom instance is removed, so commercial
       density on the page is unchanged. */}
   <section class="container-narrow collection-destination">
-    <PaintThisPalette
-      pageClass="collection-shelf"
-      title="Off the screen"
-      intro={`You have the ${collection.title.toLowerCase()} in front of you. These are the materials a colour study like this actually gets made with.`}
-    />
+    {/* Christmas only (2026-10-23, card mv0qbgsr8fy3ib): holiday-card picks lead the
+        same shelf, in the same place; its own subtag so the per-tag read can see them. */}
+    {collection.slug === "christmas" ? (
+      <PaintThisPalette
+        pageClass="collection-shelf-xmas"
+        title="Paint them onto cards"
+        intro="Picked for painting your own cards in these palettes: blank watercolour cards, a gold finish, and the paint set that makes a gift on its own. The regular studio shelf follows."
+        lead={HOLIDAY_CARD_SUPPLIES}
+      />
+    ) : (
+      <PaintThisPalette
+        pageClass="collection-shelf"
+        title="Off the screen"
+        intro={`You have the ${collection.title.toLowerCase()} in front of you. These are the materials a colour study like this actually gets made with.`}
+      />
+    )}
   </section>
 
   {/* ============ EMBED WIDGET ============ */}
