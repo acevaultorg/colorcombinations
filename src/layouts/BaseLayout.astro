@@ -95,6 +95,15 @@ const articlePublished = publishedTime ?? SITE_FIRST_PUBLISHED;
 // stamped exactly that into its OG tags. Absent metadata is honest; a clock is
 // not. Pages with a real date pass modifiedTime explicitly.
 const articleModified = modifiedTime ?? null;
+// Visible "Last updated" line (2026-10-23, card mv0qb82ew264sc): shown ONLY where the page
+// already passes an honest modifiedTime (contentDate(), git-dated), never a build clock.
+// The calendar date is read straight from the stored string so no timezone shift can move it.
+const UPDATED_LABEL: Record<string, string> = { en: "Last updated", de: "Zuletzt aktualisiert", pl: "Ostatnia aktualizacja" };
+const UPDATED_LOCALE: Record<string, string> = { en: "en-GB", de: "de-DE", pl: "pl-PL" };
+const updatedDay = articleModified && /^\d{4}-\d{2}-\d{2}/.test(articleModified) ? articleModified.slice(0, 10) : null;
+const updatedText = updatedDay
+  ? new Date(`${updatedDay}T12:00:00Z`).toLocaleDateString(UPDATED_LOCALE[lang] ?? "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+  : null;
 // og:locale follows <html lang>; it was hardcoded en_US, so the /de/ and /pl/ probes
 // told social crawlers they were English.
 const OG_LOCALES: Record<string, string> = { en: "en_US", de: "de_DE", pl: "pl_PL" };
@@ -505,12 +514,22 @@ const jsonLdArray = jsonLd
     <!-- Search lives in the header since 2026-10-02 (Amili Kit search, Paulo mur0dp4bzunyqy): the box that sat under the header and scrolled away is gone. -->
     <main id="main" class={adContent && AD_PROVIDER === "journey" ? "site-main mv-content" : "site-main"}>
       <slot />
+      {updatedDay && updatedText && (
+        <p class="page-updated">{UPDATED_LABEL[lang] ?? UPDATED_LABEL.en} <time datetime={updatedDay}>{updatedText}</time></p>
+      )}
     </main>
     <FeedbackWidget />
     <SiteFooter />
     <CookieConsent />
 
     <style>
+      .page-updated {
+        max-width: 56rem;
+        margin: 2rem auto 0;
+        padding: 0 1.25rem 1.5rem;
+        font-size: 0.8125rem;
+        color: var(--color-muted, #6b6b6b);
+      }
       .skip-link {
         position: absolute;
         left: -10000px;
