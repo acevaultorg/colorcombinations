@@ -5,7 +5,7 @@ import HeroSourceBook from "@components/HeroSourceBook.astro";
 import BundleCta from "@components/BundleCta.astro";
 import PaintThisPalette from "@components/PaintThisPalette.astro";
 import { ART_SUPPLIES } from "@/config/monetization";
-import { bestTextColorOn, contrastRatio, hexToRgb } from "@/lib/color";
+import { bestTextColorOn, contrastRatio, hexToRgb, relativeLuminance } from "@/lib/color";
 import type { HexColor } from "@/types/palette";
 import {
   commonColors,
@@ -108,6 +108,31 @@ const balanceNeed =
   : "both warmer and cooler neighbours";
 const valueNeed = cL < 0.4 ? "lighter" : cL > 0.7 ? "deeper" : "both lighter and deeper";
 const mood0 = (ctx.favorMoods && ctx.favorMoods[0]) ? ctx.favorMoods[0] : "considered";
+
+// ---- By the numbers (2026-10-23, card mvc43lwsywf817) ----
+// Google indexes ~27% of the site and 0 of 14 sampled pages of this template. Measured the
+// same day: the context section was one `lens` sentence shared by ~55 colours. These figures
+// come from this page's own top plate, which the context's mood/tone bias selects, so they
+// differ per colour AND per context. All computed from hex, nothing written by hand.
+const pctLum = (h: HexColor) => Math.round(relativeLuminance(h) * 100);
+const lrv = pctLum(color.hex);
+const topPlate = glance[0];
+const partnerRows = topPlate
+  ? topPlate.partners.map((h) => ({ hex: h as HexColor, lrv: pctLum(h as HexColor), cr: Math.round(contrastRatio(color.hex, h as HexColor) * 10) / 10 }))
+  : [];
+const strongestPartner = partnerRows.length ? partnerRows.reduce((a, b) => (b.cr > a.cr ? b : a)) : null;
+const WEAR_CONTEXTS = new Set(["clothes", "an-outfit", "wedding"]);
+const isWear = WEAR_CONTEXTS.has(ctx.slug);
+const lrvLine =
+  lrv < 15 ? `reflects only about ${lrv}% of the light that reaches it, so it reads close to black in a dim room. Keep it to one wall, joinery or a single piece, in a room with good daylight`
+  : lrv < 40 ? `reflects about ${lrv}% of the light, a deep mid-tone that visibly darkens a room as the light drops. It suits a room you use in daylight, or one feature wall`
+  : lrv < 60 ? `reflects about ${lrv}% of the light, a true mid-tone that keeps its colour through the day`
+  : lrv < 80 ? `reflects about ${lrv}% of the light, light enough to cover whole walls without closing a room in`
+  : `reflects about ${lrv}% of the light, close to white once it is on a wall`;
+// 60/30/10 on the top plate's own colours: least saturated covers most, most saturated is the accent.
+const splitHexes = topPlate
+  ? ([topPlate.matchHex, ...topPlate.partners] as HexColor[]).slice().sort((a, b) => hsl(a).s - hsl(b).s)
+  : [];
 
 // ---- SEO ----
 const h1 = `Colors that go with ${color.name} for ${ctx.label}`;
@@ -277,7 +302,7 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors-that-go-with/[color]/[con
         Across the {matches.length} historical combinations below, {color.name.toLowerCase()} sits most often beside
         {partnerSentence}. That tracks with colour theory: a {temperature}, {lightWord.split(" ")[0]} tone like this one
         wants {balanceNeed} so the scheme feels intentional rather than flat, and {valueNeed} partners supply the
-        light-to-dark range the eye needs. {ctx.lens}
+        light-to-dark range the eye needs.
       </p>
       <ul class="flex flex-wrap gap-2">
         {topFamilies.map((f) => (
@@ -295,6 +320,39 @@ const CONTENT_MODIFIED = contentDate("src/pages/colors-that-go-with/[color]/[con
           ? `keep it to anchor pieces or a single feature area and let ${topFamilies[0] ?? "a light neutral"} carry the larger surfaces`
           : `it can cover larger surfaces, with ${topFamilies[topFamilies.length - 1] ?? "a deeper tone"} added for depth`}.
       </p>
+      {topPlate && partnerRows.length > 0 && (
+        <div class="mt-4 border-t border-stone-200 pt-4">
+          <h3 class="text-sm font-semibold text-stone-900">By the numbers: {topPlate.palette.title}</h3>
+          <p class="mt-1 text-sm text-stone-600">
+            The best-matching archive plate for this use, measured from its hex codes.
+          </p>
+          <ul class="mt-3 space-y-2 text-sm text-stone-700" role="list">
+            {!isWear && (
+              <li>
+                <strong>Light reflectance (LRV) about {lrv}.</strong> {color.name} {lrvLine}. (Computed from the hex; check the LRV on the chip of the actual paint you buy.)
+              </li>
+            )}
+            {partnerRows.map((r) => (
+              <li class="flex items-center gap-2">
+                <span class="inline-block h-4 w-4 shrink-0 rounded ring-1 ring-black/10" style={`background:${r.hex}`} aria-hidden="true"></span>
+                <span><span class="font-mono">{r.hex}</span>: LRV {r.lrv}, contrast with {color.name.toLowerCase()} {r.cr}:1{r.cr >= 3 ? " (separates clearly, above WCAG's 3:1 for large shapes)" : " (a tonal blend, below 3:1)"}</span>
+              </li>
+            ))}
+            {strongestPartner && (
+              <li>
+                {strongestPartner.cr >= 3
+                  ? <>For the clearest edge, put <span class="font-mono">{strongestPartner.hex}</span> directly against {color.name.toLowerCase()}; let the other colours sit between them.</>
+                  : <>No partner on this plate reaches 3:1 against {color.name.toLowerCase()}, so it works as a tonal scheme; add white or near-black if {isWear ? "the outfit" : "the room"} needs a crisp line.</>}
+              </li>
+            )}
+            {isWear && splitHexes.length >= 3 && (
+              <li>
+                <strong>A 60/30/10 split on these colours:</strong> 60% <span class="font-mono">{splitHexes[0]}</span>, 30% <span class="font-mono">{splitHexes[1]}</span>, 10% <span class="font-mono">{splitHexes[splitHexes.length - 1]}</span>. The least saturated colour covers the most; the strongest becomes the accent.
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
     </section>
 
     <!-- Curated combinations from the archive -->

@@ -16,7 +16,8 @@ export function hexToRgb(hex: HexColor): { r: number; g: number; b: number } {
 }
 
 /** Relative luminance for WCAG contrast */
-function relativeLuminance(hex: HexColor): number {
+/** WCAG relative luminance (0-1). x100 is the paint industry's LRV (CIE Y). */
+export function relativeLuminance(hex: HexColor): number {
   const { r, g, b } = hexToRgb(hex);
   const toLinear = (c: number): number => {
     const v = c / 255;
