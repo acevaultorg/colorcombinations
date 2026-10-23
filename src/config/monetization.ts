@@ -1072,3 +1072,56 @@ export const ART_SUPPLIES: ArtSupply[] = [
     form: "fan",
   },
 ];
+
+/**
+ * Holiday-card picks (2026-10-23, card mv0qbgsr8fy3ib). They LEAD the existing
+ * shelf on /collections/christmas/ only (PaintThisPalette `lead` prop); no new
+ * block, so commercial density on the page is unchanged. The intent they match:
+ * painting your own cards in a red-and-green palette. All four read live through
+ * the Creators API getItems on 2026-10-23 (exact title, buy-box availability);
+ * maker's own brand on each. The 100-colour box is the gift / high-basket option
+ * (this site's constraint is basket size, see the ART_SUPPLIES note above).
+ * verify-asins.mjs picks these up by their amazonAsin lines.
+ */
+export const HOLIDAY_CARD_SUPPLIES: ArtSupply[] = [
+  {
+    name: "Strathmore watercolour cards, 50 with envelopes",
+    brand: "Strathmore",
+    amazonAsin: "B0027AAV2S",
+    verifiedTitle:
+      "Strathmore Watercolor Cards, 5x6.875 inches, 50 Pack, Envelopes Included - Blank Greeting Cards for Weddings, Events, Birthdays, White",
+    why: "Blank folded watercolour cards with their envelopes: paint one of these palettes on the front and it is ready to post.",
+    group: "paint",
+    form: "pad",
+  },
+  {
+    name: "Gansai Tambi Starry Colors, 6 pans",
+    brand: "Kuretake",
+    amazonAsin: "B01H75AFHS",
+    verifiedTitle:
+      "Kuretake Gansai Tambi STARRY COLORS, 6 colors set, Made in Japan | 6 pearlescent golden-sheen colors, Watercolor Paint Set, large pans, Professional Use, Artist Grade",
+    why: "Six pearlescent golden-sheen colours. A touch of gold over a madder red and pine green is a classic holiday-card finish.",
+    group: "paint",
+    form: "pans",
+  },
+  {
+    name: "Gelly Roll metallic gold, 6 pens",
+    brand: "Sakura",
+    amazonAsin: "B00K3KRQS6",
+    verifiedTitle:
+      "Sakura Gelly Roll Metallic Gel Pens, 6 Piece Gold, 6 Pack | Gel Pens for Scrapbook, Journals, or Drawing, High Quality, Unlimited Ways to Create & Great Holiday Gifts",
+    why: "Gold gel ink writes on top of a dry wash, so the greeting and the outlines go on after the paint.",
+    group: "paint",
+    form: "pen",
+  },
+  {
+    name: "Gansai Tambi 100 colours, wooden gift box",
+    brand: "Kuretake",
+    amazonAsin: "B0FNV9BTT7",
+    verifiedTitle:
+      "Kuretake Gansai Tambi Watercolor Paint Set, 100 Colors, Wooden Box, Japan | All 100 colors, wooden gift box, includes Starry, Iridescent & Sumi colors, Professional Use, Artist Grade",
+    why: "The whole Gansai Tambi range in a wooden box, Starry colours included. The gift for someone who paints, rather than the card itself.",
+    group: "paint",
+    form: "pans",
+  },
+];
