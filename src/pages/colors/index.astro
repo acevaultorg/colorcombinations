@@ -6,6 +6,23 @@ import ShelfCallout from "@components/ShelfCallout.astro";
 import HeroSourceBook from "@components/HeroSourceBook.astro";
 import { allColors, colorsByHue, type ColorEntry } from "@data/colors";
 import { bestTextColorOn } from "@/lib/color";
+import { commonColorBySlug, contextBySlug } from "@data/pairings";
+
+// Most-read pairing guides (2026-10-23, card mvc43lwsywf817): the 30 colour-pairing pages
+// with the most search + AI-assistant landings (GA4 landingPage x channel, 30d to 10-23).
+// Google indexes 0 of 14 sampled pages of that template; links from this indexed hub are
+// step 3 of the card. A dated list, not a live ranking: re-pick from data when refreshed.
+const MOST_READ_PAIRINGS: [string, string | null][] = [["burgundy", "clothes"], ["mauve", "an-outfit"], ["burgundy", null], ["burgundy", "an-outfit"], ["dusty-rose", "bedroom"], ["emerald-green", "clothes"], ["sky-blue", "clothes"], ["dusty-rose", "clothes"], ["burgundy", "wedding"], ["sage-green", null], ["universal-khaki", "walls"], ["warm-eucalyptus", null], ["divine-damson", "walls"], ["dusty-rose", null], ["terracotta", "clothes"], ["beige", "clothes"], ["blue", "an-outfit"], ["burgundy", "curtains"], ["charcoal-grey", null], ["dusty-rose", "walls"], ["hidden-gem", null], ["lavender", "curtains"], ["maroon", null], ["mauve", null], ["mint", null], ["orange", null], ["peach", null], ["plum", null], ["plum", "clothes"], ["rust", "clothes"]];
+const mostReadPairings = MOST_READ_PAIRINGS.flatMap(([c, x]) => {
+  const col = commonColorBySlug(c);
+  const ctx = x ? contextBySlug(x) : null;
+  if (!col || (x && !ctx)) return [];
+  return [{
+    href: ctx ? `/colors-that-go-with/${col.slug}/${ctx.slug}/` : `/colors-that-go-with/${col.slug}/`,
+    label: ctx ? `${col.name} for ${ctx.label}` : `Colors that go with ${col.name}`,
+    hex: col.hex,
+  }];
+});
 
 const colors = allColors();
 const grouped = colorsByHue();
@@ -198,6 +215,27 @@ const jsonLd = [
       </ul>
     </div>
   </nav>
+
+  {/* Most-read colour pairing guides — see MOST_READ_PAIRINGS above. */}
+  <section class="section most-read-pairings" aria-labelledby="most-read-pairings-heading">
+    <div class="container-wide">
+      <header class="section-head">
+        <p class="eyebrow">Colour pairing guides</p>
+        <h2 id="most-read-pairings-heading" class="text-balance">The pairing guides readers open most.</h2>
+        <p class="section-lede">What goes with a colour, for a specific use: each guide gives the archive plates that match, their hex codes and the contrast numbers. <a href="/colors-that-go-with/">All pairing guides →</a></p>
+      </header>
+      <ul class="most-read-pairings__list" role="list">
+        {mostReadPairings.map((p) => (
+          <li>
+            <a href={p.href} class="most-read-pairings__link">
+              <span class="most-read-pairings__dot" style={`background:${p.hex}`} aria-hidden="true"></span>
+              {p.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
 
   <section class="container-narrow">
     <FurtherReading
@@ -463,5 +501,37 @@ const jsonLd = [
     font-size: 0.7rem;
     color: var(--color-muted);
     margin-left: auto;
+  }
+  .most-read-pairings__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  .most-read-pairings__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs, 0.4rem);
+    min-height: 44px;
+    padding: 0 var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    text-decoration: none;
+    max-width: 100%;
+  }
+  .most-read-pairings__link:hover {
+    border-color: var(--color-accent, #5a5a5a);
+    background: var(--color-surface);
+  }
+  .most-read-pairings__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
   }
 </style>
