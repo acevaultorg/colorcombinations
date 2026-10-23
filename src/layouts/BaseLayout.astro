@@ -410,7 +410,12 @@ const jsonLdArray = jsonLd
 
     {/* Google Analytics 4 — measurement ID G-QT7PC59PV6 (stacked with Clarity). */}
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-QT7PC59PV6"></script>
-    <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QT7PC59PV6',{anonymize_ip:true});`} />
+    {/* Consent Mode default (2026-10-23, card mvkunn7rszuz2j item 1): GA4 stored _ga before any
+        consent on / and /about/ for EU/EEA/UK/CH visitors. Storage is denied by default for those
+        regions only; Google's certified CMP (AdSense > Privacy & messaging) updates it on consent.
+        Everywhere else is unchanged. Denied hits are cookieless pings, so EEA users in GA4 will
+        read lower from the deploy date: do not compare EEA/total sessions across it. */}
+    <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'],wait_for_update:500});gtag('js',new Date());gtag('config','G-QT7PC59PV6',{anonymize_ip:true});`} />
 
     <slot name="head" />
 

@@ -266,6 +266,12 @@ const year = new Date().getFullYear();
   var ccReopen = document.getElementById('cc-reopen');
   if (ccReopen) {
     ccReopen.addEventListener('click', function () {
+      // Where Google's consent message (Funding Choices) is loaded it owns the choice, so
+      // reopen that; otherwise fall back to the site notice. 2026-10-23, card mvkunn7rszuz2j.
+      if (window.googlefc && typeof window.googlefc.showRevocationMessage === 'function') {
+        window.googlefc.showRevocationMessage();
+        return;
+      }
       localStorage.removeItem('cc_status');
       var banner = document.getElementById('cookie-banner');
       if (banner) banner.hidden = false;
