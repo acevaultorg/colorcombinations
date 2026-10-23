@@ -28,7 +28,11 @@ validate_build:
   stage: validate
   image: node:22
   timeout: 1h
-  interruptible: true
+  # interruptible: false (2026-10-23, primary): the iMac shell runner does not kill a canceled job's child
+  # processes; an auto-canceled run kept writing dist/og and node_modules, and the next pipeline then died
+  # in get_sources ('failed to remove … Directory not empty'): 2981185705 12:54Z, 2981407850 13:47Z.
+  # Validate-only job, concurrent=1, so letting it finish is cheap and removes the race.
+  interruptible: false
   variables:
     CLOUDFLARE_ACCOUNT_ID: "72bfd26c5f3c935393a25e5c0dea6039"
     CF_PAGES_PROJECT: "colorcombinations"
