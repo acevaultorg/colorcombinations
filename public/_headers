@@ -100,6 +100,22 @@
 /og-default.svg
   Cache-Control: public, max-age=86400, must-revalidate
 
+# CC BY 4.0 dataset downloads (2026-10-24). A CSV travels without the /data/ page, so the
+# response itself names the licence and points back at the docs + attribution line:
+# a reuser's tooling (or a crawler indexing datasets) gets both without reading HTML.
+# One block per file on purpose: an extension splat is not documented for _headers, and a
+# pattern that silently matches nothing is the failure mode this file keeps recording.
+/data/palettes.csv
+  Link: <https://creativecommons.org/licenses/by/4.0/>; rel="license", <https://colorcombinations.org/data/>; rel="describedby"
+/data/colors.csv
+  Link: <https://creativecommons.org/licenses/by/4.0/>; rel="license", <https://colorcombinations.org/data/>; rel="describedby"
+/data/collections.csv
+  Link: <https://creativecommons.org/licenses/by/4.0/>; rel="license", <https://colorcombinations.org/data/>; rel="describedby"
+/data/sanzo-wada-color-analysis.csv
+  Link: <https://creativecommons.org/licenses/by/4.0/>; rel="license", <https://colorcombinations.org/data/sanzo-wada-color-analysis/>; rel="describedby"
+/data/sanzo-wada-wcag-contrast.csv
+  Link: <https://creativecommons.org/licenses/by/4.0/>; rel="license", <https://colorcombinations.org/data/sanzo-wada-wcag-contrast/>; rel="describedby"
+
 # Sitemap + robots should be freshly crawled
 /sitemap-index.xml
   Cache-Control: public, max-age=3600

@@ -260,6 +260,8 @@ const jsonLd = [
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
+    /* The repo URL is link text with no break points: 49px of horizontal scroll at 320-360px (2026-10-24). */
+    overflow-wrap: anywhere;
   }
 
   .methodology-body a:hover {
