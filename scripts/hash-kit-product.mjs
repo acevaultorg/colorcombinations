@@ -14,9 +14,9 @@
  * built HTML. Done here, after `astro build`, instead of in the three components, so the
  * name follows the file's contents automatically and a future component cannot drift.
  * The stable /kit-product.js stays, for pages already cached with the old reference.
- * No _headers entry: a content-hashed name is safe under any TTL. (Do not route this
- * through kit's stableHeaders(): its /kit-[a-z.-]+ regex has no digits, so a second call
- * drops the hashed kit-search entry from the block.)
+ * No _headers entry: a content-hashed name is safe under any TTL. (kit's stableHeaders() is
+ * not needed here; its /kit-[a-z.-]+ regex skips hashed names, which is harmless because
+ * a hashed file then just gets the zone's 4 h default.)
  *
  * Usage: node scripts/hash-kit-product.mjs [dist]
  */
