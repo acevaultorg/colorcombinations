@@ -297,10 +297,13 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
     }
   }
 
-  @media (min-width: 1080px) {
-    .further-reading--full .further-reading__list {
-      grid-template-columns: repeat(3, 1fr);
-    }
+  /* Full shelf: columns from the space the shelf actually has, not the viewport. A card needs
+     ~23rem (8rem cover + gap + padding + ~11rem text). The old 3-up at >=1080px viewport left a
+     71px text column inside the 856px colors-that-go-with column (770 pages) and 111px inside
+     container-narrow (home, collections, learn), 1,036px-tall cards (measured 2026-10-24).
+     Wide containers (1,184px: /shop/, trends, gift guide) still get three. */
+  .further-reading--full .further-reading__list {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 23rem), 1fr));
   }
 
   .further-reading--sidebar .further-reading__list {
