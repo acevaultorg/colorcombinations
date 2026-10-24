@@ -87,6 +87,8 @@ const cover = bookCover(book, "S");
         data-book={book.title}
         aria-label={`${book.title} on Amazon`}
       >
+        {/* Open Library 404s on titles it has no cover for (Pantone: The Twentieth Century, 42 pages,
+            card mvcvtm3lfepboe): swap to a transparent pixel so the grey tile shows, not a broken icon. */}
         <img
           class="sbb__thumb"
           src={cover}
@@ -95,6 +97,7 @@ const cover = bookCover(book, "S");
           height="48"
           loading="lazy"
           decoding="async"
+          onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'"
         />
         <span class="sbb__text">
           <span class="sbb__title">{book.title}</span>
