@@ -203,16 +203,33 @@ const bestPair = pairs.reduce<typeof pairs[number] | null>(
     border-radius: 2px;
   }
 
+  /* Wrap, never clip: at 375px a nowrap+ellipsis row cut the second name to
+     "He" (Rosolanc Purple · Helvetia Blue). Names break between each other
+     first, and inside a name only when one alone is wider than the column. */
   .contrast__names {
     display: inline-flex;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0 0.5rem;
     align-items: baseline;
     font-size: 0.8125rem;
+    line-height: 1.35;
     color: var(--color-ink-700);
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  }
+
+  .contrast__name {
+    overflow-wrap: anywhere;
+  }
+
+  /* Phones: one name per line, so the separator never dangles at a line end. */
+  @media (max-width: 480px) {
+    .contrast__names {
+      flex-direction: column;
+    }
+
+    .contrast__sep {
+      display: none;
+    }
   }
 
   .contrast__sep {

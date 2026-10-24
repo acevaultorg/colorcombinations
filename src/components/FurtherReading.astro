@@ -539,6 +539,23 @@ const showWadaCompare = books.some((b) => WADA_ASINS.has(b.amazonAsin));
     }
   }
 
+  /* 320px phones: the text column is ~118px, so the nowrap buy button ran
+     56px out of its card and 13px past the viewport (horizontal scroll on
+     /collections/art-deco/, measured 2026-10-24). Narrower cover column and
+     card padding widen the text column; the label wraps only as the fallback. */
+  @media (max-width: 360px) {
+    .further-reading__item {
+      grid-template-columns: 4.5rem 1fr;
+      gap: 0.75rem;
+      padding: 1rem;
+    }
+
+    .further-reading__link {
+      max-width: 100%;
+      white-space: normal;
+    }
+  }
+
   .further-reading__disclosure {
     margin-top: 2rem;
     font-size: 0.75rem;
