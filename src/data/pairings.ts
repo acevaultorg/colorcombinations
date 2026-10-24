@@ -103,6 +103,14 @@ export const commonColorBySlug = (slug: string): CommonColor | undefined =>
 // Use contexts. Each carries a distinct lens that changes BOTH the copy and the
 // palette selection (mood bias + lightness preference), so every context page
 // delivers real information-gain rather than a swapped headline.
+//
+// The scorer counts mood MATCHES (order is ignored) and adds a tone bonus, so two contexts
+// with the same mood SET and the same tone rank every palette identically. Until 2026-10-24
+// four groups did: wedding/bedroom/nursery, kitchen/living-room, walls/bathroom and
+// an-outfit/accent-wall showed the same top-8 plates (and so the same "By the numbers"
+// figures) for all 55 colours: 275 of 715 pages. Keep every context's {mood set, tone}
+// unique. favorMoods[0] is printed in the copy ("feel serene in a nursery"), so it must stay
+// an adjective that fits the room. Check: no two contexts may share a top-8 for any colour.
 // ---------------------------------------------------------------------------
 export interface PairingContext {
   slug: string;
@@ -139,7 +147,7 @@ export const contexts: PairingContext[] = [
     slug: "bedroom",
     label: "a bedroom",
     lens: "Bedrooms reward calm, low-contrast pairings — partner colors that settle the eye rather than energize it.",
-    favorMoods: ["serene", "warm", "refined"],
+    favorMoods: ["serene", "solemn", "warm"],
     tone: "light",
     tip: "In a bedroom, layer it with",
   },
@@ -155,7 +163,7 @@ export const contexts: PairingContext[] = [
     slug: "kitchen",
     label: "a kitchen",
     lens: "Kitchens pair best with warm, durable partners — colors that read clean against cabinetry and counters in hard task lighting.",
-    favorMoods: ["earthy", "warm", "refined"],
+    favorMoods: ["earthy", "warm", "austere"],
     tone: "any",
     tip: "In a kitchen, contrast it with",
   },
@@ -187,7 +195,7 @@ export const contexts: PairingContext[] = [
     slug: "bathroom",
     label: "a bathroom",
     lens: "Bathrooms reward clean, spa-like pairings — cool, light partners that read fresh against tile and hold up under bright task lighting.",
-    favorMoods: ["serene", "cool", "refined"],
+    favorMoods: ["serene", "cool", "austere"],
     tone: "light",
     tip: "In a bathroom, pair it with",
   },
@@ -195,7 +203,7 @@ export const contexts: PairingContext[] = [
     slug: "nursery",
     label: "a nursery",
     lens: "A nursery wants soft, low-contrast partners — gentle colors that soothe rather than stimulate, and grow with the room past the first year.",
-    favorMoods: ["serene", "warm", "refined"],
+    favorMoods: ["serene", "playful", "warm"],
     tone: "light",
     tip: "In a nursery, soften it with",
   },
@@ -211,7 +219,7 @@ export const contexts: PairingContext[] = [
     slug: "accent-wall",
     label: "an accent wall",
     lens: "An accent wall is where you go stronger than the rest of the room — one decisive partner carries it, so favour depth over a full spread.",
-    favorMoods: ["bold", "refined", "warm"],
+    favorMoods: ["bold", "solemn", "cool"],
     tone: "bold",
     tip: "On an accent wall, pair it with",
   },
@@ -224,6 +232,18 @@ export const contexts: PairingContext[] = [
     tip: "For curtains, choose",
   },
 ];
+
+// Fail the build if two contexts would rank palettes identically (see the note above the
+// interface): same mood set + same tone is exactly the condition that duplicated 275 pages.
+{
+  const seen = new Map<string, string>();
+  for (const c of contexts) {
+    const key = [...c.favorMoods].sort().join(",") + "|" + c.tone;
+    const twin = seen.get(key);
+    if (twin) throw new Error(`pairings: contexts "${twin}" and "${c.slug}" share moods+tone (${key}), so their pages show identical plates`);
+    seen.set(key, c.slug);
+  }
+}
 
 export const contextBySlug = (slug: string): PairingContext | undefined =>
   contexts.find((c) => c.slug === slug);
