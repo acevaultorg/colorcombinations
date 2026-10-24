@@ -1448,8 +1448,14 @@ const jsonLd = [
 
   .embed-inner {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
+  }
+
+  /* The 320px-wide preview iframe set the grid track's min-content and gave
+     320px phones a 20px horizontal scroll (measured 2026-10-24). */
+  .embed-preview iframe {
+    max-width: 100%;
   }
 
   @media (min-width: 720px) {
