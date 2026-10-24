@@ -109,7 +109,11 @@ export const commonColorBySlug = (slug: string): CommonColor | undefined =>
 // four groups did: wedding/bedroom/nursery, kitchen/living-room, walls/bathroom and
 // an-outfit/accent-wall showed the same top-8 plates (and so the same "By the numbers"
 // figures) for all 55 colours: 275 of 715 pages. Keep every context's {mood set, tone}
-// unique. favorMoods[0] is printed in the copy ("feel serene in a nursery"), so it must stay
+// unique. Unique sets are necessary, not sufficient: "refined" is on 314 of 378 palettes and
+// "warm" on 270, so they add a near-constant and barely move the order; tone and the rare
+// moods (playful, earthy, serene, solemn, cool) are what separate contexts. Measured with
+// palettesFor over 78 context pairs x 55 colours, colour-pairs with an identical top-8:
+// 495 originally, 146 after distinct moods (b65b5fe), 66 after the tone pass (2026-10-24). favorMoods[0] is printed in the copy ("feel serene in a nursery"), so it must stay
 // an adjective that fits the room. Check: no two contexts may share a top-8 for any colour.
 // ---------------------------------------------------------------------------
 export interface PairingContext {
@@ -132,14 +136,14 @@ export const contexts: PairingContext[] = [
     label: "walls",
     lens: "Wall color has to live with a room all day, so the partners that work are the ones with enough contrast to frame furniture without fighting the light.",
     favorMoods: ["serene", "refined", "cool"],
-    tone: "light",
+    tone: "any",
     tip: "On walls, use",
   },
   {
     slug: "wedding",
     label: "a wedding",
     lens: "Wedding palettes lean soft and refined — partner colors that photograph well in daylight and hold together across florals, linens, and stationery.",
-    favorMoods: ["refined", "serene", "warm"],
+    favorMoods: ["refined", "serene", "playful"],
     tone: "light",
     tip: "For a wedding, pair it with",
   },
@@ -148,7 +152,7 @@ export const contexts: PairingContext[] = [
     label: "a bedroom",
     lens: "Bedrooms reward calm, low-contrast pairings — partner colors that settle the eye rather than energize it.",
     favorMoods: ["serene", "solemn", "warm"],
-    tone: "light",
+    tone: "any",
     tip: "In a bedroom, layer it with",
   },
   {
@@ -156,7 +160,7 @@ export const contexts: PairingContext[] = [
     label: "a living room",
     lens: "A living room can take a stronger pairing — one grounding partner plus a warm accent keeps a shared space inviting without going flat.",
     favorMoods: ["warm", "earthy", "refined"],
-    tone: "any",
+    tone: "bold",
     tip: "In a living room, ground it with",
   },
   {
