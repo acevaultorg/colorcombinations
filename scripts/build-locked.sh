@@ -35,6 +35,9 @@ fi
 
 astro check
 astro build
+# Pages load the Kit product script by a content-hashed name, so a deploy never leaves readers on the old one for the
+# zone's 4 h browser TTL (2026-10-24, reported by the cabinpets lane; same fix as kit-search 1.8.4).
+node scripts/hash-kit-product.mjs dist
 node scripts/verify-mediavine-exclusions.mjs
 node scripts/make-worker.mjs
 node scripts/build-amili-index.mjs
